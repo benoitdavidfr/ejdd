@@ -1,1101 +1,17 @@
 <?php
-/** Génération et utilisation d'un jeu de données DeptReg des données des départements et régions 8/6/2025.
+/** Génération du jeu de données DeptReg des données des départements et régions 9/6/2025.
  *
- * La première partie du fichier définit la fonction deptRegDataSet() qui peut être importée par un require_once.
- * Cette partie est générée par le code Php après le return qui permet que cette seconde partie ne soit pas intégrée
- * par le require_once.
- * Ainsi la première partie peut être facilement réutilisée et la seconde peut être modifiée si nécessaire.
+ * Ce script permet de produire le jeu de données DeptReg sous la forme du fichier JSON deptreg.json.
+ * Il permet aussi de vérifier que le JdD est conforme à son schéma.
  *
- * Ce script se veut le plus indépendant possible de l'application sofia-mail.
- * Il illustre ce qui pourrait être un standard pour définir des jeux de données en Php.
- *
- * Un JdD serait défini par:
+ * Ce script illustre la gestion d'une BD en JSON pour Php.
+ * Un JdD est défini par:
  *  - 3 MD title, description et $schema,
  *  - un champ par table ou dictionnaire.
  *
- * Une table est un dictionnaire qui associe à une clé un n-uplet.
- * Un dictionnaire associé à une clé une valeur.
+ * Une table est un dictionnaire qui associe à une clé un n-uplet, cad un array de la foeme [{key}=> [{col1}=> {val1}, ...]].
+ * Un dictionnaire associe à une clé une valeur atomique, cad un array de la foeme [{key}=> {val}].
  */
-
-/** Fonction exposée retournant le jeu de données DeptReg comme array Php décrit par son titre, sa decription et son schéma JSON.
- * deptreg est défini comme une fonction car, à l'utilisation par l'intégration du fichier, elle sera globalement définie
- * alors qu'une définition comme variable n'aurait pas été globalement définie.
- * @return array<string, mixed>
- */
-function deptRegDataSet(): array {
- return array (
-  'title' => 'Jeu de données DeptReg contenant la liste des départements, des régions et des domaines internet des services de l\'Etat dans les départements ayant une DDT(M)',
-  'description' => 'Ce jeu est composé de 4 parties:
- - régions liste les régions de métropole, 
- - départements liste les départements de métropole, chacun référençant la région le contenant,
- - outre-mer liste les 5 DOM/ROM + StP&M,
- - prefdom liste les domaines internet des services de l\'Etat dans les départements ayant une DDT(M).
-Ce jeu de données est exposé en Php et en JSON.
-Outre ces 4 parties, le jeu de données est documenté par:
- - un titre dans le champ champ title
- - un résumé dans le champ description
- - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma de chaque partie',
-  '$schema' => 
-  array (
-    '$schema' => 'http://json-schema.org/draft-07/schema#',
-    'title' => 'Schema du jeu de données deptreg des départements, régions et domaines internet des préfectures',
-    'type' => 'object',
-    'required' => 
-    array (
-      0 => 'title',
-      1 => 'description',
-      2 => '$schema',
-      3 => 'régions',
-      4 => 'départements',
-      5 => 'outre-mer',
-      6 => 'prefdom',
-    ),
-    'properties' => 
-    array (
-      'title' => 
-      array (
-        'description' => 'Titre du jeu de données',
-        'type' => 'string',
-      ),
-      'description' => 
-      array (
-        'description' => 'Commentaire sur le jeu de données',
-        'type' => 'string',
-      ),
-      '$schema' => 
-      array (
-        'description' => 'Schéma JSON du jeu de données',
-        'type' => 'object',
-      ),
-      'régions' => 
-      array (
-        'description' => 'Régions de métropole avec comme clé les 3 derniers caractères du code ISO 3166-2',
-        'type' => 'object',
-        'patternProperties' => 
-        array (
-          '^[A-Z2][A-Z0][A-Z]$' => 
-          array (
-            'type' => 'object',
-            'required' => 
-            array (
-              0 => 'nom',
-              1 => 'iso',
-            ),
-            'properties' => 
-            array (
-              'nom' => 
-              array (
-                'description' => 'nom de la région',
-                'type' => 'string',
-              ),
-              'iso' => 
-              array (
-                'description' => 'code ISO 3166-2',
-                'type' => 'string',
-              ),
-            ),
-          ),
-        ),
-        'additionalProperties' => false,
-      ),
-      'départements' => 
-      array (
-        'description' => 'Départements de métropole avec comme clé leur code Insee précédé de la lettre \'D\'',
-        'type' => 'object',
-        'patternProperties' => 
-        array (
-          '^D\\d[\\dAB]$' => 
-          array (
-            'type' => 'object',
-            'required' => 
-            array (
-              0 => 'codeInsee',
-              1 => 'nom',
-              2 => 'ancienneRégion',
-              3 => 'région',
-            ),
-            'properties' => 
-            array (
-              'codeInsee' => 
-              array (
-                'description' => 'code Insee du département',
-                'type' => 'string',
-                'pattern' => '^\\d[\\dAB]$',
-              ),
-              'nom' => 
-              array (
-                'description' => 'nom du département',
-                'type' => 'string',
-              ),
-              'ancienneRégion' => 
-              array (
-                'description' => 'nom de la région avant 2016',
-                'type' => 'string',
-              ),
-              'région' => 
-              array (
-                'description' => 'code région, clé dans régions',
-                'type' => 'string',
-              ),
-            ),
-          ),
-        ),
-        'additionalProperties' => false,
-      ),
-      'outre-mer' => 
-      array (
-        'description' => 'Les 5 DOM/ROM + Saint-Pierre et Miquelon avec comme clé leur code ISO 3166-1 alpha 3',
-        'type' => 'object',
-        'patternProperties' => 
-        array (
-          '^[A-Z]{3}$' => 
-          array (
-            'type' => 'object',
-            'required' => 
-            array (
-              0 => 'codeInsee',
-              1 => 'nom',
-              2 => 'alpha2',
-              3 => 'statut',
-            ),
-            'properties' => 
-            array (
-              'codeInsee' => 
-              array (
-                'description' => 'code Insee',
-                'type' => 'integer',
-              ),
-              'nom' => 
-              array (
-                'description' => 'nom',
-                'type' => 'string',
-              ),
-              'alpha2' => 
-              array (
-                'description' => 'code ISO 3166-1 alpha 2',
-                'type' => 'string',
-                'pattern' => '^[A-Z]{2}$',
-              ),
-              'statut' => 
-              array (
-                'description' => 'statut, soit \'DOM/ROM\', soit \'COM\'',
-                'enum' => 
-                array (
-                  0 => 'DOM/ROM',
-                  1 => 'COM',
-                ),
-              ),
-            ),
-          ),
-        ),
-        'additionalProperties' => false,
-      ),
-      'prefdom' => 
-      array (
-        'description' => 'Les domaines internet des services de l\'Etat dans les départements ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre \'D\', + domaine de la DTAM de StP&M, avec comme clé le code ISO 3166-1 alpha 3 de StP&M',
-        'type' => 'object',
-        'patternProperties' => 
-        array (
-          '^D\\d[\\dAB]\\d?$' => 
-          array (
-            'description' => 'le domaine internet',
-            'type' => 'string',
-          ),
-        ),
-        'additionalProperties' => false,
-      ),
-    ),
-  ),
-  'régions' => 
-  array (
-    'ARA' => 
-    array (
-      'nom' => 'Auvergne-Rhône-Alpes',
-      'iso' => 'FR-ARA',
-    ),
-    'BFC' => 
-    array (
-      'nom' => 'Bourgogne-Franche-Comté',
-      'iso' => 'FR-BFC',
-    ),
-    'BRE' => 
-    array (
-      'nom' => 'Bretagne',
-      'iso' => 'FR-BRE',
-    ),
-    'CVL' => 
-    array (
-      'nom' => 'Centre-Val de Loire',
-      'iso' => 'FR-CVL',
-    ),
-    '20R' => 
-    array (
-      'nom' => 'Corse',
-      'iso' => 'FR-20R',
-    ),
-    'GES' => 
-    array (
-      'nom' => 'Grand Est',
-      'iso' => 'FR-GES',
-    ),
-    'HDF' => 
-    array (
-      'nom' => 'Hauts-de-France',
-      'iso' => 'FR-HDF',
-    ),
-    'IDF' => 
-    array (
-      'nom' => 'Île-de-France',
-      'iso' => 'FR-IDF',
-    ),
-    'NOR' => 
-    array (
-      'nom' => 'Normandie',
-      'iso' => 'FR-NOR',
-    ),
-    'NAQ' => 
-    array (
-      'nom' => 'Nouvelle-Aquitaine',
-      'iso' => 'FR-NAQ',
-    ),
-    'OCC' => 
-    array (
-      'nom' => 'Occitanie',
-      'iso' => 'FR-OCC',
-    ),
-    'PDL' => 
-    array (
-      'nom' => 'Pays de la Loire',
-      'iso' => 'FR-PDL',
-    ),
-    'PAC' => 
-    array (
-      'nom' => 'Provence-Alpes-Côte d\'Azur',
-      'iso' => 'FR-PAC',
-    ),
-  ),
-  'départements' => 
-  array (
-    'D01' => 
-    array (
-      'codeInsee' => '01',
-      'nom' => 'Ain',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D02' => 
-    array (
-      'codeInsee' => '02',
-      'nom' => 'Aisne',
-      'ancienneRégion' => 'Picardie',
-      'région' => 'HDF',
-    ),
-    'D03' => 
-    array (
-      'codeInsee' => '03',
-      'nom' => 'Allier',
-      'ancienneRégion' => 'Auvergne',
-      'région' => 'ARA',
-    ),
-    'D04' => 
-    array (
-      'codeInsee' => '04',
-      'nom' => 'Alpes de Haute-Provence',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D05' => 
-    array (
-      'codeInsee' => '05',
-      'nom' => 'Hautes-Alpes',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D06' => 
-    array (
-      'codeInsee' => '06',
-      'nom' => 'Alpes-Maritimes',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D07' => 
-    array (
-      'codeInsee' => '07',
-      'nom' => 'Ardêche',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D08' => 
-    array (
-      'codeInsee' => '08',
-      'nom' => 'Ardennes',
-      'ancienneRégion' => 'Champagne-Ardenne',
-      'région' => 'GES',
-    ),
-    'D09' => 
-    array (
-      'codeInsee' => '09',
-      'nom' => 'Ariège',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D10' => 
-    array (
-      'codeInsee' => '10',
-      'nom' => 'Aube',
-      'ancienneRégion' => 'Champagne-Ardenne',
-      'région' => 'GES',
-    ),
-    'D11' => 
-    array (
-      'codeInsee' => '11',
-      'nom' => 'Aude',
-      'ancienneRégion' => 'Languedoc-Roussillon',
-      'région' => 'OCC',
-    ),
-    'D12' => 
-    array (
-      'codeInsee' => '12',
-      'nom' => 'Aveyron',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D13' => 
-    array (
-      'codeInsee' => '13',
-      'nom' => 'Bouches-du-Rhône',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D14' => 
-    array (
-      'codeInsee' => '14',
-      'nom' => 'Calvados',
-      'ancienneRégion' => 'Basse-Normandie',
-      'région' => 'NOR',
-    ),
-    'D15' => 
-    array (
-      'codeInsee' => '15',
-      'nom' => 'Cantal',
-      'ancienneRégion' => 'Auvergne',
-      'région' => 'ARA',
-    ),
-    'D16' => 
-    array (
-      'codeInsee' => '16',
-      'nom' => 'Charente',
-      'ancienneRégion' => 'Poitou-Charentes',
-      'région' => 'NAQ',
-    ),
-    'D17' => 
-    array (
-      'codeInsee' => '17',
-      'nom' => 'Charente-Maritime',
-      'ancienneRégion' => 'Poitou-Charentes',
-      'région' => 'NAQ',
-    ),
-    'D18' => 
-    array (
-      'codeInsee' => '18',
-      'nom' => 'Cher',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D19' => 
-    array (
-      'codeInsee' => '19',
-      'nom' => 'Corrèze',
-      'ancienneRégion' => 'Limousin',
-      'région' => 'NAQ',
-    ),
-    'D2A' => 
-    array (
-      'codeInsee' => '2A',
-      'nom' => 'Corse-du-Sud',
-      'ancienneRégion' => 'Corse',
-      'région' => '20R',
-    ),
-    'D2B' => 
-    array (
-      'codeInsee' => '2B',
-      'nom' => 'Haute-Corse',
-      'ancienneRégion' => 'Corse',
-      'région' => '20R',
-    ),
-    'D21' => 
-    array (
-      'codeInsee' => '21',
-      'nom' => 'Côte-d\'Or',
-      'ancienneRégion' => 'Bourgogne',
-      'région' => 'BFC',
-    ),
-    'D22' => 
-    array (
-      'codeInsee' => '22',
-      'nom' => 'Côtes d\'Armor',
-      'ancienneRégion' => 'Bretagne',
-      'région' => 'BRE',
-    ),
-    'D23' => 
-    array (
-      'codeInsee' => '23',
-      'nom' => 'Creuse',
-      'ancienneRégion' => 'Limousin ',
-      'région' => 'NAQ',
-    ),
-    'D24' => 
-    array (
-      'codeInsee' => '24',
-      'nom' => 'Dordogne',
-      'ancienneRégion' => 'Aquitaine',
-      'région' => 'NAQ',
-    ),
-    'D25' => 
-    array (
-      'codeInsee' => '25',
-      'nom' => 'Doubs',
-      'ancienneRégion' => 'Franche-Comté ',
-      'région' => 'BFC',
-    ),
-    'D26' => 
-    array (
-      'codeInsee' => '26',
-      'nom' => 'Drôme',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D27' => 
-    array (
-      'codeInsee' => '27',
-      'nom' => 'Eure',
-      'ancienneRégion' => 'Haute-Normandie',
-      'région' => 'NOR',
-    ),
-    'D28' => 
-    array (
-      'codeInsee' => '28',
-      'nom' => 'Eure-et-Loir',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D29' => 
-    array (
-      'codeInsee' => '29',
-      'nom' => 'Finistère',
-      'ancienneRégion' => 'Bretagne',
-      'région' => 'BRE',
-    ),
-    'D30' => 
-    array (
-      'codeInsee' => '30',
-      'nom' => 'Gard',
-      'ancienneRégion' => 'Languedoc-Roussillon',
-      'région' => 'OCC',
-    ),
-    'D31' => 
-    array (
-      'codeInsee' => '31',
-      'nom' => 'Haute-Garonne',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D32' => 
-    array (
-      'codeInsee' => '32',
-      'nom' => 'Gers',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D33' => 
-    array (
-      'codeInsee' => '33',
-      'nom' => 'Gironde',
-      'ancienneRégion' => 'Aquitaine',
-      'région' => 'NAQ',
-    ),
-    'D34' => 
-    array (
-      'codeInsee' => '34',
-      'nom' => 'Hérault',
-      'ancienneRégion' => 'Languedoc-Roussillon',
-      'région' => 'OCC',
-    ),
-    'D35' => 
-    array (
-      'codeInsee' => '35',
-      'nom' => 'Îlle-et-Vilaine',
-      'ancienneRégion' => 'Bretagne',
-      'région' => 'BRE',
-    ),
-    'D36' => 
-    array (
-      'codeInsee' => '36',
-      'nom' => 'Indre',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D37' => 
-    array (
-      'codeInsee' => '37',
-      'nom' => 'Indre-et-Loire',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D38' => 
-    array (
-      'codeInsee' => '38',
-      'nom' => 'Isère',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D39' => 
-    array (
-      'codeInsee' => '39',
-      'nom' => 'Jura',
-      'ancienneRégion' => 'Franche-Comté ',
-      'région' => 'BFC',
-    ),
-    'D40' => 
-    array (
-      'codeInsee' => '40',
-      'nom' => 'Landes',
-      'ancienneRégion' => 'Aquitaine',
-      'région' => 'NAQ',
-    ),
-    'D41' => 
-    array (
-      'codeInsee' => '41',
-      'nom' => 'Loir-et-Cher',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D42' => 
-    array (
-      'codeInsee' => '42',
-      'nom' => 'Loire',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D43' => 
-    array (
-      'codeInsee' => '43',
-      'nom' => 'Haute-Loire',
-      'ancienneRégion' => 'Auvergne',
-      'région' => 'ARA',
-    ),
-    'D44' => 
-    array (
-      'codeInsee' => '44',
-      'nom' => 'Loire-Atlantique',
-      'ancienneRégion' => 'Pays de la Loire',
-      'région' => 'PDL',
-    ),
-    'D45' => 
-    array (
-      'codeInsee' => '45',
-      'nom' => 'Loiret',
-      'ancienneRégion' => 'Centre',
-      'région' => 'CVL',
-    ),
-    'D46' => 
-    array (
-      'codeInsee' => '46',
-      'nom' => 'Lot',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D47' => 
-    array (
-      'codeInsee' => '47',
-      'nom' => 'Lot-et-Garonne',
-      'ancienneRégion' => 'Aquitaine',
-      'région' => 'NAQ',
-    ),
-    'D48' => 
-    array (
-      'codeInsee' => '48',
-      'nom' => 'Lozère',
-      'ancienneRégion' => 'Languedoc-Roussillon',
-      'région' => 'OCC',
-    ),
-    'D49' => 
-    array (
-      'codeInsee' => '49',
-      'nom' => 'Maine-et-Loire',
-      'ancienneRégion' => 'Pays de la Loire',
-      'région' => 'PDL',
-    ),
-    'D50' => 
-    array (
-      'codeInsee' => '50',
-      'nom' => 'Manche',
-      'ancienneRégion' => 'Basse-Normandie',
-      'région' => 'NOR',
-    ),
-    'D51' => 
-    array (
-      'codeInsee' => '51',
-      'nom' => 'Marne',
-      'ancienneRégion' => 'Champagne-Ardenne',
-      'région' => 'GES',
-    ),
-    'D52' => 
-    array (
-      'codeInsee' => '52',
-      'nom' => 'Haute-Marne',
-      'ancienneRégion' => 'Champagne-Ardenne',
-      'région' => 'GES',
-    ),
-    'D53' => 
-    array (
-      'codeInsee' => '53',
-      'nom' => 'Mayenne',
-      'ancienneRégion' => 'Pays de la Loire',
-      'région' => 'PDL',
-    ),
-    'D54' => 
-    array (
-      'codeInsee' => '54',
-      'nom' => 'Meurthe-et-Moselle',
-      'ancienneRégion' => 'Lorraine',
-      'région' => 'GES',
-    ),
-    'D55' => 
-    array (
-      'codeInsee' => '55',
-      'nom' => 'Meuse',
-      'ancienneRégion' => 'Lorraine',
-      'région' => 'GES',
-    ),
-    'D56' => 
-    array (
-      'codeInsee' => '56',
-      'nom' => 'Morbihan',
-      'ancienneRégion' => 'Bretagne',
-      'région' => 'BRE',
-    ),
-    'D57' => 
-    array (
-      'codeInsee' => '57',
-      'nom' => 'Moselle',
-      'ancienneRégion' => 'Lorraine',
-      'région' => 'GES',
-    ),
-    'D58' => 
-    array (
-      'codeInsee' => '58',
-      'nom' => 'Nièvre',
-      'ancienneRégion' => 'Bourgogne ',
-      'région' => 'BFC',
-    ),
-    'D59' => 
-    array (
-      'codeInsee' => '59',
-      'nom' => 'Nord',
-      'ancienneRégion' => 'Nord-Pas-de-Calais',
-      'région' => 'HDF',
-    ),
-    'D60' => 
-    array (
-      'codeInsee' => '60',
-      'nom' => 'Oise',
-      'ancienneRégion' => 'Picardie',
-      'région' => 'HDF',
-    ),
-    'D61' => 
-    array (
-      'codeInsee' => '61',
-      'nom' => 'Orne',
-      'ancienneRégion' => 'Basse-Normandie',
-      'région' => 'NOR',
-    ),
-    'D62' => 
-    array (
-      'codeInsee' => '62',
-      'nom' => 'Pas-de-Calais',
-      'ancienneRégion' => 'Nord-Pas-de-Calais',
-      'région' => 'HDF',
-    ),
-    'D63' => 
-    array (
-      'codeInsee' => '63',
-      'nom' => 'Puy-de-Dôme',
-      'ancienneRégion' => 'Auvergne',
-      'région' => 'ARA',
-    ),
-    'D64' => 
-    array (
-      'codeInsee' => '64',
-      'nom' => 'Pyrénées-Atlantiques',
-      'ancienneRégion' => 'Aquitaine',
-      'région' => 'NAQ',
-    ),
-    'D65' => 
-    array (
-      'codeInsee' => '65',
-      'nom' => 'Hautes-Pyrénées',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D66' => 
-    array (
-      'codeInsee' => '66',
-      'nom' => 'Pyrénées-Orientales',
-      'ancienneRégion' => 'Languedoc-Roussillon',
-      'région' => 'OCC',
-    ),
-    'D67' => 
-    array (
-      'codeInsee' => '67',
-      'nom' => 'Bas-Rhin',
-      'ancienneRégion' => 'Alsace',
-      'région' => 'GES',
-    ),
-    'D68' => 
-    array (
-      'codeInsee' => '68',
-      'nom' => 'Haut-Rhin',
-      'ancienneRégion' => 'Alsace',
-      'région' => 'GES',
-    ),
-    'D69' => 
-    array (
-      'codeInsee' => '69',
-      'nom' => 'Rhône',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D70' => 
-    array (
-      'codeInsee' => '70',
-      'nom' => 'Haute-Saône',
-      'ancienneRégion' => 'Franche-Comté ',
-      'région' => 'BFC',
-    ),
-    'D71' => 
-    array (
-      'codeInsee' => '71',
-      'nom' => 'Saône-et-Loire',
-      'ancienneRégion' => 'Bourgogne ',
-      'région' => 'BFC',
-    ),
-    'D72' => 
-    array (
-      'codeInsee' => '72',
-      'nom' => 'Sarthe',
-      'ancienneRégion' => 'Pays de la Loire',
-      'région' => 'PDL',
-    ),
-    'D73' => 
-    array (
-      'codeInsee' => '73',
-      'nom' => 'Savoie',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D74' => 
-    array (
-      'codeInsee' => '74',
-      'nom' => 'Haute-Savoie',
-      'ancienneRégion' => 'Rhône-Alpes',
-      'région' => 'ARA',
-    ),
-    'D75' => 
-    array (
-      'codeInsee' => '75',
-      'nom' => 'Paris',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D76' => 
-    array (
-      'codeInsee' => '76',
-      'nom' => 'Seine-Maritime',
-      'ancienneRégion' => 'Haute-Normandie',
-      'région' => 'NOR',
-    ),
-    'D77' => 
-    array (
-      'codeInsee' => '77',
-      'nom' => 'Seine-et-Marne',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D78' => 
-    array (
-      'codeInsee' => '78',
-      'nom' => 'Yvelines',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D79' => 
-    array (
-      'codeInsee' => '79',
-      'nom' => 'Deux-Sèvres',
-      'ancienneRégion' => 'Poitou-Charentes',
-      'région' => 'NAQ',
-    ),
-    'D80' => 
-    array (
-      'codeInsee' => '80',
-      'nom' => 'Somme',
-      'ancienneRégion' => 'Picardie',
-      'région' => 'HDF',
-    ),
-    'D81' => 
-    array (
-      'codeInsee' => '81',
-      'nom' => 'Tarn',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D82' => 
-    array (
-      'codeInsee' => '82',
-      'nom' => 'Tarn-et-Garonne',
-      'ancienneRégion' => 'Midi-Pyrénées',
-      'région' => 'OCC',
-    ),
-    'D83' => 
-    array (
-      'codeInsee' => '83',
-      'nom' => 'Var',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D84' => 
-    array (
-      'codeInsee' => '84',
-      'nom' => 'Vaucluse',
-      'ancienneRégion' => 'Provence-Alpes-Côte d\'Azur',
-      'région' => 'PAC',
-    ),
-    'D85' => 
-    array (
-      'codeInsee' => '85',
-      'nom' => 'Vendée',
-      'ancienneRégion' => 'Pays de la Loire',
-      'région' => 'PDL',
-    ),
-    'D86' => 
-    array (
-      'codeInsee' => '86',
-      'nom' => 'Vienne',
-      'ancienneRégion' => 'Poitou-Charentes',
-      'région' => 'NAQ',
-    ),
-    'D87' => 
-    array (
-      'codeInsee' => '87',
-      'nom' => 'Haute-Vienne',
-      'ancienneRégion' => 'Limousin',
-      'région' => 'NAQ',
-    ),
-    'D88' => 
-    array (
-      'codeInsee' => '88',
-      'nom' => 'Vosges',
-      'ancienneRégion' => 'Lorraine',
-      'région' => 'GES',
-    ),
-    'D89' => 
-    array (
-      'codeInsee' => '89',
-      'nom' => 'Yonne',
-      'ancienneRégion' => 'Bourgogne ',
-      'région' => 'BFC',
-    ),
-    'D90' => 
-    array (
-      'codeInsee' => '90',
-      'nom' => 'Territoire-de-Belfort',
-      'ancienneRégion' => 'Franche-Comté ',
-      'région' => 'BFC',
-    ),
-    'D91' => 
-    array (
-      'codeInsee' => '91',
-      'nom' => 'Essonne',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D92' => 
-    array (
-      'codeInsee' => '92',
-      'nom' => 'Hauts-de-Seine',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D93' => 
-    array (
-      'codeInsee' => '93',
-      'nom' => 'Seine-Saint-Denis',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D94' => 
-    array (
-      'codeInsee' => '94',
-      'nom' => 'Val-de-Marne',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-    'D95' => 
-    array (
-      'codeInsee' => '95',
-      'nom' => 'Val-d\'Oise',
-      'ancienneRégion' => 'Île-de-France',
-      'région' => 'IDF',
-    ),
-  ),
-  'outre-mer' => 
-  array (
-    'GLP' => 
-    array (
-      'codeInsee' => 971,
-      'nom' => 'Guadeloupe',
-      'alpha2' => 'GP',
-      'statut' => 'DOM/ROM',
-    ),
-    'GUF' => 
-    array (
-      'codeInsee' => 973,
-      'nom' => 'Guyane',
-      'alpha2' => 'GF',
-      'statut' => 'DOM/ROM',
-    ),
-    'MTQ' => 
-    array (
-      'codeInsee' => 972,
-      'nom' => 'Martinique',
-      'alpha2' => 'MQ',
-      'statut' => 'DOM/ROM',
-    ),
-    'REU' => 
-    array (
-      'codeInsee' => 974,
-      'nom' => 'La Réunion',
-      'alpha2' => 'RE',
-      'statut' => 'DOM/ROM',
-    ),
-    'MYT' => 
-    array (
-      'codeInsee' => 976,
-      'nom' => 'Mayotte',
-      'alpha2' => 'YT',
-      'statut' => 'DOM/ROM',
-    ),
-    'SPM' => 
-    array (
-      'codeInsee' => 975,
-      'nom' => 'Saint-Pierre-et-Miquelon',
-      'alpha2' => 'PM',
-      'statut' => 'COM',
-    ),
-  ),
-  'prefdom' => 
-  array (
-    'D01' => 'ain.gouv.fr',
-    'D02' => 'aisne.gouv.fr',
-    'D03' => 'allier.gouv.fr',
-    'D04' => 'alpes-de-haute-provence.gouv.fr',
-    'D05' => 'hautes-alpes.gouv.fr',
-    'D06' => 'alpes-maritimes.gouv.fr',
-    'D07' => 'ardeche.gouv.fr',
-    'D08' => 'ardennes.gouv.fr',
-    'D09' => 'ariege.gouv.fr',
-    'D10' => 'aube.gouv.fr',
-    'D11' => 'aude.gouv.fr',
-    'D12' => 'aveyron.gouv.fr',
-    'D13' => 'bouches-du-rhone.gouv.fr',
-    'D14' => 'calvados.gouv.fr',
-    'D15' => 'cantal.gouv.fr',
-    'D16' => 'charente.gouv.fr',
-    'D17' => 'charente-maritime.gouv.fr',
-    'D18' => 'cher.gouv.fr',
-    'D19' => 'correze.gouv.fr',
-    'D2A' => 'corse-du-sud.gouv.fr',
-    'D2B' => 'haute-corse.gouv.fr',
-    'D21' => 'cote-dor.gouv.fr',
-    'D22' => 'cotes-darmor.gouv.fr',
-    'D23' => 'creuse.gouv.fr',
-    'D24' => 'dordogne.gouv.fr',
-    'D25' => 'doubs.gouv.fr',
-    'D26' => 'drome.gouv.fr',
-    'D27' => 'eure.gouv.fr',
-    'D28' => 'eure-et-loir.gouv.fr',
-    'D29' => 'finistere.gouv.fr',
-    'D30' => 'gard.gouv.fr',
-    'D31' => 'haute-garonne.gouv.fr',
-    'D32' => 'gers.gouv.fr',
-    'D33' => 'gironde.gouv.fr',
-    'D34' => 'herault.gouv.fr',
-    'D35' => 'ille-et-vilaine.gouv.fr',
-    'D36' => 'indre.gouv.fr',
-    'D37' => 'indre-et-loire.gouv.fr',
-    'D38' => 'isere.gouv.fr',
-    'D39' => 'jura.gouv.fr',
-    'D40' => 'landes.gouv.fr',
-    'D41' => 'loir-et-cher.gouv.fr',
-    'D42' => 'loire.gouv.fr',
-    'D43' => 'haute-loire.gouv.fr',
-    'D44' => 'loire-atlantique.gouv.fr',
-    'D45' => 'loiret.gouv.fr',
-    'D46' => 'lot.gouv.fr',
-    'D47' => 'lot-et-garonne.gouv.fr',
-    'D48' => 'lozere.gouv.fr',
-    'D49' => 'maine-et-loire.gouv.fr',
-    'D50' => 'manche.gouv.fr',
-    'D51' => 'marne.gouv.fr',
-    'D52' => 'haute-marne.gouv.fr',
-    'D53' => 'mayenne.gouv.fr',
-    'D54' => 'meurthe-et-moselle.gouv.fr',
-    'D55' => 'meuse.gouv.fr',
-    'D56' => 'morbihan.gouv.fr',
-    'D57' => 'moselle.gouv.fr',
-    'D58' => 'nievre.gouv.fr',
-    'D59' => 'nord.gouv.fr',
-    'D60' => 'oise.gouv.fr',
-    'D61' => 'orne.gouv.fr',
-    'D62' => 'pas-de-calais.gouv.fr',
-    'D63' => 'puy-de-dome.gouv.fr',
-    'D64' => 'pyrenees-atlantiques.gouv.fr',
-    'D65' => 'hautes-pyrenees.gouv.fr',
-    'D66' => 'pyrenees-orientales.gouv.fr',
-    'D67' => 'bas-rhin.gouv.fr',
-    'D68' => 'haut-rhin.gouv.fr',
-    'D69' => 'rhone.gouv.fr',
-    'D70' => 'haute-saone.gouv.fr',
-    'D71' => 'saone-et-loire.gouv.fr',
-    'D72' => 'sarthe.gouv.fr',
-    'D73' => 'savoie.gouv.fr',
-    'D74' => 'haute-savoie.gouv.fr',
-    'D76' => 'seine-maritime.gouv.fr',
-    'D77' => 'seine-et-marne.gouv.fr',
-    'D78' => 'yvelines.gouv.fr',
-    'D79' => 'deux-sevres.gouv.fr',
-    'D80' => 'somme.gouv.fr',
-    'D81' => 'tarn.gouv.fr',
-    'D82' => 'tarn-et-garonne.gouv.fr',
-    'D83' => 'var.gouv.fr',
-    'D84' => 'vaucluse.gouv.fr',
-    'D85' => 'vendee.gouv.fr',
-    'D86' => 'vienne.gouv.fr',
-    'D87' => 'haute-vienne.gouv.fr',
-    'D88' => 'vosges.gouv.fr',
-    'D89' => 'yonne.gouv.fr',
-    'D90' => 'territoire-de-belfort.gouv.fr',
-    'D91' => 'essonne.gouv.fr',
-    'D95' => 'val-doise.gouv.fr',
-    'SPM' => 'equipement-agriculture.gouv.fr',
-  ),
-);
-}
-
-
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // ----- LIMITE ENTRE LES 2 PARTIES -----
-
 
 /** Classe masquée regroupant les éléments pour générer deptRegDataSet() ainsi que le dialogue utilisateurs. */
 class DeptRegDataSetGen {
@@ -1120,7 +36,7 @@ EOT
   /** Schema JSON du jeu de données */
   const SCHEMA_JSON = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schema du jeu de données deptreg des départements, régions et domaines internet des préfectures",
+    'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
     'type'=> 'object',
     'required'=> ['title','description','$schema', 'régions', 'départements', 'outre-mer','prefdom'],
     'properties'=> [
@@ -1144,6 +60,7 @@ EOT
           '^[A-Z2][A-Z0][A-Z]$'=> [
             'type'=> 'object',
             'required'=> ['nom','iso'],
+            'additionalProperties'=> false,
             'properties'=> [
               'nom'=> [
                 'description'=> "nom de la région",
@@ -1152,6 +69,7 @@ EOT
               'iso'=> [
                 'description'=> "code ISO 3166-2",
                 'type'=> 'string',
+                'pattern'=> '^FR-[A-Z0-9]{3}$',
               ],
             ],
           ],
@@ -1165,6 +83,7 @@ EOT
           '^D\d[\dAB]$'=> [
             'type'=> 'object',
             'required'=> ['codeInsee','nom','ancienneRégion','région'],
+            'additionalProperties'=> false,
             'properties'=> [
               'codeInsee'=> [
                 'description'=> "code Insee du département",
@@ -1182,6 +101,7 @@ EOT
               'région'=> [
                 'description'=> "code région, clé dans régions",
                 'type'=> 'string',
+                'pattern'=> '^[A-Z20]{3}',
               ],
             ],
           ]
@@ -1195,6 +115,7 @@ EOT
           '^[A-Z]{3}$'=> [
             'type'=> 'object',
             'required'=> ['codeInsee','nom','alpha2','statut'],
+            'additionalProperties'=> false,
             'properties'=> [
               'codeInsee'=> [
                 'description'=> "code Insee",
@@ -1208,6 +129,11 @@ EOT
                 'description'=> "code ISO 3166-1 alpha 2",
                 'type'=> 'string',
                 'pattern'=> '^[A-Z]{2}$',
+              ],
+              'alpha3'=> [
+                'description'=> "code ISO 3166-1 alpha 3",
+                'type'=> 'string',
+                'pattern'=> '^[A-Z]{3}$',
               ],
               'statut'=> [
                 'description'=> "statut, soit 'DOM/ROM', soit 'COM'",
@@ -1236,36 +162,42 @@ EOT
       'codeInsee'=> 971,
       'nom'=> "Guadeloupe",
       'alpha2'=> 'GP',
+      'alpha3'=> 'GLP',
       'statut'=> 'DOM/ROM',
     ],
     'GUF'=> [
       'codeInsee'=> 973,
       'nom'=> "Guyane",
       'alpha2'=> 'GF',
+      'alpha3'=> 'GUF',
       'statut'=> 'DOM/ROM',
     ],
     'MTQ'=> [
       'codeInsee'=> 972,
       'nom'=> "Martinique",
       'alpha2'=> 'MQ',
+      'alpha3'=> 'MTQ',
       'statut'=> 'DOM/ROM',
     ],
     'REU'=> [
       'codeInsee'=> 974,
       'nom'=> "La Réunion",
       'alpha2'=> 'RE',
+      'alpha3'=> 'REU',
       'statut'=> 'DOM/ROM',
     ],
     'MYT'=> [
       'codeInsee'=> 976,
       'nom'=> "Mayotte",
       'alpha2'=> 'YT',
+      'alpha3'=> 'MYT',
       'statut'=> 'DOM/ROM',
     ],
     'SPM'=> [
       'codeInsee'=> 975,
       'nom'=> "Saint-Pierre-et-Miquelon",
       'alpha2'=> 'PM',
+      'alpha3'=> 'SPM',
       'statut'=> 'COM',
     ],
   ];
@@ -1722,7 +654,7 @@ EOT
       return $label;
   }
 
-  /** Fonction retournant la structure DeptReg reconstruite à partir des données en constantes de la classe pour être conforme au schéma.
+  /** Retourne la structure DeptReg construite à partir des données en constantes de la classe pour être conforme au schéma.
    * @return array<string, mixed> */
   static function build(): array {
     { // construction de $regs à partir de DATA_REGS
@@ -1767,24 +699,46 @@ EOT
   static function main(): void {
     switch ($_GET['action'] ?? null) {
       case null: {
-        echo "<a href='?action=php'>Génération du code Php de deptreg à recopier dans la première partie du script</a><br>\n";
-        echo "<a href='?action=json'>Sortie JSON du jeu de données défini par le code figé</a><br>\n";
-        echo "<a href='?action=schema'>Sortie JSON du schéma du jeu de données</a><br>\n";
+        //echo "<a href='?action=php'>Génération du code Php de deptreg à recopier dans la première partie du script</a><br>\n";
+        echo "<a href='?action=json'>Affiche le JSON du jeu de données</a><br>\n";
+        echo "<a href='?action=schema'>Affiche le JSON du schéma du jeu de données</a><br>\n";
+        echo "<a href='?action=storeJson'>Enregistre le jeu de données en JSON </a><br>\n";
+        echo "<a href='?action=validate'>Valide le JSON par rapport à son schéma</a><br>\n";
         echo "<a href='?action=deptsSsDom'>Départements sans nom de domaine</a><br>\n";
-        die();
-      }
-      case 'php': {
-        header('Content-Type: text/plain');
-        echo "function deptRegDataSet(): array {\n return ",var_export(self::build(), true),";\n}\n";
         die();
       }
       case 'json': {
         header('Content-Type: application/json');
-        die(json_encode(deptRegDataSet(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+        die(json_encode(self::build(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
       }
       case 'schema': {
         header('Content-Type: application/json');
         die(json_encode(self::SCHEMA_JSON, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+      }
+      case 'storeJson': {
+        file_put_contents(
+          'deptreg.json',
+          json_encode(self::build(), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+        die("Ecriture JSON ok<br>\n");
+      }
+      case 'validate': {
+        require_once __DIR__.'/vendor/autoload.php';
+        $data = json_decode(file_get_contents('deptreg.json'), false);
+        $schema = json_decode(file_get_contents('deptreg.json'), true)['$schema'];
+        
+        // Validate
+        $validator = new JsonSchema\Validator;
+        $validator->validate($data, $schema);
+
+        if ($validator->isValid()) {
+          echo "Le JdD est conforme à son schéma.<br>\n";
+        } else {
+          echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
+          foreach ($validator->getErrors() as $error) {
+            printf("[%s] %s<br>\n", $error['property'], $error['message']);
+          }
+        }
+        break;
       }
       case 'deptsSsDom': {
         header('Content-Type: text/plain');

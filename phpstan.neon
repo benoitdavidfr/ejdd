@@ -1,0 +1,10 @@
+parameters:
+  #level: 2 # unknown methods checked on all expressions (not just $this), validating PHPDocs
+  #level: 4 # basic dead code checking
+  level: 6 # report missing typehints
+  typeAliases:
+  paths:
+    - index.php
+    - deptreg.php
+    - ae2025.php
+  treatPhpDocTypesAsCertain: false
