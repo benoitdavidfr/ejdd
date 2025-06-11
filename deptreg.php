@@ -34,7 +34,7 @@ Outre son contenu, le jeu de données est documenté par:
  - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma du contenu du jeu de données
 EOT
   ];
-  /** Schema JSON du jeu de données */
+  /** Schema JSON du jeu de données */ Clé commune ? iso et Insee
   const SCHEMA_JSON = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
@@ -56,7 +56,7 @@ EOT
       'régions'=> [
         'description'=> "Table des régions de métropole avec comme clé les 3 derniers caractères du code ISO 3166-2",
         'type'=> 'object',
-        'additionalProperties'=> false,
+        'additionalProperties'=> false, AJOUTER codeInsee
         'patternProperties'=> [
           '^[A-Z2][A-Z0][A-Z]$'=> [
             'type'=> 'object',
@@ -164,7 +164,7 @@ Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départem
           ],
         ],
       ],
-      'nomsCNIG'=> Cnig::SCHEMA_JSON,
+      'nomsCNIG'=> Cnig::SCHEMA_JSON['properties']['nomsCnig'],
     ],
   ];
   /** Les espaces outre-mer français */
@@ -810,6 +810,7 @@ EOT
       'départements'=> $depts,
       'outre-mer'=> self::OUTREMER,
       'prefdom'=> self::PREFDOM,
+      'nomsCnig'=> Cnig::build(),
     ];
   }
   

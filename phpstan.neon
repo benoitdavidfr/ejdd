@@ -32,30 +32,10 @@ parameters:
         totalFeatures?: int
       }
       '''
-    # Description d'un GéoTiff dans shomgt.yaml et dans TiffLayer
-    TBBox: "array{SW: string, NE: string}"
-    TBorders: "array{left: number, bottom: number, right: number, top: number}"
-    TGeoTiff: '''
-      array{
-        title: string,
-        spatial: TBBox,
-        outgrowth: list<TBBox>,
-        borders: TBorders,
-        deleted: list<TBBox>
-      }
-      '''
-    TGeoTiffStoredInLayer: '''
-      array{
-        title: string,
-        spatial: \gegeom\EBox,
-        outgrowth: list<\gegeom\EBox>,
-        borders: TBorders,
-        deleted: list<\gegeom\EBox>
-      }
-      '''
   paths:
     - index.php
     - deptreg.php
+    - cnig.inc.php
     - ae2025.php
     - ae2025build.php
     - map.php
