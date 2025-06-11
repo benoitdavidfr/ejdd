@@ -147,9 +147,14 @@ class Part {
       );
     }
     $s .= "<table border=1>\n";
-    $s .= '<th>key</th><th>'.implode('</th><th>', array_keys($table[array_keys($table)[0]]))."</th>\n";
+    //$s .= '<th>key</th><th>'.implode('</th><th>', array_keys($table[array_keys($table)[0]]))."</th>\n";
+    $cols_prec = [];
     foreach ($table as $key => $tuple) {
       //$s .= "<tr><td>$key</td><td>".implode('</td><td>', array_values($tuple))."</td></tr>\n";
+      $cols = array_merge(['key'], array_keys($tuple));
+      if ($cols <> $cols_prec)
+        $s .= '<th>'.implode('</th><th>', $cols)."</th>\n";
+      $cols_prec = $cols;
       $s .= "<tr><td>$key</td>";
       foreach ($tuple as $k => $v) {
         if (is_array($v)) {
@@ -293,6 +298,7 @@ switch ($_GET['action'] ?? null) {
       echo "Choix du JdD:<br>\n";
       echo "<a href='?file=deptreg'>DeptReg</a><br>\n";
       echo "<a href='?file=ae2025'>AE2025</a><br>\n";
+      echo "<a href='?file=nomscnig'>Noms CNIG</a><br>\n";
     }
     else {
       echo "Choix de l'action:<br>\n";
