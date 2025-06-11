@@ -34,7 +34,7 @@ Outre son contenu, le jeu de données est documenté par:
  - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma du contenu du jeu de données
 EOT
   ];
-  /** Schema JSON du jeu de données */ Clé commune ? iso et Insee
+  /** Schema JSON du jeu de données */
   const SCHEMA_JSON = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
@@ -56,13 +56,18 @@ EOT
       'régions'=> [
         'description'=> "Table des régions de métropole avec comme clé les 3 derniers caractères du code ISO 3166-2",
         'type'=> 'object',
-        'additionalProperties'=> false, AJOUTER codeInsee
+        'additionalProperties'=> false,
         'patternProperties'=> [
           '^[A-Z2][A-Z0][A-Z]$'=> [
             'type'=> 'object',
             'required'=> ['nom','iso'],
             'additionalProperties'=> false,
             'properties'=> [
+              'codeInsee'=> [
+                'description'=> "Code Insee de la région",
+                'type'=> 'string',
+                'pattern'=> '^\d{2}',
+              ],
               'nom'=> [
                 'description'=> "nom de la région",
                 'type'=> 'string',
@@ -115,24 +120,24 @@ EOT
         'patternProperties'=> [
           '^[A-Z]{3}$'=> [
             'type'=> 'object',
-            'required'=> ['nom','codeInsee','alpha2','alpha3','statut'],
+            'required'=> ['nom','codeInsee','isoAlpha2','isoAlpha3','statut'],
             'additionalProperties'=> false,
             'properties'=> [
-              'nom'=> [
-                'description'=> "nom",
-                'type'=> 'string',
-              ],
               'codeInsee'=> [
                 'description'=> "code Insee",
                 'type'=> 'string',
                 'pattern'=> '^9[78]\d$',
               ],
-              'alpha2'=> [
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'isoAlpha2'=> [
                 'description'=> "code ISO 3166-1 alpha 2",
                 'type'=> 'string',
                 'pattern'=> '^[A-Z]{2}$',
               ],
-              'alpha3'=> [
+              'isoAlpha3'=> [
                 'description'=> "code ISO 3166-1 alpha 3",
                 'type'=> 'string',
                 'pattern'=> '^[A-Z]{3}$',

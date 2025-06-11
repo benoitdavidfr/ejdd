@@ -638,7 +638,7 @@ EOT,
     'properties'=> [
       'title'=> ['type'=> 'string'],
       'description'=> ['type'=> 'string'],
-      'nomsCNIG'=> [
+      'nomsCnig'=> [
         'description'=> "Noms définis par la Commission Nationale de Toponymie, document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf). Ajout d'une clé par défaut le code ISO 3166-1 alpha 3, avec des caractères complémentaires lorsque cela est nécessaire pour que ce soit une clé.",
         'type'=> 'object',
         'additionalProperties'=> false,
@@ -702,7 +702,7 @@ EOT,
   ];
   
   /** Affichage pour vérification de la saisie ci-dessus */
-  static function display() {
+  static function display(): void {
     $deptreg = json_decode(file_get_contents('deptreg.json'), true);
     $espaces = array_merge($deptreg['régions'], $deptreg['départements'], $deptreg['outre-mer']);
     echo "<h2>Recosntitution des noms CNIG</h2>\n";
@@ -740,7 +740,7 @@ EOT,
       }
       echo "<tr><td>$i</td><td>$espace</td><td>$key</td>",
            "<td>",$formeLongue[$i]??'',"</td>",
-           "<td>",$note??'',"</td>",
+           "<td>$note</td>",
            "<td>",$formeCourte[$i]??'',"</td>",
            "<td>",$nature[$i]??'',"</td>",
            "<td>",$complement[$i]??'',"</td>",
@@ -750,7 +750,9 @@ EOT,
     echo "</table>\n";
   }
   
-  /** Retourne la structure correspondant au schéma. */
+  /** Retourne la structure correspondant au schéma.
+   * @return array<mixed>
+   */
   static function build(): array {
     $result = [];
     $formeLongue = explode("\n", self::DATA['formeLongue']);
@@ -769,9 +771,6 @@ EOT,
         if ($keys[$key] ?? null)
           die ("Erreur, la clé '$key' est utilisé plus d'une fois<br>\n");
         $keys[$key] = 1;
-        $espace = '';
-        if ($key)
-          $espace = $espaces[$key]['nom'] ?? "NonDéf";
       }
       { // Extraction de la note de bas de page éventuelle
         $note = '';

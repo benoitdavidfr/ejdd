@@ -117,6 +117,7 @@ class Ae2025 {
     ],
   ];
   
+  /** @return array<mixed> */
   static function buildPart(string $name): array {
     $geojson = json_decode(file_get_contents("ae2025/$name.geojson"), true);
     $part = array_map(
@@ -132,6 +133,7 @@ class Ae2025 {
     return $part;
   }
   
+  /** @return array<mixed> */
   static function build(): array {
     return [
       'title'=> self::TITLE,
