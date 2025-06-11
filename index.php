@@ -14,8 +14,23 @@
 /** Cmdes utiles */
 define('LIGNE_DE_COMMANDE', [
 <<<'EOT'
-Installation du module justinrainbow/json-schema:
-  composer require justinrainbow/json-schema
+Lignes de commandes
+---------------------
+  Installation du module justinrainbow/json-schema:
+    composer require justinrainbow/json-schema
+  phpstan:
+    ./vendor/bin/phpstan --memory-limit=1G
+  Fenêtre Php8.4:
+    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
+  phpDocumentor, utiliser la commande en Php8.2:
+    ../phpDocumentor.phar -f index.php
+  Fenêtre Php8.2:
+    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Pour committer le git:
+    git commit -am "{commentaire}"
+  Pour se connecter sur Alwaysdata:
+    ssh -lbdavid ssh-bdavid.alwaysdata.net
+
 EOT
 ]
 );

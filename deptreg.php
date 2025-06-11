@@ -20,17 +20,17 @@ class DeptRegDataSetGen {
   /** Description du jeu de données */
   const DESCRIPTION = [
     <<<'EOT'
-  Ce jeu est composé de 3 tables et un dictionnaire:
-   - régions: table des régions de métropole, 
-   - départements: table des départements de métropole, chacun référençant la région le contenant,
-   - outre-mer: table des 5 DOM/ROM + StP&M,
-   - prefdom: dictionnaire des domaines internet des services de l'Etat dans les départements ayant une DDT(M),
-     appelé "domaines internet des Préfectures".
-  Ce jeu de données est exposé en Php et en JSON.
-  Outre son contenu, le jeu de données est documenté par:
-   - un titre dans le champ champ title
-   - un résumé dans le champ description
-   - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma du contenu du jeu de données
+Ce jeu est composé de 3 tables et un dictionnaire:
+ - régions: table des régions de métropole, 
+ - départements: table des départements de métropole, chacun référençant la région le contenant,
+ - outre-mer: table des 5 DOM/ROM + StP&M,
+ - prefdom: dictionnaire des domaines internet des services de l'Etat dans les départements ayant une DDT(M),
+   appelé "domaines internet des Préfectures".
+Ce jeu de données est exposé en JSON.
+Outre son contenu, le jeu de données est documenté par:
+ - un titre dans le champ champ title
+ - un résumé dans le champ description
+ - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma du contenu du jeu de données
 EOT
   ];
   /** Schema JSON du jeu de données */
@@ -76,7 +76,7 @@ EOT
         ],
       ],
       'départements'=> [
-        'description'=> "Table des départements de métropole avec comme clé leur code Insee précédé de la lettre 'D'",
+        'description'=> "Table des départements de métropole avec comme clé leur code Insee précédé de la lettre 'D'. Ce type de clé original a 2 avantages, d'une part être un code sur 3 caractères comme pour les régons ou l'outre-mer et, d'autre part, d'éviter que ce code soit informatiquement transformé en entier.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -108,22 +108,23 @@ EOT
         ],
       ],
       'outre-mer'=> [
-        'description'=> "Table des 5 DOM/ROM + Saint-Pierre et Miquelon avec comme clé leur code ISO 3166-1 alpha 3",
+        'description'=> "Les espaces outre-mer français avec comme clé leur code ISO 3166-1 alpha 3. Les DOM/ROM sont en même temps des départements et régions. Saint-Pierre et Miquelon est une COM dans laquelle la DTAM joue le rôle d'une DEAL",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
           '^[A-Z]{3}$'=> [
             'type'=> 'object',
-            'required'=> ['codeInsee','nom','alpha2','statut'],
+            'required'=> ['nom','codeInsee','alpha2','alpha3','statut'],
             'additionalProperties'=> false,
             'properties'=> [
-              'codeInsee'=> [
-                'description'=> "code Insee",
-                'type'=> 'integer',
-              ],
               'nom'=> [
                 'description'=> "nom",
                 'type'=> 'string',
+              ],
+              'codeInsee'=> [
+                'description'=> "code Insee",
+                'type'=> 'string',
+                'pattern'=> '^9[78]\d$',
               ],
               'alpha2'=> [
                 'description'=> "code ISO 3166-1 alpha 2",
@@ -136,15 +137,23 @@ EOT
                 'pattern'=> '^[A-Z]{3}$',
               ],
               'statut'=> [
-                'description'=> "statut, soit 'DOM/ROM', soit 'COM'",
-                'enum'=> ['DOM/ROM', 'COM'],
+                'description'=> "statut",
+                'enum'=> [
+                  'DOM/ROM', 'COM', 'TOM', "Collectivité sui generis",
+                  "Possession française sous l'autorité directe du gouvernement",
+                ],
               ],
+              'deal'=> [
+                'description'=> "Deal ou service remplissant cette mission",
+                'type'=> 'string',
+              ]
             ],
           ],
         ],
       ],
       'prefdom'=> [
-        'description'=> "Domaines internet des services de l'Etat dans les départements ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre 'D', + domaine de la DTAM de StP&M, avec comme clé le code ISO 3166-1 alpha 3 de StP&M. Pour raccourcir on appelle cette liste \"Domaines des Préfectures\"",
+        'description'=> "Domaines internet des services de l'Etat dans les départements de métropole ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre 'D' + domaines internet de la DGTM de Guyane et de la DTAM de StP&M, avec comme clé leur code ISO 3166-1 alpha 3. Pour raccourcir cette liste est appelée \"Domaines des Préfectures\".
+Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départements moins les 4 de Paris et la petite couronne qui n’ont pas de DDT ; plus 2 outre-mer correspondant à la DGTM de Guyane et à la DTAM de Saint-Pierre-et-Miquelon.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -154,51 +163,142 @@ EOT
           ],
         ],
       ],
+      'nomsCNIG'=> [
+        'description'=> "Noms définis par la Commission Nationale de Toponymie (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf).",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '^[A-Z]{3}$'=> [
+            'type'=> 'object',
+            'required'=> ['alpha3','formeLongue','formeCourte','nature','complément'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'alpha3'=> [
+                'description'=> "Clé de l'espace sur 3 caractères utilisé comme clé dans région, départements et outre-mer",
+                'type'=> 'string',
+                'pattern'=> '^[A-B0-9]{3}$',
+              ],
+              'formeLongue' => [
+                'decription'=> "Forme longue",
+                'type'=> 'string',
+              ],
+              'formeCourte' => [
+                'decription'=> "Forme courte",
+                'type'=> 'string',
+              ],
+              'nature'=> [
+                'decription'=> "Nature grammaticale",
+                'type'=> 'string',
+              ],
+              'complément'=> [
+                'decription'=> "Emploi de la forme courte en complément de nom.
+Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le langage courant, l’article peut être omis lorsqu’il n’est pas contracté avec « de ».",
+                'type'=> 'string',
+              ],
+            ],
+          ],
+        ],
+      ],
     ],
   ];
-  /** Les 5 DOM/ROM + StP&M */
+  /** Les espaces outre-mer français */
   const OUTREMER = [
     'GLP'=> [
-      'codeInsee'=> 971,
       'nom'=> "Guadeloupe",
+      'codeInsee'=> '971',
       'alpha2'=> 'GP',
       'alpha3'=> 'GLP',
       'statut'=> 'DOM/ROM',
-    ],
-    'GUF'=> [
-      'codeInsee'=> 973,
-      'nom'=> "Guyane",
-      'alpha2'=> 'GF',
-      'alpha3'=> 'GUF',
-      'statut'=> 'DOM/ROM',
+      'deal'=> "DEAL Guadeloupe",
     ],
     'MTQ'=> [
-      'codeInsee'=> 972,
       'nom'=> "Martinique",
+      'codeInsee'=> '972',
       'alpha2'=> 'MQ',
       'alpha3'=> 'MTQ',
       'statut'=> 'DOM/ROM',
+      'deal'=> "DEAL Martinique",
+    ],
+    'GUF'=> [
+      'nom'=> "Guyane",
+      'codeInsee'=> '973',
+      'alpha2'=> 'GF',
+      'alpha3'=> 'GUF',
+      'statut'=> 'DOM/ROM',
+      'deal'=> "Direction Générale des Territoires et de la Mer (DGTM) de la Guyane",
     ],
     'REU'=> [
-      'codeInsee'=> 974,
       'nom'=> "La Réunion",
+      'codeInsee'=> '974',
       'alpha2'=> 'RE',
       'alpha3'=> 'REU',
       'statut'=> 'DOM/ROM',
+      'deal'=> "DEAL de La Réunion",
     ],
     'MYT'=> [
-      'codeInsee'=> 976,
       'nom'=> "Mayotte",
+      'codeInsee'=> '976',
       'alpha2'=> 'YT',
       'alpha3'=> 'MYT',
       'statut'=> 'DOM/ROM',
+      'deal'=> "DEAL Mayotte",
     ],
     'SPM'=> [
-      'codeInsee'=> 975,
       'nom'=> "Saint-Pierre-et-Miquelon",
+      'codeInsee'=> '975',
       'alpha2'=> 'PM',
       'alpha3'=> 'SPM',
       'statut'=> 'COM',
+      'deal'=> "Direction des Territoires, de l'Alimentation et de la Mer (DTAM) de Saint-Pierre-et-Miquelon",
+    ],
+    'BLM'=> [
+      'nom'=> "Saint-Barthélemy",
+      'codeInsee'=> '977',
+      'alpha2'=> 'BL',
+      'alpha3'=> 'BLM',
+      'statut'=> 'COM',
+    ],
+    'MAF'=> [
+      'nom'=> "Saint-Martin",
+      'codeInsee'=> '978',
+      'alpha2'=> 'MF',
+      'alpha3'=> 'MAF',
+      'statut'=> 'COM',
+    ],
+    'WLF'=> [
+      'nom'=> "îles Wallis et Futuna",
+      'codeInsee'=> '986',
+      'alpha2'=> 'WF',
+      'alpha3'=> 'WLF',
+      'statut'=> 'COM',
+    ],
+    'PYF'=> [
+      'nom'=> "Polynésie française",
+      'codeInsee'=> '987',
+      'alpha2'=> 'PF',
+      'alpha3'=> 'PYF',
+      'statut'=> 'COM',
+    ],
+    'NCL'=> [
+      'nom'=> "Nouvelle-Calédonie",
+      'codeInsee'=> '988',
+      'alpha2'=> 'NC',
+      'alpha3'=> 'NCL',
+      'statut'=> "Collectivité sui generis",
+    ],
+    'ATF'=> [
+      'nom'=> "Terres australes et antarctiques françaises",
+      'codeInsee'=> '984',
+      'alpha2'=> 'TF',
+      'alpha3'=> 'ATF',
+      'statut'=> 'TOM',
+    ],
+    'CPT'=> [
+      'nom'=> "La Passion-Clipperton",
+      'codeInsee'=> '989',
+      'alpha2'=> 'CP',
+      'alpha3'=> 'CPT',
+      'statut'=> "Possession française sous l'autorité directe du gouvernement",
     ],
   ];
   /** Les domaines internet des services de l'Etat dans les départements ayant une DDT(M) + domaine de la DTAM de StP&M */
@@ -295,10 +395,689 @@ EOT
     'D90' => 'territoire-de-belfort.gouv.fr',
     'D91' => 'essonne.gouv.fr',
     'D95' => 'val-doise.gouv.fr',
+    'GUF'=> "guyane.gouv.fr",
     'SPM' => 'equipement-agriculture.gouv.fr',
+  ];
+  const DOMCOMP = [
+    <<<'EOT'
+ain.gouv.fr
+allier.gouv.fr
+alpes-de-haute-provence.gouv.fr
+alpes-maritimes.gouv.fr
+ariege.gouv.fr
+aube.gouv.fr
+aude.gouv.fr
+aveyron.gouv.fr
+bouches-du-rhone.gouv.fr
+calvados.gouv.fr
+cantal.gouv.fr
+charente.gouv.fr
+cote-dor.gouv.fr
+creuse.gouv.fr
+drome.gouv.fr
+eure-et-loir.gouv.fr
+eure.gouv.fr
+gard.gouv.fr
+guyane.gouv.fr
+haute-corse.gouv.fr
+haute-loire.gouv.fr
+haute-marne.gouv.fr
+haute-saone.gouv.fr
+haute-vienne.gouv.fr
+hautes-alpes.gouv.fr
+indre-et-loire.gouv.fr
+indre.gouv.fr
+landes.gouv.fr
+loire.gouv.fr
+loiret.gouv.fr
+lot.gouv.fr
+lozere.gouv.fr
+manche.gouv.fr
+mayenne.gouv.fr
+meurthe-et-moselle.gouv.fr
+meuse.gouv.fr
+oise.gouv.fr
+pyrenees-orientales.gouv.fr
+saone-et-loire.gouv.fr
+savoie.gouv.fr
+seine-et-marne.gouv.fr
+somme.gouv.fr
+territoire-de-belfort.gouv.fr
+val-doise.gouv.fr
+vaucluse.gouv.fr
+vendee.gouv.fr
+yvelines.gouv.fr
+EOT
   ];
   /** Départements de Paris et sa petite couronne dans lesquels il n'y a pas de DDT */
   const PARIS_ET_PETITE_COURONNE = ['D75','D92','D93','D94'];
+  /** Noms CNIG issus de la note fournie en description */
+  const NOMS_CNIG = [
+    'formeLongue'=> <<<'EOT'
+M;Les régions métropolitaines et les départements métropolitains (Note 2: Régis par le titre XII de la Constitution. L'ensemble des collectivités territoriales métropolitaines françaises sont en outre régies par le Code général des collectivités territoriales.)
+ARA;la région Auvergne-Rhône-Alpes
+D01;le département de l’Ain
+D03;le département de l’Allier
+D07;le département de l’Ardèche
+D15;le département du Cantal
+D26;le département de la Drôme
+D43;le département de la Haute-Loire
+D74;le département de la Haute-Savoie
+D38;le département de l’Isère
+D42;le département de la Loire
+D63;le département du Puy-de-Dôme
+D69;le département du Rhône
+69M;la collectivité régionale métropolitaine de Lyon
+D73;le département de la Savoie
+BFC;la région Bourgogne-Franche-Comté
+D21;le département de la Côte-d’Or
+D25;le département du Doubs
+D70;le département de la Haute-Saône
+D39;le département du Jura
+D58;le département de la Nièvre
+D71;le département de la Saône-et-Loire
+D90;le département du Territoire de Belfort
+D89;le département de l’Yonne
+BRE;la région Bretagne
+D22;le département des Côtes-d’Armor
+D29;le département du Finistère
+D35;le département d’Ille-et-Vilaine
+D56;le département du Morbihan
+CVL;la région Centre-Val de Loire
+D18;le département du Cher
+D28;le département d’Eure-et-Loir
+D36;le département de l’Indre
+D37;le département d’Indre-et-Loire
+D41;le département du Loir-et-Cher
+D45;le département du Loiret
+20R;la collectivité régionale métropolitaine de Corse
+D2A;la circonscription administrative départementale métropolitaine de la Corse-du-Sud
+D2B;la circonscription administrative départementale métropolitaine de la Haute-Corse
+GES;la région Grand-Est
+ALS;la Collectivité européenne d’Alsace (Note 3: Les départements du Bas- et du Haut-Rhin deviennent une collectivité disposant de compétences particulières au 1er janvier 2021.)
+D08;le département des Ardennes
+D10;le département de l’Aube
+D67;la collectivité départementale métropolitaine du Bas-Rhin
+D68;la collectivité départementale métropolitaine du Haut-Rhin
+D52;le département de la Haute-Marne
+D51;le département de la Marne
+D54;le département de la Meurthe-et-Moselle
+D55;le département de la Meuse
+D57;le département de la Moselle
+D88;le département des Vosges
+HDF;la région des Hauts-de-France
+D02;le département de l’Aisne
+D59;le département du Nord
+D60;le département de l’Oise
+D62;le département du Pas-de-Calais
+D80;le département de la Somme
+IDF;la région Île-de-France
+D91;le département de l’Essonne
+D92;le département des Hauts-de-Seine
+D75;la Ville de Paris (Note 4: Collectivité territoriale métropolitaine qui dispose des compétences d’un département et d’une commune.)
+D77;le département de Seine-et-Marne
+D93;le département de la Seine-Saint-Denis
+D94;le département du Val-de-Marne
+D95;le département du Val-d’Oise
+D78;le département des Yvelines
+NOR;la région Normandie
+D14;le département du Calvados
+D27;le département de l’Eure
+D50;le département de la Manche
+D61;le département de l’Orne
+D76;le département de la Seine-Maritime
+NAQ;la région Nouvelle-Aquitaine 
+D16;le département de la Charente
+D17;le département de la Charente-Maritime
+D19;le département de la Corrèze
+D23;le département de la Creuse
+D79;le département des Deux-Sèvres
+D24;le département de la Dordogne
+D33;le département de la Gironde
+D87;le département de la Haute-Vienne
+D40;le département des Landes
+D47;le département du Lot-et-Garonne
+D64;le département des Pyrénées-Atlantiques
+D86;le département de la Vienne
+OCC;la région Occitanie
+D09;le département de l’Ariège
+D11;le département de l’Aude
+D12;le département de l’Aveyron
+D30;le département du Gard
+D32;le département du Gers
+D31;le département de la Haute-Garonne
+D65;le département des Hautes-Pyrénées
+D34;le département de l’Hérault
+D46;le département du Lot
+D48;le département de la Lozère
+D66;le département des Pyrénées-Orientales
+D81;le département du Tarn
+D82;le département du Tarn-et-Garonne
+PDL;la région Pays de la Loire
+D44;le département de la Loire-Atlantique
+D49;le département de Maine-et-Loire
+D53;le département de la Mayenne
+D72;le département de la Sarthe
+D85;le département de la Vendée
+PAC;la région Provence-Alpes-Côte d’Azur
+D04;le département des Alpes-de-Haute-Provence
+D06;le département des Alpes-Maritimes
+D13;le département des Bouches-du-Rhône
+D05;le département des Hautes-Alpes
+D83;le département du Var
+D84;le département du Vaucluse
+OM;la France d’outre-mer
+GLP;la région Guadeloupe
+GLP;le département de la Guadeloupe
+GUF;la collectivité territoriale unique de Guyane
+GUF;la circonscription administrative départementale de Guyane
+REU;la région de La Réunion6
+REU;le département de La Réunion
+MTQ;la collectivité territoriale unique de Martinique
+MTQ;la circonscription administrative départementale de Martinique
+MYT;le département de Mayotte
+MYT;la circonscription administrative départementale de Mayotte
+COM;les collectivités d’outre-mer
+SPM;la collectivité territoriale unique de Saint-Pierre-et-Miquelon
+WLF;les îles Wallis et Futuna
+WLF;a circonscription territoriale d’Alo
+WLF;la circonscription territoriale de Sigave
+WLF;la circonscription territoriale d’Uvea
+PYF;la Polynésie française
+PYF;la subdivision des îles du Vent
+PYF;la subdivision des îles Sous-le-Vent
+PYF;la subdivision des îles Marquises
+PYF;la subdivision des îles Australes
+PYF;la subdivision des îles Tuamotu-Gambier
+BLM;la collectivité territoriale unique de Saint-Barthélemy
+MAF;la collectivité territoriale unique de Saint-Martin
+NCL;la Nouvelle-Calédonie
+NCL;la province Nord
+NCL;la province Sud
+NCL;la province des îles Loyauté
+ATF;les Terres australes et antarctiques françaises
+ATF;l’île Saint-Paul
+ATF;l’île Amsterdam
+ATF;l’archipel Crozet
+ATF;l’archipel Kerguelen
+ATF;la terre Adélie
+ATF;les îles Éparses de l’océan Indien
+ATF;l’île Bassas da India
+ATF;l’île Europa
+ATF;les îles Glorieuses
+ATF;l’île Juan de Nova
+ATF;l’île Tromelin
+CPT;l’île Clipperton
+EOT,
+  'formeCourte'=> <<<'EOT'
+
+l’Auvergne-Rhône-Alpes
+l’Ain
+l’Allier
+l’Ardèche
+le Cantal
+la Drôme
+la Haute-Loire
+la Haute-Savoie
+l’Isère
+la Loire
+le Puy-de-Dôme
+le Rhône
+la métropole de Lyon
+la Savoie
+la Bourgogne-Franche-Comté
+la Côte-d’Or
+le Doubs
+la Haute-Saône
+le Jura
+la Nièvre
+la Saône-et-Loire
+le Territoire de Belfort
+l’Yonne
+la Bretagne
+les Côtes-d’Armor
+le Finistère
+l’Ille-et-Vilaine
+le Morbihan
+le Centre-Val-de-Loire
+le Cher
+l’Eure-et-Loir
+l’Indre
+l’Indre-et-Loire
+le Loir-et-Cher
+le Loiret
+la Corse
+la Corse-du-Sud
+la Haute-Corse
+le Grand-Est
+l’Alsace
+les Ardennes
+l’Aube
+le Bas-Rhin
+le Haut-Rhin
+la Haute-Marne
+la Marne
+la Meurthe-et-Moselle
+la Meuse
+la Moselle
+les Vosges
+les Hauts-de-France
+l’Aisne
+le Nord
+l’Oise
+le Pas-de-Calais
+la Somme
+l’Île-de-France
+l’Essonne
+les Hauts-de-Seine
+Paris
+la Seine-et-Marne
+la Seine-Saint-Denis
+le Val-de-Marne
+le Val-d’Oise
+les Yvelines
+la Normandie
+le Calvados
+l’Eure
+la Manche
+l’Orne
+la Seine-Maritime
+la Nouvelle-Aquitaine
+la Charente
+la Charente-Maritime
+la Corrèze
+la Creuse
+les Deux-Sèvres
+la Dordogne
+la Gironde
+la Haute-Vienne
+les Landes
+le Lot-et-Garonne
+les Pyrénées-Atlantiques
+la Vienne
+l’Occitanie
+l’Ariège
+l’Aude
+l’Aveyron
+le Gard
+le Gers
+la Haute-Garonne
+les Hautes-Pyrénées
+l’Hérault
+le Lot
+la Lozère
+les Pyrénées-Orientales
+le Tarn
+le Tarn-et-Garonne
+les Pays-de-la-Loire
+la Loire-Atlantique
+la, ou le Maine-et-Loire
+la Mayenne
+la Sarthe
+la Vendée
+la Provence-Alpes-Côte-d’Azur (ou Provence-Alpes-Côte-d’Azur)
+les Alpes-de-Haute-Provence
+les Alpes-Maritimes
+les Bouches-du-Rhône
+les Hautes-Alpes
+le Var
+le Vaucluse
+l’Outre-mer
+la Guadeloupe
+la Guadeloupe
+la Guyane
+la Guyane
+La Réunion
+La Réunion
+la Martinique
+la Martinique
+Mayotte
+Mayotte
+
+Saint-Pierre-et-Miquelon
+Wallis-et-Futuna
+Alo
+Sigave
+Uvea
+la Polynésie française
+les îles du Vent
+les îles Sous-le-Vent
+les îles Marquises
+les îles Australes
+les îles Tuamotu-Gambier
+Saint-Barthélemy
+Saint-Martin
+la Nouvelle-Calédonie
+le Nord
+le Sud
+les Îles-Loyauté
+les TAAF
+Saint-Paul
+Amsterdam
+les Crozet
+les Kerguelen
+la terre Adélie
+les îles Éparses
+Bassas da India
+Europa
+les Glorieuses
+Juan de Nova
+Tromelin
+Clipperton
+EOT,
+  'nature'=> <<<'EOT'
+
+nom féminin
+nom masculin
+nom masculin
+nom féminin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom masculin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom masculin
+nom féminin
+nom masculin
+nom féminin
+nom féminin
+nom masculin
+nom féminin
+nom féminin
+nom féminin pluriel
+nom masculin
+nom féminin
+nom masculin
+nom masculin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom masculin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom masculin
+nom féminin
+nom féminin pluriel
+nom féminin
+nom masculin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin pluriel
+nom masculin pluriel
+nom féminin
+nom masculin
+nom féminin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom masculin pluriel
+nom masculin
+nom féminin
+nom féminin
+nom masculin
+nom masculin
+nom féminin pluriel
+nom féminin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin pluriel
+nom féminin
+nom féminin
+nom féminin
+nom féminin pluriel
+nom masculin
+nom féminin pluriel
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom masculin
+nom masculin
+nom féminin
+nom féminin pluriel
+nom masculin
+nom masculin
+nom féminin
+nom féminin pluriel
+nom masculin
+nom masculin
+nom masculin pluriel
+nom féminin
+nom féminin, ou masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin pluriel
+nom féminin pluriel
+nom féminin pluriel
+nom féminin pluriel
+nom masculin
+nom masculin
+nom masculin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+nom féminin
+
+nom masculin
+nom masculin
+nom masculin
+nom masculin
+nom masculin
+nom féminin
+nom féminin pluriel
+nom féminin pluriel
+nom féminin pluriel
+nom féminin pluriel
+nom féminin pluriel
+nom masculin
+nom masculin
+nom féminin
+nom masculin
+nom masculin
+nom féminin pluriel
+nom féminin pluriel
+nom masculin
+nom féminin
+nom féminin pluriel
+nom féminin pluriel
+nom féminin
+nom féminin pluriel
+nom féminin
+nom féminin
+nom féminin pluriel
+nom masculin
+nom masculin
+nom masculin
+EOT,
+    'complément' => <<<'EOT'
+
+d’Auvergne-Rhône-Alpes
+de l’Ain
+de l’Allier
+de l’Ardèche
+du Cantal
+de la Drôme
+de la Haute-Loire
+de la Haute-Savoie
+de l’Isère
+de la Loire
+du Puy-de-Dôme
+du Rhône
+de la métropole de Lyon
+de la Savoie
+de Bourgogne-Franche-Comté
+de la Côte-d’Or
+du Doubs
+de la Haute-Saône
+du Jura
+de la Nièvre
+de Saône-et-Loire
+du Territoire de Belfort
+de l’Yonne
+de Bretagne, ou de la Bretagne
+des Côtes-d’Armor
+du Finistère
+d’Ille-et-Vilaine
+du Morbihan
+du Centre-Val-de-Loire
+du Cher
+d’Eure-et-Loir
+de l’Indre
+d’Indre-et-Loire
+du Loir-et-Cher
+du Loiret
+de Corse, ou de la Corse
+de la Corse-du-Sud
+de la Haute-Corse
+du Grand-Est
+d’Alsace
+des Ardennes
+de l’Aube
+du Bas-Rhin
+du Haut-Rhin
+de la Haute-Marne
+de la Marne
+de Meurthe-et-Moselle
+de la Meuse
+de la Moselle
+des Vosges
+des Hauts-de-France
+de l’Aisne
+du Nord
+de l’Oise
+du Pas-de-Calais
+de la Somme
+d’Île-de-France, ou de l’Île-de-France
+de l’Essonne
+des Hauts-de-Seine
+de Paris
+de Seine-et-Marne
+de la Seine-Saint-Denis
+du Val-de-Marne
+du Val-d’Oise
+des Yvelines
+de Normandie
+du Calvados
+de l’Eure
+de la Manche
+de l’Orne
+de la Seine-Maritime
+de Nouvelle-Aquitaine
+de la Charente
+de la Charente-Maritime
+de la Corrèze
+de la Creuse
+des Deux-Sèvres
+de la Dordogne
+de la Gironde
+de la Haute-Vienne
+des Landes
+du Lot-et-Garonne
+des Pyrénées-Atlantiques
+de la Vienne
+d’Occitanie
+de l’Ariège
+de l’Aude
+de l’Aveyron
+du Gard
+du Gers
+de la Haute-Garonne
+des Hautes-Pyrénées
+de l’Hérault
+du Lot
+de la Lozère
+des Pyrénées-Orientales
+du Tarn
+du Tarn-et-Garonne
+des Pays-de-la-Loire
+de la Loire-Atlantique
+de Maine-et-Loire
+de la Mayenne
+de la Sarthe
+de la Vendée
+de Provence-Alpes-Côte-d’Azur
+des Alpes-de-Haute-Provence
+des Alpes-Maritimes
+des Bouches-du-Rhône
+des Hautes-Alpes
+du Var
+du Vaucluse
+d’outre-mer, ou de l’outre-mer
+de la Guadeloupe, ou de Guadeloupe
+de la Guadeloupe, ou de Guadeloupe
+de la Guyane, ou de Guyane
+de la Guyane, ou de Guyane
+de La Réunion
+de La Réunion
+de la Martinique, ou de Martinique
+de la Martinique, ou de Martinique
+de Mayotte
+de Mayotte
+
+de Saint-Pierre-et-Miquelon
+de Wallis-et-Futuna
+d’Alo
+de Sigave
+d’Uvea
+de la Polynésie française, ou de Polynésie française
+des îles du Vent
+des îles Sous-le-Vent
+des îles Marquises
+des îles Australes
+des îles Tuamotu-Gambier
+de Saint-Barthélemy
+de Saint-Martin
+de la Nouvelle-Calédonie, ou de Nouvelle-Calédonie
+du Nord
+du Sud
+des Îles-Loyauté
+des TAAF
+de Saint-Paul
+d’Amsterdam
+des Crozet
+des Kerguelen
+de la terre Adélie
+des îles Éparses
+de Bassas da India
+d’Europa
+des Glorieuses
+de Juan de Nova
+de Tromelin
+de Clipperton
+EOT,
+  ];
   /** Données d'origine pour les régions */
   const DATA_REGS = [
     'ARA'=> "Auvergne-Rhône-Alpes",
@@ -705,6 +1484,7 @@ EOT
         echo "<a href='?action=storeJson'>Enregistre le jeu de données en JSON </a><br>\n";
         echo "<a href='?action=validate'>Valide le JSON par rapport à son schéma</a><br>\n";
         echo "<a href='?action=deptsSsDom'>Départements sans nom de domaine</a><br>\n";
+        echo "<a href='?action=nomsCNIG'>Affichage des noms CNIG</a><br>\n";
         die();
       }
       case 'json': {
@@ -748,12 +1528,43 @@ EOT
             echo "$dept[nom] ($cdept)\n";
         }
         echo "---\n";
-        /*$domcomp = explode("\n", DOMCOMP[0]);
+        $domcomp = explode("\n", self::DOMCOMP[0]);
         foreach ($domcomp as $dom) {
-          if (!in_array($dom, array_values(deptregSrc()['prefdom'])))
+          if (!in_array($dom, array_values(self::build()['prefdom'])))
             echo "$dom\n";
-        }*/
+        }
         die();
+      }
+      case 'nomsCNIG': {
+        $deptreg = json_decode(file_get_contents('deptreg.json'), true);
+        $espaces = array_merge($deptreg['régions'], $deptreg['départements'], $deptreg['outre-mer']);
+        echo "<h2>Recosntitution des noms CNIG</h2>\n";
+        $formeLongue = explode("\n", self::NOMS_CNIG['formeLongue']);
+        $formeCourte = explode("\n", self::NOMS_CNIG['formeCourte']);
+        $nature = explode("\n", self::NOMS_CNIG['nature']);
+        $complement = explode("\n", self::NOMS_CNIG['complément']);
+        //echo "<pre>"; print_r($formeLongues);
+        echo "<table border=1>\n";
+        $i = 0;
+        while (($formeLongue[$i] ?? null) || ($formeCourte[$i] ?? null) || ($nature[$i] ?? null) || ($complement[$i] ?? null)) {
+          $code = '';
+          if (preg_match('!^([^;]+);(.*)$!', $formeLongue[$i]??'', $matches)) {
+            $code = $matches[1];
+            $formeLongue[$i] = $matches[2];
+          }
+          $espace = '';
+          if ($code)
+            $espace = $espaces[$code]['nom'] ?? "NonDéf";
+          echo "<tr><td>$i</td><td>$espace</td><td>$code</td>",
+               "<td>",$formeLongue[$i]??'',"</td>",
+               "<td>",$formeCourte[$i]??'',"</td>",
+               "<td>",$nature[$i]??'',"</td>",
+               "<td>",$complement[$i]??'',"</td>",
+               "</tr>\n";
+          $i++;
+        }
+        echo "</table>\n";
+        break;
       }
     }
   }

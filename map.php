@@ -61,7 +61,7 @@ var baseLayers = {
   ),
   // Fond blanc
   "Fond blanc" : new L.TileLayer(
-    'https://visu.gexplor.fr/utilityserver.php/whiteimg/{z}/{x}/{y}.jpg',
+    'http://localhost/gexplor/visu/utilityserver.php/whiteimg/{z}/{x}/{y}.jpg',
     { format: 'image/jpeg', minZoom: 0, maxZoom: 21, detectRetina: false}
   )
 };
@@ -71,22 +71,22 @@ var overlays = {
 // Région
   "Région" : new L.UGeoJSONLayer({
     endpoint: gjsurl+'ae2025/collections/region/items',
-    minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
+    minZoom: 0, maxZoom: 7, usebbox: true, onEachFeature: onEachFeature
   }),
 // Département
   "Département" : new L.UGeoJSONLayer({
     endpoint: gjsurl+'ae2025/collections/departement/items',
-    minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
+    minZoom: 7, maxZoom: 8, usebbox: true, onEachFeature: onEachFeature
   }),
 // EPCI
   "EPCI" : new L.UGeoJSONLayer({
     endpoint: gjsurl+'ae2025/collections/epci/items',
-    minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
+    minZoom: 8, maxZoom: 10, usebbox: true, onEachFeature: onEachFeature
   }),
 // Commune
   "Commune" : new L.UGeoJSONLayer({
     endpoint: gjsurl+'ae2025/collections/commune/items',
-    minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
+    minZoom: 10, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
   }),
 
 // affichage de l'antimeridien
@@ -102,7 +102,7 @@ var overlays = {
     
 // affichage d'une couche debug
   "debug" : new L.TileLayer(
-    'https://visu.gexplor.fr/utilityserver.php/debug/{z}/{x}/{y}.png',
+    'http://localhost/gexplor/visu/utilityserver.php/debug/{z}/{x}/{y}.png',
     {"format":"image/png","minZoom":0,"maxZoom":21,"detectRetina":false}
   )
 };
