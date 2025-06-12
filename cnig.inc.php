@@ -639,7 +639,10 @@ EOT,
       'title'=> ['type'=> 'string'],
       'description'=> ['type'=> 'string'],
       'nomsCnig'=> [
-        'description'=> "Noms définis par la Commission Nationale de Toponymie, document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf). Ajout d'une clé par défaut le code ISO 3166-1 alpha 3, avec des caractères complémentaires lorsque cela est nécessaire pour que ce soit une clé.",
+        'description'=> "Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG dans un document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf) . Cette table contient toutes les lignes du tableau du document y compris celles ne correspondent pas à une collectivité ; de plus une clé est ajoutée pour permettre les jointures avec les tables des régions, des départements et de l'outre-mer ; ainsi:
+ - pour les régions la clé reprend les 3 derniers caractères de leur code ISO 3166-2,
+ - pour les départements la clé reprend leur code Insee précédé de la lettre 'D',
+ - pour l'outre-mer la clé est par défaut le code ISO 3166-1 alpha 3, avec des caractères complémentaires lorsque cela est nécessaire pour que ce soit une clé.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -647,12 +650,12 @@ EOT,
             'oneOf'=> [
               [
                 'type'=> 'object',
-                'description'=> "Ligne du tableau correspondant à un espace nommé",
+                'description'=> "Ligne du tableau fournissant des informations sur le nom d'une collectivité territoriale",
                 'required'=> ['alpha3','formeLongue','formeCourte','nature','complément'],
                 'additionalProperties'=> false,
                 'properties'=> [
                   'alpha3'=> [
-                    'description'=> "Clé de l'espace sur 3 caractères utilisé comme clé dans région, départements et outre-mer",
+                    'description'=> "Reprend la clé de la ligne.",
                     'type'=> 'string',
                     'pattern'=> '^[A-Z0-9]{3}$',
                   ],
@@ -670,26 +673,27 @@ EOT,
                   ],
                   'complément'=> [
                     'decription'=> "Emploi de la forme courte en complément de nom.
-        Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le langage courant, l’article peut être omis lorsqu’il n’est pas contracté avec « de ».",
+Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le langage courant, l’article peut être omis lorsqu’il n’est pas contracté avec « de ».",
                     'type'=> 'string',
                   ],
                   'noteDeBasDePage'=> [
-                    'description'=> "Note de bas de page du document de la CNT donnant des précisions sur le statut",
+                    'description'=> "Note de bas de page du document de la CNT associée à une collectivité donnant des précisions sur son statut",
                     'type'=> 'string',
                   ],
                 ],
               ],
               [
                 'type'=> 'object',
-                'description'=> "Ligne du tableau utilisé comme titre dans le tableau et n'est pas un espace nommé",
+                'description'=> "Ligne du tableau utilisée comme titre dans le tableau et ne correspondant pas à une collectivité",
                 'required'=> ['title'],
                 'additionalProperties'=> false,
                 'properties'=> [
                   'title'=> [
+                    'description'=> "contenu de la ligne du tableau",
                     'type'=> 'string',
                   ],
                   'noteDeBasDePage'=> [
-                    'description'=> "Note de bas de page du document de la CNT donnant des précisions sur le statut",
+                    'description'=> "Note de bas de page du document de la CNT donnant des précisions sur la ligne",
                     'type'=> 'string',
                   ],
                 ],

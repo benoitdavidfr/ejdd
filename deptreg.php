@@ -14,24 +14,25 @@
  */
 require_once 'cnig.inc.php';
 
-/** Classe masquée regroupant les éléments pour générer deptRegDataSet() ainsi que le dialogue utilisateurs. */
+/** Classe masquée regroupant les éléments pour générer le jeu de données ainsi que le dialogue utilisateur. */
 class DeptReg {
   /** Titre du jeu de données */
   const TITLE = "Jeu de données DeptReg décrivant les départements, les régions et les \"domaines internet des Préfectures\"";
   /** Description du jeu de données */
   const DESCRIPTION = [
     <<<'EOT'
-Ce jeu est composé de 3 tables et un dictionnaire:
+Ce jeu est composé de 4 tables et d'un dictionnaire:
  - régions: table des régions de métropole, 
  - départements: table des départements de métropole, chacun référençant la région le contenant,
- - outre-mer: table des 5 DOM/ROM + StP&M,
+ - outre-mer: table de l'outre-mer français,
+ - nomsCnig: table reprenant un tableau CNIG sur les noms des collectivités territoriales françaises,
  - prefdom: dictionnaire des domaines internet des services de l'Etat dans les départements ayant une DDT(M),
    appelé "domaines internet des Préfectures".
 Ce jeu de données est exposé en JSON.
 Outre son contenu, le jeu de données est documenté par:
  - un titre dans le champ champ title
- - un résumé dans le champ description
- - un schéma JSON, dans le champ $schema, qui décrit notamment le schéma du contenu du jeu de données
+ - le présent résumé dans le champ description
+ - un schéma JSON, dans le champ $schema, qui fournit notamment le schéma du contenu du jeu de données
 EOT
   ];
   /** Schema JSON du jeu de données */
@@ -40,6 +41,7 @@ EOT
     'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
     'type'=> 'object',
     'required'=> ['title','description','$schema', 'régions', 'départements', 'outre-mer','prefdom'],
+    'additionalProperties'=> false,
     'properties'=> [
       'title'=> [
         'description'=> "Titre du jeu de données",
@@ -60,7 +62,7 @@ EOT
         'patternProperties'=> [
           '^[A-Z2][A-Z0][A-Z]$'=> [
             'type'=> 'object',
-            'required'=> ['nom','iso'],
+            'required'=> ['codeInsee','nom','iso'],
             'additionalProperties'=> false,
             'properties'=> [
               'codeInsee'=> [
@@ -114,19 +116,24 @@ EOT
         ],
       ],
       'outre-mer'=> [
-        'description'=> "Les espaces outre-mer français avec comme clé leur code ISO 3166-1 alpha 3. Les DOM/ROM sont en même temps des départements et régions. Saint-Pierre et Miquelon est une COM dans laquelle la DTAM joue le rôle d'une DEAL",
+        'description'=> "Les espaces outre-mer français avec comme clé leur code ISO 3166-1 alpha 3. Les DROM sont en même temps des départements et des régions. Saint-Pierre et Miquelon est une COM dans laquelle la DTAM joue le rôle d'une DEAL",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
           '^[A-Z]{3}$'=> [
             'type'=> 'object',
-            'required'=> ['nom','codeInsee','isoAlpha2','isoAlpha3','statut'],
+            'required'=> ['codeInsee','nom','isoAlpha2','isoAlpha3','statut'],
             'additionalProperties'=> false,
             'properties'=> [
               'codeInsee'=> [
-                'description'=> "code Insee",
+                'description'=> "code Insee départemental",
                 'type'=> 'string',
                 'pattern'=> '^9[78]\d$',
+              ],
+              'codeInseeRegion'=> [
+                'description'=> "code Insee en tant que région pour les DROM",
+                'type'=> 'string',
+                'pattern'=> '^\d$',
               ],
               'nom'=> [
                 'description'=> "nom",
@@ -145,7 +152,7 @@ EOT
               'statut'=> [
                 'description'=> "statut",
                 'enum'=> [
-                  'DOM/ROM', 'COM', 'TOM', "Collectivité sui generis",
+                  'DROM', 'COM', 'TOM', "Collectivité sui generis",
                   "Possession française sous l'autorité directe du gouvernement",
                 ],
               ],
@@ -157,6 +164,7 @@ EOT
           ],
         ],
       ],
+      'nomsCnig'=> Cnig::SCHEMA_JSON['properties']['nomsCnig'],
       'prefdom'=> [
         'description'=> "Domaines internet des services de l'Etat dans les départements de métropole ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre 'D' + domaines internet de la DGTM de Guyane et de la DTAM de StP&M, avec comme clé leur code ISO 3166-1 alpha 3. Pour raccourcir cette liste est appelée \"Domaines des Préfectures\".
 Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départements moins les 4 de Paris et la petite couronne qui n’ont pas de DDT ; plus 2 outre-mer correspondant à la DGTM de Guyane et à la DTAM de Saint-Pierre-et-Miquelon.",
@@ -169,106 +177,110 @@ Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départem
           ],
         ],
       ],
-      'nomsCNIG'=> Cnig::SCHEMA_JSON['properties']['nomsCnig'],
     ],
   ];
-  /** Les espaces outre-mer français */
+  /** L'outre-mer français */
   const OUTREMER = [
     'GLP'=> [
-      'nom'=> "Guadeloupe",
       'codeInsee'=> '971',
-      'alpha2'=> 'GP',
-      'alpha3'=> 'GLP',
-      'statut'=> 'DOM/ROM',
+      'codeInseeRegion'=> '1',
+      'nom'=> "Guadeloupe",
+      'isoAlpha2'=> 'GP',
+      'isoAlpha3'=> 'GLP',
+      'statut'=> 'DROM',
       'deal'=> "DEAL Guadeloupe",
     ],
     'MTQ'=> [
-      'nom'=> "Martinique",
       'codeInsee'=> '972',
-      'alpha2'=> 'MQ',
-      'alpha3'=> 'MTQ',
-      'statut'=> 'DOM/ROM',
+      'codeInseeRegion'=> '2',
+      'nom'=> "Martinique",
+      'isoAlpha2'=> 'MQ',
+      'isoAlpha3'=> 'MTQ',
+      'statut'=> 'DROM',
       'deal'=> "DEAL Martinique",
     ],
     'GUF'=> [
-      'nom'=> "Guyane",
       'codeInsee'=> '973',
-      'alpha2'=> 'GF',
-      'alpha3'=> 'GUF',
-      'statut'=> 'DOM/ROM',
+      'codeInseeRegion'=> '3',
+      'nom'=> "Guyane",
+      'isoAlpha2'=> 'GF',
+      'isoAlpha3'=> 'GUF',
+      'statut'=> 'DROM',
       'deal'=> "Direction Générale des Territoires et de la Mer (DGTM) de la Guyane",
     ],
     'REU'=> [
-      'nom'=> "La Réunion",
       'codeInsee'=> '974',
-      'alpha2'=> 'RE',
-      'alpha3'=> 'REU',
-      'statut'=> 'DOM/ROM',
+      'codeInseeRegion'=> '4',
+      'nom'=> "La Réunion",
+      'isoAlpha2'=> 'RE',
+      'isoAlpha3'=> 'REU',
+      'statut'=> 'DROM',
       'deal'=> "DEAL de La Réunion",
     ],
     'MYT'=> [
-      'nom'=> "Mayotte",
       'codeInsee'=> '976',
-      'alpha2'=> 'YT',
-      'alpha3'=> 'MYT',
-      'statut'=> 'DOM/ROM',
+      'codeInseeRegion'=> '6',
+      'nom'=> "Mayotte",
+      'isoAlpha2'=> 'YT',
+      'isoAlpha3'=> 'MYT',
+      'statut'=> 'DROM',
       'deal'=> "DEAL Mayotte",
     ],
     'SPM'=> [
-      'nom'=> "Saint-Pierre-et-Miquelon",
       'codeInsee'=> '975',
-      'alpha2'=> 'PM',
-      'alpha3'=> 'SPM',
+      'nom'=> "Saint-Pierre-et-Miquelon",
+      'isoAlpha2'=> 'PM',
+      'isoAlpha3'=> 'SPM',
       'statut'=> 'COM',
       'deal'=> "Direction des Territoires, de l'Alimentation et de la Mer (DTAM) de Saint-Pierre-et-Miquelon",
     ],
     'BLM'=> [
-      'nom'=> "Saint-Barthélemy",
       'codeInsee'=> '977',
-      'alpha2'=> 'BL',
-      'alpha3'=> 'BLM',
+      'nom'=> "Saint-Barthélemy",
+      'isoAlpha2'=> 'BL',
+      'isoAlpha3'=> 'BLM',
       'statut'=> 'COM',
     ],
     'MAF'=> [
-      'nom'=> "Saint-Martin",
       'codeInsee'=> '978',
-      'alpha2'=> 'MF',
-      'alpha3'=> 'MAF',
+      'nom'=> "Saint-Martin",
+      'isoAlpha2'=> 'MF',
+      'isoAlpha3'=> 'MAF',
       'statut'=> 'COM',
     ],
     'WLF'=> [
-      'nom'=> "îles Wallis et Futuna",
       'codeInsee'=> '986',
-      'alpha2'=> 'WF',
-      'alpha3'=> 'WLF',
+      'nom'=> "îles Wallis et Futuna",
+      'isoAlpha2'=> 'WF',
+      'isoAlpha3'=> 'WLF',
       'statut'=> 'COM',
     ],
     'PYF'=> [
-      'nom'=> "Polynésie française",
       'codeInsee'=> '987',
-      'alpha2'=> 'PF',
-      'alpha3'=> 'PYF',
+      'nom'=> "Polynésie française",
+      'isoAlpha2'=> 'PF',
+      'isoAlpha3'=> 'PYF',
       'statut'=> 'COM',
     ],
     'NCL'=> [
-      'nom'=> "Nouvelle-Calédonie",
       'codeInsee'=> '988',
-      'alpha2'=> 'NC',
-      'alpha3'=> 'NCL',
+      'nom'=> "Nouvelle-Calédonie",
+      'isoAlpha2'=> 'NC',
+      'isoAlpha3'=> 'NCL',
       'statut'=> "Collectivité sui generis",
     ],
     'ATF'=> [
-      'nom'=> "Terres australes et antarctiques françaises",
       'codeInsee'=> '984',
-      'alpha2'=> 'TF',
-      'alpha3'=> 'ATF',
+      'nom'=> "Terres australes et antarctiques françaises",
+      'isoAlpha2'=> 'TF',
+      'isoAlpha3'=> 'ATF',
       'statut'=> 'TOM',
     ],
     'CPT'=> [
-      'nom'=> "La Passion-Clipperton",
       'codeInsee'=> '989',
-      'alpha2'=> 'CP',
-      'alpha3'=> 'CPT',
+      'nom'=> "La Passion-Clipperton",
+      'isoAlpha2'=> 'CP',
+      'isoAlpha3'=> 'CPT',
       'statut'=> "Possession française sous l'autorité directe du gouvernement",
     ],
   ];
@@ -424,19 +436,58 @@ EOT
   const PARIS_ET_PETITE_COURONNE = ['D75','D92','D93','D94'];
   /** Données d'origine pour les régions */
   const DATA_REGS = [
-    'ARA'=> "Auvergne-Rhône-Alpes",
-    'BFC'=> "Bourgogne-Franche-Comté",
-    'BRE'=>	"Bretagne",
-    'CVL'=> "Centre-Val de Loire",
-    '20R'=> "Corse",
-    'GES'=> "Grand Est",
-    'HDF'=> "Hauts-de-France",
-    'IDF'=> "Île-de-France",
-    'NOR'=> "Normandie",
-    'NAQ'=> "Nouvelle-Aquitaine",
-    'OCC'=> "Occitanie",
-    'PDL'=> "Pays de la Loire",
-    'PAC'=> "Provence-Alpes-Côte d'Azur",
+    'ARA'=> [
+      'codeInsee'=> '84',
+      'nom'=> "Auvergne-Rhône-Alpes",
+    ],
+    'BFC'=> [
+      'codeInsee'=> '27',
+      'nom'=> "Bourgogne-Franche-Comté",
+    ],
+    'BRE'=>	[
+      'codeInsee'=> '53',
+      'nom'=> "Bretagne",
+    ],
+    'CVL'=>	[
+      'codeInsee'=> '24',
+      'nom'=>  "Centre-Val de Loire",
+    ],
+    '20R'=>	[
+      'codeInsee'=> '94',
+      'nom'=>  "Corse",
+    ],
+    'GES'=>	[
+      'codeInsee'=> '44',
+      'nom'=>  "Grand Est",
+    ],
+    'HDF'=>	[
+      'codeInsee'=> '32',
+      'nom'=>  "Hauts-de-France",
+    ],
+    'IDF'=>	[
+      'codeInsee'=> '11',
+      'nom'=>  "Île-de-France",
+    ],
+    'NOR'=>	[
+      'codeInsee'=> '28',
+      'nom'=>  "Normandie",
+    ],
+    'NAQ'=>	[
+      'codeInsee'=> '75',
+      'nom'=>  "Nouvelle-Aquitaine",
+    ],
+    'OCC'=>	[
+      'codeInsee'=> '76',
+      'nom'=> "Occitanie",
+    ],
+    'PDL'=>	[
+      'codeInsee'=> '52',
+      'nom'=> "Pays de la Loire",
+    ],
+    'PAC'=>	[
+      'codeInsee'=> '93',
+      'nom'=>  "Provence-Alpes-Côte d'Azur",
+    ],
   ];
   /** Données d'origine à transformer, en partie fausses mais non corrigée, */
   const DATA_DEPTS = [
@@ -782,9 +833,10 @@ EOT
   static function build(): array {
     { // construction de $regs à partir de DATA_REGS
       $regs = [];
-      foreach (self::DATA_REGS as $creg => $nom) {
+      foreach (self::DATA_REGS as $creg => $reg) {
         $regs[$creg] = [
-          'nom'=> $nom,
+          'codeInsee'=> $reg['codeInsee'],
+          'nom'=> $reg['nom'],
           'iso'=> "FR-$creg",
         ];
       }
@@ -814,8 +866,8 @@ EOT
       'régions'=> $regs,
       'départements'=> $depts,
       'outre-mer'=> self::OUTREMER,
-      'prefdom'=> self::PREFDOM,
       'nomsCnig'=> Cnig::build(),
+      'prefdom'=> self::PREFDOM,
     ];
   }
   
@@ -826,8 +878,7 @@ EOT
         //echo "<a href='?action=php'>Génération du code Php de deptreg à recopier dans la première partie du script</a><br>\n";
         echo "<a href='?action=json'>Affiche le JSON du jeu de données</a><br>\n";
         echo "<a href='?action=schema'>Affiche le JSON du schéma du jeu de données</a><br>\n";
-        echo "<a href='?action=storeJson'>Enregistre le jeu de données en JSON </a><br>\n";
-        echo "<a href='?action=validate'>Valide le JSON par rapport à son schéma</a><br>\n";
+        echo "<a href='?action=storeJson'>Enregistre le jeu de données en JSON et le Valide par rapport à son schéma</a><br>\n";
         echo "<a href='?action=deptsSsDom'>Départements sans nom de domaine</a><br>\n";
         echo "<a href='cnig.inc.php?action=display'>Affichage des noms CNIG pour vérification de la saisie</a><br>\n";
         die();
@@ -844,9 +895,8 @@ EOT
         file_put_contents(
           'deptreg.json',
           json_encode(self::build(), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
-        die("Ecriture JSON ok<br>\n");
-      }
-      case 'validate': {
+        echo "Ecriture JSON ok<br>\n";
+
         require_once __DIR__.'/vendor/autoload.php';
         $data = json_decode(file_get_contents('deptreg.json'), false);
         $schema = json_decode(file_get_contents('deptreg.json'), true)['$schema'];
