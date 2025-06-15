@@ -67,7 +67,7 @@ EOT
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'régions', 'départements', 'outre-mer','prefdom'],
+    'required'=> ['title','description','$schema', 'régions', 'départements', 'outre-mer','nomsCnig','prefdom'],
     'additionalProperties'=> false,
     'properties'=> [
       'title'=> [
@@ -83,7 +83,8 @@ EOT
         'type'=> 'object',
       ],
       'régions'=> [
-        'description'=> "Table des régions de métropole avec comme clé les 3 derniers caractères du code ISO 3166-2",
+        'title'=> "Table des régions de métropole",
+        'description'=> "Les n-uplets de cette table ont comme clé les 3 derniers caractères du code ISO 3166-2 de la région. ",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -111,7 +112,8 @@ EOT
         ],
       ],
       'départements'=> [
-        'description'=> "Table des départements de métropole avec comme clé leur code Insee précédé de la lettre 'D'. Ce type de clé original a 2 avantages, d'une part être un code sur 3 caractères comme pour les régons ou l'outre-mer et, d'autre part, d'éviter que ce code soit informatiquement transformé en entier.",
+        'title'=> "Table des départements de métropole",
+        'description'=> "Les n-uplets de cette table ont comme clé leur code Insee précédé de la lettre 'D'. Ce type de clé original a 2 avantages, d'une part être un code sur 3 caractères comme pour les régons ou l'outre-mer et, d'autre part, d'éviter que ce code soit informatiquement transformé en entier.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -143,7 +145,8 @@ EOT
         ],
       ],
       'outre-mer'=> [
-        'description'=> "Les espaces outre-mer français avec comme clé leur code ISO 3166-1 alpha 3. Les DROM sont en même temps des départements et des régions. Saint-Pierre et Miquelon est une COM dans laquelle la DTAM joue le rôle d'une DEAL",
+        'title'=> "Les espaces outre-mer français",
+        'description'=> "Les DROM sont en même temps des départements et des régions. Saint-Pierre et Miquelon est une COM dans laquelle la DTAM joue le rôle d'une DEAL. Les n-uplets de cette table ont comme clé leur code ISO 3166-1 alpha 3.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -191,10 +194,13 @@ EOT
           ],
         ],
       ],
-      'nomsCnig'=> CnigBuild::SCHEMA_JSON['properties']['nomsCnig'],
+      'nomsCnig'=> NomsCnigBuild::SCHEMA_JSON['properties']['nomsCnig'],
       'prefdom'=> [
-        'description'=> "Domaines internet des services de l'Etat dans les départements de métropole ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre 'D' + domaines internet de la DGTM de Guyane et de la DTAM de StP&M, avec comme clé leur code ISO 3166-1 alpha 3. Pour raccourcir cette liste est appelée \"Domaines des Préfectures\".
-Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départements moins les 4 de Paris et la petite couronne qui n’ont pas de DDT ; plus 2 outre-mer correspondant à la DGTM de Guyane et à la DTAM de Saint-Pierre-et-Miquelon.",
+        'title'=> "Domaines internet des services de l'Etat dans les départements de métropole ayant une DDT(M) + Guyane + StP&M",
+        'description'=> "La clé pour les départements de métropole est leur code INSEE précédé de la lettre 'D'.
+La Guyane et StP&M sont ajoutés car la DGTM de Guyane et de la DTAM de StP&M ont des domaines spécifiques ; pour ces 2 derniers cas la clé est leur code ISO 3166-1 alpha 3.
+Pour raccourcir cette liste est appelée \"Domaines des Préfectures\".
+Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départements moins les 4 de Paris et la petite couronne qui n’ont pas de DDT ; plus les 2 outre-mer.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -893,7 +899,7 @@ EOT
       'régions'=> $regs,
       'départements'=> $depts,
       'outre-mer'=> self::OUTREMER,
-      'nomsCnig'=> CnigBuild::build(),
+      'nomsCnig'=> NomsCnigBuild::build(),
       'prefdom'=> self::PREFDOM,
     ];
   }

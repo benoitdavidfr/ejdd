@@ -1,6 +1,8 @@
 <?php
 /** Définit une classe implémentant un JdD trivial */
 
+require_once 'dataset.inc.php';
+
 /** Exemple trivial de JdD */
 class DatasetEg extends Dataset {
   const TITLE = "Exemple de jeu de données";
@@ -8,6 +10,7 @@ class DatasetEg extends Dataset {
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma du jeu de données exemple",
+    'description'=> "Ce jeu et son schéma permettent de tester les scripts.",
     'type'=> 'object',
     'required'=> ['title','description','$schema', 'tableEg', 'dictEg'],
     'additionalProperties'=> false,
@@ -25,7 +28,8 @@ class DatasetEg extends Dataset {
         'type'=> 'object',
       ],
       'tableEg'=> [
-        'description'=> "Exemple de table",
+        'title'=> "Exemple de table",
+        'description'=> "Un exemple très simple de table.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -47,6 +51,7 @@ class DatasetEg extends Dataset {
         ],
       ],
       'dictEg'=> [
+        'title'=> "Exemple de dictionnaire",
         'description'=> "Exemple de dictionnaire",
         'type'=> 'object',
         'additionalProperties'=> false,
@@ -75,3 +80,7 @@ class DatasetEg extends Dataset {
   
   function getData(string $section, mixed $filtre=null): array { return self::SECTIONS[$section]; }
 };
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
+
+echo "Rien à faire pour construire le JdD<br>\n";

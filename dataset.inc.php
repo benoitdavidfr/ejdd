@@ -1,5 +1,6 @@
 <?php
 /** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes. */
+require_once __DIR__.'/vendor/autoload.php';
 
 /** Pour mettre du Html dans un RecArray */
 class Html {
@@ -65,27 +66,65 @@ class RecArray {
   /** Transforme récursivement un RecArray en objet de StdClass.
    * @param array<mixed> $input Le RecArray à transformer.
    */
-  static function toStdObject(array $input): stdClass {
-    $obj = new stdClass();
-    foreach ($input as $key => $val) {
-      $obj->{$key} = is_array($val) ? self::toStdObject($val) : $val;
+  static function toStdObject(array $input): stdClass|array {
+    if (array_is_list($input)) {
+      $list = [];
+      foreach ($input as $i => $val) {
+        $list[$i] = is_array($val) ? self::toStdObject($val) : $val;
+      }
+      return $list;
     }
-    return $obj;
+    else {
+      $obj = new stdClass();
+      foreach ($input as $key => $val) {
+        $obj->{$key} = is_array($val) ? self::toStdObject($val) : $val;
+      }
+      return $obj;
+    }
   }
   
   static function test(): void {
-    echo self::toHtml(
-      [
-        'a'=> "<b>aaa</b>",
-        'html'=> new Html('<b>aaa</b>'),
-        'null'=> null,
-        'false'=> false,
-        'true'=> true,
-        'listOfArray'=> [
-          ['a'=> 'a'],
-        ],
-      ]
-    );
+    switch($_GET['test'] ?? null) {
+      case null: {
+        echo "<a href='?test=toHtml'>Teste toHtml</a><br>\n";
+        echo "<a href='?test=toStdObject'>Teste toStdObject</a><br>\n";
+        echo "<a href='?test=json_decode'>Teste json_decode</a><br>\n";
+        break;
+      }
+      case 'toHtml': {
+        echo self::toHtml(
+          [
+            'a'=> "<b>aaa</b>",
+            'html'=> new Html('<b>aaa</b>'),
+            'null'=> null,
+            'false'=> false,
+            'true'=> true,
+            'listOfArray'=> [
+              ['a'=> 'a'],
+            ],
+          ]
+        );
+        break;
+      }
+      case 'toStdObject': {
+        echo "<pre>"; print_r(self::toStdObject([
+          'a'=> "chaine",
+          'b'=> [1,2,3,'chaine'],
+          'c'=> [
+            ['a'=>'b'],
+            ['c'=>'d'],
+          ],
+        ]));
+        break;
+      }
+      case 'json_decode': {
+        echo '<pre>';
+        echo "liste ->"; var_dump(json_decode(json_encode(['a','b','c'])));
+        echo "liste vide ->"; var_dump(json_decode(json_encode([])));
+        echo "liste d'objets ->"; var_dump(json_decode(json_encode([['a'=>'b'],['c'=>'d']])));
+        break;
+      }
+    }
   }
 };
 //RecArray::test(); die(); // Test RecArray 
@@ -107,13 +146,22 @@ class Section {
   function kind(): string {
     $patProps = $this->schema['patternProperties'];
     $prop = $patProps[array_keys($patProps)[0]];
-    //print_r($prop);
-    $type = $prop['type'];
+    if (isset($prop['type'])) {
+      $type = $prop['type'];
+    }
+    elseif (array_keys($prop) == ['oneOf']) {
+      echo "OneOf<br>\n";
+      $oneOf = $prop['oneOf'];
+      $type = $oneOf[0]['type'];
+    }
     //echo "type=$type<br>\n";
-    switch ($type) {
+    switch ($type ?? null) {
       case 'object': return 'table';
       case 'string': return 'dict';
-      default: throw new Exception("type $type non prévu");
+      default: {
+        echo "<pre>prop="; print_r($prop);
+        throw new Exception("type ".($type ?? 'inconnu')." non prévu");
+      }
     }
   }
   
@@ -156,9 +204,89 @@ class Section {
 /** Classe abstraite des JdD */
 abstract class Dataset {
   /** Registre contenant la liste des JdD */
-  const Registre = [
+  const REGISTRE = [
     'DatasetEg',
     'DeptReg',
+    'NomsCnig',
+  ];
+  const META_SCHEMA_DATASET = [
+    '$schema'=> 'http://json-schema.org/draft-07/schema#',
+    'title'=> "Méta schéma des JdD",
+    'definitions'=> [
+      'section'=> [
+        'required'=> ['title','description','type','additionalProperties','patternProperties'],
+        'properties'=> [
+          'title'=> ['type'=> 'string'], // une section de données doit avoir un titre de type string
+          'description'=> ['type'=> 'string'], // une section de données doit avoir une description de type string
+          'type'=> ['const'=> 'object'],
+          'additionalProperties'=> ['const'=> false],
+          'patternProperties'=> ['type'=> 'object'],
+        ],
+      ], // MD de section
+    ],
+    'type'=> 'object',
+    'required'=> ['$schema','title','description','type','required','additionalProperties','properties'],
+    'properties'=> [
+      '$schema'=> [
+        'description'=> "Le méta-schéma du schéma",
+        'const'=> 'http://json-schema.org/draft-07/schema#',
+      ],
+      'title'=> [
+        'description'=> "Titre du JdD",
+        'type'=> 'string',
+      ],
+      'description'=> [
+        'description'=> "Description du JdD",
+        'type'=> 'string',
+      ],
+      'type'=> [
+        'description'=> "toujours object",
+        'const'=> 'object',
+      ],
+      'required'=> [
+        'description'=> "Liste des champs obligatoires pour le JdD",
+        'type'=> 'array',
+        'items'=> ['type'=> 'string'],
+      ],
+      'additionalProperties'=> [
+        'description'=> "toujours false",
+        'const'=> false,
+      ],
+      'properties'=> [
+        'description'=> "Les sections du JdD",
+        'type'=> 'object',
+        'required'=> ['title','description','$schema'],
+        'properties'=> [
+          'title'=> [
+            'type'=> 'object',
+            'required'=> ['description','type'],
+            'properties'=> [
+              'description'=> ['type'=>'string'],
+              'type'=> ['const'=>'string'],
+            ],
+          ],
+          'description'=> [
+            'type'=> 'object',
+            'required'=> ['description','type'],
+            'properties'=> [
+              'description'=> ['type'=>'string'],
+              'type'=> ['const'=>'string'],
+            ],
+          ],
+          '$schema'=> [
+            'type'=> 'object',
+            'required'=> ['description','type'],
+            'properties'=> [
+              'description'=> ['type'=>'string'],
+              'type'=> ['const'=>'object'],
+            ],
+          ],
+        ],
+        'additionalProperties'=> [
+          '$ref'=> '#/definitions/section',
+        ],
+      ]
+    ],
   ];
   
   readonly string $title;
@@ -209,6 +337,82 @@ abstract class Dataset {
     return $array;
   }
   
+  function asStdObject(): stdClass   {
+    return RecArray::toStdObject($this->asArray());
+  }
+  
+  function schemaIsValid(): bool {
+    // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
+    $validator = new JsonSchema\Validator;
+    $schema = RecArray::toStdObject($this->schema);
+    $validator->validate($schema, $this->schema['$schema']);
+    if (!$validator->isValid())
+    return false;
+    
+    // Validation du schéma du JdD par rapport au méta-schéma des JdD
+    $validator = new JsonSchema\Validator;
+    $schema = RecArray::toStdObject($this->schema);
+    $validator->validate($schema, self::META_SCHEMA_DATASET);
+    return $validator->isValid();
+  }
+  
+  function displaySchemaErrors(): void {
+    $validator = new JsonSchema\Validator;
+    $data = RecArray::toStdObject($this->schema);
+    $validator->validate($data, $this->schema['$schema']);
+
+    // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
+    if ($validator->isValid()) {
+      echo "Le schéma du JdD est conforme au méta-schéma JSON Schema.<br>\n";
+    }
+    else {
+      echo "<pre>Le schéma du JdD n'est pas conforme au méta-schéma JSON Schema. Violations:\n";
+      foreach ($validator->getErrors() as $error) {
+        printf("[%s] %s\n", $error['property'], $error['message']);
+      }
+      echo "</pre>\n";
+    }
+
+    // Validation du schéma du JdD par rapport au méta-schéma des JdD
+    $validator = new JsonSchema\Validator;
+    $schema = RecArray::toStdObject($this->schema);
+    $validator->validate($schema, self::META_SCHEMA_DATASET);
+    if ($validator->isValid()) {
+      echo "Le schéma du JdD est conforme au méta-schéma des JdD.<br>\n";
+    }
+    else {
+      echo "<pre>Le schéma du JdD n'est pas conforme au méta-schéma des JdD. Violations:\n";
+      foreach ($validator->getErrors() as $error) {
+        printf("[%s] %s\n", $error['property'], $error['message']);
+      }
+      echo "</pre>\n";
+    }
+  }
+  
+  function isValid(): bool {
+    // Validation des données par rapport au schéma du JdD
+    $validator = new JsonSchema\Validator;
+    $data = $this->asStdObject();
+    $validator->validate($data, $this->schema);
+    return $validator->isValid();
+  }
+  
+  function displayErrors(): void {
+    $validator = new JsonSchema\Validator;
+    $validator->validate($this->asStdObject(), $this->schema);
+
+    if ($validator->isValid()) {
+      echo "Le JdD est conforme à son schéma.<br>\n";
+    }
+    else {
+      echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
+      foreach ($validator->getErrors() as $error) {
+        printf("[%s] %s<br>\n", $error['property'], $error['message']);
+      }
+      echo "</pre>\n";
+    }
+  }
+  
   /** Affiche l'objet en Html. */
   function display(): void {
     echo "<h2>",$this->title,"</h2>\n",
@@ -229,7 +433,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'util
 
 switch ($_GET['action'] ?? null) {
   case null: {
-    foreach (Dataset::Registre as $dataset) {
+    foreach (Dataset::REGISTRE as $dataset) {
       echo "<a href='?action=title&dataset=$dataset'>Afficher le titre de $dataset</a>.<br>\n";
     }
     break;

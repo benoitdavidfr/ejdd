@@ -1,21 +1,19 @@
 <?php
-/** Définition des noms du CNIG, intégrées dans deptreg.php. */
+/** Définition des noms du CNIG, intégrées dans deptreg.php et JdD NomsCnig autonome. */
+require_once __DIR__.'/vendor/autoload.php';
 require_once 'dataset.inc.php';
 
 /** Classe d'utilisation du JdD. */
-class Cnig implements DatasetI {
-  const JSON_FILE_NAME = 'Cnig.json';
+class NomsCnig extends Dataset {
+  const JSON_FILE_NAME = 'nosmcnig.json';
   
   /** Le contenu du fichier JSON */
   protected array $data;
   
-  function __construct() { $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true); }
-  
-  function title(): string { return $this->data['title']; }
-  
-  function description(): string { return $this->data['description']; }
-  
-  function schema(): array { return $this->data['$schema']; }
+  function __construct() {
+    $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
+    parent::__construct($this->data['title'],  $this->data['description'], $this->data['$schema']);
+  }
   
   function getData(string $section, mixed $filtre=null): array {
     if ($filtre)
@@ -28,7 +26,8 @@ class Cnig implements DatasetI {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return;
 
 
-class CnigBuild {
+/** Classe de production du JdD */
+class NomsCnigBuild {
   /** Textes issus de la note organisés par colonne du tableau. */
   const DATA = [
     'formeLongue'=> <<<'EOT'
@@ -658,18 +657,23 @@ EOT,
   ];
   const TITLE = "Noms CNIG";
   const DESCRIPTION = "Noms CNIG";
-  /** Scéma JSON des noms CNIG */
-  const SCHEMA_JSON = [ // Schema JQON du jeu de données nomsCNIG 
+  /** Scéma JSON du JdD des noms CNIG */
+  const SCHEMA_JSON = [
+    '$schema'=> 'http://json-schema.org/draft-07/schema#',
+    'title'=> "Schéma du jeu de données nomsCnig",
     'type'=> 'object',
+    'required'=> ['title','description','$schema','nomsCnig'],
     'additionalProperties'=> false,
     'properties'=> [
       'title'=> ['type'=> 'string'],
       'description'=> ['type'=> 'string'],
       'nomsCnig'=> [
-        'description'=> "Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG dans un document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf) . Cette table contient toutes les lignes du tableau du document y compris celles ne correspondent pas à une collectivité ; de plus une clé est ajoutée pour permettre les jointures avec les tables des régions, des départements et de l'outre-mer ; ainsi:
+        'title'=> "Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG",
+        'description'=> "Cette table transcrit le document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf.
+Cette table contient toutes les lignes du tableau du document y compris celles ne correspondent pas à une collectivité ; de plus une clé est ajoutée pour permettre les jointures avec les tables des régions, des départements et de l'outre-mer ; ainsi:
  - pour les régions la clé reprend les 3 derniers caractères de leur code ISO 3166-2,
  - pour les départements la clé reprend leur code Insee précédé de la lettre 'D',
- - pour l'outre-mer la clé est par défaut le code ISO 3166-1 alpha 3, avec des caractères complémentaires lorsque cela est nécessaire pour que ce soit une clé.",
+ - pour l'outre-mer la clé est par défaut le code ISO 3166-1 alpha 3, avec des caractères complémentaires lorsque cela est nécessaire pour que les valeurs soient distinctes.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -736,7 +740,7 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
   static function display(): void {
     $deptreg = json_decode(file_get_contents('deptreg.json'), true);
     $espaces = array_merge($deptreg['régions'], $deptreg['départements'], $deptreg['outre-mer']);
-    echo "<h2>Recosntitution des noms CNIG</h2>\n";
+    echo "<h2>Reconstitution du tableau des noms CNIG</h2>\n";
     $formeLongue = explode("\n", self::DATA['formeLongue']);
     $formeCourte = explode("\n", self::DATA['formeCourte']);
     $nature = explode("\n", self::DATA['nature']);
@@ -744,7 +748,7 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
     //echo "<pre>"; print_r($formeLongues);
     echo "<table border=1>\n";
     echo "<th>no</th><th>Nom issu des autres tables pour vérification</th><th>clé</th>",
-    "<th>forme longue</th><th>forme courte</th><th>nature</th><th>complement</th>\n";
+    "<th>forme longue</th><th>note</th><th>forme courte</th><th>nature</th><th>complement</th>\n";
     $keys = [];
     $i = 0;
     while (($formeLongue[$i] ?? null) || ($formeCourte[$i] ?? null) || ($nature[$i] ?? null) || ($complement[$i] ?? null)) {
@@ -850,31 +854,43 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
         break;
       }
       case 'storeAndValidate': {
-        file_put_contents(
-          'nomscnig.json',
-          json_encode([
-            'title'=> self::TITLE,
-            'description'=> self::DESCRIPTION,
-            '$schema'=> self::SCHEMA_JSON,
-            'nomsCNIG'=> self::build(),
-          ])
-        );
-        echo "Fichier JSON écrit.<br>\n";
+        $dataset = [
+          'title'=> self::TITLE,
+          'description'=> self::DESCRIPTION,
+          '$schema'=> self::SCHEMA_JSON,
+          'nomsCnig'=> self::build(),
+        ];
+        file_put_contents(NomsCnig::JSON_FILE_NAME, json_encode($dataset));
+        echo "Fichier JSON ",NomsCnig::JSON_FILE_NAME," écrit.<br>\n";
 
-        require_once __DIR__.'/vendor/autoload.php';
-        $data = json_decode(file_get_contents('nomscnig.json'), false);
-        $schema = json_decode(file_get_contents('nomscnig.json'), true)['$schema'];
+        { // Test conformité du schéma du JdD par rapport schéma des schéma */
+          // Validate
+          $validator = new JsonSchema\Validator;
+          $data = RecArray::toStdObject($dataset['$schema']);
+          $validator->validate($data, $dataset['$schema']['$schema']);
+
+          if ($validator->isValid()) {
+            echo "Le schéma du JdD est conforme à son schéma ",$dataset['$schema']['$schema'],".<br>\n";
+          } else {
+            echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
+            foreach ($validator->getErrors() as $error) {
+              printf("[%s] %s<br>\n", $error['property'], $error['message']);
+            }
+          }
+        }
         
-        // Validate
-        $validator = new JsonSchema\Validator;
-        $validator->validate($data, $schema);
+        { // Test conformité du JdD par rapport à son schéma 
+          $validator = new JsonSchema\Validator;
+          $data = RecArray::toStdObject($dataset);
+          $validator->validate($data, $dataset['$schema']);
 
-        if ($validator->isValid()) {
-          echo "Le JdD est conforme à son schéma.<br>\n";
-        } else {
-          echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
-          foreach ($validator->getErrors() as $error) {
-            printf("[%s] %s<br>\n", $error['property'], $error['message']);
+          if ($validator->isValid()) {
+            echo "Le JdD est conforme à son schéma.<br>\n";
+          } else {
+            echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
+            foreach ($validator->getErrors() as $error) {
+              printf("[%s] %s<br>\n", $error['property'], $error['message']);
+            }
           }
         }
         break;
@@ -883,4 +899,4 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
   }
 };
 
-CnigBuild::main();
+NomsCnigBuild::main();

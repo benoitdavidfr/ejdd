@@ -3,10 +3,20 @@
 require_once 'dataset.inc.php';
 
 /* Journal des modifications du code. */
+define('A_FAIRE', [
+<<<'EOT'
+15/6/2025:
+  - écrire un schéma JSON des schéma de Dataset en étant plus contraint que le scchéma standard
+EOT
+]
+);
+/* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
 14/6/2025:
-  - 1ère version
+  - début v2 fondée sur idees.yaml
+  - à la différence de la V1 (stckée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
+  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
 EOT
 ]
 );
@@ -40,12 +50,13 @@ switch ($_GET['action'] ?? null) {
   case null: {
     if (!isset($_GET['dataset'])) {
       echo "Choix du JdD:<br>\n";
-      foreach (Dataset::Registre as $dataset) {
+      foreach (Dataset::REGISTRE as $dataset) {
         echo "<a href='?dataset=$dataset'>$dataset</a>.<br>\n";
       }
     }
     else {
       echo "Choix de l'action:<br>\n";
+      echo "<a href='",strToLower($_GET['dataset']),".php'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
@@ -73,23 +84,24 @@ switch ($_GET['action'] ?? null) {
   }
   case 'validate': {
     require_once __DIR__.'/vendor/autoload.php';
-    $data = json_decode(file_get_contents("$_GET[file].json"), false);
-    $schema = json_decode(file_get_contents("$_GET[file].json"), true)['$schema'];
-    
-    // Validate
-    $validator = new JsonSchema\Validator;
-    $validator->validate($data, $schema);
 
-    if ($validator->isValid()) {
+    $dataset = Dataset::get($_GET['dataset']);
+    if ($dataset->schemaIsValid()) {
+      echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
+    }
+    else {
+      $dataset->displaySchemaErrors();
+    }
+
+    if ($dataset->isValid()) {
       echo "Le JdD est conforme à son schéma.<br>\n";
-    } else {
-      echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
-      foreach ($validator->getErrors() as $error) {
-        printf("[%s] %s<br>\n", $error['property'], $error['message']);
-      }
+    }
+    else {
+      $dataset->displayErrors();
     }
     break;
   }
+  
   /*case 'proj': { // Exemple de projection
     $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
     Part::displayTable(
