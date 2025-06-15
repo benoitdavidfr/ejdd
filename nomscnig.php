@@ -1,7 +1,34 @@
 <?php
 /** Définition des noms du CNIG, intégrées dans deptreg.php. */
+require_once 'dataset.inc.php';
 
-class Cnig {
+/** Classe d'utilisation du JdD. */
+class Cnig implements DatasetI {
+  const JSON_FILE_NAME = 'Cnig.json';
+  
+  /** Le contenu du fichier JSON */
+  protected array $data;
+  
+  function __construct() { $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true); }
+  
+  function title(): string { return $this->data['title']; }
+  
+  function description(): string { return $this->data['description']; }
+  
+  function schema(): array { return $this->data['$schema']; }
+  
+  function getData(string $section, mixed $filtre=null): array {
+    if ($filtre)
+      throw new Exception("Pas de filtre possible sur Cnig");
+    return $this->data[$section];
+  }
+};
+
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return;
+
+
+class CnigBuild {
   /** Textes issus de la note organisés par colonne du tableau. */
   const DATA = [
     'formeLongue'=> <<<'EOT'
@@ -856,6 +883,4 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
   }
 };
 
-if (realpath($_SERVER['SCRIPT_FILENAME']) == __FILE__) {
-  Cnig::main();
-}
+CnigBuild::main();

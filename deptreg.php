@@ -1,21 +1,48 @@
 <?php
-/** Génération du jeu de données DeptReg des données des départements et régions 9/6/2025.
+/** Génération du jeu de données DeptReg des données des départements et régions 14/6/2025.
  *
- * Ce script permet de produire le jeu de données DeptReg sous la forme du fichier JSON deptreg.json.
- * Il permet aussi de vérifier que le JdD est conforme à son schéma.
+ * Ce script permet:
+ *  - d'une part comme application de produire le jeu de données DeptReg sous la forme du fichier JSON deptreg.json
+ *    et de vérifier que le JdD est conforme à son schéma,
+ *  - d'autre part lorsqu'il est inclus dans dataset.inc.php d'utiliser ce JdD en Php
  *
  * Ce script illustre la gestion d'une BD en JSON pour Php.
- * Un JdD est défini par:
- *  - 3 MD title, description et $schema,
- *  - un champ par table ou dictionnaire.
+ * Un JdD est défini:
+ *  - en JSON par:
+ *    - 3 MD title, description et $schema,
+ *    - un champ par table ou dictionnaire,
+ *  - en Php par ce script de construction et d'utilisation du JdD.
  *
  * Une table est un dictionnaire qui associe à une clé un n-uplet, cad un array de la foeme [{key}=> [{col1}=> {val1}, ...]].
  * Un dictionnaire associe à une clé une valeur atomique, cad un array de la foeme [{key}=> {val}].
  */
-require_once 'cnig.inc.php';
+require_once 'dataset.inc.php';
+require_once 'nomscnig.php';
+
+/** Classe d'utilisation du JdD. */
+class DeptReg extends Dataset {
+  const JSON_FILE_NAME = 'deptreg.json';
+  
+  /** @var array<mixed> $data  Le contenu du fichier JSON. */
+  protected array $data;
+  
+  function __construct() {
+    $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
+    parent::__construct($this->data['title'], $this->data['description'], $this->data['$schema']);
+  }
+  
+  function getData(string $sectionName, mixed $filtre=null): array {
+    if ($filtre)
+      throw new Exception("Pas de filtre possible sur DeptReg");
+    return $this->data[$sectionName];
+  }
+};
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
+
 
 /** Classe masquée regroupant les éléments pour générer le jeu de données ainsi que le dialogue utilisateur. */
-class DeptReg {
+class DeptRegBuild {
   /** Titre du jeu de données */
   const TITLE = "Jeu de données DeptReg décrivant les départements, les régions et les \"domaines internet des Préfectures\"";
   /** Description du jeu de données */
@@ -164,7 +191,7 @@ EOT
           ],
         ],
       ],
-      'nomsCnig'=> Cnig::SCHEMA_JSON['properties']['nomsCnig'],
+      'nomsCnig'=> CnigBuild::SCHEMA_JSON['properties']['nomsCnig'],
       'prefdom'=> [
         'description'=> "Domaines internet des services de l'Etat dans les départements de métropole ayant une DDT(M), avec comme clé leur code INSEE précédé de la lettre 'D' + domaines internet de la DGTM de Guyane et de la DTAM de StP&M, avec comme clé leur code ISO 3166-1 alpha 3. Pour raccourcir cette liste est appelée \"Domaines des Préfectures\".
 Il un total de 94 domaines, soit 92 en métropole correspondant aux 96 départements moins les 4 de Paris et la petite couronne qui n’ont pas de DDT ; plus 2 outre-mer correspondant à la DGTM de Guyane et à la DTAM de Saint-Pierre-et-Miquelon.",
@@ -866,7 +893,7 @@ EOT
       'régions'=> $regs,
       'départements'=> $depts,
       'outre-mer'=> self::OUTREMER,
-      'nomsCnig'=> Cnig::build(),
+      'nomsCnig'=> CnigBuild::build(),
       'prefdom'=> self::PREFDOM,
     ];
   }
@@ -893,13 +920,13 @@ EOT
       }
       case 'storeJson': {
         file_put_contents(
-          'deptreg.json',
+          DeptReg::JSON_FILE_NAME,
           json_encode(self::build(), JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
         echo "Ecriture JSON ok<br>\n";
 
         require_once __DIR__.'/vendor/autoload.php';
-        $data = json_decode(file_get_contents('deptreg.json'), false);
-        $schema = json_decode(file_get_contents('deptreg.json'), true)['$schema'];
+        $data = json_decode(file_get_contents(DeptReg::JSON_FILE_NAME), false);
+        $schema = json_decode(file_get_contents(DeptReg::JSON_FILE_NAME), true)['$schema'];
         
         // Validate
         $validator = new JsonSchema\Validator;
@@ -933,4 +960,5 @@ EOT
     }
   }
 };
-DeptReg::main();
+
+DeptRegBuild::main();
