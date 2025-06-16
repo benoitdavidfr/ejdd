@@ -1,13 +1,14 @@
 <?php
-/** Définition des noms du CNIG, intégrées dans deptreg.php et JdD NomsCnig autonome. */
-require_once __DIR__.'/vendor/autoload.php';
+/** Définition des noms du CNIG, intégrées dans deptreg.php et JdD NomsCnig autonome.
+ * Le JdD est produit par la 2ème partie du script qui permet de générer un fichier JSON qui contient le JdD.
+ */
 require_once 'dataset.inc.php';
 
 /** Classe d'utilisation du JdD. */
 class NomsCnig extends Dataset {
   const JSON_FILE_NAME = 'nosmcnig.json';
   
-  /** Le contenu du fichier JSON */
+  /** @var array<mixed> $data Le contenu du fichier JSON */
   protected array $data;
   
   function __construct() {
@@ -23,7 +24,7 @@ class NomsCnig extends Dataset {
 };
 
 
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return;
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
 /** Classe de production du JdD */

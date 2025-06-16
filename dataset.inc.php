@@ -1,6 +1,61 @@
 <?php
-/** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes. */
+/** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes.
+ * Un JdD est défini par:
+ *  - son nom figurant dans le registre des JdD (Dtasaet::REGISTRE)
+ *  - un fichier Php portant le nom du JdD en minuscules avec l'extension '.php'
+ *  - une classe portant le nom du JdD héritant de la classe Dataset définie par inclusion du fichier Php
+ *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le fichier JSON adhoc du JdD
+ * Un JdD est utilisé par:
+ *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir une représentation Php
+ *  - l'accès aux champs de MD title, description et schema en readonly
+ *  - l'appel de Dataset::getData({nomSection}, {filtre}) pour obtenir un array de la section
+ * Un JdD doit comporter un schéma JSON conforme au méta-schéma des JdD qui impose notamment que:
+ *  - le JdD soit décrit dans le schéma par un titre, une description et un schéma
+ *  - chaque section de données soit décrite dans le schéma par un titre et une description
+ */
 require_once __DIR__.'/vendor/autoload.php';
+
+/* Journal des modifications du code. */
+define('A_FAIRE', [
+<<<'EOT'
+15/6/2025:
+  - écrire un schéma JSON des schéma de Dataset en étant plus contraint que le scchéma standard
+EOT
+]
+);
+/* Journal des modifications du code. */
+define('JOURNAL', [
+<<<'EOT'
+14/6/2025:
+  - début v2 fondée sur idees.yaml
+  - à la différence de la V1 (stckée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
+  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
+EOT
+]
+);
+/** Cmdes utiles */
+define('LIGNE_DE_COMMANDE', [
+<<<'EOT'
+Lignes de commandes
+---------------------
+  Installation du module justinrainbow/json-schema:
+    composer require justinrainbow/json-schema
+  phpstan:
+    ./vendor/bin/phpstan --memory-limit=1G
+  Fenêtre Php8.4:
+    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
+  phpDocumentor, utiliser la commande en Php8.2:
+    ../phpDocumentor.phar -f index.php
+  Fenêtre Php8.2:
+    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Pour committer le git:
+    git commit -am "{commentaire}"
+  Pour se connecter sur Alwaysdata:
+    ssh -lbdavid ssh-bdavid.alwaysdata.net
+
+EOT
+]
+);
 
 /** Pour mettre du Html dans un RecArray */
 class Html {
@@ -64,7 +119,10 @@ class RecArray {
   }
 
   /** Transforme récursivement un RecArray en objet de StdClass.
+   * Seuls es array non listes sont transformés en objet, les listes sont conservées.
+   * L'objectif est de construire ce que retourne un jeson_decode().
    * @param array<mixed> $input Le RecArray à transformer.
+   * @return stdClass|array<mixed>
    */
   static function toStdObject(array $input): stdClass|array {
     if (array_is_list($input)) {
@@ -208,6 +266,7 @@ abstract class Dataset {
     'DatasetEg',
     'DeptReg',
     'NomsCnig',
+    'AeCogPe',
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
@@ -399,7 +458,8 @@ abstract class Dataset {
   
   function displayErrors(): void {
     $validator = new JsonSchema\Validator;
-    $validator->validate($this->asStdObject(), $this->schema);
+    $data = $this->asStdObject();
+    $validator->validate($data, $this->schema);
 
     if ($validator->isValid()) {
       echo "Le JdD est conforme à son schéma.<br>\n";
