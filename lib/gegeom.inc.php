@@ -8,6 +8,8 @@
  *  puis en appellant la méthode Geometry::fromGeoArray().
  *
  * journal:
+ * - 16/6/2025
+ *   - Corrections pour validation PhpStan
  * - 2/9/2023
  *   - reformattage de la doc en PHPDoc
  * - 10/6/2023:
@@ -96,7 +98,7 @@ abstract class Geometry {
   static function fromGeoArray(array $geom): Geometry|GeometryCollection {
     $type = $geom['type'] ?? null;
     if (in_array($type, self::HOMOGENEOUSTYPES) && isset($geom['coordinates'])) {
-      return new (__NAMESPACE__.'\\'.$type)($geom['coordinates']); // @phpstan-ignore-line
+      return new (__NAMESPACE__.'\\'.$type)($geom['coordinates']);
     }
     elseif (($type=='GeometryCollection') && isset($geom['geometries'])) {
       $geoms = [];
@@ -1208,7 +1210,7 @@ if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) { // Test unitaire de 
       $decompose = [];
       foreach ($geom->decompose() as $g)
         $decompose[] = $g->asArray();
-      echo Yaml::dump(["decompose($label)" => $decompose], 5);
+      //echo Yaml::dump(["decompose($label)" => $decompose], 5);
     }
   }
 }

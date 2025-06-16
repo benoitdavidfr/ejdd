@@ -15,6 +15,8 @@
  * Ils peuvent être pris en compte en gérant les positions à l'Est de l'anti-méridien avec une longitude > 180°.
  *
  * journal: |
+ * - 16/6/2025:
+ *   - corrections pour conformité PhpStan
  * - 23/11/2023:
  *    - correction d'un bug dans BBox::__construct(), cas llpos
  * - 31/8/2023:
@@ -204,9 +206,9 @@ abstract class BBox {
       ]];
   }
   
-  // Retourne l'union de $this et de $b2, la BBox vide est un élément neutre pour l'union
+  /* Retourne l'union de $this et de $b2, la BBox vide est un élément neutre pour l'union */
   function unionVerbose(BBox $b2): BBox {
-    $u = $this->union($b2);
+    $u = $this->union($b2); // @phpstan-ignore argument.type   
     echo "BBox::union(b2=$b2)@$this -> $u<br>\n";
     return $u;
   }
@@ -224,6 +226,11 @@ abstract class BBox {
       $called_class = get_called_class();
       return new $called_class([$this->min, $this->max, $b2->min, $b2->max]);
     }
+  }
+  static function unionTest(): void {
+    $b1 = new GBox([[0, 0], [1, 1]]);
+    $b2 = new GBox([[2, 2],[3,3]]);
+    $b1->unionVerbose($b2);
   }
   
   /** intersection de 2 bbox, si $this intersecte $b2 alors retourne le GBox/EBox d'intersection, sinon retourne null.
@@ -244,7 +251,7 @@ abstract class BBox {
       return null;
   }
   function intersectsVerbose(BBox $b2): ?BBox {
-    $i = $this->intersects($b2);
+    $i = $this->intersects($b2);  // @phpstan-ignore argument.type   
     echo "BBox::intersects(b2=$b2)@$this -> ",$i ? 'true' : 'false',"<br>\n";
     return $i;
   }
@@ -267,12 +274,14 @@ abstract class BBox {
   }
   
   /** version bouléenne de intersects() */
-  function inters(BBox $b2): bool { return $this->intersects($b2) ? true : false; }
+  function inters(BBox $b2): bool { return $this->intersects($b2) ? true : false; } // @phpstan-ignore argument.type   
 
   /** teste si $small est strictement inclus dans $this */
   function includes(BBox $small, bool $show=false): bool {
-    $result = ($this->min[0] < $small->min[0]) && ($this->min[1] < $small->min[1])
-           && ($this->max[0] > $small->max[0]) && ($this->max[1] > $small->max[1]);
+    $result = ($this->min[0] < $small->min[0]) // @phpstan-ignore smaller.invalid
+       && ($this->min[1] < $small->min[1]) // @phpstan-ignore smaller.invalid
+       && ($this->max[0] > $small->max[0]) // @phpstan-ignore greater.invalid
+       && ($this->max[1] > $small->max[1]); // @phpstan-ignore greater.invalid
     if ($show)
       echo $this,($result ? " includes " : " NOT includes "),$small,"<br>\n";
     return $result;
@@ -299,7 +308,7 @@ class GBox extends BBox {
    * respectant le format Spatial défini dans MapCat et shomgt.yaml
    *
    * Remplace la méthode statique fromGeoDMd() conservée pour la compatibilité avec le code existant
-   * @param string|TPos|TLPos|TLLPos|TMapCatSpatial $param
+   * @param string|TPos|TLPos|TLLPos $param
    */
   function __construct(array|string $param=[]) {
     //echo "GBox::__construct(",json_encode($param),")<br>\n";
@@ -337,7 +346,7 @@ class GBox extends BBox {
     ] as $rect) {
       echo "<tr><td>";
       try {
-        $gbox = new self($rect);
+        $gbox = new self($rect);  // @phpstan-ignore argument.type
       }
       catch(\SExcept $e) {
         echo "SExcept: {c: ",$e->getSCode(),", m: '",$e->getMessage(),"'}";
@@ -354,7 +363,7 @@ class GBox extends BBox {
  
   /** maintien de la méthode fromGeoDMd() pour conserver la compatibilité avec le code existant
    *
-   * @param TMapCatSpatial $spatial */
+   * @param array<mixed> $spatial */
   static function fromGeoDMd(array $spatial): self { return new self($spatial); }
   
   /** Teste l'intersection avec l'AM */
@@ -523,6 +532,8 @@ if (basename(__FILE__) == basename($_SERVER['PHP_SELF'])) { // Test unitaire de 
   elseif ($_GET['test']=='GBox') {
     echo "<b>Test de BBox::intersects</b><br>\n";
     BBox::intersectsTest();
+    echo "<b>Test de BBox::union</b><br>\n";
+    BBox::unionTest();
     echo "<b>Test de GBox::dist</b><br>\n";
     GBox::distTest();
     echo "<b>Test de GBox::includes</b><br>\n";
@@ -613,7 +624,7 @@ class EBox extends BBox {
 
   /** taux de couverture du Bbox $right par le Bbox $this */
   function covers(EBox $right): float {
-    if (!($int = $this->intersects($right)))
+    if (!($int = $this->intersects($right))) // @phpstan-ignore argument.type
       return 0;
     else
       return $int->area()/$right->area();

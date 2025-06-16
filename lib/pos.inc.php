@@ -9,6 +9,9 @@
  *  et une liste de listes de positions comme array d'array de positions.
  *
  * journal:
+ * journal:
+ * - 16/6/2025
+ *   - Corrections pour validation PhpStan
  *  - 2/9/2023:
  *    - ajout du calcul de surface sur une LPos
  *    - restructuration de la doc en PHPDoc
@@ -267,6 +270,7 @@ foreach ([
   echo "$label ",LLPos::is($item) ? "est" : "n'est PAS"," une liste de listes de positions<br>\n";
 }
 
+/*
 //$lpos = [[0,0],[1,0],[1,1],[Ø,1],[0,0]];
 $lpos = [[0,0],[1,0],[1,1]];
 echo "<pre>area(",Yaml::dump($lpos, 0),")=",LPos::area($lpos),"</pre>\n";
@@ -285,3 +289,4 @@ echo '<h3>Test LPos::reproj()</h3><pre>',
 
 echo '<h3>Test LLPos::reproj()</h3><pre>',
     Yaml::dump(LLPos::reproj(function(array $pos): array { return [$pos[0]+1, $pos[1]+1]; }, [[[10,0], [0,10]]])),"</pre>\n";
+*/

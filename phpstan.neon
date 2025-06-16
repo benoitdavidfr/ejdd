@@ -41,7 +41,7 @@ parameters:
     - dataseteg.php
     - deptreg.php
     - nomscnig.php
-    - ae2025cogpe.php
+    - aecogpe.php
     - lib/coordsys.inc.php
     - lib/gebox.inc.php
     - lib/gegeom.inc.php
