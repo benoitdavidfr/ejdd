@@ -26,9 +26,11 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+16/6/2025:
+  - 1ère version de v2 conforme PhpStan
 14/6/2025:
   - début v2 fondée sur idees.yaml
-  - à la différence de la V1 (stckée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
+  - à la différence de la V1 (stockée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
   - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
 EOT
 ]

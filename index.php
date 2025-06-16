@@ -2,48 +2,6 @@
 /** Ce script définit l'IHM d'utilisation des JdD */
 require_once 'dataset.inc.php';
 
-/* Journal des modifications du code. */
-define('A_FAIRE', [
-<<<'EOT'
-15/6/2025:
-  - écrire un schéma JSON des schéma de Dataset en étant plus contraint que le scchéma standard
-EOT
-]
-);
-/* Journal des modifications du code. */
-define('JOURNAL', [
-<<<'EOT'
-14/6/2025:
-  - début v2 fondée sur idees.yaml
-  - à la différence de la V1 (stckée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
-  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
-EOT
-]
-);
-/** Cmdes utiles */
-define('LIGNE_DE_COMMANDE', [
-<<<'EOT'
-Lignes de commandes
----------------------
-  Installation du module justinrainbow/json-schema:
-    composer require justinrainbow/json-schema
-  phpstan:
-    ./vendor/bin/phpstan --memory-limit=1G
-  Fenêtre Php8.4:
-    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
-  phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f index.php
-  Fenêtre Php8.2:
-    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
-  Pour committer le git:
-    git commit -am "{commentaire}"
-  Pour se connecter sur Alwaysdata:
-    ssh -lbdavid ssh-bdavid.alwaysdata.net
-
-EOT
-]
-);
-
 ini_set('memory_limit', '1G');
 
 switch ($_GET['action'] ?? null) {
