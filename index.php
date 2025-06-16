@@ -2,7 +2,8 @@
 /** Ce script définit l'IHM d'utilisation des JdD */
 require_once 'dataset.inc.php';
 
-ini_set('memory_limit', '1G');
+ini_set('memory_limit', '10G');
+set_time_limit(5*60);
 
 switch ($_GET['action'] ?? null) {
   case null: {
