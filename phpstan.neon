@@ -35,13 +35,12 @@ parameters:
   paths:
     - index.php
     - dataset.inc.php
+    - geojson.php
+    - map.php
     - dataseteg.php
     - deptreg.php
     - nomscnig.php
-    #- ae2025.php
-    #- ae2025build.php
-    #- map.php
-    #- geojson.php
+    - ae2025cogpe.php
     #- lib/coordsys.inc.php
     #- lib/gebox.inc.php
     #- lib/gegeom.inc.php

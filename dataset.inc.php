@@ -7,11 +7,16 @@
  *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le fichier JSON adhoc du JdD
  * Un JdD est utilisé par:
  *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir une représentation Php
- *  - l'accès aux champs de MD title, description et schema en readonly
+ *  - l'accès aux champs readonly de MD title, description et schema
  *  - l'appel de Dataset::getData({nomSection}, {filtre}) pour obtenir un array de la section
  * Un JdD doit comporter un schéma JSON conforme au méta-schéma des JdD qui impose notamment que:
  *  - le JdD soit décrit dans le schéma par un titre, une description et un schéma
  *  - chaque section de données soit décrite dans le schéma par un titre et une description
+ *  - une sections de données est:
+ *    - soit un dictOfTuples, cad une table dans laquelle chaque n-uplet correspond à une clé,
+ *    - soit un dictOfValues, cad un dictionnaire de valeurs,
+ *    - soit un listOfTuples, cad une table dans laquelle aucune clé n'est définie,
+ *    - soit un listOfValues, cad une liste de valeurs.
  */
 require_once __DIR__.'/vendor/autoload.php';
 
@@ -28,6 +33,7 @@ define('JOURNAL', [
 <<<'EOT'
 16/6/2025:
   - 1ère version de v2 conforme PhpStan
+  - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
 14/6/2025:
   - début v2 fondée sur idees.yaml
   - à la différence de la V1 (stockée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
@@ -193,52 +199,74 @@ class RecArray {
 class Section {
   /** @var string $name Le nom de la section dans le JdD */
   readonly string $name;
+  readonly string $title;
   /** @var array<mixed> $schema Le schéma JSON de la section */
   readonly array $schema;
   
   /** @param array<mixed> $schema Le schéma JSON de la section */
-  function __construct(string $name, array $schema) { $this->name = $name; $this->schema = $schema; }
+  function __construct(string $name, array $schema) {
+    $this->name = $name;
+    $this->schema = $schema;
+    $this->title = $schema['title'];
+  }
   function description(): string { return $this->schema['description']; }
   
   function toHtml(): string { return RecArray::toHtml($this->schema); }
   
-  /** Déduit du schéma si la section correspond à une table ou à un dictionnaire. */
+  /** Déduit du schéma si le type de la section. */
   function kind(): string {
-    $patProps = $this->schema['patternProperties'];
-    $prop = $patProps[array_keys($patProps)[0]];
-    if (isset($prop['type'])) {
-      $type = $prop['type'];
-    }
-    elseif (array_keys($prop) == ['oneOf']) {
-      echo "OneOf<br>\n";
-      $oneOf = $prop['oneOf'];
-      $type = $oneOf[0]['type'];
-    }
-    //echo "type=$type<br>\n";
-    switch ($type ?? null) {
-      case 'object': return 'table';
-      case 'string': return 'dict';
+    switch ($type = $this->schema['type']) {
+      case 'object': {
+        $patProps = $this->schema['patternProperties'];
+        $prop = $patProps[array_keys($patProps)[0]];
+        if (isset($prop['type'])) {
+          $type = $prop['type'];
+        }
+        elseif (array_keys($prop) == ['oneOf']) {
+          echo "OneOf<br>\n";
+          $oneOf = $prop['oneOf'];
+          $type = $oneOf[0]['type'];
+        }
+        //echo "type=$type<br>\n";
+        switch ($type ?? null) {
+          case 'object': return 'dictOfTuples';
+          case 'string': return 'dictOfValues';
+          default: {
+            echo "<pre>prop="; print_r($prop);
+            throw new Exception("type ".($type ?? 'inconnu')." non prévu");
+          }
+        }
+      }
+      case 'array': {
+        return 'listOfTuples';
+      }
       default: {
-        echo "<pre>prop="; print_r($prop);
-        throw new Exception("type ".($type ?? 'inconnu')." non prévu");
+        throw new Exception("Cas non traité sur type=$type");
       }
     }
   }
   
   /** Affiche les données de la section */
   function display(Dataset $dataset): void {
-    echo '<h2>'.$this->description()."</h2>\n";
+    echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Schéma</h3>\n";
     echo $this->toHtml();
     echo "<h3>Contenu</h3>\n";
-    if ($this->kind() == 'table') { // les données sont structurées en une table
-      $table = $dataset->getData($this->name);
-    }
-    else { // les données sont structurées en un dictionnaire, transformation en table
-      $table = array_map(
-        function($value): array { return ['value'=> $value]; },
-        $dataset->getData($this->name)
-      );
+    switch ($kind = $this->kind()) {
+      case 'dictOfTuples':
+      case 'listOfTuples': { // les données sont structurées en une table
+        $table = $dataset->getData($this->name);
+        break;
+      }
+      case 'dictOfValues':
+      case 'listOfValues': { // les données, structurées en un dictOfValues ou listOfValues, sont transformation en dictOfTuples
+        $table = array_map(
+          function($value): array { return ['value'=> $value]; },
+          $dataset->getData($this->name)
+        );
+        break;
+      }
+      default: { throw new Exception("kind $kind non traité"); }
     }
     echo "<table border=1>\n";
     $cols_prec = [];
@@ -274,7 +302,9 @@ abstract class Dataset {
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Méta schéma des JdD",
     'definitions'=> [
-      'section'=> [
+      'sectionDict'=> [
+        'description'=> "Cas d'une section dictOfTuples ou dictOfValues",
+        'type'=> 'object',
         'required'=> ['title','description','type','additionalProperties','patternProperties'],
         'properties'=> [
           'title'=> ['type'=> 'string'], // une section de données doit avoir un titre de type string
@@ -283,6 +313,21 @@ abstract class Dataset {
           'additionalProperties'=> ['const'=> false],
           'patternProperties'=> ['type'=> 'object'],
         ],
+      ],
+      'sectionList'=> [
+        'description'=> "Cas d'une section listOfTuples ou listOfValues",
+        'required'=> ['title','description','type','items'],
+        'properties'=> [
+          'title'=> ['type'=> 'string'], // une section de données doit avoir un titre de type string
+          'description'=> ['type'=> 'string'], // une section de données doit avoir une description de type string
+          'type'=> ['const'=> 'array'],
+        ],
+      ],
+      'section'=> [
+        'oneOf'=> [
+          [ '$ref'=> '#/definitions/sectionDict'],
+          [ '$ref'=> '#/definitions/sectionList'],
+        ]
       ], // MD de section
     ],
     'type'=> 'object',
@@ -480,7 +525,7 @@ abstract class Dataset {
     echo "<h2>",$this->title,"</h2>\n",
          "<table border=1>\n",
          "<tr><td>description</td><td>",str_replace("\n","<br>\n", $this->description),"</td></tr>\n";
-    echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
+    //echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
     foreach ($this->sections as $sname => $section) {
       echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$sname'>$sname</a></td>",
            "<td>",$this->sections[$sname]->description(),"</td></tr>\n";
@@ -490,7 +535,7 @@ abstract class Dataset {
 };
 
 
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation  
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
 switch ($_GET['action'] ?? null) {
