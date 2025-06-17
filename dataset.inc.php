@@ -48,6 +48,7 @@ Lignes de commandes
 ---------------------
   Installation du module justinrainbow/json-schema:
     composer require justinrainbow/json-schema
+    composer require symfony/yaml
   phpstan:
     ./vendor/bin/phpstan --memory-limit=1G
   Fenêtre Php8.4:

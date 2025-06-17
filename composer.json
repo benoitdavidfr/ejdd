@@ -3,6 +3,7 @@
         "phpstan/phpstan": "^2.1"
     },
     "require": {
-        "justinrainbow/json-schema": "^6.4"
+        "justinrainbow/json-schema": "^6.4",
+        "symfony/yaml": "^7.3"
     }
 }

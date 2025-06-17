@@ -48,7 +48,7 @@ cultural:
       su_dif: '??'
       subunit: nom de la sous-unité géo. en anglais
       su_a3: code de la sous-unité géo.
-      brk_diff
+      brk_diff: '??'
       name: nom court en anglais
       name_long: nom long en anglais
       brk_a3: '??'
@@ -98,51 +98,58 @@ cultural:
       name_len: longueur du nom ?
       long_len: longueur du nom long ?
       abbrev_len: longueur de l'abréviation ?
-      tiny
-      homepart
-      min_zoom
-      min_label
-      max_label
-      label_x
-      label_y
-      ne_id
-      wikidataid
+      tiny: '??'
+      homepart: '??'
+      min_zoom: '??'
+      min_label: '??'
+      max_label: '??'
+      label_x: '??'
+      label_y: '??'
+      ne_id: '??'
+      wikidataid: '??'
       name_{lang}: nom dans la langue {lang} où {lang} est le code de la langue sur 2 caractères, 'fr' pour français
-      fclass_iso
-      tlc_diff
-      fclass_tlc
-      fclass_us
-      fclass_fr
-      fclass_ru
-      fclass_es
-      fclass_cn
-      fclass_tw
-      fclass_in
-      fclass_np
-      fclass_pk
-      fclass_de
-      fclass_gb
-      fclass_br
-      fclass_il
-      fclass_ps
-      fclass_sa
-      fclass_eg
-      fclass_ma
-      fclass_pt
-      fclass_ar
-      fclass_jp
-      fclass_ko
-      fclass_vn
-      fclass_tr
-      fclass_id
-      fclass_pl
-      fclass_gr
-      fclass_it
-      fclass_nl
-      fclass_se
-      fclass_bd
-      fclass_ua
-      
+      fclass_iso: '??'
+      tlc_diff: '??'
+      fclass_tlc: '??'
+      fclass_{lang}: {lang} code langue sur 2 car., ??
+    sélectionDeProp:
+      featurecla: classe d'objets
+      sovereignt: nom en anglais de l'état souverain
+      sov_a3: code alpha3 de l'état souverain, FR1 pour la France
+      type:
+        - le niveau auquel correspond le nom
+          - Geo unit - unité géo.
+          - Geo subunit - sous-unité géo., ex La Corse
+          - Disputed, ex Mayotte
+          - Dependency - TOM, ...
+      admin: nom du pays en anglais, au sens country, les outre-mer autres que les DROM sont considérés comme des pays distincts
+      adm0_a3: code du pays
+      geounit: nom de l'unité géo. en anglais
+      gu_a3: code de l'unité, semble être le code ISO apha 3
+      subunit: nom de la sous-unité géo. en anglais
+      su_a3: code de la sous-unité géo.
+      name: nom court en anglais
+      name_long: nom long en anglais
+      abbrev: abbréviation en anglais
+      formal_en: nom formel en anglais
+      note_adm0: 'Fr.' pour les comp. Fr.
+      note_brk: note sur d'éventuelles revendications
+      name_sort: nom pour tri ?
+      name_alt: nom alternatif ?
+      pop_est: estim. de la pop.
+      pop_rank: rang de population ?
+      pop_year: année de l'estim.
+      gdp_md: pib
+      gdp_year: année pib
+      economy: type d'économie, noté 1 à 7
+      income_grp: niveau de revenu, noté 1 à 5
+      iso_a2: code ISO alpha2
+      iso_a3: code ISO alpha 3
+      adm0_iso: code ISO de la country
+      continent: continent
+      region_un: région mondiale ONU
+      subregion: sous-région mondial ONU
+      name_fr: nom en français
     admin_0_sovereignty: |
       209 sovereign states in the world.
       Sovereign states: There are fewer sovereign states than ISO country codes. Sovereign States do not distinguish between the metropolitan and semi-independent portions of a state or it’s constituent countries. Passports are issued by sovereign states, not countries.
