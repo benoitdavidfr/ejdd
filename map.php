@@ -42,7 +42,14 @@ var onEachFeature = function (feature, layer) {
     '<b>Feature</b><br>'
     +'<pre>'+JSON.stringify(feature.properties,null,' ')+'</pre>'
   );
-  layer.bindTooltip(feature.properties.nom);
+  var name = 'undef';
+  if (typeof feature.properties.nom !== 'undefined') {
+    name = feature.properties.nom;
+  }
+  else if (typeof feature.properties.name !== 'undefined') {
+    name = feature.properties.name;
+  }
+  layer.bindTooltip(name);
 }
 
 var map = L.map('map').setView([46.5,3],6);  // view pour la zone
@@ -68,6 +75,19 @@ var baseLayers = {
 map.addLayer(baseLayers["OSM"]);
 
 var overlays = {
+// NE
+  "NE110m/boundary_lines_land" : new L.UGeoJSONLayer({
+    endpoint: gjsurl+'NE110mCultural/collections/ne_110m_admin_0_boundary_lines_land/items',
+    minZoom: 0, maxZoom: 7, usebbox: true, onEachFeature: onEachFeature
+  }),
+  "NE110m/countries" : new L.UGeoJSONLayer({
+    endpoint: gjsurl+'NE110mCultural/collections/ne_110m_admin_0_countries/items',
+    minZoom: 0, maxZoom: 7, usebbox: true, onEachFeature: onEachFeature
+  }),
+  "NE50m/map_units" : new L.UGeoJSONLayer({
+    endpoint: gjsurl+'NE50mCultural/collections/ne_50m_admin_0_map_units/items',
+    minZoom: 5, maxZoom: 12, usebbox: true, onEachFeature: onEachFeature
+  }),
 // Région
   "Région" : new L.UGeoJSONLayer({
     endpoint: gjsurl+'aecogpe/collections/region/items',

@@ -35,18 +35,12 @@ class AeCogPe extends Dataset {
     'required'=> ['title','description','$schema', 'region'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> [
-        'description'=> "Titre du jeu de données",
-        'type'=> 'string',
-      ],
+      'title'=> ['description'=> "Titre du jeu de données", 'type'=> 'string'],
       'description'=> [
         'description'=> "Commentaire sur le jeu de données",
         'type'=> 'string',
       ],
-      '$schema'=> [
-        'description'=> "Schéma JSON du jeu de données",
-        'type'=> 'object',
-      ],
+      '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
       'region'=> [
         'title'=> "Table des régions",
         'description'=> "Table des régions",
@@ -136,7 +130,7 @@ class AeCogPe extends Dataset {
       ],
       'epci'=> [
         'title'=> "EPCI",
-        'description'=> "EPCI",
+        'description'=> "Etablissement Public de Coopération Municipale",
         'type'=> 'array',
         'items'=> [
           'type'=> 'object',
@@ -181,6 +175,97 @@ class AeCogPe extends Dataset {
             ],
           ],
         ],
+      ],
+      'arrondissement'=> [
+        'title'=> "Arrondissement",
+        'description'=> "Arrondissement",
+        'type'=> 'array',
+        'items'=> [
+          'type'=> 'object',
+          'required'=> ['id','nom_m','nom','insee_arr','insee_dep','insee_reg','geometry'],
+          'properties'=> [
+            'id'=> [
+              'description'=> "id AE",
+              'type'=> 'string',
+            ],
+            'nom_m'=> [
+              'description'=> "nom en majuscules",
+              'type'=> 'string',
+            ],
+            'nom'=> [
+              'description'=> "nom",
+              'type'=> 'string',
+            ],
+            'insee_arr'=> [
+              'description'=> "code INSEE de l'arrondissement",
+              'type'=> 'string',
+            ],
+            'insee_dep'=> [
+              'description'=> "code INSEE du département",
+              'type'=> 'string',
+            ],
+            'insee_reg'=> [
+              'description'=> "code INSEE de la région à laquelle appartient le département",
+              'type'=> 'string',
+            ],
+            'geometry'=> [
+              'description'=> "Géométrie GeoJSON",
+              'type'=> 'object',
+              'properties'=> [
+                'type'=> [
+                  'description'=> "Type de géométrie",
+                  'enum'=> ['MultiPolygon','Polygon'],
+                ],
+                'coordinates'=> [
+                  'description' => "Coordonnées",
+                  'type'=> 'array',
+                ],
+              ],
+            ],
+          ],
+        ],
+      ],
+      'canton'=> [
+        'title'=> "Canton",
+        'description'=> "Canton",
+        'type'=> 'array',
+        'items'=> [
+          'type'=> 'object',
+          'required'=> ['id','insee_can','insee_dep','insee_reg','geometry'],
+          'properties'=> [
+            'id'=> [
+              'description'=> "id AE",
+              'type'=> 'string',
+            ],
+            'insee_can'=> [
+              'description'=> "code INSEE du Canton",
+              'type'=> 'string',
+            ],
+            'insee_dep'=> [
+              'description'=> "code INSEE du département",
+              'type'=> 'string',
+            ],
+            'insee_reg'=> [
+              'description'=> "code INSEE de la région à laquelle appartient le département",
+              'type'=> 'string',
+            ],
+            'geometry'=> [
+              'description'=> "Géométrie GeoJSON",
+              'type'=> 'object',
+              'properties'=> [
+                'type'=> [
+                  'description'=> "Type de géométrie",
+                  'enum'=> ['MultiPolygon','Polygon'],
+                ],
+                'coordinates'=> [
+                  'description' => "Coordonnées",
+                  'type'=> 'array',
+                ],
+              ],
+            ],
+          ],
+        ],
+        
       ],
       'commune'=> [
         'title'=> "Commune",
@@ -253,6 +338,124 @@ class AeCogPe extends Dataset {
             ],
           ],
         ],
+      ],
+      'chflieu_commune'=> [
+        'title'=> "Chef-lieu de commmune",
+        'description'=> "Chef-lieu de commmune",
+        'type'=> 'array',
+        'items'=> [
+          'type'=> 'object',
+          'properties'=> [
+            'id'=> [
+              'description'=> "id AE",
+              'type'=> 'string',
+            ],
+            'nom'=> [
+              'description'=> "nom",
+              'type'=> 'string',
+            ],
+            'id_com'=> [
+              'description'=> "id de la commune",
+              'type'=> 'string',
+            ],
+            'insee_com'=> [
+              'description'=> "code INSEE du Canton",
+              'type'=> 'string',
+            ],
+            'geometry'=> [
+              'description'=> "Géométrie GeoJSON",
+              'type'=> 'object',
+              'properties'=> [
+                'type'=> [
+                  'description'=> "Type de géométrie",
+                  'enum'=> ['Point'],
+                ],
+                'coordinates'=> [
+                  'description' => "Coordonnées",
+                  'type'=> 'array',
+                ],
+              ],
+            ],
+          ],
+        ],
+      ],
+      'commune_associee_ou_deleguee'=> [
+        'title'=> "Commune associée ou déléguée",
+        'description'=> "Commune associée ou déléguée",
+        'type'=> 'array',
+        'items'=> [
+          'type'=> 'object',
+          'required'=> ['id','nom','nom_m','insee_cad','insee_com','nature','population','geometry'],
+          'additionalProperties'=> false,
+          'properties'=> [
+            'id'=> [
+              'description'=> "id AE",
+              'type'=> 'string',
+            ],
+            'nom'=> [
+              'description'=> "nom en minuscules",
+              'type'=> 'string',
+            ],
+            'nom_m'=> [
+              'description'=> "nom en majuscules",
+              'type'=> 'string',
+            ],
+            'insee_cad'=> [
+              'description'=> "code Insee de la commune associée ou déléguée",
+              'type'=> 'string',
+            ],
+            'insee_com'=> [
+              'description'=> "code Insee de la commune",
+              'type'=> 'string',
+            ],
+            'nature'=> [
+              'description'=> "nature",
+              'enum'=> ['COMD','COMA'],
+            ],
+            'population'=> [
+              'description'=> "population en nombre d'habitants",
+              'type'=> 'integer',
+            ],
+            'geometry'=> [
+              'description'=> "Géométrie GeoJSON",
+              'type'=> 'object',
+              'properties'=> [
+                'type'=> [
+                  'description'=> "Type de géométrie",
+                  'enum'=> ['MultiPolygon','Polygon'],
+                ],
+                'coordinates'=> [
+                  'description' => "Coordonnées",
+                  'type'=> 'array',
+                ],
+              ],
+            ],
+          ],
+        ],
+      ],
+      'chflieu_commune_associee_ou_deleguee'=> [
+        'title'=> "Chef-lieu de ommune associée ou déléguée",
+        'description'=> "Chef-lieu de ommune associée ou déléguée",
+        'type'=> 'array',
+        'items'=> [],
+      ],
+      'arrondissement_municipal'=> [
+        'title'=> "Arrondissement municipal",
+        'description'=> "Arrondissement municipal",
+        'type'=> 'array',
+        'items'=> [],
+      ],
+      'chflieu_arrondissement_municipal'=> [
+        'title'=> "Chef-lieu d'arrondissement municipal",
+        'description'=> "Chef-lieu d'arrondissement municipal",
+        'type'=> 'array',
+        'items'=> [],
+      ],
+      'collectivite_territoriale'=> [
+        'title'=> "collectivite_territoriale ??",
+        'description'=> "collectivite_territoriale ??",
+        'type'=> 'array',
+        'items'=> [],
       ],
     ],
   ];

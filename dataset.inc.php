@@ -277,6 +277,8 @@ class Section {
       $cols_prec = $cols;
       echo "<tr><td>$key</td>";
       foreach ($tuple as $k => $v) {
+        if (!$v)
+          $v = '';
         if (is_array($v))
           $v = json_encode($v);
         if (strlen($v) > 50)
@@ -297,6 +299,9 @@ abstract class Dataset {
     'DeptReg',
     'NomsCnig',
     'AeCogPe',
+    'NE110mCultural',
+    'NE110mPhysical',
+    'NE50mCultural',
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',

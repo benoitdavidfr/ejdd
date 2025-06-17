@@ -33,7 +33,8 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     $bbox =  new \gegeom\GBox($bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
   }
-  $section = Dataset::get($dsname)->getData($sectname);
+  $sectionMD = Dataset::get($dsname)->sections[$sectname]; // les MD de la section
+  $section = Dataset::get($dsname)->getData($sectname); // les données de la section
   $features = [];
   foreach ($section as $tuple) {
     $geometry = $tuple['geometry'];
@@ -49,6 +50,15 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       //echo "Intersecte bbox\n";
     }
     unset($tuple['geometry']);
+    //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
+    if (isset($sectionMD->schema['items']['propertiesForGeoJSON'])) {
+      //print_r($tuple);
+      $tuple2 = [];
+      foreach ($sectionMD->schema['items']['propertiesForGeoJSON'] as $prop)
+        $tuple2[$prop] = $tuple[$prop];
+      //print_r($tuple2);
+      $tuple = $tuple2;
+    }
     $features[] = [
       'type'=> 'Feature',
       'properties'=> $tuple,

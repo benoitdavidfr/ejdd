@@ -16,9 +16,10 @@ switch ($_GET['action'] ?? null) {
     else {
       echo "Choix de l'action:<br>\n";
       echo "<a href='",strToLower($_GET['dataset']),".php'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
-      echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
+      echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
+      echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
       /*echo "<a href='?action=proj&file=$_GET[file]'>Exemple d'une projection</a><br>\n";
       echo "<a href='?action=join&file=$_GET[file]'>Exemple d'une jointure</a><br>\n";
       echo "<a href='?action=union&file=$_GET[file]'>Exemple d'une union homogène</a><br>\n";
@@ -28,11 +29,6 @@ switch ($_GET['action'] ?? null) {
     }
     break;
   }
-  case 'json': {
-    $dataset = Dataset::get($_GET['dataset']);
-    header('Content-Type: application/json');
-    die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
-  }
   case 'display': {
     $dataset = Dataset::get($_GET['dataset']);
     if (!isset($_GET['section']))
@@ -40,6 +36,11 @@ switch ($_GET['action'] ?? null) {
     else
       $dataset->sections[$_GET['section']]->display($dataset);
     break;
+  }
+  case 'json': {
+    $dataset = Dataset::get($_GET['dataset']);
+    header('Content-Type: application/json');
+    die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
   }
   case 'validate': {
     require_once __DIR__.'/vendor/autoload.php';
