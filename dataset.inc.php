@@ -299,6 +299,7 @@ abstract class Dataset {
     'DatasetEg',
     'DeptReg',
     'NomsCnig',
+    'MapDataset',
     'AeCogPe',
     'NE110mCultural',
     'NE110mPhysical',

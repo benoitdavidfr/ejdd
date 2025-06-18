@@ -8,6 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class MapDataset extends Dataset {
   const YAML_FILE_PATH = 'mapdataset.yaml';
+  /** @var array<string,mixed> $data Les données des différentes sections du jeu */
   readonly array $data;
   
   function __construct() {
@@ -32,11 +33,16 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISAT
 abstract class Layer {
   readonly string $lyrId;
   readonly string $title;
+  /** @var array<mixed> $params Les paramètres de l'appel. */
   readonly array $params;
   
+  /** @var array<string,Layer> $all le dictionnaire des couches indexées par leur id */
   static array $all = [];
   
-  static function create(string $lyrId, array $def) {
+  /** Création d'une couche dans la bonne classe en focntion des paramètres.
+   * @param array<mixed> $def La définition de la couche
+   */
+  static function create(string $lyrId, array $def): self {
     $title = $def['title'];
     unset($def['title']);
     $kind = array_keys($def)[0];
@@ -49,6 +55,9 @@ abstract class Layer {
     }
   }
   
+  /** Création d'une couche.
+   * @param array<mixed> $params Les paramètres d'appel
+   */
   function __construct(string $lyrId, string $title, array $params) {
     $this->lyrId = $lyrId;
     $this->title = $title;
@@ -65,6 +74,10 @@ class L_TileLayer extends Layer {
                  ."      '{url}',\n"
                  ."      {options}\n"
                  ."    ),\n";
+
+  /** Création d'une couche.
+   * @param array<mixed> $params Les paramètres d'appel
+   */
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
   }
@@ -87,6 +100,9 @@ class L_UGeoJSONLayer extends Layer {
   const JS_CODE = "  // affichage de la couche {id}\n"
                  ."    '{id}' : new L.UGeoJSONLayer({params}),\n";
 
+  /** Création d'une couche.
+   * @param array<mixed> $params Les paramètres d'appel
+   */
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
   }
@@ -112,6 +128,9 @@ class L_geoJSON extends Layer {
                  ."      {style}\n"
                  ."    ),\n";
 
+  /** Création d'une couche.
+   * @param array<mixed> $params Les paramètres d'appel
+   */
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
   }
@@ -210,10 +229,14 @@ EOT
 );
 /** Classe de la carte ; prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet pour la dessinner. */
 class Map {
+  /** @var array<mixed> $def La définition de la carte issue du JdD. */
   readonly array $def;
+  
+  /** @param array<mixed> $def La définition de la carte issue du JdD. */
   function __construct(array $def) { $this->def = $def; }
   
-  /** Génère le code JS pour les couches */
+  /** Génère le code JS pour les couches.
+   * @param list<string> $layerNames La liste des noms des couches. */
   function drawLayers(string $pattern, array $layerNames, string $jsCode): string {
     foreach ($layerNames as $layerName) {
       if (!($layer = Layer::$all[$layerName] ?? null))
