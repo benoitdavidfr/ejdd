@@ -1,5 +1,11 @@
 <?php
-/** JdD des cartes. */
+/** JdD des cartes.
+ * L'objectif de ce JdD est de définir des cartes affichables en Leaflet sans avoir à éditer le code JS correspondant.
+ * Ainsi la définition des cartes est stockée dans le fichier mapdataset.yaml.
+ * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
+ * chacune définie dans la section layer notamment par un type et des paramètres.
+ * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
+ */
 
 require_once 'dataset.inc.php';
 require_once 'vendor/autoload.php';
@@ -151,79 +157,79 @@ class L_geoJSON extends Layer {
 /** Le code JavaScript paramétré de la carte */
 define('JS_SRCE', [
 <<<'EOT'
-  <!DOCTYPE HTML>
-  <html><head>
-    <title>{title}</title>
-    <meta charset="UTF-8">
-    <!-- meta nécessaire pour le mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <!-- styles nécessaires pour le mobile -->
-    <link rel='stylesheet' href='leaflet/llmap.css'>
-    <!-- styles et src de Leaflet -->
-    <link rel="stylesheet" href='leaflet/leaflet.css'/>
-    <script src='leaflet/leaflet.js'></script>
-    <!-- chgt du curseur -->
-    <style>
-    .leaflet-grab {
-       cursor: auto;
-    }
-    .leaflet-dragging .leaflet-grab{
-       cursor: move;
-    }
-    </style> 
-    <!-- Include the edgebuffer plugin -->
-    <script src="leaflet/leaflet.edgebuffer.js"></script>
-    <!-- Include the Control.Coordinates plugin -->
-    <link rel='stylesheet' href='leaflet/Control.Coordinates.css'>
-    <script src='leaflet/Control.Coordinates.js'></script>
-    <!-- Include the uGeoJSON plugin -->
-    <script src="leaflet/leaflet.uGeoJSON.js"></script>
-    <!-- plug-in d'appel des GeoJSON en AJAX -->
-    <script src='leaflet/leaflet-ajax.js'></script>
-  </head>
-  <body>
-    <div id="map" style="height: 100%; width: 100%"></div>
-    <script>
-      var {varName} = {varValue};
-
-  // affiche les caractéristiques de chaque feature
-  var onEachFeature = function (feature, layer) {
-    layer.bindPopup(
-      '<b>Feature</b><br>'
-      +'<pre>'+JSON.stringify(feature.properties,null,' ')+'</pre>'
-    );
-    var name = 'undef';
-    if (typeof feature.properties.nom !== 'undefined') {
-      name = feature.properties.nom;
-    }
-    else if (typeof feature.properties.name !== 'undefined') {
-      name = feature.properties.name;
-    }
-    layer.bindTooltip(name);
+<!DOCTYPE HTML>
+<html><head>
+  <title>{title}</title>
+  <meta charset="UTF-8">
+  <!-- meta nécessaire pour le mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- styles nécessaires pour le mobile -->
+  <link rel='stylesheet' href='leaflet/llmap.css'>
+  <!-- styles et src de Leaflet -->
+  <link rel="stylesheet" href='leaflet/leaflet.css'/>
+  <script src='leaflet/leaflet.js'></script>
+  <!-- chgt du curseur -->
+  <style>
+  .leaflet-grab {
+     cursor: auto;
   }
+  .leaflet-dragging .leaflet-grab{
+     cursor: move;
+  }
+  </style> 
+  <!-- Include the edgebuffer plugin -->
+  <script src="leaflet/leaflet.edgebuffer.js"></script>
+  <!-- Include the Control.Coordinates plugin -->
+  <link rel='stylesheet' href='leaflet/Control.Coordinates.css'>
+  <script src='leaflet/Control.Coordinates.js'></script>
+  <!-- Include the uGeoJSON plugin -->
+  <script src="leaflet/leaflet.uGeoJSON.js"></script>
+  <!-- plug-in d'appel des GeoJSON en AJAX -->
+  <script src='leaflet/leaflet-ajax.js'></script>
+</head>
+<body>
+  <div id="map" style="height: 100%; width: 100%"></div>
+  <script>
+    var {varName} = {varValue};
 
-  var map = L.map('map').setView([46.5,3],6);  // view pour la zone
-  L.control.scale({position:'bottomleft', metric:true, imperial:false}).addTo(map);
+// affiche les caractéristiques de chaque feature
+var onEachFeature = function (feature, layer) {
+  layer.bindPopup(
+    '<b>Feature</b><br>'
+    +'<pre>'+JSON.stringify(feature.properties,null,' ')+'</pre>'
+  );
+  var name = 'undef';
+  if (typeof feature.properties.nom !== 'undefined') {
+    name = feature.properties.nom;
+  }
+  else if (typeof feature.properties.name !== 'undefined') {
+    name = feature.properties.name;
+  }
+  layer.bindTooltip(name);
+}
 
-  // activation du plug-in Control.Coordinates
-  var c = new L.Control.Coordinates();
-  c.addTo(map);
-  map.on('click', function(e) { c.setCoordinates(e); });
+var map = L.map('map').setView([46.5,3],6);  // view pour la zone
+L.control.scale({position:'bottomleft', metric:true, imperial:false}).addTo(map);
 
-  var baseLayers = {
-    {baseLayers}
-  };
-  map.addLayer(baseLayers["{defaultBaseLayer}"]);
+// activation du plug-in Control.Coordinates
+var c = new L.Control.Coordinates();
+c.addTo(map);
+map.on('click', function(e) { c.setCoordinates(e); });
 
-  var overlays = {
-    {overlays}
-  };
-  map.addLayer(overlays["{defaultOverlay}"]);
+var baseLayers = {
+  {baseLayers}
+};
+map.addLayer(baseLayers["{defaultBaseLayer}"]);
 
-  L.control.layers(baseLayers, overlays).addTo(map);
-      </script>
-    </body>
-  </html>
+var overlays = {
+  {overlays}
+};
+map.addLayer(overlays["{defaultOverlay}"]);
+
+L.control.layers(baseLayers, overlays).addTo(map);
+    </script>
+  </body>
+</html>
 EOT
 ]
 );
@@ -257,34 +263,38 @@ class Map {
     // les variables
     foreach ($this->def['vars'] as $varName => $varValue) {
       $jsCode = str_replace(
-        "      var {varName} = {varValue};\n",
-        "      var $varName = '$varValue';\n"."      var {varName} = {varValue};\n",
+        "    var {varName} = {varValue};\n",
+        "    var $varName = '$varValue';\n"."    var {varName} = {varValue};\n",
         $jsCode );
     }
-    $jsCode = str_replace("      var {varName} = {varValue};\n", '', $jsCode );
-    
+    $jsCode = str_replace("    var {varName} = {varValue};\n", '', $jsCode );
+      
     // les baseLeyrs
-    $jsCode = $this->drawLayers("    {baseLayers}\n", $this->def['baseLayers'], $jsCode);
+    $jsCode = $this->drawLayers("  {baseLayers}\n", $this->def['baseLayers'], $jsCode);
     
     // affichage par défaut de la baseLayer
     $jsCode = str_replace('{defaultBaseLayer}', $this->def['defaultBaseLayer'], $jsCode);
     
     // la déf. des overlays
-    $jsCode = $this->drawLayers("    {overlays}\n", $this->def['overlays'], $jsCode);
+    $jsCode = $this->drawLayers("  {overlays}\n", $this->def['overlays'], $jsCode);
     
     // les affichage par défaut des overlays
     foreach ($this->def['defaultOverlays'] as $defaultOverlay) {
       $jsCode = str_replace(
-        "  map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
-        "  map.addLayer(overlays[\"{defaultOverlay}\"]);\n"
-        ."  map.addLayer(overlays[\"$defaultOverlay\"]);\n",
+        "map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
+        "map.addLayer(overlays[\"$defaultOverlay\"]);\n"."map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
         $jsCode
       );
     }
-    $jsCode = str_replace("  map.addLayer(overlays[\"{defaultOverlay}\"]);\n", '', $jsCode);
+    $jsCode = str_replace("map.addLayer(overlays[\"{defaultOverlay}\"]);\n", '', $jsCode);
     
-    $jsCode = str_replace('"{gjsurl}', 'gjsurl+"', $jsCode);
-    
+    foreach ($this->def['vars'] as $varName => $varValue) {
+      // Attention les accolades dans une chaine ont une signification particulière en Php
+      $varNameWithAcc = '{'.$varName.'}';
+      //echo "Remp $varName: : \"$varNameWithAcc -> $varName+\" + '$varNameWithAcc -> $varName+'<br>\n";
+      $jsCode = str_replace(["\"$varNameWithAcc", "'$varNameWithAcc"], ["$varName+\"", "$varName+'"], $jsCode);
+    }
+      
     return $jsCode;
   }
 };
