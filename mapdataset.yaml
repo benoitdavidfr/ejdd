@@ -245,6 +245,8 @@ maps:
       - FondBlanc
     defaultBaseLayer: OSM
     overlays:
+      - NE110m/coastline
+      - NE110m/wgs84_bounding_box
       - NE110m/boundary_lines_land
       - NE110m/countries
       - NE50m/map_units
@@ -280,6 +282,22 @@ layers:
     L.TileLayer:
       - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
       - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+  NE110m/coastline:
+    title: Littoral océanique, incluant les principales îles (NE110m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE110m/wgs84_bounding_box:
+    title: Graticule wgs84_bounding_box (NE110m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_wgs84_bounding_box/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
   NE110m/boundary_lines_land:
     title: 'Limites administratives sur Terre (NE110m)'
     L.UGeoJSONLayer:
