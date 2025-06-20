@@ -6,7 +6,7 @@ require_once 'dataset.inc.php';
 
 /** Classe d'utilisation du JdD. */
 class NomsCnig extends Dataset {
-  const JSON_FILE_NAME = 'nosmcnig.json';
+  const JSON_FILE_NAME = 'nomscnig.json';
   
   /** @var array<mixed> $data Le contenu du fichier JSON */
   protected array $data;

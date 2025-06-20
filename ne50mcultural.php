@@ -2,7 +2,7 @@
 /** Jeu de données Nartural Earth 1:50m Cultural */
 require_once 'naturalearth.inc.php';
 
-define('DESCRIPTION', [
+define('NE50MC_DESCRIPTION', [
   <<<'EOT'
 Natural Earth is a public domain map dataset available at 1:10m, 1:50m, and 1:110 million scales. Featuring tightly integrated vector and raster data, with Natural Earth you can make a variety of visually pleasing, well-crafted maps with cartography or GIS software. (https://www.naturalearthdata.com/)
 
@@ -10,7 +10,7 @@ La signification des différentes couches et de leurs attributs n'est pas simple
 EOT
 ]
 );
-define ('LISTE_DES_FICHIERS', [
+define ('NE50MC_LISTE_DES_FICHIERS', [
    <<<'EOT'
 ne50mcultural/ne_10m_admin_1_sel.geojson
 ne50mcultural/ne_50m_admin_0_boundary_lines_disputed_areas.geojson
@@ -44,7 +44,7 @@ EOT
 class NE50mCultural extends NaturalEarth {
   const GEOJSON_DIR = 'ne50mcultural';
   const TITLE = "Natural Earth, 1:50m, cultural themes";
-  const DESCRIPTION = DESCRIPTION[0];
+  const DESCRIPTION = NE50MC_DESCRIPTION[0];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma d'NaturalEarth110mCultural",

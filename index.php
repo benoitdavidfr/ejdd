@@ -9,8 +9,10 @@ switch ($_GET['action'] ?? null) {
   case null: {
     if (!isset($_GET['dataset'])) {
       echo "Choix du JdD:<br>\n";
-      foreach (Dataset::REGISTRE as $dataset) {
-        echo "<a href='?dataset=$dataset'>$dataset</a>.<br>\n";
+      foreach (Dataset::REGISTRE as $dsName) {
+        $dataset = Dataset::get($dsName);
+        //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
+        echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
       }
     }
     else {

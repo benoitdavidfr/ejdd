@@ -2,7 +2,7 @@
 /** Jeu de données Nartural Earth 1:110m Cultural */
 require_once 'naturalearth.inc.php';
 
-define('DESCRIPTION', [
+define('NE110MC_DESCRIPTION', [
   <<<'EOT'
 Natural Earth is a public domain map dataset available at 1:10m, 1:50m, and 1:110 million scales. Featuring tightly integrated vector and raster data, with Natural Earth you can make a variety of visually pleasing, well-crafted maps with cartography or GIS software. (https://www.naturalearthdata.com/)
 The Small scale data, 1:110m, is suitable for schematic maps of the world on a postcard or as a small locator globe.
@@ -11,7 +11,7 @@ La signification des différentes couches et de leurs attributs n'est pas simple
 EOT
 ]
 );
-define ('LISTE_DES_FICHIERS', [
+define ('NE110MC_LISTE_DES_FICHIERS', [
    <<<'EOT'
   ne_110m_admin_0_sovereignty
   ne_110m_admin_0_countries
@@ -33,7 +33,7 @@ EOT
 class NE110mCultural extends NaturalEarth {
   const GEOJSON_DIR = 'ne110mcultural';
   const TITLE = "Natural Earth, Small scale data, 1:110m, cultural themes";
-  const DESCRIPTION = DESCRIPTION[0];
+  const DESCRIPTION = NE110MC_DESCRIPTION[0];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma d'NaturalEarth110mCultural",

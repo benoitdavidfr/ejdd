@@ -1,7 +1,7 @@
 <?php
 /** Définition et utilisation du JdD AeCongPe. */
 
-define('DESCRIPTION', [
+define('AECOGPE_DESCRIPTION', [
   <<<'EOT'
 Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartien à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
 Il contient les classes d'objets suivants:
@@ -26,7 +26,7 @@ EOT
 class AeCogPe extends Dataset {
   const GEOJSON_DIR = 'aecogpe2025';
   const TITLE = "ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN";
-  const DESCRIPTION = DESCRIPTION[0];
+  const DESCRIPTION = AECOGPE_DESCRIPTION[0];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma d'AeCogPe",
