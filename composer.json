@@ -4,6 +4,7 @@
     },
     "require": {
         "justinrainbow/json-schema": "^6.4",
-        "symfony/yaml": "^7.3"
+        "symfony/yaml": "^7.3",
+        "phpoffice/phpspreadsheet": "^4.3"
     }
 }

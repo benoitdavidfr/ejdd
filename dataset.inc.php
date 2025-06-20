@@ -46,9 +46,10 @@ define('LIGNE_DE_COMMANDE', [
 <<<'EOT'
 Lignes de commandes
 ---------------------
-  Installation du module justinrainbow/json-schema:
+  Installation des modules nécessaires:
     composer require justinrainbow/json-schema
     composer require symfony/yaml
+    composer require phpoffice/phpspreadsheet
   phpstan:
     ./vendor/bin/phpstan --memory-limit=1G
   Fenêtre Php8.4:
@@ -299,6 +300,7 @@ abstract class Dataset {
     'DatasetEg',
     'DeptReg',
     'NomsCnig',
+    'Pays',
     'MapDataset',
     'AeCogPe',
     'NE110mCultural',
