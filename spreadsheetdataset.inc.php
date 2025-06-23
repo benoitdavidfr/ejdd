@@ -23,14 +23,21 @@ class DocProperty {
 
 class DocSection {
   readonly string $name;
-  protected string $title;
-  protected string $description;
+  protected ?string $title=null;
+  protected ?string $description=null;
   /** @var array<string,DocProperty> $properties Les propriétés de la section indexées par le nom de la propriété. */
   protected array $properties=[];
   
   function __construct(string $name) { $this->name = $name; }
+  
   function setTitle(string $title): void { $this->title = $title; }
-  function setDescription(string $description): void { $this->description = $description; }
+  
+  function addToDescription(string $description): void {
+    if (!$this->description)
+      $this->description = $description;
+    else
+      $this->description .= "\n".$description;
+  }
   
   function addProperty(string $name, ?string $description, ?string $options): void {
     $this->properties[$name] = new DocProperty($description, $options);
@@ -108,10 +115,13 @@ abstract class SpreadSheetDataset extends Dataset {
           break;
         }
         case 'description': {
-          if (!$csect)
+          if ($csect) {
+            $csect->addToDescription($line['B']);
+          }
+          elseif (!$description)
             $description = $line['B'];
           else
-            $csect->setDescription($line['B']);
+            $description .= "\n".$line['B'];
           break;
         }
         case 'section': {
@@ -141,8 +151,8 @@ abstract class SpreadSheetDataset extends Dataset {
     //echo 'docSheet = '; print_r($this);
     $schema = [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
-      'title'=> "Schéma générè à partir de la feuille doc de ".Pays::FILE_PATH,
-      'description'=> "Ce jeu et son schéma sont générés à partir de la feuille doc de ".Pays::FILE_PATH,
+      'title'=> "Schéma générè à partir de la feuille doc de ".$this->filePath,
+      'description'=> "Ce jeu et son schéma sont générés à partir de la feuille doc de ".$this->filePath,
       'type'=> 'object',
       'required'=> array_merge(['title','description','$schema'], array_keys($this->docSections)),
       'additionalProperties'=> false,
@@ -218,7 +228,8 @@ abstract class SpreadSheetDataset extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-class Pays extends SpreadSheetDataset {
+/** Classe de test de l'extension de SpreadSheetDataset. */
+class PaysTest extends SpreadSheetDataset {
   const FILE_PATH = 'pays.ods';
   
   function __construct() { parent::__construct(self::FILE_PATH); }
@@ -257,4 +268,4 @@ class Pays extends SpreadSheetDataset {
   }
 };
 
-Pays::main();
+PaysTest::main();

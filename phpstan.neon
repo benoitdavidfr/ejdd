@@ -40,6 +40,8 @@ parameters:
     - dataseteg.php
     - deptreg.php
     - nomscnig.php
+    - spreadsheetdataset.inc.php
+    - nomsctcnigc.php
     - pays.php
     - mapdataset.php
     - aecogpe.php

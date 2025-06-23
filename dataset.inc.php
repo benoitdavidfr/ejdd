@@ -213,7 +213,12 @@ class Section {
   }
   function description(): string { return $this->schema['description']; }
   
-  function toHtml(): string { return RecArray::toHtml($this->schema); }
+  function toHtml(): string {
+    $schema = $this->schema;
+    unset($schema['title']);
+    unset($schema['description']);
+    return RecArray::toHtml($schema);
+  }
   
   /** Déduit du schéma si le type de la section. */
   function kind(): string {
@@ -251,6 +256,8 @@ class Section {
   /** Affiche les données de la section */
   function display(Dataset $dataset): void {
     echo '<h2>',$this->title,"</h2>\n";
+    echo "<h3>Description</h3>\n";
+    echo str_replace("\n", "<br>\n", $this->schema['description']);
     echo "<h3>Schéma</h3>\n";
     echo $this->toHtml();
     echo "<h3>Contenu</h3>\n";
@@ -300,6 +307,7 @@ abstract class Dataset {
     'DatasetEg',
     'DeptReg',
     'NomsCnig',
+    'NomsCtCnigC',
     'Pays',
     'MapDataset',
     'AeCogPe',
@@ -537,7 +545,7 @@ abstract class Dataset {
     //echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
     foreach ($this->sections as $sname => $section) {
       echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$sname'>$sname</a></td>",
-           "<td>",$this->sections[$sname]->description(),"</td></tr>\n";
+           "<td>",$this->sections[$sname]->title,"</td></tr>\n";
     }
     echo "</table>\n";
   }

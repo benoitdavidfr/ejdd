@@ -1,0 +1,48 @@
+<?php
+/** Jeu de données des noms des CT définis par le CNIG. */
+require_once 'spreadsheetdataset.inc.php';
+
+class NomsCtCnigC extends SpreadSheetDataset {
+  const FILE_PATH = 'nomsctcnigc.ods';
+  
+  function __construct() { parent::__construct(self::FILE_PATH); }
+    
+  static function main(): void {
+    switch($_GET['action'] ?? null) {
+      case null: {
+        $objet = new NomsCtCnigC;
+        echo "<a href='?action=print_r'>Afficher l'objet NomsCtCnigC</a><br>\n";
+        echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
+        foreach (array_keys($objet->docSections) as $sname) {
+          echo "<a href='?action=section&section=$sname'>Afficher la section $sname</a><br>\n";
+        }
+        break;
+      }
+      case 'print_r': {
+        $objet = new NomsCtCnigC;
+        echo '<pre>$nomsCtCnigC = '; print_r($objet);
+        break;
+      }
+      case 'schema': {
+        $objet = new NomsCtCnigC;
+        echo '<pre>'; print_r([
+          'title'=> $objet->title,
+          'description'=> $objet->description,
+          '$schema'=> $objet->jsonSchema(),
+        ]);
+        break;
+      }
+      case 'section': {
+        $objet = new NomsCtCnigC;
+        echo "<pre>section="; print_r($objet->getData($_GET['section']));
+        break;
+      }
+    }
+  }
+};
+
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
+
+
+NomsCtCnigC::main();
