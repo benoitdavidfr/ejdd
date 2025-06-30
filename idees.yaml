@@ -5,10 +5,11 @@ synthèse: |
       - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
       - carto mondiale simplifiée
     - associer à ces JdD une documentation sémantique et une spécification de structure
-    - gérer efficacement des données un peu volumineuses comme des données géo., par ex. la géométrie des communes,
+    - gérer efficacement des données un peu volumineuses comme des données géo., avec des sections qui ne tiennent pas en mémoire
     - cartographier les JdD en mode web
     - faire facilement des traitemts ensemblistes comme des jointures et des projections
 JSON:
+  - j'introduis la gestion de JdD directement en ODS
   - je privilégie le JSON comme format de stockage pour plusieurs raisons
   - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
   - standard
@@ -17,20 +18,20 @@ JSON:
   - utilisation du GeoJSON
 solution:
   généralités:
-    - un JdD est identifié par un nom comme Deptreg
-    - un JdD est constitué de sections
-      - 3 sections de MD identiques pour tous les jeux
+    - un JdD est identifié par un nom comme DeptReg
+    - un JdD est constitué de MD et de sections de données
+      - les MD sont identiques pour tous les jeux
         - title -> titre du JdD, de l'ordre d'une ligne
         - description -> texte de présentation du JdD
         - $schema -> schéma JSON du JdD
       - autant de sections nécessaires pour stocker des données
-        - chacune est logiquement un array itérable d'éléments, si possible homogènes mais pas forcément
+        - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
         - la référence d'une section est la notion de table de n-uplets
   utilisationEnPhp:
     - je récupère un JdD par "Dataset::get({nomDS}) -> Dataset"
     - je récupère les MD par $ds->title, $ds->description et $ds->schema
-    - je récupère les données par $ds->getData({section}, {filtre})
-      - qui retourne un itérateur sur les éléments de la section satisfaisant le filtre
+    - je récupère les données par $ds->getTuples({section}, {filtre})
+      - qui retourne un Generator sur les éléments de la section satisfaisant le filtre
       - avec au moins 3 types de filtre
         - valeur d'un champ dont la clé
         - intervalle de valeurs d'un champ
@@ -53,7 +54,7 @@ solution:
         - title -> string
         - description -> string
         - schema -> array
-        - getData({section}, {filtre}) -> array
+        - getTuples({section}, {filtre}) -> Generator
 applis:
   index.php:
     - appli interactive pour

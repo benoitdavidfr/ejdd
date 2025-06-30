@@ -32,7 +32,9 @@ EOT
 define('JOURNAL', [
 <<<'EOT'
 29/6/2025:
-  - passage à getTuples()
+  - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
+29/6/2025:
+  - v3 fondée sur getTuples()
 16/6/2025:
   - 1ère version de v2 conforme PhpStan
   - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
