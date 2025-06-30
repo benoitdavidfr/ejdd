@@ -366,8 +366,8 @@ abstract class Dataset {
     /*'DeptReg',
     'NomsCnig',
     'NomsCtCnigC',
-    'Pays',
-    'MapDataset',*/
+    'Pays',*/
+    'MapDataset',
     'AeCogPe',
     /*'WorldEez',
     'NE110mCultural',
@@ -511,7 +511,7 @@ abstract class Dataset {
   function getOneTupleByKey(string $section, string|number $key): array|string|null {
     foreach ($this->getTuples($section) as $k => $tuple)
       if ($k == $key)
-        return [$k => $tuple];
+        return $tuple;
     return null;
   }
   

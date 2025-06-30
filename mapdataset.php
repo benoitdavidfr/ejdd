@@ -28,7 +28,13 @@ class MapDataset extends Dataset {
     $this->data = $data;
   }
   
-  function getData(string $section, mixed $filtre=null): array { return $this->data[$section]; }
+  //function getData(string $section, mixed $filtre=null): array { return $this->data[$section]; }
+  function getTuples(string $section, mixed $filtre=null): Generator {
+    foreach ($this->data[$section] as $key => $tuple)
+      yield $key => $tuple;
+    return;
+  }
+
 };
 
 
@@ -313,19 +319,19 @@ switch ($_GET['action'] ?? null) {
     break;
   }
   case 'listMaps': {
-    echo "<h2>Liste des cartes</h2>\n";
+    echo "<h2>Liste des cartes à dessiner</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
-    $maps = $mapDataset->getData('maps');
-    foreach ($maps as $mapKey => $map)
-      echo "<a href='?action=draw&map=$mapKey'>$map[title]</a><br>\n";
+    foreach ($mapDataset->getTuples('maps') as $mapKey => $map)
+      echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a><br>\n";
     break;
   }
   case 'draw': {
     $mapDataset = Dataset::get('MapDataset');
-    $map = new Map($mapDataset->getData('maps')[$_GET['map']]);
-    foreach ($mapDataset->getData('layers') as $lyrId => $layer) {
+    $map = new Map($mapDataset->getOneTupleByKey('maps', $_GET['map']));
+    foreach ($mapDataset->getTuples('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
+    //echo '<pre>$map='; print_r($map);
     echo $map->draw();
     break;
   }
