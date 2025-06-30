@@ -1,5 +1,6 @@
 <?php
 /** Définition et utilisation du JdD AeCongPe. */
+require_once 'geojson.inc.php';
 
 define('AECOGPE_DESCRIPTION', [
   <<<'EOT'
@@ -17,7 +18,7 @@ Il contient les classes d'objets suivants:
  - DEPARTEMENT
  - EPCI
  - REGION
-La gemme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
+La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
 Le produit ADMIN EXPRESS COG PE est de plus conforme au code officiel géographique publié chaque année par l’INSEE et est destiné à des usages statistiques.
 EOT
 ]
@@ -25,7 +26,7 @@ EOT
 
 class AeCogPe extends Dataset {
   const GEOJSON_DIR = 'aecogpe2025';
-  const TITLE = "ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN";
+  const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";
   const DESCRIPTION = AECOGPE_DESCRIPTION[0];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
@@ -464,9 +465,9 @@ class AeCogPe extends Dataset {
     parent::__construct(self::TITLE, self::DESCRIPTION, self::SCHEMA);
   }
   
-  /** L'accès aux sections du JdD.
+  /* L'accès aux sections du JdD.
    * @return array<mixed>
-   */
+   *
   function getData(string $sname, mixed $filtre=null): array {
     $geojson = json_decode(file_get_contents(self::GEOJSON_DIR."/$sname.geojson"), true);
     return array_map(
@@ -478,6 +479,14 @@ class AeCogPe extends Dataset {
       },
       $geojson['features']
     );
+  }*/
+  function getTuples(string $sname, mixed $filtre=null): Generator {
+    $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$sname.geojson");
+    foreach ($fileOfFC->readFeatures() as $no => $feature) {
+      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
+      yield $no => $tuple;
+    }
+    return null;
   }
 };
 

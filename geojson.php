@@ -26,6 +26,7 @@ if (preg_match('!^/([^/]+)$!', $path, $matches)) { // liste des parties du JdD
   die();
 }
 
+/* Ancienne version périmée
 if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la partie 
   $dsname = $matches[1];
   $sectname = $matches[2];
@@ -75,6 +76,58 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     ],
     JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
   ));
+}*/
+
+if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la section 
+  $dsname = $matches[1];
+  $sectname = $matches[2];
+  if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
+    $bbox =  new \gegeom\GBox($bbox);
+    //echo "<pre>bbox="; print_r($bbox); //die();
+  }
+  $dataset = Dataset::get($dsname);
+  $sectionMD = $dataset->sections[$sectname]; // les MD de la section
+  
+  header('Access-Control-Allow-Origin: *');
+  header('Content-Type: application/json');
+  echo '{"type": "FeatureCollection"',",\n",
+    ' "name": "',"$dsname/$sectname",'",',"\n",
+    '  "features":',"[\n";
+  $first = true;
+  foreach ($dataset->getTuples($sectname) as $tuple) {
+    $geometry = $tuple['geometry'];
+    $geom = \gegeom\Geometry::fromGeoArray($geometry);
+    //echo "<pre>geom="; print_r($geom);
+    if ($bbox) {
+      $gbox = $geom->gbox();
+      //echo "<pre>geom->gbox()="; print_r($gbox);
+      if (!$bbox->inters($gbox)) {
+        //echo "N'intersecte pas bbox<br>\n";
+        continue;
+      }
+      //echo "Intersecte bbox\n";
+    }
+    unset($tuple['geometry']);
+    //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
+    if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+      //print_r($tuple);
+      $tuple2 = [];
+      foreach ($sectionMD->schema['items']['propertiesForGeoJSON'] as $prop)
+        $tuple2[$prop] = $tuple[$prop];
+      //print_r($tuple2);
+      $tuple = $tuple2;
+    }
+    $feature = [
+      'type'=> 'Feature',
+      'properties'=> $tuple,
+      'geometry'=> $geometry,
+    ];
+    $json = json_encode($feature);
+    echo ($first ? '' : ",\n"),
+         '  ',$json;
+    $first = false;
+  }
+  die("]}\n");
 }
 
 die("Path $path non traitée\n");

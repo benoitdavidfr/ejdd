@@ -311,6 +311,8 @@ class Section {
 
   /** Vérifie que la section est conforme à son schéma */
   function isValid(Dataset $dataset): bool {
+    $t0 = microtime(true);
+    $nbTuples = 0;
     $kind = $this->schema->kind();
     $validator = new JsonSchema\Validator;
     foreach ($dataset->getTuples($this->name) as $key => $tuple) {
@@ -322,7 +324,11 @@ class Section {
       $validator->validate($data, $this->schema->array);
       if (!$validator->isValid())
         return false;
+      $nbTuples++;
+      if (!($nbTuples % 10_000))
+        printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
     }
+    printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
     return true;
   }
   
@@ -362,7 +368,7 @@ abstract class Dataset {
     'NomsCtCnigC',
     'Pays',
     'MapDataset',*/
-    //'AeCogPe',
+    'AeCogPe',
     /*'WorldEez',
     'NE110mCultural',
     'NE110mPhysical',
@@ -502,7 +508,12 @@ abstract class Dataset {
    */
   abstract function getTuples(string $section, mixed $filtre=null): Generator;
   
-  abstract function getOneTupleByKey(string $section, string|number $key): array|string;
+  function getOneTupleByKey(string $section, string|number $key): array|string|null {
+    foreach ($this->getTuples($section) as $k => $tuple)
+      if ($k == $key)
+        return [$k => $tuple];
+    return null;
+  }
   
   /** Cosntruit le JdD sous la forme d'un array.
    * @return array<mixed>
