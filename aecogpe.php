@@ -1,5 +1,6 @@
 <?php
 /** Définition et utilisation du JdD AeCongPe. */
+require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
 
 define('AECOGPE_DESCRIPTION', [
@@ -494,7 +495,7 @@ class AeCogPe extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-class AeCongPeBuild {
+class AeCogPeBuild {
   /** Chemin du répertoire contenant les fichiers SHP */
   const SHP_DIR =  '../data/aecog2025/ADMIN-EXPRESS-COG-CARTO-PE_3-2__SHP_WGS84G_FRA_2025-04-07/ADMIN-EXPRESS-COG-CARTO-PE/1_DONNEES_LIVRAISON_2025-04-00317/ADECOGPE_3-2_SHP_WGS84G_FRA-ED2025-04-07/';
   
@@ -508,7 +509,14 @@ class AeCongPeBuild {
       $dest = substr($entry, 0, strlen($entry)-3).'geojson';
       $dest = strToLower($dest);
       $src = self::SHP_DIR.$entry;
-      $cmde = "ogr2ogr -f 'GeoJSON' ".AeCogPe::GEOJSON_DIR."/$dest $src";
+      /*Layer creation options:
+        -lco RFC7946=YES
+         WRITE_BBOX=[YES​/​NO]: Defaults to NO. Set to YES to write a bbox property with the bounding box of the geometries at the feature and feature collection level.
+        COORDINATE_PRECISION=<integer>: Maximum number of figures after decimal separator to write in coordinates. Default to 15 for GeoJSON 2008, and 7 for RFC 7946. "Smart" truncation will occur to remove trailing zeros.
+      */
+      $options = "-lco WRITE_BBOX=YES"
+                ." -lco COORDINATE_PRECISION=4"; // résolution 10m
+      $cmde = "ogr2ogr -f 'GeoJSON' $options ".AeCogPe::GEOJSON_DIR."/$dest $src";
       echo "$cmde<br>\n";
       $ret = exec($cmde, $output, $result_code);
       if ($result_code <> 0) {
@@ -533,4 +541,4 @@ class AeCongPeBuild {
     }
   }
 };
-AeCongPeBuild::main();
+AeCogPeBuild::main();

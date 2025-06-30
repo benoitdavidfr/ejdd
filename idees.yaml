@@ -1,4 +1,4 @@
-title: Réflexion sur les possibilités de stockage et de manipulation d'un jeu de données
+title: Réflexion sur les possibilités de stockage et de manipulation d'un jeu de données (V3)
 synthèse: |
   - cette démarche répond à 5 besoins
     - utiliser facilement en Php des JdD habituels
@@ -67,4 +67,15 @@ applis:
   geojson.php:
     - génère le GeoJSON à partir d'un Dataset
     - respecte l'API de uGeoJSON pour filtrer les features par rectangle
+historique:
+  v3:
+    - replacement getData() par getTuples() qui retourne un Generator
+    - possibilité de gérer des sections qui ne tiennent pas en mémoire
+  v2:
+    - stockage des données en JSON
+    - accès global à une section de données par getData()
+    - pb lorsque la section est trop volumineuse pour être chargée en mémoire
+  v1:
+    - essaie de stockage des données en Php
+    - pas concluant, notamment moins efficace que JSON
 eof:

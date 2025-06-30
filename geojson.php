@@ -112,7 +112,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
       //print_r($tuple);
       $tuple2 = [];
-      foreach ($sectionMD->schema['items']['propertiesForGeoJSON'] as $prop)
+      foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
         $tuple2[$prop] = $tuple[$prop];
       //print_r($tuple2);
       $tuple = $tuple2;

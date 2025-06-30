@@ -31,12 +31,15 @@ class DeptReg extends Dataset {
     parent::__construct($this->data['title'], $this->data['description'], $this->data['$schema']);
   }
   
-  function getData(string $sectionName, mixed $filtre=null): array {
+  function getTuples(string $sectionName, mixed $filtre=null): Generator {
     if ($filtre)
       throw new Exception("Pas de filtre possible sur DeptReg");
-    return $this->data[$sectionName];
+    foreach ($this->data[$sectionName] as $key => $tuple)
+      yield $key => $tuple;
+    return null;
   }
 };
+
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 

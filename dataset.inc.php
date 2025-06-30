@@ -365,16 +365,16 @@ abstract class Dataset {
   /** Registre contenant la liste des JdD */
   const REGISTRE = [
     'DatasetEg',
-    /*'DeptReg',
+    'DeptReg',
     'NomsCnig',
     'NomsCtCnigC',
-    'Pays',*/
+    'Pays',
     'MapDataset',
     'AeCogPe',
-    /*'WorldEez',
+    //'WorldEez',
     'NE110mCultural',
     'NE110mPhysical',
-    'NE50mCultural',*/
+    'NE50mCultural',
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',

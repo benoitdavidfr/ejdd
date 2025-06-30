@@ -8,15 +8,16 @@ set_time_limit(5*60);
 switch ($_GET['action'] ?? null) {
   case null: {
     if (!isset($_GET['dataset'])) {
-      echo "Choix du JdD:<br>\n";
+      echo "<h2>Choix du JdD</h2>\n";
       foreach (Dataset::REGISTRE as $dsName) {
         $dataset = Dataset::get($dsName);
         //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
         echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
       }
+      echo "<h3><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></h3>\n";
     }
     else {
-      echo "Choix de l'action:<br>\n";
+      echo "<h2>Choix de l'action</h2>\n";
       echo "<a href='",strToLower($_GET['dataset']),".php'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
       echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";

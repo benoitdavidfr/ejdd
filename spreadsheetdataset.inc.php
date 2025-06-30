@@ -173,7 +173,7 @@ abstract class SpreadSheetDataset extends Dataset {
   }
   
   /** @return array<mixed> */
-  function getData(string $sectionName, mixed $filtre=null): array {
+  function getTuples(string $sectionName, mixed $filtre=null): Generator {
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($this->filePath);
     $dataArray = $spreadsheet->getSheetByName($sectionName)
@@ -207,7 +207,7 @@ abstract class SpreadSheetDataset extends Dataset {
       $line = $dataArray[$noligne++];
       //echo $noligne-1,'>'; print_r($line);
       if (!$line['A'])
-        return $data;
+        return;
       $tuple = [];
       for ($i=0; $i<count($colNames); $i++) {
         $property = $section->properties()[$colNames[$i]];
@@ -218,8 +218,8 @@ abstract class SpreadSheetDataset extends Dataset {
           $val = (integer) $val;
         $tuple[$colNames[$i]] = $val;
       }
-      //print_r($tuple);
-      $data[$tuple[$key]] = $tuple;
+      //$data[$tuple[$key]] = $tuple;
+      yield $tuple[$key] => $tuple;
     }
   }
 };

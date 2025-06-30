@@ -1,29 +1,19 @@
 <?php
 /** Classes abstraites pour les jeux de données Nartural Earth */
+require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
+require_once 'geojson.inc.php';
 
 abstract class NaturalEarth extends Dataset {
   /** L'accès aux sections du JdD.
    * @return array<mixed>
    */
-  function negetData(string $geojsonDir, string $sname, mixed $filtre=null): array {
-    $geojson = json_decode(file_get_contents("$geojsonDir/$sname.geojson"), true);
-    $table = array_map(
-      function(array $feature): array {
-        //print_r($feature);
-        $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
-        //print_r($tuple);
-        return $tuple;
-      },
-      $geojson['features']
-    );
-    /*$tableFra = [];
-    foreach ($table as $tuple) {
-      if ($tuple['adm0_a3'] == 'FRA')
-        $tableFra[] = $tuple;
+  function getTuples(string $filePath, mixed $filtre=null): Generator {
+    $fileOfFC = new FileOfFC($filePath);
+    foreach ($fileOfFC->readFeatures() as $no => $feature)  {
+      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
+      yield $no => $tuple;
     }
-    return $tableFra;*/
-    return $table;
   }
 };
 
@@ -33,14 +23,16 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur en
 
 class NaturalEarthBuild {
   /** Produit les fichier GeoJSON à partir des fichiers SHP de la livraison stockée dans SHP_DIR */
-  static function buildGeoJson(string $shpPath, string $geojsDir): void {
+  static function buildGeoJson(string $shpPath, string $geojsDir, int $coordinate_precision): void {
     $shpdir = dir($shpPath);
     while (false !== ($entry = $shpdir->read())) {
       if (preg_match('!\.shp$!', $entry)) {
         echo "> $entry<br>\n";
         $dest = substr($entry, 0, strlen($entry)-3).'geojson';
         $dest = strToLower($dest);
-        $cmde = "ogr2ogr -f 'GeoJSON' $geojsDir/$dest $shpPath$entry";
+        $options = "-lco WRITE_BBOX=YES"
+                  ." -lco COORDINATE_PRECISION=$coordinate_precision";
+        $cmde = "ogr2ogr -f 'GeoJSON' $options $geojsDir/$dest $shpPath$entry";
         echo "$ $cmde<br>\n";
         $ret = exec($cmde, $output, $result_code);
         if ($result_code <> 0) {

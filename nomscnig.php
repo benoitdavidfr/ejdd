@@ -16,10 +16,12 @@ class NomsCnig extends Dataset {
     parent::__construct($this->data['title'],  $this->data['description'], $this->data['$schema']);
   }
   
-  function getData(string $section, mixed $filtre=null): array {
+  function getTuples(string $section, mixed $filtre=null): Generator {
     if ($filtre)
       throw new Exception("Pas de filtre possible sur Cnig");
-    return $this->data[$section];
+    foreach ($this->data[$section] as $key => $tuple)
+      yield $key => $tuple;
+    return;
   }
 };
 
