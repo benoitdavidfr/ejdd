@@ -1,14 +1,14 @@
 <?php
 /** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes.
  * Un JdD est défini par:
- *  - son nom figurant dans le registre des JdD (Dtasaet::REGISTRE)
+ *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE)
  *  - un fichier Php portant le nom du JdD en minuscules avec l'extension '.php'
  *  - une classe portant le nom du JdD héritant de la classe Dataset définie par inclusion du fichier Php
- *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le fichier JSON adhoc du JdD
+ *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le JdD
  * Un JdD est utilisé par:
- *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir une représentation Php
+ *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir sa représentation Php
  *  - l'accès aux champs readonly de MD title, description et schema
- *  - l'appel de Dataset::getData({nomSection}, {filtre}) pour obtenir un array de la section
+ *  - l'appel de Dataset::getTuples({nomSection}, {filtre}) pour obtenir un Generator de la section
  * Un JdD doit comporter un schéma JSON conforme au méta-schéma des JdD qui impose notamment que:
  *  - le JdD soit décrit dans le schéma par un titre, une description et un schéma
  *  - chaque section de données soit décrite dans le schéma par un titre et une description
@@ -31,6 +31,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+29/6/2025:
+  - passage à getTuples()
 16/6/2025:
   - 1ère version de v2 conforme PhpStan
   - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
@@ -197,34 +199,18 @@ class RecArray {
 };
 //RecArray::test(); die(); // Test RecArray 
 
-/** Chaque objet de cette classe correspond à une section du JdD et contient ses MD */
-class Section {
-  /** @var string $name Le nom de la section dans le JdD */
-  readonly string $name;
-  readonly string $title;
-  /** @var array<mixed> $schema Le schéma JSON de la section */
-  readonly array $schema;
-  
-  /** @param array<mixed> $schema Le schéma JSON de la section */
-  function __construct(string $name, array $schema) {
-    $this->name = $name;
-    $this->schema = $schema;
-    $this->title = $schema['title'];
-  }
-  function description(): string { return $this->schema['description']; }
-  
-  function toHtml(): string {
-    $schema = $this->schema;
-    unset($schema['title']);
-    unset($schema['description']);
-    return RecArray::toHtml($schema);
-  }
+/** Le schéma JSON de la section */
+class SchemaOfSection {
+  /** array<mixed> $array */
+  readonly array $array;
+
+  function __construct(array $schema) { $this->array = $schema; }
   
   /** Déduit du schéma si le type de la section. */
   function kind(): string {
-    switch ($type = $this->schema['type']) {
+    switch ($type = $this->array['type']) {
       case 'object': {
-        $patProps = $this->schema['patternProperties'];
+        $patProps = $this->array['patternProperties'];
         $prop = $patProps[array_keys($patProps)[0]];
         if (isset($prop['type'])) {
           $type = $prop['type'];
@@ -252,51 +238,117 @@ class Section {
       }
     }
   }
+};
+
+/** Chaque objet de cette classe correspond à une section du JdD et contient ses MD */
+class Section {
+  /** @var string $name Le nom de la section dans le JdD */
+  readonly string $name;
+  readonly string $title;
+  /** @var SchemaOfSection $schema Le schéma JSON de la section */
+  readonly SchemaOfSection $schema;
+  
+  /** @param array<mixed> $schema Le schéma JSON de la section */
+  function __construct(string $name, array $schema) {
+    $this->name = $name;
+    $this->schema = new SchemaOfSection($schema);
+    $this->title = $schema['title'];
+  }
+  
+  function description(): string { return $this->schema->array['description']; }
+  
+  function toHtml(): string {
+    $schema = $this->schema->array;
+    unset($schema['title']);
+    unset($schema['description']);
+    return RecArray::toHtml($schema);
+  }
   
   /** Affiche les données de la section */
   function display(Dataset $dataset): void {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
-    echo str_replace("\n", "<br>\n", $this->schema['description']);
+    echo str_replace("\n", "<br>\n", $this->schema->array['description']);
     echo "<h3>Schéma</h3>\n";
     echo $this->toHtml();
     echo "<h3>Contenu</h3>\n";
-    switch ($kind = $this->kind()) {
-      case 'dictOfTuples':
-      case 'listOfTuples': { // les données sont structurées en une table
-        $table = $dataset->getData($this->name);
-        break;
-      }
-      case 'dictOfValues':
-      case 'listOfValues': { // les données, structurées en un dictOfValues ou listOfValues, sont transformation en dictOfTuples
-        $table = array_map(
-          function($value): array { return ['value'=> $value]; },
-          $dataset->getData($this->name)
-        );
-        break;
-      }
-      default: { throw new Exception("kind $kind non traité"); }
-    }
     echo "<table border=1>\n";
     $cols_prec = [];
-    foreach ($table as $key => $tuple) {
+    foreach ($dataset->getTuples($this->name) as $key => $tupleOrValue) {
+      $tuple = match ($kind = $this->schema->kind()) {
+        'dictOfTuples', 'listOfTuples' => $tupleOrValue,
+        'dictOfValues', 'listOfValues' => ['value'=> $tupleOrValue],
+      };
       $cols = array_merge(['key'], array_keys($tuple));
       if ($cols <> $cols_prec)
         echo '<th>',implode('</th><th>', $cols),"</th>\n";
       $cols_prec = $cols;
-      echo "<tr><td>$key</td>";
+      echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$_GET[section]&key=$key'>$key</a></td>";
       foreach ($tuple as $k => $v) {
         if (!$v)
           $v = '';
         if (is_array($v))
           $v = json_encode($v);
-        if (strlen($v) > 50)
-          $v = substr($v, 0, 47).'...';
+        if (strlen($v) > 60)
+          $v = substr($v, 0, 57).'...';
         echo "<td>$v</td>";
       }
       echo "</tr>\n";
     }
     echo "</table>\n";
+  }
+  
+  function displayTuple(string $key, Dataset $dataset) {
+    $tupleOrValue = $dataset->getOneTupleByKey($this->name, $key);
+    $tuple = match ($kind = $this->schema->kind()) {
+      'dictOfTuples', 'listOfTuples' => $tupleOrValue,
+      'dictOfValues', 'listOfValues' => ['value'=> $tupleOrValue],
+    };
+    //echo "<pre>"; print_r($tuple);
+    echo "<h2>N-uplet de la section $_GET[section] du JdD $_GET[dataset] ayant pour clé $_GET[key]</h2>\n";
+    echo RecArray::toHtml(array_merge(['key'=>$key], $tuple));
+  }
+
+  /** Vérifie que la section est conforme à son schéma */
+  function isValid(Dataset $dataset): bool {
+    $kind = $this->schema->kind();
+    $validator = new JsonSchema\Validator;
+    foreach ($dataset->getTuples($this->name) as $key => $tuple) {
+      $data = match ($kind = $this->schema->kind()) {
+        'dictOfTuples', 'dictOfValues' => [$key => $tuple],
+        'listOfTuples', 'listOfValues' => [$tuple],
+      };
+      $data = RecArray::toStdObject($data);
+      $validator->validate($data, $this->schema->array);
+      if (!$validator->isValid())
+        return false;
+    }
+    return true;
+  }
+  
+  /** Retourne les errurs de conformité de la section à son schéma */
+  function getErrors(Dataset $dataset): array {
+    $kind = $this->schema->kind();
+    //echo "kind=$kind<br>\n";
+    $errors = [];
+    $validator = new JsonSchema\Validator;
+    foreach ($dataset->getTuples($this->name) as $key => $tuple) {
+      $data = match ($kind = $this->schema->kind()) {
+        'dictOfTuples', 'dictOfValues' => [$key => $tuple],
+        'listOfTuples', 'listOfValues' => [$tuple],
+      };
+      $data = RecArray::toStdObject($data);
+      $validator->validate($data, $this->schema->array);
+      if (!$validator->isValid()) {
+        foreach ($validator->getErrors() as $error) {
+          $error['property'] = $this->name.'/'.$error['property'];
+          //echo "<pre>error="; print_r($error); echo "</pre>\n";
+          $errors[] = $error;
+        }
+      }
+        $errors = array_merge($errors, );
+    }
+    return $errors;
   }
 };
 
@@ -305,15 +357,16 @@ abstract class Dataset {
   /** Registre contenant la liste des JdD */
   const REGISTRE = [
     'DatasetEg',
-    'DeptReg',
+    /*'DeptReg',
     'NomsCnig',
     'NomsCtCnigC',
     'Pays',
-    'MapDataset',
-    'AeCogPe',
+    'MapDataset',*/
+    //'AeCogPe',
+    /*'WorldEez',
     'NE110mCultural',
     'NE110mPhysical',
-    'NE50mCultural',
+    'NE50mCultural',*/
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
@@ -439,10 +492,17 @@ abstract class Dataset {
     return new $dsName();
   }
   
-  /** L'accès aux sections du JdD.
+  /* L'accès aux sections du JdD.
+   * @return array<mixed>
+   *
+  abstract function getData(string $section, mixed $filtre=null): array; */
+  
+  /** L'accès aux tuples d'une section du JdD par un Generator.
    * @return array<mixed>
    */
-  abstract function getData(string $section, mixed $filtre=null): array;
+  abstract function getTuples(string $section, mixed $filtre=null): Generator;
+  
+  abstract function getOneTupleByKey(string $section, string|number $key): array|string;
   
   /** Cosntruit le JdD sous la forme d'un array.
    * @return array<mixed>
@@ -455,15 +515,13 @@ abstract class Dataset {
     ];
     //echo '<pre>'; print_r($array);
     foreach (array_keys($this->sections) as $sectionName) {
-      $array[$sectionName] = $this->getData($sectionName);
+      foreach ($this->getTuples($sectionName) as $key => $tuple)
+        $array[$sectionName][$key] = $tuple;
     }
     return $array;
   }
   
-  function asStdObject(): stdClass   {
-    return RecArray::toStdObject($this->asArray());
-  }
-  
+  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD */
   function schemaIsValid(): bool {
     // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
     $validator = new JsonSchema\Validator;
@@ -479,6 +537,7 @@ abstract class Dataset {
     return $validator->isValid();
   }
   
+  /** Affiche les erreurs de non conformité du schéma */
   function displaySchemaErrors(): void {
     $validator = new JsonSchema\Validator;
     $data = RecArray::toStdObject($this->schema);
@@ -512,26 +571,102 @@ abstract class Dataset {
     }
   }
   
+  /** Vérifie la conformité du JdD par rapport à son schéma */
   function isValid(): bool {
-    // Validation des données par rapport au schéma du JdD
+    // Validation des MD du jeu de données
     $validator = new JsonSchema\Validator;
-    $data = $this->asStdObject();
-    $validator->validate($data, $this->schema);
-    return $validator->isValid();
+    $schema = [
+      '$schema'=> 'http://json-schema.org/draft-07/schema#',
+      'title'=> "Schéma de l'en-tête du jeu dd données",
+      'description'=> "Ce schéma permet de vérifier les MD du jeu.",
+      'type'=> 'object',
+      'required'=> ['title','description','$schema'],
+      'additionalProperties'=> false,
+      'properties'=> [
+        'title'=> [
+          'description'=> "Titre du jeu de données",
+          'type'=> 'string',
+        ],
+        'description'=> [
+          'description'=> "Description du jeu de données",
+          'type'=> 'string',
+        ],
+        '$schema'=> [
+          'description'=> "Schéma JSON du jeu de données",
+          'type'=> 'object',
+        ],
+      ],
+    ];
+    $data = RecArray::toStdObject([
+      'title'=> $this->title,
+      'description'=> $this->description,
+      '$schema'=> $this->schema,
+    ]);
+    $validator->validate($data, $schema);
+    if (!$validator->isValid())
+      return false;
+    
+    // Validation de chaque section
+    foreach ($this->sections as $section) {
+      if (!$section->isValid($this))
+        return false;
+    }
+    return true;
   }
   
-  function displayErrors(): void {
+  /** Retourne les erreurs de non conformité du JdD */
+  function getErrors(): array {
+    $errors = [];
     $validator = new JsonSchema\Validator;
-    $data = $this->asStdObject();
-    $validator->validate($data, $this->schema);
-
-    if ($validator->isValid()) {
+    $schema = [
+      '$schema'=> 'http://json-schema.org/draft-07/schema#',
+      'title'=> "Schéma de l'en-tête du jeu dd données",
+      'description'=> "Ce schéma permet de vérifier les MD du jeu.",
+      'type'=> 'object',
+      'required'=> ['title','description','$schema'],
+      'additionalProperties'=> false,
+      'properties'=> [
+        'title'=> [
+          'description'=> "Titre du jeu de données",
+          'type'=> 'string',
+        ],
+        'description'=> [
+          'description'=> "Description du jeu de données",
+          'type'=> 'string',
+        ],
+        '$schema'=> [
+          'description'=> "Schéma JSON du jeu de données",
+          'type'=> 'object',
+        ],
+      ],
+    ];
+    $data = RecArray::toStdObject([
+      'title'=> $this->title,
+      'description'=> $this->description,
+      '$schema'=> $this->schema,
+    ]);
+    $validator->validate($data, $schema);
+    if (!$validator->isValid()) {
+      $errors = array_merge($errors, $validator->getErrors()); 
+    }
+    
+    // Validation de chaque section
+    foreach ($this->sections as $section) {
+      if (!$section->isValid($this))
+        $errors = array_merge($errors, $section->getErrors($this)); 
+    }
+    return $errors;
+  }
+  
+  /** Affiche les erreurs de non conformité du JdD */
+  function displayErrors(): void {
+    if (!($errors = $this->getErrors())) {
       echo "Le JdD est conforme à son schéma.<br>\n";
     }
     else {
       echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
-      foreach ($validator->getErrors() as $error) {
-        printf("[%s] %s<br>\n", $error['property'], $error['message']);
+      foreach ($errors as $error) {
+        printf("[%s] %s\n", $error['property'], $error['message']);
       }
       echo "</pre>\n";
     }

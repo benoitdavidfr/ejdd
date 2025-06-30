@@ -35,8 +35,10 @@ switch ($_GET['action'] ?? null) {
     $dataset = Dataset::get($_GET['dataset']);
     if (!isset($_GET['section']))
       $dataset->display();
-    else
+    else if (!isset($_GET['key']))
       $dataset->sections[$_GET['section']]->display($dataset);
+    else
+      $dataset->sections[$_GET['section']]->displayTuple($_GET['key'], $dataset);
     break;
   }
   case 'json': {

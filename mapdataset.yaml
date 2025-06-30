@@ -245,6 +245,7 @@ maps:
       - FondBlanc
     defaultBaseLayer: OSM
     overlays:
+      - WorldEEZ/EEZv11
       - NE110m/coastline
       - NE110m/wgs84_bounding_box
       - NE110m/boundary_lines_land
@@ -282,6 +283,14 @@ layers:
     L.TileLayer:
       - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
       - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+  WorldEEZ/EEZv11:
+    title: ZEE v11
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}WorldEez/collections/eez_v11/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
   NE110m/coastline:
     title: Littoral océanique, incluant les principales îles (NE110m)
     L.UGeoJSONLayer:
