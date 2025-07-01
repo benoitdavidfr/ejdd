@@ -13,6 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 /** Classes pour les jeux de données Nartural Earth */
 class NaturalEarth extends Dataset {
   readonly string $dsName;
+  /** @var array<string,mixed> $params */
   readonly array $params;
   
   function __construct(string $dsName) {
