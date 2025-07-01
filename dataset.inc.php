@@ -23,14 +23,14 @@ require_once __DIR__.'/vendor/autoload.php';
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
-15/6/2025:
-  - écrire un schéma JSON des schéma de Dataset en étant plus contraint que le scchéma standard
 EOT
 ]
 );
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+1/7/2025_4:30:
+  - fin correction des différents jeux précédemment intégrés en V2, conformité PhpStan à gérer
 29/6/2025:
   - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
 29/6/2025:
@@ -371,7 +371,7 @@ abstract class Dataset {
     'Pays',
     'MapDataset',
     'AeCogPe',
-    //'WorldEez',
+    'WorldEez',
     'NE110mCultural',
     'NE110mPhysical',
     'NE50mCultural',
