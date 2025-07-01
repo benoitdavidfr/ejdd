@@ -11,7 +11,10 @@ class U {
 
 /** Fonctions sur les positions */
 class Pos {
-  /** distance entre 2 positions */
+  /** distance entre 2 positions.
+   * @param TPos $pos1
+   * @param TPos $pos2
+   */
   static function dist(array $pos1, array $pos2): float {
     return abs($pos2[0]-$pos1[0]) + abs($pos2[1]-$pos1[1]);
   }
@@ -20,8 +23,11 @@ class Pos {
 /** Géométrie GeoJSON */
 abstract class Geometry {
   readonly string $type;
+  /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
   readonly array $coordinates;
   
+  /** Crée un objet géométrie.
+   * @param TGJSimpleGeometry $geom */
   static function create(array $geom): self {
     switch ($type = $geom['type'] ?? null) {
       case 'Point': return new Point($geom);
@@ -34,8 +40,10 @@ abstract class Geometry {
     }
   }
   
+  /** @param TGJSimpleGeometry $geom */
   function __construct(array $geom) { $this->type = $geom['type']; $this->coordinates = $geom['coordinates']; }
   
+  /** @return TGJSimpleGeometry $geom */
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }
 };
 
@@ -45,8 +53,9 @@ class MultiPoint extends Geometry {};
 class LineString extends Geometry {
   function reso(): float {
     $dists = [];
+    $precPos = null;
     foreach ($this->coordinates as $i => $pos) {
-      if ($i <> 0) {
+      if (!$precPos) {
         $dists[] = Pos::dist($pos, $precPos);
       }
       $precPos = $pos;
@@ -78,26 +87,31 @@ class MultiPolygon extends Geometry {
 };
   
 class Feature {
+  /** @var array<mixed> $properties */
   readonly array $properties;
   readonly Geometry $geometry;
   
+  /** @param TGeoJsonFeature $feature */
   function __construct(array $feature) {
     $this->properties = $feature['properties'] ?? null;
     $this->geometry = Geometry::create($feature['geometry'] ?? null);
   }
   
+  /** @return TGeoJsonFeature */
   function asArray(): array {
     return [
-      'type'=> 'FeatureCollection',
+      'type'=> 'Feature',
       'properties'=> $this->properties,
       'geometry'=> $this->geometry->asArray(),
     ];
-    }
+  }
 };
 
 class FeatureCollection {
+  /** @var list<Feature> $features */
   readonly array $features;
   
+  /** @param TGeoJsonFeatureCollection $featCol */
   function __construct(array $featCol) {
     $this->features = array_map(
       function (array $feature) { return new Feature($feature); },
@@ -153,7 +167,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur en
 
 
 echo "<pre>\n";
-if (0) {
+if (0) { // @phpstan-ignore if.alwaysFalse 
   $point = Geometry::create(['type'=> 'Point', 'coordinates'=> [0,0]]);
   echo '$point='; print_r($point);
   $feature = new Feature([
@@ -168,13 +182,13 @@ if (0) {
   echo '$fc='; print_r($fc);
 }
 
-if (0) {
+if (0) { // @phpstan-ignore if.alwaysFalse 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   print_r($foffc->readFC());
 }
 
-if (1) {
+if (1) { // @phpstan-ignore if.alwaysTrue 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   foreach ($foffc->readFeatures() as $feature) {

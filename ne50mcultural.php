@@ -18,9 +18,7 @@ class NE50mCultural extends NaturalEarth {
     parent::__construct($md['title'], $md['description'], $md['$schema']);
   }
   
-  /** L'accès aux sections du JdD.
-   * @return array<mixed>
-   */
+  /** L'accès aux sections du JdD. */
   function getTuples(string $sname, mixed $filtre=null): Generator {
     return parent::getTuples(self::GEOJSON_DIR."/$sname.geojson", $filtre);
   }

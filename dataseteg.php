@@ -176,7 +176,10 @@ class DatasetEg extends Dataset {
     }
   }
   
-  function getOneTupleByKey(string $section, string|number $key): array|string {
+  /** Retourne le n-uplet ou la valeur ayant la clé indiquée de la section.
+   * @return array<mixed>|string|null
+   */ 
+  function getOneTupleByKey(string $section, string|int $key): array|string|null {
     return self::SECTIONS[$section][$key];
   }
 };

@@ -308,14 +308,8 @@ class Map {
 switch ($_GET['action'] ?? null) {
   case null: {
     echo "Rien à faire pour construire le JdD<br>\n";
-    echo "<a href='?action=test'>Test du code</a><br>\n";
     echo "<a href='index.php?action=validate&dataset=MapDataset'>Vérifier la conformité des données</a><br>\n";
     echo "<a href='?action=listMaps'>Liste les cartes</a><br>\n";
-    break;
-  }
-  case 'test': {
-    $mapDataset = new MapDataset;
-    echo '<pre>maps='; print_r($mapDataset->getData('maps'));
     break;
   }
   case 'listMaps': {

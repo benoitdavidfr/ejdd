@@ -34,7 +34,9 @@ class NomsCtCnigC extends SpreadSheetDataset {
       }
       case 'section': {
         $objet = new NomsCtCnigC;
-        echo "<pre>section="; print_r($objet->getData($_GET['section']));
+        echo "<pre>section=";
+        foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
+          print_r([$key => $tuple]);
         break;
       }
     }

@@ -29,8 +29,9 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
-1/7/2025_4:30:
-  - fin correction des différents jeux précédemment intégrés en V2, conformité PhpStan à gérer
+1/7/2025:
+  - fin correction des différents jeux précédemment intégrés en V2
+  - conforme PhpStan
 29/6/2025:
   - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
 29/6/2025:
@@ -203,12 +204,15 @@ class RecArray {
 
 /** Le schéma JSON de la section */
 class SchemaOfSection {
-  /** array<mixed> $array */
+  /** @var array<mixed> $array */
   readonly array $array;
 
+  /** @param array<mixed> $schema */
   function __construct(array $schema) { $this->array = $schema; }
   
-  /** Déduit du schéma si le type de la section. */
+  /** Déduit du schéma si le type de la section.
+   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+   */
   function kind(): string {
     switch ($type = $this->array['type']) {
       case 'object': {
@@ -300,7 +304,7 @@ class Section {
     echo "</table>\n";
   }
   
-  function displayTuple(string $key, Dataset $dataset) {
+  function displayTuple(string $key, Dataset $dataset): void {
     $tupleOrValue = $dataset->getOneTupleByKey($this->name, $key);
     $tuple = match ($kind = $this->schema->kind()) {
       'dictOfTuples', 'listOfTuples' => $tupleOrValue,
@@ -334,7 +338,9 @@ class Section {
     return true;
   }
   
-  /** Retourne les errurs de conformité de la section à son schéma */
+  /** Retourne les errurs de conformité de la section à son schéma;
+   * @return list<mixed>
+   */
   function getErrors(Dataset $dataset): array {
     $kind = $this->schema->kind();
     //echo "kind=$kind<br>\n";
@@ -506,11 +512,14 @@ abstract class Dataset {
   abstract function getData(string $section, mixed $filtre=null): array; */
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @return array<mixed>
+   * @return Generator
    */
   abstract function getTuples(string $section, mixed $filtre=null): Generator;
   
-  function getOneTupleByKey(string $section, string|number $key): array|string|null {
+  /** Retourne le n-uplet ou la valeur ayant la clé indiquée de la section.
+   * @return array<mixed>|string|null
+   */ 
+  function getOneTupleByKey(string $section, string|int $key): array|string|null {
     foreach ($this->getTuples($section) as $k => $tuple)
       if ($k == $key)
         return $tuple;
@@ -627,7 +636,9 @@ abstract class Dataset {
     return true;
   }
   
-  /** Retourne les erreurs de non conformité du JdD */
+  /** Retourne les erreurs de non conformité du JdD.
+   * @return list<mixed>
+   */
   function getErrors(): array {
     $errors = [];
     $validator = new JsonSchema\Validator;

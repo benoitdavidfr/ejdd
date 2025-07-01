@@ -18,9 +18,7 @@ class WorldEez extends Dataset {
     parent::__construct($md['title'], $md['description'], $md['$schema']);
   }
   
-  /** L'accès aux sections du JdD.
-   * @return array<mixed>
-   */
+  /** L'accès aux sections du JdD. */
   function getTuples(string $sname, mixed $filtre=null): Generator {
     $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$sname.geojson");
     foreach ($fileOfFC->readFeatures() as $no => $feature)  {
@@ -29,6 +27,7 @@ class WorldEez extends Dataset {
     }
   }
 };
+
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
@@ -51,9 +50,12 @@ class WorldEezBuild {
   /** Calcul d'une estimation de la résoliution de la section $sname */
   static function reso(string $sname): void {
     $dataset = Dataset::get('WorldEez');
-    foreach ($dataset->getTuples($sname) as $tuple) break;
-    $geom = Geometry::create($tuple['geometry']);
-    echo "reso=",$geom->reso(),"<br>\n";
+    foreach ($dataset->getTuples($sname) as $tuple) {
+      /** @var Polygon|MultiPolygon $geom */
+      $geom = Geometry::create($tuple['geometry']);
+      echo "reso=",$geom->reso(),"<br>\n";
+      break;
+    }
   }
   
   /** Produit les fichier GeoJSON à partir des fichiers SHP de la livraison stockée dans SHP_DIR */

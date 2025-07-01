@@ -36,8 +36,10 @@ class Pays extends SpreadSheetDataset {
         break;
       }
       case 'section': {
-        $pays = new Pays;
-        echo "<pre>section="; print_r($pays->getData($_GET['section']));
+        $objet = new Pays;
+        echo "<pre>section=";
+        foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
+          print_r([$key => $tuple]);
         break;
       }
     }

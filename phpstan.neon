@@ -35,6 +35,7 @@ parameters:
   paths:
     - index.php
     - dataset.inc.php
+    - geojson.inc.php
     - geojson.php
     - map.php
     - dataseteg.php
@@ -45,9 +46,11 @@ parameters:
     - pays.php
     - mapdataset.php
     - aecogpe.php
+    - worldeez.php
     - naturalearth.inc.php
     - ne50mcultural.php
     - ne110mcultural.php
+    - ne110mphysical.php
     - lib/coordsys.inc.php
     - lib/gebox.inc.php
     - lib/gegeom.inc.php

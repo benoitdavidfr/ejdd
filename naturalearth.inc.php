@@ -6,7 +6,6 @@ require_once 'geojson.inc.php';
 
 abstract class NaturalEarth extends Dataset {
   /** L'accès aux sections du JdD.
-   * @return array<mixed>
    */
   function getTuples(string $filePath, mixed $filtre=null): Generator {
     $fileOfFC = new FileOfFC($filePath);
