@@ -1,9 +1,9 @@
 <?php
 /** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes.
  * Un JdD est défini par:
- *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE)
- *  - un fichier Php portant le nom du JdD en minuscules avec l'extension '.php'
- *  - une classe portant le nom du JdD héritant de la classe Dataset définie par inclusion du fichier Php
+ *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE) qui l'associe à une classe, ou gamme
+ *  - un fichier Php portant le nom de la gamme en minuscules avec l'extension '.php'
+ *  - une classe portant le nom de la gamme héritant de la classe Dataset définie par inclusion du fichier Php
  *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le JdD
  * Un JdD est utilisé par:
  *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir sa représentation Php
