@@ -9,7 +9,7 @@ switch ($_GET['action'] ?? null) {
   case null: {
     if (!isset($_GET['dataset'])) {
       echo "<h2>Choix du JdD</h2>\n";
-      foreach (Dataset::REGISTRE as $dsName) {
+      foreach (Dataset::REGISTRE as $dsName=> $class) {
         $dataset = Dataset::get($dsName);
         //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
         echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
@@ -17,8 +17,9 @@ switch ($_GET['action'] ?? null) {
       echo "<h3><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></h3>\n";
     }
     else {
+      $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
       echo "<h2>Choix de l'action</h2>\n";
-      echo "<a href='",strToLower($_GET['dataset']),".php'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
+      echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
       echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";

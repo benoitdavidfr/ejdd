@@ -31,7 +31,8 @@ define('JOURNAL', [
 <<<'EOT'
 1/7/2025:
   - fin correction des différents jeux précédemment intégrés en V2
-  - conforme PhpStan
+  - conforme PhpStan (8:30)
+  - définition d'une gamme de JdD comme NaturalEarth
 29/6/2025:
   - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
 29/6/2025:
@@ -368,19 +369,19 @@ class Section {
 
 /** Classe abstraite des JdD */
 abstract class Dataset {
-  /** Registre contenant la liste des JdD */
+  /** Registre contenant la liste des JdD sous la forme {dsName} => {className}|null */
   const REGISTRE = [
-    'DatasetEg',
-    'DeptReg',
-    'NomsCnig',
-    'NomsCtCnigC',
-    'Pays',
-    'MapDataset',
-    'AeCogPe',
-    'WorldEez',
-    'NE110mCultural',
-    'NE110mPhysical',
-    'NE50mCultural',
+    'DatasetEg'=> null,
+    'DeptReg'=> null,
+    'NomsCnig'=> null,
+    'NomsCtCnigC'=> null,
+    'Pays'=> null,
+    'MapDataset'=> null,
+    'AeCogPe'=> null,
+    'WorldEez'=> null,
+    'NE110mCultural'=> 'NaturalEarth',
+    'NE110mPhysical'=> 'NaturalEarth',
+    'NE50mCultural' => 'NaturalEarth',
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
@@ -502,8 +503,9 @@ abstract class Dataset {
   
   /** Retourne le JdD de ce nom */
   static function get(string $dsName): self {
-    require_once strtolower("$dsName.php");
-    return new $dsName();
+    $class = self::REGISTRE[$dsName] ?? $dsName;
+    require_once strtolower("$class.php");
+    return new $class($dsName);
   }
   
   /* L'accès aux sections du JdD.

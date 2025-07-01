@@ -25,6 +25,10 @@ listOfFiles: |
   ne110mphysical/ne_110m_ocean.geojson
   ne110mphysical/ne_110m_rivers_lake_centerlines.geojson
   ne110mphysical/ne_110m_wgs84_bounding_box.geojson
+params:
+  COORDINATE_PRECISION: 1
+  MAP_SCALE_DEN: 110_000_000
+  MAP_SCALE_ALPHA: '1:110m'
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   title: Schéma de NaturalEarth110mPhysical

@@ -31,6 +31,10 @@ listOfFiles:
   - ne_50m_populated_places_simple.geojson
   - ne_50m_ports.geojson
   - ne_50m_urban_areas.geojson
+params:
+  COORDINATE_PRECISION: 2
+  MAP_SCALE_DEN: 50_000_000
+  MAP_SCALE_ALPHA: '1:50m'
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   title: Schéma de NaturalEarth110mCultural

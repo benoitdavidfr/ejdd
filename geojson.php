@@ -4,7 +4,7 @@ require_once 'dataset.inc.php';
 require_once 'lib/gebox.inc.php';
 require_once 'lib/gegeom.inc.php';
 
-ini_set('memory_limit', '1G');
+ini_set('memory_limit', '10G');
 //echo "<pre>"; print_r($_SERVER);
 
 $path = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['SCRIPT_NAME']));

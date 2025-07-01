@@ -19,6 +19,10 @@ listOfFiles:
   - ne_110m_admin_1_states_provinces
   - ne_110m_admin_1_states_provinces_scale_rank
   - ne_110m_admin_0_tiny_countries
+params:
+  COORDINATE_PRECISION: 1
+  MAP_SCALE_DEN: 110_000_000
+  MAP_SCALE_ALPHA: '1:110m'
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   title: Schéma de NaturalEarth110mCultural
