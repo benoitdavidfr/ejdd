@@ -29,6 +29,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+2/7/2025:
+  - modif NaturalEarth -> GeoDataset
 1/7/2025:
   - fin correction des différents jeux précédemment intégrés en V2
   - conforme PhpStan (8:30)
@@ -379,9 +381,12 @@ abstract class Dataset {
     'MapDataset'=> null,
     'AeCogPe'=> null,
     'WorldEez'=> null,
-    'NE110mCultural'=> 'NaturalEarth',
-    'NE110mPhysical'=> 'NaturalEarth',
-    'NE50mCultural' => 'NaturalEarth',
+    'NE110mPhysical'=> 'GeoDataset',
+    'NE110mCultural'=> 'GeoDataset',
+    'NE50mPhysical' => 'GeoDataset',
+    'NE50mCultural' => 'GeoDataset',
+    'NE10mPhysical' => 'GeoDataset',
+    'NE10mCultural' => 'GeoDataset',
   ];
   const META_SCHEMA_DATASET = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',

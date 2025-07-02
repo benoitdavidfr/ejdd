@@ -1,8 +1,7 @@
 <?php
-/** Gamme Natural Earth paramétrée par le nom du JdD de Natural Earth.
- * Les données sont stockées dans les fichiers GeoJSON et les MD sont dans le fichier Yaml.
- * Le fichier Yaml utilise le nom du JdD en minuscules.
- * Les fichiers geoJSON sont stockés dans un répertoire ayant comme nom celui du JdD en miniscules.
+/** Gestion d'un JdD géographique générique, utilisé par exemple pour les JdD Natural Earth.
+ * Les données sont stockées dans les fichiers GeoJSON stockés dans un répertoire ayant comme nom celui du JdD en miniscules,
+ * et les MD sont dans le fichier Yaml utilisant le nom du JdD en minuscules.
  */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
@@ -11,9 +10,14 @@ require_once 'geojson.inc.php';
 use Symfony\Component\Yaml\Yaml;
 
 /** Classes pour les jeux de données Nartural Earth */
-class NaturalEarth extends Dataset {
+class GeoDataset extends Dataset {
   readonly string $dsName;
-  /** @var array<string,mixed> $params */
+  /** @var array<string,mixed> $params, des paramètres complémentaires au schéma Dataset utilisés pour les GéoDataset.
+   * COORDINATE_PRECISION le nbre de chiffres significatifs à générer pour le fichier GeoJSON, lié à l'échelle du GéoDataset.
+   * MAP_SCALE_DEN le dénominateur de l'échelle du GéoDataset comme nombre, utilisé pour vérifier la valeur précédente.
+   * MAP_SCALE_ALPHA: l'échelle du GéoDataset sous forme alpha pour affichage.
+   * SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers SHP d'origine.
+   */
   readonly array $params;
   
   function __construct(string $dsName) {
@@ -37,18 +41,14 @@ class NaturalEarth extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-class NaturalEarthBuild {
-  /** Chemin du répertoire contenant les fichiers SHP */
-  const SHP_DIRS = [
-    'NE110mPhysical'=> '../data/naturalearth/110m_physical/',
-    'NE110mCultural'=> '../data/naturalearth/110m_cultural/',
-    'NE50mCultural' => '../data/naturalearth/50m_cultural/',
-  ];
+class GeoDatasetBuild {
+  const DS_CLASS = 'GeoDataset';
   
-  /** Produit les fichier GeoJSON à partir des fichiers SHP de la livraison stockée dans SHP_DIR */
   /** Produit les fichier GeoJSON à partir des fichiers SHP de la livraison stockée dans SHP_DIR */
   static function buildGeoJson(string $shpPath, string $geojsDir, int $coordinate_precision): void {
     $shpdir = dir($shpPath);
+    if (!is_dir($geojsDir))
+      mkdir($geojsDir);
     while (false !== ($entry = $shpdir->read())) {
       if (preg_match('!\.shp$!', $entry)) {
         echo "> $entry<br>\n";
@@ -81,9 +81,10 @@ class NaturalEarthBuild {
   }
   
   static function main(): void {
+    $dsClass = self::DS_CLASS;
     switch ($_GET['action'] ?? null) {
       case null: {
-        $dataset = new NaturalEarth($_GET['dataset']);
+        $dataset = new $dsClass($_GET['dataset']);
         echo "COORDINATE_PRECISION=",$dataset->params['COORDINATE_PRECISION'],"\n";
         printf(" soit au %s: %.3f mm<br>\n",
               $dataset->params['MAP_SCALE_ALPHA'],
@@ -98,22 +99,14 @@ class NaturalEarthBuild {
         break;
       }
       case 'buildGeoJson': {
-        $dataset = new NaturalEarth($_GET['dataset']);
+        $dataset = new $dsClass($_GET['dataset']);
         self::buildGeoJson(
-          self::SHP_DIRS[$_GET['dataset']], 
+          $dataset->params['SHP_DIR'],
           strtolower($_GET['dataset']), 
           $dataset->params['COORDINATE_PRECISION']
         );
         break;
       }
-      /*case 'schema': {
-        echo '<pre>',Yaml::dump([
-          'title'=> NE50mCultural::TITLE,
-          'description'=> NE50mCultural::DESCRIPTION,
-          '$schema'=> NE50mCultural::SCHEMA,
-        ], 99, 2, Yaml::DUMP_MULTI_LINE_LITERAL_BLOCK);
-        break;
-      }*/
       case 'doc': {
         $docs = [];
         $geojsonDir = strtolower($_GET['dataset']);
@@ -133,4 +126,4 @@ class NaturalEarthBuild {
     }
   }
 };
-NaturalEarthBuild::main();
+GeoDatasetBuild::main();

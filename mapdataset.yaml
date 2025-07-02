@@ -250,7 +250,9 @@ maps:
       - NE110m/wgs84_bounding_box
       - NE110m/boundary_lines_land
       - NE110m/countries
+      - NE50m/coastline
       - NE50m/map_units
+      - NE10m/coastline
       - Région
       - Département
       - EPCI
@@ -323,12 +325,28 @@ layers:
       maxZoom: 7
       usebbox: true
       onEachFeature: onEachFeature
+  NE50m/coastline:
+    title: Littoral océanique, incluant les principales îles (NE50m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE50mPhysical/collections/ne_50m_coastline/items'
+      minZoom: 7
+      maxZoom: 9
+      usebbox: true
+      onEachFeature: onEachFeature
   NE50m/map_units:
     title: 'Unités cartographiques (NE50m)'
     L.UGeoJSONLayer:
       endpoint: '{gjsurl}NE50mCultural/collections/ne_50m_admin_0_map_units/items'
       minZoom: 5
       maxZoom: 12
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE10m/coastline:
+    title: Littoral océanique (NE10m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE10mPhysical/collections/ne_10m_coastline/items'
+      minZoom: 9
+      maxZoom: 18
       usebbox: true
       onEachFeature: onEachFeature
   Région:

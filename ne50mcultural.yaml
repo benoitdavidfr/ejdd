@@ -35,6 +35,7 @@ params:
   COORDINATE_PRECISION: 2
   MAP_SCALE_DEN: 50_000_000
   MAP_SCALE_ALPHA: '1:50m'
+  SHP_DIR: '../data/naturalearth/50m_cultural/'
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   title: Schéma de NaturalEarth110mCultural
