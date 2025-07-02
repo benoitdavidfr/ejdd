@@ -20,6 +20,8 @@
  */
 require_once __DIR__.'/vendor/autoload.php';
 
+use Symfony\Component\Yaml\Yaml;
+
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
@@ -31,6 +33,7 @@ define('JOURNAL', [
 <<<'EOT'
 2/7/2025:
   - modif NaturalEarth -> GeoDataset
+  - transfert meta schema dans dataset.yaml
 1/7/2025:
   - fin correction des différents jeux précédemment intégrés en V2
   - conforme PhpStan (8:30)
@@ -388,102 +391,6 @@ abstract class Dataset {
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
   ];
-  const META_SCHEMA_DATASET = [
-    '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Méta schéma des JdD",
-    'definitions'=> [
-      'sectionDict'=> [
-        'description'=> "Cas d'une section dictOfTuples ou dictOfValues",
-        'type'=> 'object',
-        'required'=> ['title','description','type','additionalProperties','patternProperties'],
-        'properties'=> [
-          'title'=> ['type'=> 'string'], // une section de données doit avoir un titre de type string
-          'description'=> ['type'=> 'string'], // une section de données doit avoir une description de type string
-          'type'=> ['const'=> 'object'],
-          'additionalProperties'=> ['const'=> false],
-          'patternProperties'=> ['type'=> 'object'],
-        ],
-      ],
-      'sectionList'=> [
-        'description'=> "Cas d'une section listOfTuples ou listOfValues",
-        'required'=> ['title','description','type','items'],
-        'properties'=> [
-          'title'=> ['type'=> 'string'], // une section de données doit avoir un titre de type string
-          'description'=> ['type'=> 'string'], // une section de données doit avoir une description de type string
-          'type'=> ['const'=> 'array'],
-        ],
-      ],
-      'section'=> [
-        'oneOf'=> [
-          [ '$ref'=> '#/definitions/sectionDict'],
-          [ '$ref'=> '#/definitions/sectionList'],
-        ]
-      ], // MD de section
-    ],
-    'type'=> 'object',
-    'required'=> ['$schema','title','description','type','required','additionalProperties','properties'],
-    'properties'=> [
-      '$schema'=> [
-        'description'=> "Le méta-schéma du schéma",
-        'const'=> 'http://json-schema.org/draft-07/schema#',
-      ],
-      'title'=> [
-        'description'=> "Titre du JdD",
-        'type'=> 'string',
-      ],
-      'description'=> [
-        'description'=> "Description du JdD",
-        'type'=> 'string',
-      ],
-      'type'=> [
-        'description'=> "toujours object",
-        'const'=> 'object',
-      ],
-      'required'=> [
-        'description'=> "Liste des champs obligatoires pour le JdD",
-        'type'=> 'array',
-        'items'=> ['type'=> 'string'],
-      ],
-      'additionalProperties'=> [
-        'description'=> "toujours false",
-        'const'=> false,
-      ],
-      'properties'=> [
-        'description'=> "Les sections du JdD",
-        'type'=> 'object',
-        'required'=> ['title','description','$schema'],
-        'properties'=> [
-          'title'=> [
-            'type'=> 'object',
-            'required'=> ['description','type'],
-            'properties'=> [
-              'description'=> ['type'=>'string'],
-              'type'=> ['const'=>'string'],
-            ],
-          ],
-          'description'=> [
-            'type'=> 'object',
-            'required'=> ['description','type'],
-            'properties'=> [
-              'description'=> ['type'=>'string'],
-              'type'=> ['const'=>'string'],
-            ],
-          ],
-          '$schema'=> [
-            'type'=> 'object',
-            'required'=> ['description','type'],
-            'properties'=> [
-              'description'=> ['type'=>'string'],
-              'type'=> ['const'=>'object'],
-            ],
-          ],
-        ],
-        'additionalProperties'=> [
-          '$ref'=> '#/definitions/section',
-        ],
-      ]
-    ],
-  ];
   
   readonly string $title;
   readonly string $description;
@@ -512,11 +419,6 @@ abstract class Dataset {
     require_once strtolower("$class.php");
     return new $class($dsName);
   }
-  
-  /* L'accès aux sections du JdD.
-   * @return array<mixed>
-   *
-  abstract function getData(string $section, mixed $filtre=null): array; */
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
    * @return Generator
@@ -562,7 +464,8 @@ abstract class Dataset {
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new JsonSchema\Validator;
     $schema = RecArray::toStdObject($this->schema);
-    $validator->validate($schema, self::META_SCHEMA_DATASET);
+    $metaSchemaDataset = Yaml::parseFile('dataset.yaml');
+    $validator->validate($schema, $metaSchemaDataset);
     return $validator->isValid();
   }
   
@@ -587,7 +490,8 @@ abstract class Dataset {
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new JsonSchema\Validator;
     $schema = RecArray::toStdObject($this->schema);
-    $validator->validate($schema, self::META_SCHEMA_DATASET);
+    $metaSchemaDataset = Yaml::parseFile('dataset.yaml');
+    $validator->validate($schema, $metaSchemaDataset);
     if ($validator->isValid()) {
       echo "Le schéma du JdD est conforme au méta-schéma des JdD.<br>\n";
     }
@@ -723,7 +627,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'util
 
 switch ($_GET['action'] ?? null) {
   case null: {
-    foreach (Dataset::REGISTRE as $dataset) {
+    foreach (array_keys(Dataset::REGISTRE) as $dataset) {
       echo "<a href='?action=title&dataset=$dataset'>Afficher le titre de $dataset</a>.<br>\n";
     }
     break;

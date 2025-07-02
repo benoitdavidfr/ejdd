@@ -1,0 +1,114 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
+title: 'Méta schéma des JdD'
+definitions:
+    sectionDict:
+        description: "Cas d'une section dictOfTuples ou dictOfValues"
+        type: object
+        required:
+            - title
+            - description
+            - type
+            - additionalProperties
+            - patternProperties
+        properties:
+            title:
+                type: string
+            description:
+                type: string
+            type:
+                const: object
+            additionalProperties:
+                const: false
+            patternProperties:
+                type: object
+    sectionList:
+        description: "Cas d'une section listOfTuples ou listOfValues"
+        required:
+            - title
+            - description
+            - type
+            - items
+        properties:
+            title:
+                type: string
+            description:
+                type: string
+            type:
+                const: array
+    section:
+        oneOf:
+            -
+                $ref: '#/definitions/sectionDict'
+            -
+                $ref: '#/definitions/sectionList'
+type: object
+required:
+    - $schema
+    - title
+    - description
+    - type
+    - required
+    - additionalProperties
+    - properties
+properties:
+    $schema:
+        description: 'Le méta-schéma du schéma'
+        const: 'http://json-schema.org/draft-07/schema#'
+    title:
+        description: 'Titre du JdD'
+        type: string
+    description:
+        description: 'Description du JdD'
+        type: string
+    type:
+        description: 'toujours object'
+        const: object
+    required:
+        description: 'Liste des champs obligatoires pour le JdD'
+        type: array
+        items:
+            type: string
+    additionalProperties:
+        description: 'toujours false'
+        const: false
+    properties:
+        description: 'Les sections du JdD'
+        type: object
+        required:
+            - title
+            - description
+            - $schema
+        properties:
+            title:
+                type: object
+                required:
+                    - description
+                    - type
+                properties:
+                    description:
+                        type: string
+                    type:
+                        const: string
+            description:
+                type: object
+                required:
+                    - description
+                    - type
+                properties:
+                    description:
+                        type: string
+                    type:
+                        const: string
+            $schema:
+                type: object
+                required:
+                    - description
+                    - type
+                properties:
+                    description:
+                        type: string
+                    type:
+                        const: object
+        additionalProperties:
+            $ref: '#/definitions/section'
+eof:
