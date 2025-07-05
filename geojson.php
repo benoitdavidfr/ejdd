@@ -109,7 +109,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     }
     unset($tuple['geometry']);
     $style = $tuple['style'] ?? null;
-    //unset($tuple['style']);
+    unset($tuple['style']);
     //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
     if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
       //print_r($tuple);

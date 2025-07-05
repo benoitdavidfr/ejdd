@@ -1,5 +1,5 @@
 <?php
-/** JdD StyledNaturalEarth. Chaque Feature est associé à un style. Version de test. */
+/** JdD StyledNaturalEarth. Chaque Feature est associé à un style. Version de test OK. */
 
 require_once 'dataset.inc.php';
 
@@ -77,11 +77,7 @@ class StyledNaturalEarth extends Dataset {
     }
     
     foreach (Dataset::get('NE110mPhysical')->getTuples('ne_110m_coastline') as $tuple) {
-      $tuple['style'] = [
-        'color'=> "#ff7800",
-        'weight'=> 5,
-        'opacity'=> 0.65,
-      ];
+      $tuple['style'] = ['color'=> "blue"];
       yield $tuple;
     }
   }
