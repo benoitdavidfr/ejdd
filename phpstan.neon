@@ -47,7 +47,9 @@ parameters:
     - mapdataset.php
     - aecogpe.php
     - worldeez.php
-    - naturalearth.php
+    - geodataset.php
+    - stylednaturalearth.php
+    - zoomleveL.php
     - lib/coordsys.inc.php
     - lib/gebox.inc.php
     - lib/gegeom.inc.php

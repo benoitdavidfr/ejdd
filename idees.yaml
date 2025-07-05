@@ -1,81 +1,194 @@
 title: Réflexion sur les possibilités de stockage et de manipulation d'un jeu de données (V3)
-synthèse: |
+besoins: |
   - cette démarche répond à 5 besoins
     - utiliser facilement en Php des JdD habituels
       - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
       - carto mondiale simplifiée
-    - associer à ces JdD une documentation sémantique et une spécification de structure
+    - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable
     - gérer efficacement des données un peu volumineuses comme des données géo., avec des sections qui ne tiennent pas en mémoire
     - cartographier les JdD en mode web
     - faire facilement des traitemts ensemblistes comme des jointures et des projections
-JSON:
-  - j'introduis la gestion de JdD directement en ODS
-  - je privilégie le JSON comme format de stockage pour plusieurs raisons
-  - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
-  - standard
-  - facilité d'utilisation en Php (natif)
-  - utilisation des schémas JSON
-  - utilisation du GeoJSON
+JSON/Yaml/ODS/Php:
+  - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
+    - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
+    - standard
+    - facilité d'utilisation en Php (natif)
+    - utilisation des schémas JSON (avec justinrainbow/json-schema)
+    - utilisation du GeoJSON
+  - je privilégie le Yaml comme format de gestion des MD pour les raison suivantes
+    - par rapport à JSON il est plus facile à éditer
+    - il est moins performant que JSON mais pour les MD ce n'est pas génant
+    - il est facile à utiliser en Php (avec symfony/yaml)
+    - il permet d'utiliser des schémas JSON
+  - j'utilise aussi le format de stockage ODS
+    - il est facile à éditer pour gérer des petits jeux de données tabulaires
+    - le format est assez standard
+    - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
+  - Php est utilisé pour exécuter du code et j'évite de stocker des données en Php car
+    - c'est difficilement éditable
+    - c'est moins performant que JSON
 solution:
   généralités:
-    - un JdD est identifié par un nom comme DeptReg
-    - un JdD est constitué de MD et de sections de données
-      - les MD sont identiques pour tous les jeux
-        - title -> titre du JdD, de l'ordre d'une ligne
-        - description -> texte de présentation du JdD
-        - $schema -> schéma JSON du JdD
-      - autant de sections nécessaires pour stocker des données
+    - un JdD est identifié par un **nom court**, comme DeptReg
+    - en outre un JdD est constitué de **MD** et de **sections de données**
+      - un JdD doit a minima définir les 3 MD suivantes
+        - title -> titre du JdD, pas plus long qu'une ligne
+        - description -> texte de présentation du JdD aussi longue qu'utile
+        - $schema -> schéma JSON des sections de données
+      - un JdD est constitué enfin d'autant de sections de données nécessaires pour stocker des données
         - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
         - la référence d'une section est la notion de table de n-uplets
+        - une section de données peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
+    - la notion de schéma JSON des sections est un peu virtuelle
+      - car les données des sections ne sont pas forcément stockées selon ce schéma
+      - mais elles seront par contre disponibles en Php dans ce schéma
+        - en considérant qu'un Generator correspond à un object ou un array en fonction de la clé
+    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
+      - cette notion de catégorie permet de mutualiser le code Php entre différents jeux ayant le même comportement 
+    - une catégorie de JdD peut exiger des MD complémentaires
+    - je distingue
+      - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
+      - de l'initialisation du JdD qui importe le JdD dans le système à partir d'une représentation externe
+  structurationEnPhp:
+    - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
+    - cette classe Php hérite d'une classe abstraite Dataset
+      - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
+    - une catégorie de JdD correspond à
+      - une classe Php héritant de Dataset et portant le nom de la catégorie
+      - un fichier Php qui
+        - porte comme comme nom le nom de la classe en minuscules et suivi de '.php' et
+        - possède 2 parties
+          - le début du fichier inclus par un require_once définit le classe Php de la catégorie
+            - et est utilisé pour l'instantiation du JdD
+          - la fin du fichier correspond à une application d'initialisation du JdD
+            - qui est exécutée en exécutant le fichier Php
+            - qui définit une seconde classe
+              - ayant comme nom celui de la catégorie suivi de 'Build' et
+              - qui définit une méthode statique main() qui est appelée à la fin du fichier
+    - la définition des MD d'un JdD doit être conforme à un méta-schéma des JdD
   utilisationEnPhp:
-    - je récupère un JdD par "Dataset::get({nomDS}) -> Dataset"
-    - je récupère les MD par $ds->title, $ds->description et $ds->schema
+    - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
+    - je récupère ses MD par $ds->title, $ds->description et $ds->schema
     - je récupère les données par $ds->getTuples({section}, {filtre})
       - qui retourne un Generator sur les éléments de la section satisfaisant le filtre
-      - avec au moins 3 types de filtre
+      - avec au moins 4 types de filtre
         - valeur d'un champ dont la clé
         - intervalle de valeurs d'un champ
         - intersection avec un rectangle
+        - niveau de zoom
     - plus traitement ensembliste de jointure
-  IHM_pour_consulter:
-    - données et schéma en Html et en JSON
-  GeoJSON:
-    - webservice GeoJSON pour exposer du GeoJSON lorsque le jeu est compatible
+  carte:
+    - un JdD MapDataset contient la définition de cartes
+    - ces cartes peuvent être affichées avec Leaflet
   mise_en_oeuvre:
-    - un fichier index.php fourni l'IHM générale
-    - un fichier dataset.inc.php définit la classe Dataset utilisée par les usages Php
-    - chaque JdD correspond à
-      - un enregistrement dans un registre adhoc
-      - un fichier Php qui
-        - est utilisé comme appli pour construire le JdD et vérifier sa conformité à son schéma
-        - peut être intégré dans dataset.inc.php pour exposer la classe du JdD
-      - une classe du JdD définie dans le fichier Php qui implémente la construction du JdD
-      - une autre classe qui expose des pts d'accès std utilisables en Php
-        - title -> string
-        - description -> string
-        - schema -> array
-        - getTuples({section}, {filtre}) -> Generator
+    - un fichier index.php fournit l'IHM générale
+    - un fichier dataset.inc.php définit la classe Dataset
+    - un fichier Php par catégorie de jeux de données
+    - un fichier geojson.php expose en GeoJSON les sections des JdD
+    - un fichier map.php génère la carte Leaflet correspondant à une définition particulière
 applis:
   index.php:
     - appli interactive pour
+      - consulter la liste des JdD
       - afficher un JdD en Html ou en JSON
       - vérifier la conformité d'un JdD à son schéma
+      - dessiner une des cartes définies
   map.php:
-    - affiche une ou des cartes Leaflet avec les données des Dataset
-    - s'appuie sur un JdD map pour la définition des cartes
+    - affiche une des cartes Leaflet avec les données des Dataset
+    - s'appuie sur un JdD MapDataset pour la définition de ces cartes
     - appelle geojson.php pour cartographier les JdD
   geojson.php:
-    - génère le GeoJSON à partir d'un Dataset
+    - génère le GeoJSON à partir d'une section d'un Dataset
     - respecte l'API de uGeoJSON pour filtrer les features par rectangle
+zoomLeafletShomGT:
+   0: 560M
+   1: 1:280M
+   2: 1:140M
+   3: 1:70M
+   4: 1:40M
+   5: 1:20M
+   6: 1:10M - démarrage
+   7: 1:4M
+   8: 1:2M
+   9: 1:1M
+  10: 1:500k
+  11: 1:250k
+  12: 1:140k
+  13: 1:68k
+  14: 1:34k
+  15: 1:17k
+  16: 1:8k
+  17: 1:4k
+  18: 1:2k
+zoomLevel:
+  0: 1:559_082_264
+  1: 1:279_541_132
+  2: 1:139_770_566
+  3: 1:69_885_283
+  4: 1:34_942_641
+  5: 1:17_471_320
+  6: 1:8_735_660
+  7: 1:4_367_830
+  8: 1:2_183_915
+  9: 1:1_091_957
+  10: 1:545_978
+  11: 1:272_989
+  12: 1:136_494
+  13: 1:68_247
+  14: 1:34_123
+  15: 1:17_061
+  16: 1:8_530
+  17: 1:4_265
+  18: 1:2_132
+naturalEarth:
+  110m: 2
+  50m: 3-4
+  10m: 5-8
+  1m: 9
+affecterDesCouleurs:
+  exemples:
+    shomGT:
+      var overlays = {
+        "Délim. maritimes (Shom)" : new L.GeoJSON.AJAX(shomgturl+'geojson/delmar.geojson', {
+          style: { color: 'SteelBlue'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureDelmar
+        }),
+        "ZEE simplifiée" : new L.GeoJSON.AJAX(shomgturl+'geojson/frzee.geojson', {
+          style: { color: 'blue'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureZee
+        }),
+        "SAR-SRR" : new L.GeoJSON.AJAX(shomgturl+'geojson/sar_2019.geojson', {
+          style: { color: 'green'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureSar
+      
+      // 1/10M
+        "Catalogue 1/10M" : L.layerGroup([
+           new L.UGeoJSONLayer({
+             endpoint: shomgturl+'maps.php/collections/gt10M/items',
+             minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
+           }),
+           new L.UGeoJSONLayer({
+             endpoint: shomgturl+'maps.php/collections/gt10M/deletedZones',
+             style: { color: 'red'}, minZoom: 0, maxZoom: 18, usebbox: true,
+             onEachFeature: onEachFeatureDeleted
+           }),
+           new L.UGeoJSONLayer({
+             endpoint: shomgturl+'maps.php/collections/gt10M/corners',
+             minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachPointFeature,
+             pointToLayer: pointToLayer
+           }),
+           new L.TileLayer(
+             shomgturlwsd+'tile.php/num10M/{z}/{x}/{y}.png',
+             {'format':'png','minZoom':0,'maxZoom':18,'detectRetina':false}
+           ),
+        ])
+      }
 historique:
   v3:
     - replacement getData() par getTuples() qui retourne un Generator
-    - possibilité de gérer des sections qui ne tiennent pas en mémoire
+    - rend possible de gérer des sections qui ne tiennent pas en mémoire
   v2:
     - stockage des données en JSON
     - accès global à une section de données par getData()
     - pb lorsque la section est trop volumineuse pour être chargée en mémoire
   v1:
-    - essaie de stockage des données en Php
+    - essai de stockage des données en Php
     - pas concluant, notamment moins efficace que JSON
 eof:

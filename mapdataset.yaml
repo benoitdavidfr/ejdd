@@ -261,6 +261,20 @@ maps:
       - debug
     defaultOverlays:
       - antimeridien
+  testStyledNaturalErth:
+    title: carte de test de styledNaturalEarth
+    vars:
+      gjsurl: 'http://localhost/dataset/geojson.php/'
+      userverdir: 'http://localhost/gexplor/visu/'
+    baseLayers:
+      - OSM
+    defaultBaseLayer: OSM
+    overlays:
+      - styledNaturalEarth
+      - antimeridien
+    defaultOverlays:
+      - styledNaturalEarth
+      - antimeridien
   test:
     title: Carte de test
     vars:
@@ -349,6 +363,15 @@ layers:
       maxZoom: 18
       usebbox: true
       onEachFeature: onEachFeature
+  styledNaturalEarth:
+    title: NaturalEarth publiée avec un style pour chaque Feature
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}StyledNturalEarth/collections/styledLayer/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      #style: 'function(feature) { return feature.style; }'
   Région:
     title: 'Région de AE COG PE'
     L.UGeoJSONLayer:

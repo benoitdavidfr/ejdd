@@ -1,5 +1,5 @@
 <?php
-/** Génère le GeoJSON */
+/** Génère un flux GeoJSON pour une section d'un JdD. */
 require_once 'dataset.inc.php';
 require_once 'lib/gebox.inc.php';
 require_once 'lib/gegeom.inc.php';
@@ -91,7 +91,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
   echo '{"type": "FeatureCollection"',",\n",
-    ' "name": "',"$dsname/$sectname",'",',"\n",
+    '  "name": "',"$dsname/$sectname",'",',"\n",
     '  "features":',"[\n";
   $first = true;
   foreach ($dataset->getTuples($sectname) as $tuple) {
@@ -108,6 +108,8 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       //echo "Intersecte bbox\n";
     }
     unset($tuple['geometry']);
+    $style = $tuple['style'] ?? null;
+    unset($tuple['style']);
     //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
     if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
       //print_r($tuple);
@@ -117,11 +119,13 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       //print_r($tuple2);
       $tuple = $tuple2;
     }
-    $feature = [
-      'type'=> 'Feature',
-      'properties'=> $tuple,
-      'geometry'=> $geometry,
-    ];
+    $feature = array_merge(
+      [ 'type'=> 'Feature',
+        'properties'=> $tuple,
+      ],
+      $style ? ['style'=> $style] : [],
+      [ 'geometry'=> $geometry],
+    );
     $json = json_encode($feature);
     echo ($first ? '' : ",\n"),
          '  ',$json;

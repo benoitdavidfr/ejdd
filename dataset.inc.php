@@ -1,9 +1,9 @@
 <?php
 /** Ce fichier définit l'interface d'accès en Php aux JdD ainsi que des fonctionnalités communes.
  * Un JdD est défini par:
- *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE) qui l'associe à une classe, ou gamme
- *  - un fichier Php portant le nom de la gamme en minuscules avec l'extension '.php'
- *  - une classe portant le nom de la gamme héritant de la classe Dataset définie par inclusion du fichier Php
+ *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE) qui l'associe à une classe, ou catégorie
+ *  - un fichier Php portant le nom de la catégorie en minuscules avec l'extension '.php'
+ *  - une classe portant le nom de la catégorie héritant de la classe Dataset définie par inclusion du fichier Php
  *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le JdD
  * Un JdD est utilisé par:
  *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir sa représentation Php
@@ -25,23 +25,28 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
+- transférer les JdD géo. en GeoDataset
+- produire une couche NaturalEarth correspondant à une carte stylisée des couches en multi-échelles
+- ajouter le zoomLevel et rect dans l'appel de getTuples() depuis geojson.php
 EOT
 ]
 );
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+5/7/2025:
+  - début implem StyledNaturalEarth 
+  - correction bug dans dataset.inc.php sur la propagation des définitions dans les sous-schemas
 2/7/2025:
-  - modif NaturalEarth -> GeoDataset
+  - modif catégorie NaturalEarth -> GeoDataset
   - transfert meta schema dans dataset.yaml
 1/7/2025:
-  - fin correction des différents jeux précédemment intégrés en V2
+  - fin correction des différents jeux précédemment définis en V2
   - conforme PhpStan (8:30)
-  - définition d'une gamme de JdD comme NaturalEarth
+  - définition d'une catégorie de JdD comme NaturalEarth
 29/6/2025:
+  - v3 fondée sur getTuples() à la place de gestData()
   - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
-29/6/2025:
-  - v3 fondée sur getTuples()
 16/6/2025:
   - 1ère version de v2 conforme PhpStan
   - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
@@ -333,6 +338,7 @@ class Section {
         'listOfTuples', 'listOfValues' => [$tuple],
       };
       $data = RecArray::toStdObject($data);
+      //echo "<pre>appel de Validator::validate avec data=";print_r($data); echo "et schema="; print_r($this->schema->array);
       $validator->validate($data, $this->schema->array);
       if (!$validator->isValid())
         return false;
@@ -390,6 +396,7 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
+    'StyledNaturalEarth' => null,
   ];
   
   readonly string $title;
@@ -404,10 +411,14 @@ abstract class Dataset {
     $this->title = $title;
     $this->description = $description;
     $this->schema = $schema;
+    $definitions = $schema['definitions'] ?? null;
     $sections = [];
     foreach ($schema['properties'] as $key => $value) {
       if (in_array($key, ['title','description','$schema']))
         continue;
+      // s'il existe des définitions alors elles doivent être transmises dans chaque sou-schéma
+      if ($definitions)
+        $value = array_merge(['definitions'=> $definitions], $value);
       $sections[$key] = new Section($key, $value);
     }
     $this->sections = $sections;

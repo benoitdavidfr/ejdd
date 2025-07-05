@@ -14,7 +14,14 @@ switch ($_GET['action'] ?? null) {
         //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
         echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
       }
-      echo "<h3><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></h3>\n";
+      echo "<h2>Autres</h2><ul>\n";
+      echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
+      echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
+      echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
+            "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
+      echo "<li><a href='https://github.com/calvinmetcalf/leaflet-ajax' target='_blank'>",
+            "Lien vers leaflet-ajaxr</a></li>\n";
+      echo "</ul>\n";
     }
     else {
       $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
