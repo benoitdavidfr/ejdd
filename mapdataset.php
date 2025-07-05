@@ -34,7 +34,6 @@ class MapDataset extends Dataset {
       yield $key => $tuple;
     return;
   }
-
 };
 
 
@@ -123,6 +122,8 @@ class L_UGeoJSONLayer extends Layer {
     $params = json_encode($this->params, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
     /** la valeur fournie par le champ onEachFeature est un nom de fonction qui ne doit pas être entre "" */
     $params = preg_replace('!"(onEachFeature)":"([^"]+)"!', '"$1":$2', $params);
+    //echo '<pre>L_UGeoJSONLayer $params='; print_r($this->params); echo " -> $params</pre>\n";
+    $params = preg_replace('!"(style)":"([^"]+)"!', '"$1":$2', $params);
     //echo '<pre>L_UGeoJSONLayer $params='; print_r($this->params); echo " -> $params</pre>\n";
     return str_replace(
       ['{id}','{params}'],

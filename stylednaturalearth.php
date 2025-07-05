@@ -57,9 +57,31 @@ class StyledNaturalEarth extends Dataset {
   function __construct() { parent::__construct(self::TITLE, self::DESCRIPTION, self::JSON_SCHEMA); }
   
   function getTuples(string $section, mixed $filtre=null): Generator {
-    $ne110mphysical = Dataset::get('NE110mPhysical');
-    foreach ($ne110mphysical->getTuples('ne_110m_coastline') as $tuple) {
-      $tuple['style'] = ['color'=> 'red'];
+    $dataset = Dataset::get('NE110mCultural');
+    $sectionMD = $dataset->sections['ne_110m_admin_0_map_units']; // les MD de la section
+    foreach ($dataset->getTuples('ne_110m_admin_0_map_units') as $tuple) {
+      if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+        $tuple2 = [];
+        foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+          $tuple2[$prop] = $tuple[$prop];
+        //print_r($tuple2);
+        $tuple2['geometry'] = $tuple['geometry'];
+        $tuple = $tuple2;
+      }
+      $tuple['style'] = [
+        'color'=> "#ff7800",
+        'weight'=> 5,
+        'opacity'=> 0.65,
+      ];
+      yield $tuple;
+    }
+    
+    foreach (Dataset::get('NE110mPhysical')->getTuples('ne_110m_coastline') as $tuple) {
+      $tuple['style'] = [
+        'color'=> "#ff7800",
+        'weight'=> 5,
+        'opacity'=> 0.65,
+      ];
       yield $tuple;
     }
   }
