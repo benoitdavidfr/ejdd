@@ -426,7 +426,11 @@ abstract class Dataset {
   
   /** Retourne le JdD de ce nom */
   static function get(string $dsName): self {
+    if (!array_key_exists($dsName, self::REGISTRE))
+      throw new Exception("Erreur dataset $dsName inexistant");
     $class = self::REGISTRE[$dsName] ?? $dsName;
+    if (!is_file(strtolower("$class.php")))
+      throw new Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
     require_once strtolower("$class.php");
     return new $class($dsName);
   }

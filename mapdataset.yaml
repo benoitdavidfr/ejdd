@@ -366,12 +366,12 @@ layers:
   styledNaturalEarth:
     title: NaturalEarth publiée avec un style pour chaque Feature
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}StyledNturalEarth/collections/styledLayer/items'
+      endpoint: '{gjsurl}StyledNaturalEarth/collections/styledLayer/items'
       minZoom: 0
       maxZoom: 18
       usebbox: true
       onEachFeature: onEachFeature
-      #style: 'function(feature) { return feature.style; }'
+      style: 'function(feature) { return feature.style; }'
   Région:
     title: 'Région de AE COG PE'
     L.UGeoJSONLayer:
