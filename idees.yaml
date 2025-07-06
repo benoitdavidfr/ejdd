@@ -145,41 +145,6 @@ naturalEarth:
   50m: 3-4
   10m: 5-8
   1m: 9
-affecterDesCouleurs:
-  exemples:
-    shomGT:
-      var overlays = {
-        "Délim. maritimes (Shom)" : new L.GeoJSON.AJAX(shomgturl+'geojson/delmar.geojson', {
-          style: { color: 'SteelBlue'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureDelmar
-        }),
-        "ZEE simplifiée" : new L.GeoJSON.AJAX(shomgturl+'geojson/frzee.geojson', {
-          style: { color: 'blue'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureZee
-        }),
-        "SAR-SRR" : new L.GeoJSON.AJAX(shomgturl+'geojson/sar_2019.geojson', {
-          style: { color: 'green'}, minZoom: 0, maxZoom: 18, onEachFeature: onEachFeatureSar
-      
-      // 1/10M
-        "Catalogue 1/10M" : L.layerGroup([
-           new L.UGeoJSONLayer({
-             endpoint: shomgturl+'maps.php/collections/gt10M/items',
-             minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachFeature
-           }),
-           new L.UGeoJSONLayer({
-             endpoint: shomgturl+'maps.php/collections/gt10M/deletedZones',
-             style: { color: 'red'}, minZoom: 0, maxZoom: 18, usebbox: true,
-             onEachFeature: onEachFeatureDeleted
-           }),
-           new L.UGeoJSONLayer({
-             endpoint: shomgturl+'maps.php/collections/gt10M/corners',
-             minZoom: 0, maxZoom: 18, usebbox: true, onEachFeature: onEachPointFeature,
-             pointToLayer: pointToLayer
-           }),
-           new L.TileLayer(
-             shomgturlwsd+'tile.php/num10M/{z}/{x}/{y}.png',
-             {'format':'png','minZoom':0,'maxZoom':18,'detectRetina':false}
-           ),
-        ])
-      }
 historique:
   v3:
     - replacement getData() par getTuples() qui retourne un Generator

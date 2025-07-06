@@ -1,16 +1,19 @@
 <?php
-/** JdD StyledNaturalEarth. Chaque Feature est associé à un style. Version de test OK. */
-
+/** Catégorie Styler. Un styler correspond à une feuille de style qui va permettre d'ajouter à chaque Feature un style.
+ * Version de test OK.
+ * Un styler est créé avec en paramètre le nom de la feuille de style (ex NaturalEarth).
+ */
+require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 
+use Symfony\Component\Yaml\Yaml;
+
 /** JdD StyledNaturalEarth. */
-class StyledNaturalEarth extends Dataset {
-  const TITLE = "NaturalEarth stylée";
-  const DESCRIPTION = "Ce jeu de données expose les JdD NaturalEarth avec un style associé à chauqe Feature en fonction de sa classe et de du niveau de zoom de la carte.";
+class Styler extends Dataset {
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma du jeu de données StyledNaturalEarth",
-    'description'=> "Schéma très simple.",
+    'title'=> "Schéma d'un jeu de données issu de Styler",
+    'description'=> "Schéma.",
     'type'=> 'object',
     'required'=> ['title','description','$schema', 'styledLayer'],
     'additionalProperties'=> false,
@@ -53,32 +56,35 @@ class StyledNaturalEarth extends Dataset {
       ],
     ],
   ];
+  readonly array $params;
   
-  function __construct() { parent::__construct(self::TITLE, self::DESCRIPTION, self::JSON_SCHEMA); }
+  function __construct(string $ssName) {
+    $this->params = Yaml::parseFile(strToLower("$ssName.ss.yaml"));
+    //echo '<pre>$params='; print_r($this->params); echo "</pre>\n";
+    parent::__construct($this->params['title'], $this->params['description'], self::JSON_SCHEMA);
+  }
   
   function getTuples(string $section, mixed $filtre=null): Generator {
-    $dataset = Dataset::get('NE110mCultural');
-    $sectionMD = $dataset->sections['ne_110m_admin_0_map_units']; // les MD de la section
-    foreach ($dataset->getTuples('ne_110m_admin_0_map_units') as $tuple) {
-      if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
-        $tuple2 = [];
-        foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
-          $tuple2[$prop] = $tuple[$prop];
-        //print_r($tuple2);
-        $tuple2['geometry'] = $tuple['geometry'];
-        $tuple = $tuple2;
+    $zoom = $filtre['zoom'] ?? 6;
+    foreach (array_reverse($this->params['datasets']) as $dsName => $dataset) {
+      if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
+        continue;
+      $ds = Dataset::get($dsName);
+      foreach (array_reverse($dataset['sections']) as $sName => $section) {
+        $sectionMD = $ds->sections[$sName]; // les MD de la section
+        foreach ($ds->getTuples($sName) as $tuple) {
+          if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+            $tuple2 = [];
+            foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+              $tuple2[$prop] = $tuple[$prop];
+            //print_r($tuple2);
+            $tuple2['geometry'] = $tuple['geometry'];
+            $tuple = $tuple2;
+          }
+          $tuple['style'] = $section['style'];
+          yield $tuple;
+        }
       }
-      $tuple['style'] = [
-        'color'=> "#ff7800",
-        'weight'=> 5,
-        'opacity'=> 0.65,
-      ];
-      yield $tuple;
-    }
-    
-    foreach (Dataset::get('NE110mPhysical')->getTuples('ne_110m_coastline') as $tuple) {
-      $tuple['style'] = ['color'=> "blue"];
-      yield $tuple;
     }
   }
 };

@@ -85,6 +85,8 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     $bbox =  new \gegeom\GBox($bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
   }
+  $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
+
   $dataset = Dataset::get($dsname);
   $sectionMD = $dataset->sections[$sectname]; // les MD de la section
   
@@ -94,7 +96,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     '  "name": "',"$dsname/$sectname",'",',"\n",
     '  "features":',"[\n";
   $first = true;
-  foreach ($dataset->getTuples($sectname) as $tuple) {
+  foreach ($dataset->getTuples($sectname, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $tuple) {
     $geometry = $tuple['geometry'];
     $geom = \gegeom\Geometry::fromGeoArray($geometry);
     //echo "<pre>geom="; print_r($geom);
@@ -107,7 +109,10 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       }
       //echo "Intersecte bbox\n";
     }
+    // le champ geometry est transféré en dehors de properties
     unset($tuple['geometry']);
+    // le champ style est transféré en dehors de properties s'il existe
+    // Ce champ style peut être par exemple rajouté par un styleur comme StyledNaturalEarth
     $style = $tuple['style'] ?? null;
     unset($tuple['style']);
     //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);

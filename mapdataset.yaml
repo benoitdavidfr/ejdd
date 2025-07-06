@@ -261,17 +261,19 @@ maps:
       - debug
     defaultOverlays:
       - antimeridien
-  testStyledNaturalErth:
-    title: carte de test de styledNaturalEarth
+  styledNaturalErth:
+    title: Carte NaturalEarth stylée
     vars:
       gjsurl: 'http://localhost/dataset/geojson.php/'
       userverdir: 'http://localhost/gexplor/visu/'
     baseLayers:
       - OSM
+      - FondBlanc
     defaultBaseLayer: OSM
     overlays:
       - styledNaturalEarth
       - antimeridien
+      - debug
     defaultOverlays:
       - styledNaturalEarth
       - antimeridien
@@ -364,9 +366,9 @@ layers:
       usebbox: true
       onEachFeature: onEachFeature
   styledNaturalEarth:
-    title: NaturalEarth publiée avec un style pour chaque Feature
+    title: Couche NaturalEarth stylée
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}StyledNaturalEarth/collections/styledLayer/items'
+      endpoint: '{gjsurl}NaturalEarth/collections/styledLayer/items'
       minZoom: 0
       maxZoom: 18
       usebbox: true

@@ -34,6 +34,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+6/7/2025:
+  - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
 5/7/2025:
   - début implem StyledNaturalEarth 
   - correction bug dans dataset.inc.php sur la propagation des définitions dans les sous-schemas
@@ -396,7 +398,7 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
-    'StyledNaturalEarth' => null,
+    'NaturalEarth' => 'Styler',
   ];
   
   readonly string $title;
