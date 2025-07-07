@@ -87,6 +87,55 @@ class Styler extends Dataset {
   }
 };
 
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
-echo "Rien à faire pour construire le JdD<br>\n";
+
+class StylerBuild {
+  static function main(): void {
+    switch($_GET['action'] ?? null) {
+      case null: {
+        echo "Rien à faire pour construire le JdD $_GET[dataset]<br>\n";
+        echo "<a href='?dataset=$_GET[dataset]&action=schema'>Vérifier le schéma de $_GET[dataset]</a><br>\n";
+        break;
+      }
+      case 'schema': {
+        $schema = Yaml::parseFile(strToLower('styler.yaml'));
+        
+        // Validation du schéma des feuilles de styles par rapport au méta-schéma JSON Schema
+        $validator = new JsonSchema\Validator;
+        $schema2 = RecArray::toStdObject($schema);
+        $validator->validate($schema2, $schema['$schema']);
+        if ($validator->isValid()) {
+          echo "Le schéma des feuilles de style (styler.yaml) est conforme au méta-schéma JSON Schema.<br>\n";
+        }
+        else {
+          echo "<pre>Le schéma des feuilles de style (styler.yaml) n'est pas conforme au méta-schéma JSON Schema. Violations:\n";
+          foreach ($validator->getErrors() as $error) {
+            printf("[%s] %s\n", $error['property'], $error['message']);
+          }
+          echo "</pre>\n";
+        }
+        
+        // Validation des MD du jeu de données
+        $styleSheet = Yaml::parseFile(strToLower("$_GET[dataset].yaml"));
+        $validator = new JsonSchema\Validator;
+        $data = RecArray::toStdObject($styleSheet);
+        $validator->validate($data, $schema);
+        if ($validator->isValid()) {
+          echo "La feuille de styles $_GET[dataset] est conforme au schéma des feuilles de style (styler.yaml).<br>\n";
+        }
+        else {
+          echo "<pre>La feuille de styles $_GET[dataset] n'est pas conforme au schéma des feuilles de style (styler.yaml).",
+               " Violations:\n";
+          foreach ($validator->getErrors() as $error) {
+            printf("[%s] %s\n", $error['property'], $error['message']);
+          }
+          echo "</pre>\n";
+        }
+        break;
+      }
+    }
+  }
+};
+StylerBuild::main();

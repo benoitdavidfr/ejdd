@@ -25,10 +25,6 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
-- vérifier la conformité de la feuille de style à son schéma
-  - mettre le schéma à part -> styler.sc.yaml
-  - donner un id au schéma
-    - utiliser https://dataset.geoapi.fr/
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
 - améliorer la feuille de style NaturalEarth correspondant à une carte stylée des couches en multi-échelles
@@ -42,6 +38,8 @@ define('JOURNAL', [
 7/7/2025:
   - ajout de la définition de thèmes dans les feuilles de style
   - suppression de l'extension ss pour les feuilles de style
+  - vérification de la conformité de la feuille de style au schéma des feuilles de styles
+    - le schéma des feuilles de styles est dans styler.yaml et porte un URI
 6/7/2025:
   - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
 5/7/2025:
