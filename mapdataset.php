@@ -280,13 +280,18 @@ class Map {
     $jsCode = $this->drawLayers("  {baseLayers}\n", $this->def['baseLayers'], $jsCode);
     
     // affichage par défaut de la baseLayer
-    $jsCode = str_replace('{defaultBaseLayer}', $this->def['defaultBaseLayer'], $jsCode);
+    $defaultBaseLayer = $this->def['defaultBaseLayer'];
+    if (!(Layer::$all[$defaultBaseLayer] ?? null))
+      throw new Exception("Erreur defaultBaseLayer '$defaultBaseLayer' non définie");
+    $jsCode = str_replace('{defaultBaseLayer}', $defaultBaseLayer, $jsCode);
     
     // la déf. des overlays
     $jsCode = $this->drawLayers("  {overlays}\n", $this->def['overlays'], $jsCode);
     
     // les affichage par défaut des overlays
     foreach ($this->def['defaultOverlays'] as $defaultOverlay) {
+      if (!(Layer::$all[$defaultOverlay] ?? null))
+        throw new Exception("Erreur defaultOverlay '$defaultOverlay' non définie");
       $jsCode = str_replace(
         "map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
         "map.addLayer(overlays[\"$defaultOverlay\"]);\n"."map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
@@ -310,7 +315,7 @@ switch ($_GET['action'] ?? null) {
   case null: {
     echo "Rien à faire pour construire le JdD<br>\n";
     echo "<a href='index.php?action=validate&dataset=MapDataset'>Vérifier la conformité des données</a><br>\n";
-    echo "<a href='?action=listMaps'>Liste les cartes</a><br>\n";
+    echo "<a href='?action=listMaps'>Liste les cartes à dessiner</a><br>\n";
     break;
   }
   case 'listMaps': {

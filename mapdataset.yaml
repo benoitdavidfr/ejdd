@@ -271,11 +271,12 @@ maps:
       - FondBlanc
     defaultBaseLayer: OSM
     overlays:
-      - NECoaslinesAndBoundaries
+      - NECoastlinesAndBoundaries
+      - NEMappingUnits
       - antimeridien
       - debug
     defaultOverlays:
-      - NECoaslinesAndBoundaries
+      - NECoastlinesAndBoundaries
       - antimeridien
   test:
     title: Carte de test
@@ -365,10 +366,19 @@ layers:
       maxZoom: 18
       usebbox: true
       onEachFeature: onEachFeature
-  NECoaslinesAndBoundaries:
-    title: Couche NaturalEarth coaslinesAndBoundaries stylée
+  NECoastlinesAndBoundaries:
+    title: Couche NaturalEarth côtes et limites de pays stylée
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}NaturalEarth/collections/coaslinesAndBoundaries/items'
+      endpoint: '{gjsurl}NaturalEarth/collections/coastlinesAndBoundaries/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingUnits:
+    title: Couche NaturalEarth unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
       minZoom: 0
       maxZoom: 18
       usebbox: true

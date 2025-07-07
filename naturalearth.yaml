@@ -2,9 +2,14 @@ title: Feuille de style NaturaEarth
 description: |
   Cette feuille de style est conçue pour être utilisée par styler.php.
   Elle définit les éléments de style pour NaturalEarth.
+  naturalEarth:
+    110m: 2
+    50m: 3-4
+    10m: 5-8
+    1m: 9
 $schema: 'https://dataset.geoapi.fr/styler.yaml'                        
 themes:
-  coaslinesAndBoundaries:
+  coastlinesAndBoundaries:
     title: Les limites côtières et les limites de pays
     datasets:
       NE110mPhysical:
@@ -18,9 +23,17 @@ themes:
         minZoom: 2
         maxZoom: 6
         sections:
+          ne_110m_admin_0_boundary_lines_land:
+            style:
+              color: '#ff7800'
+  mappingUnits:
+    title: Les limites côtières et les limites de pays
+    datasets:
+      NE110mCultural:
+        minZoom: 2
+        maxZoom: 6
+        sections:
           ne_110m_admin_0_map_units:
             style:
               color: '#ff7800'
-              weight: 5
-              opacity: 0.65
 eof:
