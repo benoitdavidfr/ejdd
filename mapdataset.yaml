@@ -273,6 +273,7 @@ maps:
     overlays:
       - NECoastlinesAndBoundaries
       - NEMappingUnits
+      - NEMappingSubUnits
       - antimeridien
       - debug
     defaultOverlays:
@@ -379,6 +380,15 @@ layers:
     title: Couche NaturalEarth unités carto. stylée
     L.UGeoJSONLayer:
       endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingSubUnits:
+    title: Couche NaturalEarth sous-unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingSubUnits/items'
       minZoom: 0
       maxZoom: 18
       usebbox: true

@@ -71,14 +71,22 @@ class Styler extends Dataset {
   }
   
   function getTuples(string $section, mixed $filtre=null): Generator {
-    $zoom = $filtre['zoom'] ?? 6;
-    
+    $zoom = $filtre['zoom'] ?? 6;    
     foreach (array_reverse($this->styleSheet['themes'][$section]['datasets']) as $dsName => $dataset) {
       if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
         continue;
       $ds = Dataset::get($dsName);
       foreach (array_reverse($dataset['sections']) as $sName => $section) {
+        $sectionMD = $ds->sections[$sName]; // les MD de la section
         foreach ($ds->getTuples($sName) as $tuple) {
+          if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+            //print_r($tuple);
+            $tuple2 = ['geometry'=> $tuple['geometry']];
+            foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+              $tuple2[$prop] = $tuple[$prop];
+            //print_r($tuple2);
+            $tuple = $tuple2;
+          }
           $tuple['style'] = $section['style'];
           yield $tuple;
         }

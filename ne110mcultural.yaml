@@ -45,7 +45,7 @@ $schema:
       description: Schéma JSON du jeu de données
       type: object
     ne_110m_admin_0_boundary_lines_land:
-      title: ne_110m Country boundaries on land and offshore
+      title: ne_110m Country boundaries on land
       description: |
         Natural Earth shows de facto boundaries by default according to who controls the territory, versus de jure. Adjusted to taste which boundaries are shown, hidden, and how they are rendered using the fclass_* properties paired with the POV worldview polygons above.
       type: array

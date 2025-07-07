@@ -13,27 +13,93 @@ themes:
     title: Les limites côtières et les limites de pays
     datasets:
       NE110mPhysical:
-        minZoom: 2
-        maxZoom: 6
+        minZoom: 0
+        maxZoom: 2
         sections:
           ne_110m_coastline:
             style:
               color: blue
       NE110mCultural:
         minZoom: 2
-        maxZoom: 6
+        maxZoom: 2
         sections:
           ne_110m_admin_0_boundary_lines_land:
             style:
               color: '#ff7800'
+      NE50mPhysical:
+        minZoom: 3
+        maxZoom: 4
+        sections:
+          ne_50m_coastline:
+            style:
+              color: blue
+      NE50mCultural:
+        minZoom: 3
+        maxZoom: 4
+        sections:
+          ne_50m_admin_0_boundary_lines_land:
+            style:
+              color: '#ff7800'
+      NE10mPhysical:
+        minZoom: 5
+        maxZoom: 8
+        sections:
+          ne_10m_coastline:
+            style:
+              color: blue
+      NE10mCultural:
+        minZoom: 5
+        maxZoom: 8
+        sections:
+          ne_10m_admin_0_boundary_lines_land:
+            style:
+              color: '#ff7800'
   mappingUnits:
-    title: Les limites côtières et les limites de pays
+    title: Les unités cartos
     datasets:
       NE110mCultural:
         minZoom: 2
-        maxZoom: 6
+        maxZoom: 2
         sections:
           ne_110m_admin_0_map_units:
+            style:
+              color: '#ff7800'
+      NE50mCultural:
+        minZoom: 3
+        maxZoom: 4
+        sections:
+          ne_50m_admin_0_map_units:
+            style:
+              color: '#ff7800'
+      NE10mCultural:
+        minZoom: 5
+        maxZoom: 8
+        sections:
+          ne_10m_admin_0_map_units:
+            style:
+              color: '#ff7800'
+  mappingSubUnits:
+    title: Les sous-unités carto
+    datasets:
+      NE110mCultural:
+        minZoom: 2
+        maxZoom: 2
+        sections:
+          ne_110m_admin_0_map_subunits:
+            style:
+              color: '#ff7800'
+      NE50mCultural:
+        minZoom: 3
+        maxZoom: 4
+        sections:
+          ne_50m_admin_0_map_subunits:
+            style:
+              color: '#ff7800'
+      NE10mCultural:
+        minZoom: 5
+        maxZoom: 8
+        sections:
+          ne_10m_admin_0_map_subunits:
             style:
               color: '#ff7800'
 eof:
