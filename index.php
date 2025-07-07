@@ -66,7 +66,7 @@ switch ($_GET['action'] ?? null) {
       $dataset->displaySchemaErrors();
     }
 
-    if ($dataset->isValid()) {
+    if ($dataset->isValid(true)) {
       echo "Le JdD est conforme à son schéma.<br>\n";
     }
     else {

@@ -4,7 +4,8 @@ description: |
   Ainsi la définition des cartes est stockée dans ce fichier Yaml.
   Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
   chacune définie dans la section layer notamment par un type et des paramètres.
-  Les cartes peuvent être dessinées à partir de l'IHM définie dans le script. mapdataset.php.
+  Les cartes peuvent être dessinées à partir de l'IHM définie dans le script mapdataset.php.
+  Les noms de couche dans la définition des cartes doivent exister dans la section layer.
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   title: Schéma du jeu de données de description des cartes
@@ -16,6 +17,22 @@ $schema:
       items:
         description: nom court de couche, clé dans layers
         type: string
+    style:
+      description: le style de dessin d'un objet GeoJSON
+      type: object
+      additionalProperties: false
+      properties:
+        color:
+          description: couleur
+          type: string
+        weight:
+          description: épaisseur du trait
+          type: number
+        opacity:
+          description: opcaité entre 0 (transparent) et 1 (opaque)
+          type: number
+          minimum: 0
+          maximum: 1
     GeoJSONPoint:
       description: GeoJSON Point
       type: object
@@ -185,7 +202,7 @@ $schema:
                         description: la chaine à afficher pour attribuer la couche
                         type: string
                       format:
-                        rtpe: string
+                        type: string
                       minZoom:
                         type: integer
                       maxZoom:
@@ -198,7 +215,7 @@ $schema:
               additionalProperties: false
               properties:
                 endpoint:
-                  description: URL de la couche
+                  description: URL de la couche, doit correspondre à un JdD et une section de ce JdD
                   type: string
                 minZoom:
                   description: niveau minimum de zoom
@@ -212,6 +229,13 @@ $schema:
                 onEachFeature:
                   description: nom de la fonction d'affichage
                   type: string
+                style:
+                  description: style associé, soit un objet style, soit une fonction
+                  oneOf:
+                    - description: le style défini par une fonction JavaScript renvoyant un objet style
+                      type: string
+                    - description: le style défini comme un objet style
+                      $ref: '#/definitions/style'
             '^L.geoJSON$':
               description: couche de type L.geoJSON avec ses paramètres
               type: array
@@ -224,15 +248,7 @@ $schema:
                     additionalProperties: false
                     properties:
                       style:
-                        type: object
-                        additionalProperties: false
-                        properties:
-                          color:
-                            type: string
-                          weight:
-                            type: number
-                          opacity:
-                            type: number
+                        $ref: '#/definitions/style'
 
 maps:
   default:
@@ -397,7 +413,7 @@ layers:
   Région:
     title: 'Région de AE COG PE'
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}aecogpe/collections/region/items'
+      endpoint: '{gjsurl}AeCogPe/collections/region/items'
       minZoom: 0
       maxZoom: 7
       usebbox: true
@@ -405,7 +421,7 @@ layers:
   Département:
     title: 'Département de AE COG PE'
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}aecogpe/collections/departement/items'
+      endpoint: '{gjsurl}AeCogPe/collections/departement/items'
       minZoom: 7
       maxZoom: 8
       usebbox: true
@@ -413,7 +429,7 @@ layers:
   EPCI:
     title: 'EPCI de AE COG PE'
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}aecogpe/collections/epci/items'
+      endpoint: '{gjsurl}AeCogPe/collections/epci/items'
       minZoom: 8
       maxZoom: 10
       usebbox: true
@@ -421,7 +437,7 @@ layers:
   Commune:
     title: 'Commune de AE COG PE'
     L.UGeoJSONLayer:
-      endpoint: '{gjsurl}aecogpe/collections/commune/items'
+      endpoint: '{gjsurl}AeCogPe/collections/commune/items'
       minZoom: 10
       maxZoom: 18
       usebbox: true

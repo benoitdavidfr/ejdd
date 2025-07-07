@@ -1,7 +1,7 @@
 <?php
 /** JdD des cartes.
- * L'objectif de ce JdD est de définir des cartes affichables en Leaflet sans avoir à éditer le code JS correspondant.
- * Ainsi la définition des cartes est stockée dans le fichier mapdataset.yaml.
+ * Ce JdD définit des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
+ * La définition des cartes est stockée dans le fichier mapdataset.yaml.
  * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
  * chacune définie dans la section layer notamment par un type et des paramètres.
  * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
@@ -28,7 +28,6 @@ class MapDataset extends Dataset {
     $this->data = $data;
   }
   
-  //function getData(string $section, mixed $filtre=null): array { return $this->data[$section]; }
   function getTuples(string $section, mixed $filtre=null): Generator {
     foreach ($this->data[$section] as $key => $tuple)
       yield $key => $tuple;
@@ -50,7 +49,8 @@ abstract class Layer {
   /** @var array<string,Layer> $all le dictionnaire des couches indexées par leur id */
   static array $all = [];
   
-  /** Création d'une couche dans la bonne classe en focntion des paramètres.
+  /** Création d'une couche dans la bonne classe en fonction des paramètres.
+   * L'intégrité des couches est vérifiée par checkIntegrity().
    * @param array<mixed> $def La définition de la couche
    */
   static function create(string $lyrId, array $def): self {
@@ -58,12 +58,14 @@ abstract class Layer {
     unset($def['title']);
     $kind = array_keys($def)[0];
     $params = $def[$kind];
-    switch ($kind) {
-      case 'L.TileLayer': return new L_TileLayer($lyrId, $title, $params);
-      case 'L.UGeoJSONLayer': return new L_UGeoJSONLayer($lyrId, $title, $params);
-      case 'L.geoJSON': return new L_geoJSON($lyrId, $title, $params);
-      default: throw new Exception("Cas $kind non prévu");
-    }
+    $layer = match ($kind) {
+      'L.TileLayer' => new L_TileLayer($lyrId, $title, $params),
+      'L.UGeoJSONLayer' => new L_UGeoJSONLayer($lyrId, $title, $params),
+      'L.geoJSON' => new L_geoJSON($lyrId, $title, $params),
+      default => throw new Exception("Cas $kind non prévu"),
+    };
+    $layer->checkIntegrity();
+    return $layer;
   }
   
   /** Création d'une couche.
@@ -74,6 +76,9 @@ abstract class Layer {
     $this->title = $title;
     $this->params = $params;
   }
+  
+  /** Les erreurs d'intégité soulèvent des exceptions. */
+  abstract function checkIntegrity(): void;
   
   abstract function toJS(): string;
 };
@@ -92,6 +97,9 @@ class L_TileLayer extends Layer {
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
   }
+  
+  /** Les erreurs d'intégité soulèvent des exceptions. */
+  function checkIntegrity(): void {}
   
   function toJS(): string {
     //echo '<pre>L_TileLayer $params='; print_r($this->params); echo "</pre>\n";
@@ -116,6 +124,20 @@ class L_UGeoJSONLayer extends Layer {
    */
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
+  }
+  
+  /** Les erreurs d'intégité soulèvent des exceptions. */
+  function checkIntegrity(): void {
+    // Le paramètre endpoint doit correspondre à un JdD et une section de ce JdD
+    // ex:       endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
+    if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items$!', $this->params['endpoint'], $matches)) {
+      throw new Exception("params[endpoint]=".$this->params['endpoint']." don't match");
+    }
+    $dsName = $matches[1];
+    $sectName = $matches[2];
+    $ds = Dataset::get($dsName);
+    if (!array_key_exists($sectName, $ds->sections))
+      throw new Exception("Erreur, la section $sectName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
   }
   
   function toJS(): string {
@@ -147,6 +169,9 @@ class L_geoJSON extends Layer {
   function __construct(string $lyrId, string $title, array $params) {
     parent::__construct($lyrId, $title, $params);
   }
+  
+  /** Les erreurs d'intégité soulèvent des exceptions. */
+  function checkIntegrity(): void {}
   
   function toJS(): string {
     //echo '<pre>L_geoJSON $params='; print_r($this->params); echo "</pre>\n";
@@ -248,6 +273,33 @@ class Map {
   /** @param array<mixed> $def La définition de la carte issue du JdD. */
   function __construct(array $def) { $this->def = $def; }
   
+  /** Retourne la liste des erreurs d'intégrité de la définition de la carte.
+   * @return list<string>
+   */
+  function integrityErrors(string $mapId): array {
+    $errors = [];
+    // baseLayers
+    foreach ($this->def['baseLayers'] as $baseLyr) {
+      if (!isset(Layer::$all[$baseLyr]))
+        $errors[] = "Erreur: la baseLayer $baseLyr de la carte $mapId n'est pas définie comme couche.<br>\n";
+    }
+    // defaultBaseLayer
+    if (!in_array($this->def['defaultBaseLayer'], $this->def['baseLayers']))
+      $errors[] = "Erreur: la defaultBaseLayer ".$this->def['defaultBaseLayer']
+        ." de la carte $mapId n'est pas définie comme baseLayer.<br>\n";
+    // overlays
+    foreach ($this->def['overlays'] as $overlay) {
+      if (!isset(Layer::$all[$overlay]))
+        $errors[] = "Erreur: l'overlay $overlay de la carte $mapId n'est pas définie comme couche.<br>\n";
+    }
+    // defaultOverlays
+    foreach ($this->def['defaultOverlays'] as $overlay) {
+      if (!in_array($overlay, $this->def['overlays']))
+        $errors[] = "Erreur: le defaultOverlay $overlay de la carte $mapId n'est pas définie comme overlay.<br>\n";
+    }
+    return $errors;
+  }
+  
   /** Génère le code JS pour les couches.
    * @param list<string> $layerNames La liste des noms des couches. */
   function drawLayers(string $pattern, array $layerNames, string $jsCode): string {
@@ -314,8 +366,44 @@ class Map {
 switch ($_GET['action'] ?? null) {
   case null: {
     echo "Rien à faire pour construire le JdD<br>\n";
-    echo "<a href='index.php?action=validate&dataset=MapDataset'>Vérifier la conformité des données</a><br>\n";
+    //echo "<a href='index.php?action=validate&dataset=MapDataset'>Vérifier la conformité des données</a><br>\n";
+    echo "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";
+    echo "<a href='?action=refIntegrity'>Vérifier les contraintes d'intégrité entre cartes et couches</a><br>\n";
     echo "<a href='?action=listMaps'>Liste les cartes à dessiner</a><br>\n";
+    break;
+  }
+  case 'refIntegrity': {
+    echo "<h2>Contraintes d'intégrité</h2>\n";
+    $mapDataset = Dataset::get('MapDataset');
+    foreach ($mapDataset->getTuples('layers') as $lyrId => $layer) {
+      Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
+    }
+    foreach ($mapDataset->getTuples('maps') as $mapId => $map) {
+      $map = new Map($map);
+      if ($errors = $map->integrityErrors($mapId)) {
+        echo "<pre>errors="; print_r($errors); echo "</pre>\n";
+      }
+      else {
+        echo "Aucune erreur d'intégrité détectée sur $mapId.<br>\n";
+      }
+    }
+    break;
+  }
+  case 'validate': {
+    $dataset = Dataset::get($_GET['dataset']);
+    if ($dataset->schemaIsValid()) {
+      echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
+    }
+    else {
+      $dataset->displaySchemaErrors();
+    }
+
+    if ($dataset->isValid(false)) {
+      echo "Le JdD est conforme à son schéma.<br>\n";
+    }
+    else {
+      $dataset->displayErrors();
+    }
     break;
   }
   case 'listMaps': {
@@ -326,10 +414,25 @@ switch ($_GET['action'] ?? null) {
     break;
   }
   case 'draw': {
+    // Avant de dessiner une carte, je vérifie:
+    //  1) que la définition des cartes est correcte du point de vue schéma
+    //  2) que la définition de la carte à dessiner ne présente pas d'erreurs d'intégrité
     $mapDataset = Dataset::get('MapDataset');
+    
+    if (!$mapDataset->schemaIsValid() || !$mapDataset->isValid(false)) {
+      echo "Erreur, le schéma du JdD des cartes est invalide ou certaines cartes ne sont pas conformes au schéma du JdD.<br>\n",
+           "Dessin de la carte impossible.<br>\n",
+           "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";
+      die();
+    }
     $map = new Map($mapDataset->getOneTupleByKey('maps', $_GET['map']));
     foreach ($mapDataset->getTuples('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
+    }
+    if ($errors = $map->integrityErrors($_GET['map'])) {
+      echo "Erreur, la définition de la carte $_GET[map] présente des erreurs d'intégrité. Dessin impossible.<br>\n";
+      echo "<pre>errors="; print_r($errors); echo "</pre>\n";
+      die();
     }
     //echo '<pre>$map='; print_r($map);
     echo $map->draw();

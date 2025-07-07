@@ -40,6 +40,7 @@ define('JOURNAL', [
   - suppression de l'extension ss pour les feuilles de style
   - vérification de la conformité de la feuille de style au schéma des feuilles de styles
     - le schéma des feuilles de styles est dans styler.yaml et porte un URI
+  - vérifications sur les cartes avant de les dessiner pour éviter les errurs lors du dessin
 6/7/2025:
   - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
 5/7/2025:
@@ -335,7 +336,7 @@ class Section {
   }
 
   /** Vérifie que la section est conforme à son schéma */
-  function isValid(Dataset $dataset): bool {
+  function isValid(Dataset $dataset, bool $verbose): bool {
     $t0 = microtime(true);
     $nbTuples = 0;
     $kind = $this->schema->kind();
@@ -351,10 +352,11 @@ class Section {
       if (!$validator->isValid())
         return false;
       $nbTuples++;
-      if (!($nbTuples % 10_000))
+      if (!($nbTuples % 10_000) && $verbose)
         printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
     }
-    printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
+    if ($verbose)
+      printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
     return true;
   }
   
@@ -404,8 +406,7 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
-    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.ss.yaml
-    
+    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
   ];
   
   readonly string $title;
@@ -530,7 +531,7 @@ abstract class Dataset {
   }
   
   /** Vérifie la conformité du JdD par rapport à son schéma */
-  function isValid(): bool {
+  function isValid(bool $verbose): bool {
     // Validation des MD du jeu de données
     $validator = new JsonSchema\Validator;
     $schema = [
@@ -566,7 +567,7 @@ abstract class Dataset {
     
     // Validation de chaque section
     foreach ($this->sections as $section) {
-      if (!$section->isValid($this))
+      if (!$section->isValid($this, $verbose))
         return false;
     }
     return true;
@@ -612,7 +613,7 @@ abstract class Dataset {
     
     // Validation de chaque section
     foreach ($this->sections as $section) {
-      if (!$section->isValid($this))
+      if (!$section->isValid($this, false))
         $errors = array_merge($errors, $section->getErrors($this)); 
     }
     return $errors;
