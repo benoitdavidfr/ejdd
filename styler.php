@@ -15,7 +15,7 @@ class Styler extends Dataset {
     'title'=> "Schéma d'un jeu de données issu de Styler",
     'description'=> "Schéma.",
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'styledLayer'],
+    'required'=> ['title','description','$schema', '{styledLayer}'],
     'additionalProperties'=> false,
     'properties'=> [
       'title'=> [
@@ -30,7 +30,7 @@ class Styler extends Dataset {
         'description'=> "Schéma JSON du jeu de données",
         'type'=> 'object',
       ],
-      'styledLayer'=> [
+      '{styledLayer}'=> [
         'title'=> "L'unique couche avec les Features stylés",
         'description'=> "Array de n-uplet contenant chacun au moins le champ style.",
         'type'=> 'array',
@@ -56,31 +56,29 @@ class Styler extends Dataset {
       ],
     ],
   ];
-  readonly array $params;
+  /** @var array<mixed> $styleSheet Le contenu de le feuille de styles */
+  readonly array $styleSheet;
   
   function __construct(string $ssName) {
-    $this->params = Yaml::parseFile(strToLower("$ssName.ss.yaml"));
+    $this->styleSheet = Yaml::parseFile(strToLower("$ssName.yaml"));
+    $schema = self::JSON_SCHEMA;
+    foreach (array_keys($this->styleSheet['themes']) as $theme) {
+      $schema['properties'][$theme] = $schema['properties']['{styledLayer}'];
+    }
+    unset($schema['properties']['{styledLayer}']);
     //echo '<pre>$params='; print_r($this->params); echo "</pre>\n";
-    parent::__construct($this->params['title'], $this->params['description'], self::JSON_SCHEMA);
+    parent::__construct($this->styleSheet['title'], $this->styleSheet['description'], $schema);
   }
   
   function getTuples(string $section, mixed $filtre=null): Generator {
     $zoom = $filtre['zoom'] ?? 6;
-    foreach (array_reverse($this->params['datasets']) as $dsName => $dataset) {
+    
+    foreach (array_reverse($this->styleSheet['themes'][$section]['datasets']) as $dsName => $dataset) {
       if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
         continue;
       $ds = Dataset::get($dsName);
       foreach (array_reverse($dataset['sections']) as $sName => $section) {
-        $sectionMD = $ds->sections[$sName]; // les MD de la section
         foreach ($ds->getTuples($sName) as $tuple) {
-          if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
-            $tuple2 = [];
-            foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
-              $tuple2[$prop] = $tuple[$prop];
-            //print_r($tuple2);
-            $tuple2['geometry'] = $tuple['geometry'];
-            $tuple = $tuple2;
-          }
           $tuple['style'] = $section['style'];
           yield $tuple;
         }

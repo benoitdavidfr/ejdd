@@ -4,7 +4,7 @@
  *  - son nom figurant dans le registre des JdD (Datasaet::REGISTRE) qui l'associe à une classe, ou catégorie
  *  - un fichier Php portant le nom de la catégorie en minuscules avec l'extension '.php'
  *  - une classe portant le nom de la catégorie héritant de la classe Dataset définie par inclusion du fichier Php
- *  - le fichier Php appelé comme application doit permettre si nécessaire de générer le JdD
+ *  - le fichier Php appelé comme application doit permettre si nécessaire de générer/gérer le JdD
  * Un JdD est utilisé par:
  *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir sa représentation Php
  *  - l'accès aux champs readonly de MD title, description et schema
@@ -25,15 +25,23 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
+- vérifier la conformité de la feuille de style à son schéma
+  - mettre le schéma à part -> styler.sc.yaml
+  - donner un id au schéma
+    - utiliser https://dataset.geoapi.fr/
+- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
+- revoir la gestion des rectangles
+- améliorer la feuille de style NaturalEarth correspondant à une carte stylée des couches en multi-échelles
 - transférer les JdD géo. en GeoDataset
-- produire une couche NaturalEarth correspondant à une carte stylisée des couches en multi-échelles
-- ajouter le zoomLevel et rect dans l'appel de getTuples() depuis geojson.php
 EOT
 ]
 );
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+7/7/2025:
+  - ajout de la définition de thèmes dans les feuilles de style
+  - suppression de l'extension ss pour les feuilles de style
 6/7/2025:
   - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
 5/7/2025:
@@ -398,7 +406,8 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
-    'NaturalEarth' => 'Styler',
+    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.ss.yaml
+    
   ];
   
   readonly string $title;
@@ -430,11 +439,12 @@ abstract class Dataset {
   static function get(string $dsName): self {
     if (!array_key_exists($dsName, self::REGISTRE))
       throw new Exception("Erreur dataset $dsName inexistant");
+    // Si le JdD appartient à une catégorie alors l classe est cette catégorie, sinon la classe est le JdD
     $class = self::REGISTRE[$dsName] ?? $dsName;
     if (!is_file(strtolower("$class.php")))
       throw new Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
     require_once strtolower("$class.php");
-    return new $class($dsName);
+    return new $class($dsName); // @phpstan-ignore-line
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
