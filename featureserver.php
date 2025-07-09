@@ -144,7 +144,7 @@ switch ($_GET['action'] ?? null) {
     break;
   }
   case 'cap': {
-    $fs = Dataset::get($_GET['dataset']);
+    $fs = new FeatureServer($_GET['dataset']);
     echo '<pre>cap='; print_r($fs->cap->elt); echo "</pre>\n";
     break;
   }
