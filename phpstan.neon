@@ -50,6 +50,7 @@ parameters:
     - geodataset.php
     - styler.php
     - zoomleveL.php
+    - featureserver.php
     - lib/coordsys.inc.php
     - lib/gebox.inc.php
     - lib/gegeom.inc.php

@@ -172,7 +172,16 @@ abstract class SpreadSheetDataset extends Dataset {
     return $schema;
   }
   
-  function getTuples(string $sectionName, mixed $filtre=null): Generator {
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $sectionName nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $sectionName, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($this->filePath);
     $dataArray = $spreadsheet->getSheetByName($sectionName)
@@ -201,7 +210,7 @@ abstract class SpreadSheetDataset extends Dataset {
     }
     //echo '$colNames='; print_r($colNames);
     $data = [];
-    $noligne = 2;
+    $noligne = $skip + 2;
     while (true) {
       $line = $dataArray[$noligne++];
       //echo $noligne-1,'>'; print_r($line);

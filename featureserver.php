@@ -40,6 +40,7 @@ class WfsCap {
     //echo '<pre>$elt='; print_r($this->elt);
   }
   
+  /** @return array<mixed> */
   function jsonSchemaOfTheDs(): array {
     $properties = [];
     //echo '$elt='; print_r($this->elt);
@@ -92,14 +93,24 @@ class FeatureServer extends Dataset {
     parent::__construct(self::REGISTRE[$name]['title'], self::REGISTRE[$name]['description'], $this->cap->jsonSchemaOfTheDs());
   }
   
-  function getTuples(string $section, mixed $filtre=null): Generator {
-    $start = 0;
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $section nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $section, array $filters=[]): Generator {
+    $start = $filters['skip'] ?? 0;
     while (true) {
-      $fcoll = file_get_contents(
-        self::REGISTRE[$this->name]['url']
+      $url = self::REGISTRE[$this->name]['url']
           ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=$section"
           ."&outputFormat=".urlencode('application/json')
-          ."&startIndex=$start&count=1"
+          ."&startIndex=$start&count=1";
+      $fcoll = Buffer::get(
+        "featureserver/features/$this->name-$section-$start.json",
+        $url
       );
       if ($fcoll == false)
         throw new Exception("Erreur sur $url");
@@ -109,7 +120,7 @@ class FeatureServer extends Dataset {
         ['bbox'=> $fcoll['features'][0]['bbox']],
         ['geometry'=> $fcoll['features'][0]['geometry']]
       );
-      yield $tuple;
+      yield $start => $tuple;
       $numberMatched = $fcoll['numberMatched'];
       if ($start >= $numberMatched-1)
         return;
@@ -139,14 +150,14 @@ switch ($_GET['action'] ?? null) {
     break;
   }
   case 'featureType': {
-    $fs = Dataset::get($_GET['dataset']);
+    $fs = new FeatureServer($_GET['dataset']);
     echo '<pre>'; print_r([$_GET['ft'] => $fs->schema['properties'][$_GET['ft']]]); echo "</pre>\n";
     $describeFt = $fs->cap->describeFeatureType($fs->name, $_GET['ft']);
     echo '<pre>$describeFt='; print_r($describeFt); echo "</pre>\n";
     break;
   }
   case 'getTuples': {
-    $fs = Dataset::get($_GET['dataset']);
+    $fs = new FeatureServer($_GET['dataset']);
     foreach ($fs->getTuples($_GET['ft']) as $tuple) {
       echo '<pre>$tuple='; print_r($tuple); echo "</pre>\n";
     }

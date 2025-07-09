@@ -29,7 +29,7 @@ define('A_FAIRE', [
 - rajouter des sources bien connues de référence
   - IGN
     - images
-    - features
+    - features ok
   - EU ? satellites ?
   - NASA ?
 - rajouter un catalogue de ces sources ?
@@ -55,6 +55,10 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+9/7/2026:
+  - ajout utilisation serveur WFS 2.0.0 et notamment celui de la Géoplateforme
+  - ajout de la pagination dans l'affichage des n-uplets d'une section
+  - modif de la signature de getTuples() pour $filters, généralisation du filtre skip
 7/7/2025:
   - ajout de la définition de thèmes dans les feuilles de style
   - suppression de l'extension ss pour les feuilles de style
@@ -288,6 +292,9 @@ class SchemaOfSection {
 
 /** Chaque objet de cette classe correspond à une section du JdD et contient ses MD */
 class Section {
+  /** Nb de n-uplets par défaut par page à afficher */
+  const NB_TUPLES_PER_PAGE = 20;
+  
   /** @var string $name Le nom de la section dans le JdD */
   readonly string $name;
   readonly string $title;
@@ -311,7 +318,7 @@ class Section {
   }
   
   /** Affiche les données de la section */
-  function display(Dataset $dataset): void {
+  function display(Dataset $dataset, int $skip=0): void {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->array['description']);
@@ -320,7 +327,8 @@ class Section {
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
     $cols_prec = [];
-    foreach ($dataset->getTuples($this->name) as $key => $tupleOrValue) {
+    $i = 0; // no de tuple
+    foreach ($dataset->getTuples($this->name, ['skip'=> $skip]) as $key => $tupleOrValue) {
       $tuple = match ($kind = $this->schema->kind()) {
         'dictOfTuples', 'listOfTuples' => $tupleOrValue,
         'dictOfValues', 'listOfValues' => ['value'=> $tupleOrValue],
@@ -340,8 +348,14 @@ class Section {
         echo "<td>$v</td>";
       }
       echo "</tr>\n";
+      if (++$i >= self::NB_TUPLES_PER_PAGE)
+        break;
     }
     echo "</table>\n";
+    if ($i >= self::NB_TUPLES_PER_PAGE) {
+      $skip += $i;
+      echo "<a href='?action=display&dataset=$_GET[dataset]&section=$this->name&skip=$skip'>Suivants (skip=$skip)</a><br>\n";
+    }
   }
   
   function displayTuple(string $key, Dataset $dataset): void {
@@ -468,9 +482,14 @@ abstract class Dataset {
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $section nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  abstract function getTuples(string $section, mixed $filtre=null): Generator;
+  abstract function getTuples(string $section, array $filters=[]): Generator;
   
   /** Retourne le n-uplet ou la valeur ayant la clé indiquée de la section.
    * @return array<mixed>|string|null

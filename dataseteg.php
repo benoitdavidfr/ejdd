@@ -170,8 +170,19 @@ class DatasetEg extends Dataset {
   
   function __construct() { parent::__construct(self::TITLE, self::DESCRIPTION, self::JSON_SCHEMA); }
   
-  function getTuples(string $section, mixed $filtre=null): Generator {
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $section nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $section, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
     foreach (self::SECTIONS[$section] as $key => $tuple) {
+      if ($skip-- > 0)
+        continue;
       yield $key => $tuple;
     }
   }

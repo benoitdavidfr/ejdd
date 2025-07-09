@@ -18,10 +18,20 @@ class WorldEez extends Dataset {
     parent::__construct($md['title'], $md['description'], $md['$schema']);
   }
   
-  /** L'accès aux sections du JdD. */
-  function getTuples(string $sname, mixed $filtre=null): Generator {
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $sname nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $sname, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
     $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$sname.geojson");
     foreach ($fileOfFC->readFeatures() as $no => $feature)  {
+      if ($no < $skip)
+        continue;
       $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
       yield $no => $tuple;
     }

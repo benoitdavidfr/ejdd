@@ -28,9 +28,21 @@ class MapDataset extends Dataset {
     $this->data = $data;
   }
   
-  function getTuples(string $section, mixed $filtre=null): Generator {
-    foreach ($this->data[$section] as $key => $tuple)
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $sectionName nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $sectionName, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
+    foreach ($this->data[$sectionName] as $key => $tuple) {
+      if ($skip-- > 0)
+        continue;
       yield $key => $tuple;
+    }
     return;
   }
 };

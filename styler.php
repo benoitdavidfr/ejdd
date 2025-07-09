@@ -70,8 +70,17 @@ class Styler extends Dataset {
     parent::__construct($this->styleSheet['title'], $this->styleSheet['description'], $schema);
   }
   
-  function getTuples(string $section, mixed $filtre=null): Generator {
-    $zoom = $filtre['zoom'] ?? 6;    
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $section nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $section, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
+    $zoom = $filters['zoom'] ?? 6;    
     foreach (array_reverse($this->styleSheet['themes'][$section]['datasets']) as $dsName => $dataset) {
       if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
         continue;
@@ -79,6 +88,8 @@ class Styler extends Dataset {
       foreach (array_reverse($dataset['sections']) as $sName => $section) {
         $sectionMD = $ds->sections[$sName]; // les MD de la section
         foreach ($ds->getTuples($sName) as $tuple) {
+          if ($skip-- > 0)
+            continue;
           if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
             //print_r($tuple);
             $tuple2 = ['geometry'=> $tuple['geometry']];
