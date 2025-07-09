@@ -25,10 +25,30 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
+- rajouter le COG Insee
+- rajouter des sources bien connues de référence
+  - IGN
+    - images
+    - features
+  - EU ? satellites ?
+  - NASA ?
+- rajouter un catalogue de ces sources ?
+  - JdD de sources/web-services ?
+    - titre
+    - type de webservice
+    - URL
+  - retrouver ce que j'avais fait précédemment
+    - /var/www/html/gexplor/visu/servers
+- créer un IHM de cartes et de couches
+- réfléchir à l'affichage de toponymes
+  - noms des pays, noms des villes, ...
+  - faire un serveur de tuiles ?
+  - il y a semble t'il des sources open de noms comme fluw WMS/TMS
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
-- améliorer la feuille de style NaturalEarth correspondant à une carte stylée des couches en multi-échelles
+- faire une catégorie SpreadSheet, y transférer les JdD concernés
 - transférer les JdD géo. en GeoDataset
+- publi sur internet ?
 EOT
 ]
 );
@@ -40,7 +60,7 @@ define('JOURNAL', [
   - suppression de l'extension ss pour les feuilles de style
   - vérification de la conformité de la feuille de style au schéma des feuilles de styles
     - le schéma des feuilles de styles est dans styler.yaml et porte un URI
-  - vérifications sur les cartes avant de les dessiner pour éviter les errurs lors du dessin
+  - vérifications sur les cartes et les couches avant de les dessiner afin d'éviter les errurs lors du dessin.
 6/7/2025:
   - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
 5/7/2025:
@@ -54,7 +74,7 @@ define('JOURNAL', [
   - conforme PhpStan (8:30)
   - définition d'une catégorie de JdD comme NaturalEarth
 29/6/2025:
-  - v3 fondée sur getTuples() à la place de gestData()
+  - v3 fondée sur getTuples() à la place de getData()
   - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
 16/6/2025:
   - 1ère version de v2 conforme PhpStan
@@ -407,6 +427,7 @@ abstract class Dataset {
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
     'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+    'wfs-fr-ign-gpf'=> 'FeatureServer',
   ];
   
   readonly string $title;
