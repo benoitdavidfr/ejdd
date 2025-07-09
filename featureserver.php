@@ -5,7 +5,8 @@
 
 require_once 'dataset.inc.php';
 
-class Buffer {
+/** Permet de gérer un cache de certains appels */
+class Cache {
   static function get(string $filePath, string $url): string {
     if (is_file($filePath)) {
       return file_get_contents($filePath);
@@ -26,7 +27,7 @@ class WfsCap {
   
   /** Retourne le string correspondant aux capabilities */
   static function getCapabilities(string $name): string {
-    return Buffer::get(
+    return Cache::get(
       "featureserver/cap/$name.xml",
       FeatureServer::REGISTRE[$name]['url'].'?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetCapabilities'
     );
@@ -68,7 +69,7 @@ class WfsCap {
   }
   
   function describeFeatureType(string $fsname, string $ftname): string {
-    return Buffer::get(
+    return Cache::get(
       "featureserver/ft/$fsname-$ftname",
       FeatureServer::REGISTRE[$fsname]['url']
         ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAMES=$ftname"
@@ -112,7 +113,7 @@ class FeatureServer extends Dataset {
           ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=$section"
           ."&outputFormat=".urlencode('application/json')
           ."&startIndex=$start&count=1";
-      $fcoll = Buffer::get(
+      $fcoll = Cache::get(
         "featureserver/features/$this->name-$section-$start.json",
         $url
       );
