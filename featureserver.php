@@ -50,7 +50,11 @@ class WfsCap {
       $name = str_replace('__', ':', (string)$featureType->Name);
       $properties[$name] = [
         'title'=> (string)$featureType->Title,
-        'description'=> (string)$featureType->Abstract,
+        'description'=> 'Abstract: '.(string)$featureType->Abstract
+          ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
+          ."\nWGS84BoundingBox:"
+          ."\n&nbsp;&nbsp;&nbsp;&nbsp;LowerCorner:".$featureType->ows__WGS84BoundingBox->ows__LowerCorner
+          ."\n&nbsp;&nbsp;&nbsp;&nbsp;UpperCorner:".$featureType->ows__WGS84BoundingBox->ows__UpperCorner,
         'type'=> 'array',
       ];
     }
@@ -135,7 +139,13 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'util
 
 switch ($_GET['action'] ?? null) {
   case null: {
-    echo "<a href='?action=create&dataset=wfs-fr-ign-gpf'>Création de l'objet wfs-fr-ign-gpf</a><br>\n";
+    echo "<a href='?action=cap&dataset=$_GET[dataset]'>Affiche les capacités WFS de $_GET[dataset]</a><br>\n";
+    echo "<a href='?action=create&dataset=$_GET[dataset]'>Création de l'objet $_GET[dataset]</a><br>\n";
+    break;
+  }
+  case 'cap': {
+    $fs = Dataset::get($_GET['dataset']);
+    echo '<pre>cap='; print_r($fs->cap->elt); echo "</pre>\n";
     break;
   }
   case 'create': {
