@@ -25,11 +25,8 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
-- rajouter le COG Insee
 - rajouter des sources bien connues de référence
-  - IGN
-    - images
-    - features ok
+  - WMS IGN ?
   - EU ? satellites ?
   - NASA ?
 - rajouter un catalogue de ces sources ?

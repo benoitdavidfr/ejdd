@@ -20,6 +20,7 @@ $schema:
       type: array
       items:
         type: object
+        additionalProperties: false
         properties:
           REG:
             description: code Insee région
@@ -58,6 +59,7 @@ $schema:
       type: array
       items:
         type: object
+        additionalProperties: false
         properties:
           DEP:
             description: code Insee du département
@@ -100,6 +102,7 @@ $schema:
       type: array
       items:
         type: object
+        additionalProperties: false
         properties:
           ARR:
             description: code Insee de l'arrondissement
@@ -141,13 +144,189 @@ $schema:
             description: semble identique à NCCENR
             type: string
     v_canton_2025:
-      title: v_canton_2025
-      description: v_canton_2025
+      title: Cantons
+      description: Cantons
       type: array
+      items:
+        type: object
+        additionalProperties: false
+        properties:
+          CAN:
+            description: code Insee du Canton
+            type: string
+            pattern: '^\d[\dAB]\d\d\d?$'
+          DEP:
+            description: code Insee du département
+            type: string
+            pattern: '^\d[\dAB]\d?$'
+          REG:
+            description: code Insee de la région à laquelle le canton appartient
+            type: string
+            pattern: '^\d\d$'
+          COMPCT:
+            description: '???'
+            type: string
+          BURCENTRAL:
+            description: commune principale
+            type: string
+            pattern: '^\d[0-9AB]\d\d\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+          TYPECT:
+            description: |
+              type de canton
+              Modalités:
+                C: Canton
+                N: Canton « fictif » pour communes nouvelles
+                V: Canton-Ville (ou pseudo-canton)
+            type: {enum: [C, 'N', V]} 
     v_commune_2025:
-      title: v_commune_2025
-      description: v_commune_2025
+      title: Commune, Commune associée, Commune déléguée ou arrondissement municipal
+      description: Regroupe Commune, Commune associée, Commune déléguée et arrondissement municipal
       type: array
+      items:
+        oneOf:
+          - description: description d'une Commune
+            type: object
+            additionalProperties: false
+            required: [TYPECOM, COM, REG, DEP, CTCD, ARR, TNCC, NCC, NCCENR, LIBELLE, CAN, COMPARENT]
+            properties:
+              TYPECOM:
+                description: type d'entité, 'COM' pour une Commune
+                type:
+                  const: COM
+              COM:
+                description: code Insee de la commune
+                type: string
+                pattern: '^\d[\dAB]\d\d\d$'
+              REG:
+                description: code Insee de la région à laquelle la Commune appartient
+                type: string
+                pattern: '^\d\d$'
+              DEP:
+                description: code Insee du département
+                type: string
+                pattern: '^\d[\dAB]\d?$'
+              CTCD:
+                description: Collectivité territoriale ???
+                type: string
+              ARR:
+                description: code Insee de l'arrondissement sauf pour les Communes de Mayotte
+                type: string
+                pattern: '^(\d[\dAB]\d\d?|)$'
+              TNCC:
+                description: |
+                  Modalités:
+                    0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                    1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                    2: Article = LE ; charnière = DU
+                    3: Article = LA ; charnière = DE LA
+                    4: Article = LES ; charnière = DES
+                    5: Article = L' ; charnière = DE L'
+                    6: Article = AUX ; charnière = DES
+                    7: Article = LAS ; charnière = DE LAS
+                    8: Article = LOS ; charnière = DE LOS
+                type: string
+                pattern: '^\d$'
+              NCC:
+                description: Nom en majuscules
+                type: string
+              NCCENR:
+                description: Nom en minuscules
+                type: string
+              LIBELLE:
+                description: semble identique à NCCENR
+                type: string
+              CAN:
+                description: Code Canton ?
+                type: string
+              COMPARENT:
+                description: Commune mère, toujours vide pour une Commune
+                type: string
+                pattern: '^$'
+          - description: Commune associée, Commune déléguée ou arrondissement municipal
+            type: object
+            additionalProperties: false
+            required: [TYPECOM, COM, REG, DEP, CTCD, ARR, TNCC, NCC, NCCENR, LIBELLE, CAN, COMPARENT]
+            properties:
+              TYPECOM:
+                description: |
+                  type d'entité
+                  Modalités:
+                    ARM: Arrondissement municipal
+                    COMA: Commune associée
+                    COMD: Commune déléguée
+                type:
+                  enum: [ARM, COMA, COMD]
+              COM:
+                description: code Insee de l'entité
+                type: string
+                pattern: '^\d[\dAB]\d\d\d$'
+              REG:
+                description: vide pour COMA et COMD, code région pour ARM
+                type: string
+                pattern: '^(\d\d|)$'
+              DEP:
+                description: vide pour COMA et COMD, code département pour ARM
+                type: string
+                pattern: '^(\d[\dAB]\d?|)$'
+              CTCD:
+                description: '????'
+              ARR:
+                description: vide pour COMA et COMD, code arrondissement pour ARM
+                type: string
+                pattern: '^(\d[\dAB]\d\d?|)$'
+              TNCC:
+                description: |
+                  Modalités:
+                    0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                    1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                    2: Article = LE ; charnière = DU
+                    3: Article = LA ; charnière = DE LA
+                    4: Article = LES ; charnière = DES
+                    5: Article = L' ; charnière = DE L'
+                    6: Article = AUX ; charnière = DES
+                    7: Article = LAS ; charnière = DE LAS
+                    8: Article = LOS ; charnière = DE LOS
+                type: string
+                pattern: '^\d$'
+              NCC:
+                description: Nom en majuscules
+                type: string
+              NCCENR:
+                description: Nom en minuscules
+                type: string
+              LIBELLE:
+                description: semble identique à NCCENR
+                type: string
+              CAN:
+                description: Code Canton ?
+                type: string
+              COMPARENT:
+                description: Commune mère
+                type: string
+                pattern: '^\d[\dAB]\d\d\d$'
     v_comer_2025:
       title: v_comer_2025
       description: v_comer_2025
