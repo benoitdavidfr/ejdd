@@ -39,6 +39,7 @@ parameters:
     - geojson.php
     - map.php
     - dataseteg.php
+    - inseecog.php
     - deptreg.php
     - nomscnig.php
     - spreadsheetdataset.inc.php

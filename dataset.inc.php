@@ -55,6 +55,9 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+10/7/2025:
+  - ajout COG Insee
+  - correction bugs
 9/7/2026:
   - ajout utilisation serveur WFS 2.0.0 et notamment celui de la Géoplateforme
   - ajout de la pagination dans l'affichage des n-uplets d'une section
@@ -146,12 +149,13 @@ class RecArray {
     elseif (is_null($val))
       return "<i>null</i>";
     elseif (is_string($val))
-      return htmlentities($val);
+      return str_replace("\n", "<br>\n", htmlentities($val));
     else
       return $val;
   }
   
   /** Convertit un array récursif en Html pour l'afficher.
+   * Les sauts de ligne sont transformés pour apparaître en Html.
    * @param array<mixed> $a
    */
   static function toHtml(array $a): string {
@@ -212,7 +216,9 @@ class RecArray {
         echo self::toHtml(
           [
             'a'=> "<b>aaa</b>",
-            'html'=> new Html('<b>aaa</b>'),
+            'html'=> new Html("<b>aaa</b>, htmlentities() n'est pas appliquée"),
+            'string'=> '<b>aaa</b>, htmlentities() est appliquée',
+            'text'=> "Texte sur\nplusieurs lignes",
             'null'=> null,
             'false'=> false,
             'true'=> true,
@@ -339,9 +345,9 @@ class Section {
       $cols_prec = $cols;
       echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$_GET[section]&key=$key'>$key</a></td>";
       foreach ($tuple as $k => $v) {
-        if (!$v)
+        if ($v === null)
           $v = '';
-        if (is_array($v))
+        elseif (is_array($v))
           $v = json_encode($v);
         if (strlen($v) > 60)
           $v = substr($v, 0, 57).'...';
@@ -411,7 +417,7 @@ class Section {
       $validator->validate($data, $this->schema->array);
       if (!$validator->isValid()) {
         foreach ($validator->getErrors() as $error) {
-          $error['property'] = $this->name.'/'.$error['property'];
+          $error['property'] = $this->name.".[$key].".substr($error['property'], 4);
           //echo "<pre>error="; print_r($error); echo "</pre>\n";
           $errors[] = $error;
         }
@@ -427,6 +433,7 @@ abstract class Dataset {
   /** Registre contenant la liste des JdD sous la forme {dsName} => {className}|null */
   const REGISTRE = [
     'DatasetEg'=> null,
+    'InseeCog'=> null,
     'DeptReg'=> null,
     'NomsCnig'=> null,
     'NomsCtCnigC'=> null,

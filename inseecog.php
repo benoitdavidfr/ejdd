@@ -1,0 +1,86 @@
+<?php
+/** inseecog.php */
+require_once 'vendor/autoload.php';
+require_once 'dataset.inc.php';
+
+use Symfony\Component\Yaml\Yaml;
+
+class InseeCog extends Dataset {
+  readonly string $name;
+  
+  function __construct(string $name) {
+    $this->name = $name;
+    $params = Yaml::parseFile(strToLower("$name.yaml"));
+    parent::__construct($params['title'], $params['description'], $params['$schema']);
+  }
+  
+  /** L'accès aux tuples d'une section du JdD par un Generator.
+   * @param string $section nom de la section
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   * @return Generator
+   */
+  function getTuples(string $section, array $filters=[]): Generator {
+    $skip = $filters['skip'] ?? 0;
+    $file = fopen(strToLower($this->name)."/$section.csv", 'r');
+    $headers = fgetcsv(stream: $file, escape: "\\");
+    $nol = $skip;
+    while ($data = fgetcsv(stream: $file, escape: "\\")) {
+      if ($skip-- > 0)
+        continue;
+      $tuple = [];
+      foreach ($headers as $i => $name) {
+        $tuple[$name] = $data[$i];
+      }
+      yield $nol++ => $tuple;
+    }
+    fclose($file);
+  }
+};
+
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
+
+
+class InseeCogBuild {
+  /** Répertoire de stockage des fichiers CSV */
+  const FILE_DIR = 'inseecog';
+  const SRCE_PATH = '../data/insee-cog2025/cog_ensemble_2025_csv';
+  
+  /** Produit les fichiers CSV à partir des fichiers CSV de la livraison stockée dans SRCE_DIR */
+  static function copyCsvFiles(string $srcePath, string $fileDir): void {
+    if (!is_dir($fileDir))
+      mkdir($fileDir);
+    $srcedir = dir($srcePath);
+    while (false !== ($entry = $srcedir->read())) {
+      if (preg_match('!\.(csv)$!', $entry)) {
+        echo "> $entry<br>\n";
+        $cmde = "cp $srcePath/$entry $fileDir/";
+        echo "$ $cmde<br>\n";
+        $ret = exec($cmde, $output, $result_code);
+        if ($result_code <> 0) {
+          echo '$ret='; var_dump($ret);
+          echo "result_code=$result_code<br>\n";
+          echo '<pre>$output'; print_r($output); echo "</pre>\n";
+        }
+      }
+    }
+    $srcedir->close();
+  }
+  
+  static function main(): void {
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        echo "<a href='?action=build'>Initialiser le JdD à partir des données source</a><br>\n";
+        break;
+      }
+      case 'build': {
+        self::copyCsvFiles(self::SRCE_PATH, self::FILE_DIR);
+        break;
+      }
+    }
+  }
+};
+InseeCogBuild::main();

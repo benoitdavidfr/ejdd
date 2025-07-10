@@ -1,6 +1,7 @@
 <?php
 /** FeatureServer - Catégorie des Dataset WFS.
  * Chaque JdD correspond à une serveur WFS.
+ * Attention les coordonnées peuvent ne pas être en CRS:84.
  */
 
 require_once 'dataset.inc.php';
@@ -23,6 +24,7 @@ class Cache {
 
 /** Manipulation des Capabilities d'un serveur WFS */
 class WfsCap {
+  /** Capacités dans lesquelles les espaces de noms sont supprimés. */
   readonly SimpleXMLElement $elt;
   
   /** Retourne le string correspondant aux capabilities */
@@ -41,15 +43,16 @@ class WfsCap {
     //echo '<pre>$elt='; print_r($this->elt);
   }
   
-  /** @return array<mixed> */
+  /** Déduction du schema à partir des capacités.
+   * @return array<mixed> */
   function jsonSchemaOfTheDs(): array {
-    $properties = [];
+    $sections = [];
     //echo '$elt='; print_r($this->elt);
     //echo 'FeatureTypeList='; print_r($this->elt->FeatureTypeList->FeatureType);
     foreach ($this->elt->FeatureTypeList->FeatureType as $featureType) {
       //print_r($featureType);
       $name = str_replace('__', ':', (string)$featureType->Name);
-      $properties[$name] = [
+      $sections[$name] = [
         'title'=> (string)$featureType->Title,
         'description'=> 'Abstract: '.(string)$featureType->Abstract
           ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
@@ -59,15 +62,17 @@ class WfsCap {
         'type'=> 'array',
       ];
     }
+    ksort($sections);
     return [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
       'title'=> "Schema du serveur WFS",
       'description'=> "Schema du serveur WFS",
       'type'=> 'object',
-      'properties'=> $properties,
+      'properties'=> $sections,
     ];
   }
   
+  /** Utilisé en test. Ammène peu. */
   function describeFeatureType(string $fsname, string $ftname): string {
     return Cache::get(
       "featureserver/ft/$fsname-$ftname",
@@ -78,7 +83,11 @@ class WfsCap {
   }
 };
 
+/** FeatureServer - Catégorie des Dataset WFS. Chaque JdD correspond à une serveur WFS.
+ * Le mapping nom -> url est fait dans REGISTRE.
+ */
 class FeatureServer extends Dataset {
+  /** Registre des serveurs WFS indexé par le nom du JdD. */
   const REGISTRE = [
     'wfs-fr-ign-gpf' => [
       'title'=> "Service WFS de la Géoplateforme",
@@ -88,7 +97,9 @@ class FeatureServer extends Dataset {
       'version'=> '2.0.0',
     ],
   ];
+  /** Le nom du présent JdD. */
   readonly string $name;
+  /** Les capacités du serveur WFS. */
   readonly WfsCap $cap;
   
   function __construct(string $name) {
@@ -122,7 +133,7 @@ class FeatureServer extends Dataset {
       $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
       $tuple = array_merge(
         $fcoll['features'][0]['properties'],
-        ['bbox'=> $fcoll['features'][0]['bbox']],
+        isset($fcoll['features'][0]['bbox']) ? ['bbox'=> $fcoll['features'][0]['bbox']] : [],
         ['geometry'=> $fcoll['features'][0]['geometry']]
       );
       yield $start => $tuple;

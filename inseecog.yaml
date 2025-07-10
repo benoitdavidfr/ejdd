@@ -1,0 +1,192 @@
+title: Code officiel géographique au 1er janvier 2025 (Insee)
+description: |
+  source: https://www.insee.fr/fr/information/2560452
+$schema:
+  title: Schéma du COG
+  description: Schema du COG
+  $schema: 'http://json-schema.org/draft-07/schema#'
+  type: object
+  required: [
+    title, description, $schema, v_region_2025, v_departement_2025, v_arrondissement_2025, v_canton_2025, v_commune_2025,
+    v_comer_2025]
+  additionalProperties: false
+  properties:
+    title: {description: titre, type: string}
+    description: {description: description, type: string}
+    $schema: {description: schéma, type: object}
+    v_region_2025:
+      title: Régions
+      description: Régions
+      type: array
+      items:
+        type: object
+        properties:
+          REG:
+            description: code Insee région
+            type: string
+            pattern: '^\d\d$'
+          CHEFLIEU:
+            description: code Insee du chef-lieu
+            type: string
+            pattern: '^\d[0-9AB]\d\d\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+    v_departement_2025:
+      title: Départements
+      description: Départements
+      type: array
+      items:
+        type: object
+        properties:
+          DEP:
+            description: code Insee du département
+            type: string
+            pattern: '^\d[\dAB]\d?$'
+          REG:
+            description: code Insee de la région à laquelle le département appartient
+            type: string
+            pattern: '^\d\d$'
+          CHEFLIEU:
+            description: code Insee du chef-lieu
+            type: string
+            pattern: '^\d[0-9AB]\d\d\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+    v_arrondissement_2025:
+      title: Arrondissements
+      description: Arrondissements
+      type: array
+      items:
+        type: object
+        properties:
+          ARR:
+            description: code Insee de l'arrondissement
+            type: string
+            pattern: '^\d[\dAB]\d\d?$'
+          DEP:
+            description: code Insee du département
+            type: string
+            pattern: '^\d[\dAB]\d?$'
+          REG:
+            description: code Insee de la région à laquelle le département appartient
+            type: string
+            pattern: '^\d\d$'
+          CHEFLIEU:
+            description: code Insee du chef-lieu
+            type: string
+            pattern: '^\d[0-9AB]\d\d\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+    v_canton_2025:
+      title: v_canton_2025
+      description: v_canton_2025
+      type: array
+    v_commune_2025:
+      title: v_commune_2025
+      description: v_commune_2025
+      type: array
+    v_comer_2025:
+      title: v_comer_2025
+      description: v_comer_2025
+      type: array
+    v_commune_comer_2025:
+      title: v_commune_comer_2025
+      description: v_commune_comer_2025
+      type: array
+    v_ctcd_2025:
+      title: v_ctcd_2025
+      description: v_ctcd_2025
+      type: array
+    v_mvt_commune_2025:
+      title: v_mvt_commune_2025
+      description: v_mvt_commune_2025
+      type: array
+    v_pays_territoire_2025:
+      title: v_pays_territoire_2025
+      description: v_pays_territoire_2025
+      type: array
+    v_codes_extension_2025:
+      title: v_codes_extension_2025
+      description: v_codes_extension_2025
+      type: array
+
+    v_pays_et_territoire_depuis_1943:
+      title: v_pays_et_territoire_depuis_1943
+      description: v_pays_et_territoire_depuis_1943
+      type: array
+    v_commune_outremer_depuis_1943:
+      title: v_commune_outremer_depuis_1943
+      description: v_commune_outremer_depuis_1943
+      type: array
+    v_commune_depuis_1943:
+      title: v_commune_depuis_1943
+      description: v_commune_depuis_1943
+      type: array
+    v_tom_depuis_1943:
+      title: v_tom_depuis_1943
+      description: v_tom_depuis_1943
+      type: array
+eof:
