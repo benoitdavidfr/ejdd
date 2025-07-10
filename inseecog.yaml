@@ -229,7 +229,7 @@ $schema:
                 type: string
                 pattern: '^\d[\dAB]\d?$'
               CTCD:
-                description: Collectivité territoriale ???
+                description: Collectivité territoriale assurant le rôle de conseil départemental (?)
                 type: string
               ARR:
                 description: code Insee de l'arrondissement sauf pour les Communes de Mayotte
@@ -327,45 +327,206 @@ $schema:
                 description: Commune mère
                 type: string
                 pattern: '^\d[\dAB]\d\d\d$'
-    v_comer_2025:
-      title: v_comer_2025
-      description: v_comer_2025
-      type: array
-    v_commune_comer_2025:
-      title: v_commune_comer_2025
-      description: v_commune_comer_2025
-      type: array
     v_ctcd_2025:
-      title: v_ctcd_2025
-      description: v_ctcd_2025
+      title: Collectivité territoriale assurant le rôle de conseil départemental (?)
+      description: |
+        A confirmer.
+        Généralement le conseil départemental sauf:
+          - en Corse où c'est la CTC
+          - en Alsace où c'est la Collectivité européenne d'Alsace
+          - dans le Rhône où ce sont le Conseil départemental du Rhône et la Métropole de Lyon
+        100 entités.
       type: array
-    v_mvt_commune_2025:
-      title: v_mvt_commune_2025
-      description: v_mvt_commune_2025
+      items:
+        type: object
+        properties:
+          CTCD:
+            description: code CTCD
+            type: string
+          REG:
+            description: code région
+            type: string
+          CHEFLIEU:
+            description: code de la commune chef-lieu
+            type: string
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+    v_comer_2025:
+      title: COM, TOM et autres outre-mers
+      description: COM, TOM, Nouvelle-Calédonie, La Passion-Clipperton et Île des Faisans
       type: array
+      items:
+        type: object
+        properties:
+          COMER:
+            description: code COMER
+            type: string
+            pattern: '^9[78]\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+            type: string
+    v_commune_comer_2025:
+      title: Subdivisions des COM, TOM et autres outre-mers
+      description: Subdivisions des COM, TOM et autres outre-mers
+      type: array
+      items:
+        type: object
+        properties:
+          COM_COMER:
+            description: code de la subdivision
+            type: string
+            pattern: '^9[78]\d\d\d$'
+          TNCC:
+            description: |
+              Modalités:
+                0: Pas d'article et le nom commence par une consonne sauf H muet ; charnière = DE
+                1: Pas d'article et le nom commence par une voyelle ou un H muet ; charnière = D'
+                2: Article = LE ; charnière = DU
+                3: Article = LA ; charnière = DE LA
+                4: Article = LES ; charnière = DES
+                5: Article = L' ; charnière = DE L'
+                6: Article = AUX ; charnière = DES
+                7: Article = LAS ; charnière = DE LAS
+                8: Article = LOS ; charnière = DE LOS
+            type: string
+            pattern: '^\d$'
+          NCC:
+            description: Nom en majuscules
+            type: string
+          NCCENR:
+            description: Nom en minuscules
+            type: string
+          LIBELLE:
+            description: semble identique à NCCENR
+          NATURE_ZONAGE:
+            description: |
+              Modalités:
+                CIR	Circonscription territoriale
+                CDM	Code à 5 chiffres du condominium de l’Île des Faisans
+                COM	Commune
+                CPT	Code à 5 chiffres de La Passion-Clipperton
+                DIS	District
+            type:
+              enum: [CIR, CDM, COM, CPT, DIS]
+          COMER:
+            description: code COMER
+            type: string
+            pattern: '^9[78]\d$'
+          LIBELLE_COMER:
+            description: libellé du COMER
+            type: string
     v_pays_territoire_2025:
-      title: v_pays_territoire_2025
-      description: v_pays_territoire_2025
+      title: Pays et territoires
+      description: Pays et territoires
       type: array
+      items:
+        type: object
+        properties:
+          COG:
+            description: code COG
+            type: string
+            pattern: '^99\d\d\d$'
+          ACTUAL:
+            description: '???'
+          CRPAY:
+            description: '???'
+          LIBCOG:
+            description: libellé court COG
+            type: string
+          ANI:
+            description: '???'
+          LIBENR:
+            description: libellé long
+            type: string
+          CODEISO2:
+            description: code ISO alpha-2, éventuellement vide
+            type: string
+            pattern: '^([A-Z]{2}|)$'
+          CODEISO3:
+            description: code ISO alpha-3, éventuellement vide
+            type: string
+            pattern: '^([A-Z]{3}|)$'
+          CODENUM3:
+            description: code ISO num-3, éventuellement vide
+            type: string
+            pattern: '^([0-9]{3}|)$'
     v_codes_extension_2025:
-      title: v_codes_extension_2025
+      title: v_codes_extension_2025 ???
       description: v_codes_extension_2025
       type: array
+      items:
+        type: object
 
     v_pays_et_territoire_depuis_1943:
       title: v_pays_et_territoire_depuis_1943
       description: v_pays_et_territoire_depuis_1943
       type: array
+      items:
+        type: object
     v_commune_outremer_depuis_1943:
       title: v_commune_outremer_depuis_1943
       description: v_commune_outremer_depuis_1943
       type: array
+      items:
+        type: object
     v_commune_depuis_1943:
       title: v_commune_depuis_1943
       description: v_commune_depuis_1943
       type: array
+      items:
+        type: object
     v_tom_depuis_1943:
       title: v_tom_depuis_1943
       description: v_tom_depuis_1943
       type: array
+      items:
+        type: object
+          
+    v_mvt_commune_2025:
+      title: v_mvt_commune_2025
+      description: v_mvt_commune_2025
+      type: array
+      items:
+        type: object
 eof:
