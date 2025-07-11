@@ -26,6 +26,16 @@ use Symfony\Component\Yaml\Yaml;
 /* Journal des modifications du code. */
 define('A_FAIRE', [
 <<<'EOT'
+- nlles fonctionnalités
+  - tester si j'ai les même communes dans AE COG et dans COG
+  - tester si un champ est ou non unique
+  - faire une projection d'une section sur certains champs
+  - jointure, semi-jointure, différence entre sections
+  - stats
+    - nbre de n-uplets ou estimation, taille de la section en octets
+    - le nbre de n-uplets est rapide à compter, pas nécessaire de le stocker
+  
+
 - rajouter des sources bien connues de référence
   - WMS IGN ?
   - EU ? satellites ?
@@ -55,6 +65,7 @@ define('JOURNAL', [
 <<<'EOT'
 11/7/2025:
   - ajout filtre sur prédicat sur COG Insee
+  - ajout Dataset::implementedFilters()
 10/7/2025:
   - ajout COG Insee
   - correction bugs

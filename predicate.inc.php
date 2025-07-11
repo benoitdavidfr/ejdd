@@ -30,9 +30,9 @@ class Predicate {
   }
   
   /** Fabrique un formilaire de saisie */
-  static function form(): string {
+  static function form($getKeys = ['action','dataset','section']): string {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
-    foreach (['action','dataset','section'] as $k)
+    foreach ($getKeys as $k)
       if (isset($_GET[$k]))
         $form .= "<input type='hidden' name='$k' value='".urlencode($_GET[$k])."'>\n";
     $form .= "<tr><td>Prédicat</td>"
@@ -49,8 +49,7 @@ class Predicate {
     switch ($_GET['action'] ?? null) {
       case null: {
         echo "<a href='?action=basic'>Tests basiques</a><br>\n";
-        echo "<a href='?action=saisie&dataset=InseeCog&section=v_commune_2025'>",
-             "Utilisation d'un prédicat avec InseeCog/v_commune_2025</a><br>\n";
+        echo "<a href='?action=saisie'>Utilisation d'un prédicat</a><br>\n";
         break;
       }
       case 'basic': {
@@ -66,15 +65,33 @@ class Predicate {
         break;
       }
       case 'saisie': {
+        if (!isset($_GET['dataset'])) {
+          echo "<h3>Choix d'un dataset</h3>\n";
+          foreach (array_keys(Dataset::REGISTRE) as $dsName) {
+            $dataset = Dataset::get($dsName);
+            if (in_array('predicate', $dataset->implementedFilters()))
+              echo "<a href='?action=$_GET[action]&dataset=$dsName'>",$dataset->title,"</a><br>\n";
+          }
+          die();
+        }
+        
+        $dataset = Dataset::get($_GET['dataset']);
+        if (!isset($_GET['section'])) {
+          echo "<h3>Choix d'une section</h3>\n";
+          foreach ($dataset->sections as $sname => $section) {
+            echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&section=$sname'>$section->title</a><br>\n";
+          }
+          die();
+        }
+        
         echo self::form();
         
         if (!isset($_GET['predicate']))
           break;
         
-        $inseeCog = Dataset::get($_GET['dataset']);
         echo "<p><table border=1>\n";
         $no = 0;
-        foreach($inseeCog->getTuples($_GET['section'], ['predicate'=> new Predicate($_GET['predicate'])]) as $key => $tuple) {
+        foreach($dataset->getTuples($_GET['section'], ['predicate'=> new Predicate($_GET['predicate'])]) as $key => $tuple) {
           //echo "<pre>key=$key, tuple="; print_r($tuple); echo "</pre>\n";
           //echo json_encode($tuple),"<br>\n";
           if (!$no++) {
