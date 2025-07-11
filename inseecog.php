@@ -14,6 +14,11 @@ class InseeCog extends Dataset {
     parent::__construct($params['title'], $params['description'], $params['$schema']);
   }
   
+  /** Retourne les filtres implémentés par getTuples().
+   * @return list<string>
+   */
+  function implementedFilters(): array { return ['skip', 'predicate']; }
+
   /** L'accès aux tuples d'une section du JdD par un Generator.
    * @param string $section nom de la section
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
@@ -24,16 +29,25 @@ class InseeCog extends Dataset {
    */
   function getTuples(string $section, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
+    $predicate = $filters['predicate'] ?? null;
     $file = fopen(strToLower($this->name)."/$section.csv", 'r');
     $headers = fgetcsv(stream: $file, escape: "\\");
-    $nol = $skip;
+    $nol = 0;
     while ($data = fgetcsv(stream: $file, escape: "\\")) {
-      if ($skip-- > 0)
-        continue;
       $tuple = [];
       foreach ($headers as $i => $name) {
         $tuple[$name] = $data[$i];
       }
+      
+      if ($predicate && !$predicate->eval($tuple)) {
+        $nol++;
+        continue;
+      }
+      if ($skip-- > 0) {
+        $nol++;
+        continue;
+      }
+      
       yield $nol++ => $tuple;
     }
     fclose($file);

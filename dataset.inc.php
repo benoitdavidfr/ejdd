@@ -19,6 +19,7 @@
  *    - soit un listOfValues, cad une liste de valeurs.
  */
 require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__.'/predicate.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
@@ -52,6 +53,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+11/7/2025:
+  - ajout filtre sur prédicat sur COG Insee
 10/7/2025:
   - ajout COG Insee
   - correction bugs
@@ -327,11 +330,20 @@ class Section {
     echo str_replace("\n", "<br>\n", $this->schema->array['description']);
     echo "<h3>Schéma</h3>\n";
     echo $this->toHtml();
+    
+    // Prédicat
+    if (in_array('predicate', $dataset->implementedFilters()))
+      echo Predicate::form();
+    
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
     $cols_prec = [];
     $i = 0; // no de tuple
-    foreach ($dataset->getTuples($this->name, ['skip'=> $skip]) as $key => $tupleOrValue) {
+    $filters = array_merge(
+      ['skip'=> $skip],
+      isset($_GET['predicate']) ? ['predicate'=> new Predicate($_GET['predicate'])] : []
+    );
+    foreach ($dataset->getTuples($this->name, $filters) as $key => $tupleOrValue) {
       $tuple = match ($kind = $this->schema->kind()) {
         'dictOfTuples', 'listOfTuples' => $tupleOrValue,
         'dictOfValues', 'listOfValues' => ['value'=> $tupleOrValue],
@@ -351,13 +363,16 @@ class Section {
         echo "<td>$v</td>";
       }
       echo "</tr>\n";
-      if (++$i >= self::NB_TUPLES_PER_PAGE)
+      if (in_array('skip', $dataset->implementedFilters()) && (++$i >= self::NB_TUPLES_PER_PAGE))
         break;
     }
     echo "</table>\n";
-    if ($i >= self::NB_TUPLES_PER_PAGE) {
+    if (in_array('skip', $dataset->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
       $skip += $i;
-      echo "<a href='?action=display&dataset=$_GET[dataset]&section=$this->name&skip=$skip'>Suivants (skip=$skip)</a><br>\n";
+      echo "<a href='?action=display&dataset=$_GET[dataset]&section=$this->name",
+             isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
+             "&skip=$skip'>",
+           "Suivants (skip=$skip)</a><br>\n";
     }
   }
   
@@ -485,12 +500,18 @@ abstract class Dataset {
     return new $class($dsName); // @phpstan-ignore-line
   }
   
+  /** Retourne les filtres implémentés par getTuples().
+   * @return list<string>
+   */
+  function implementedFilters(): array { return []; }
+  
   /** L'accès aux tuples d'une section du JdD par un Generator.
    * @param string $section nom de la section
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
+   *  - predicate: Predicate - prédicat à vérifier sur le n-uplet
    * @return Generator
    */
   abstract function getTuples(string $section, array $filters=[]): Generator;

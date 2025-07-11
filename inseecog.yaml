@@ -7,8 +7,11 @@ $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
   type: object
   required: [
-    title, description, $schema, v_region_2025, v_departement_2025, v_arrondissement_2025, v_canton_2025, v_commune_2025,
-    v_comer_2025]
+    title, description, $schema,
+    v_region_2025, v_departement_2025, v_arrondissement_2025, v_canton_2025, v_commune_2025,v_comer_2025,v_commune_comer_2025,
+    v_pays_territoire_2025, v_codes_extension_2025, v_mvt_commune_2025, 
+    v_commune_depuis_1943, v_tom_depuis_1943, v_commune_outremer_depuis_1943, v_pays_et_territoire_depuis_1943
+  ]
   additionalProperties: false
   properties:
     title: {description: titre, type: string}
@@ -604,18 +607,6 @@ $schema:
           LIBELLE_AP:
             description: libellé après
             type: string
-    v_pays_et_territoire_depuis_1943:
-      title: v_pays_et_territoire_depuis_1943
-      description: v_pays_et_territoire_depuis_1943
-      type: array
-      items:
-        type: object
-    v_commune_outremer_depuis_1943:
-      title: v_commune_outremer_depuis_1943
-      description: v_commune_outremer_depuis_1943
-      type: array
-      items:
-        type: object
     v_commune_depuis_1943:
       title: v_commune_depuis_1943
       description: v_commune_depuis_1943
@@ -625,6 +616,18 @@ $schema:
     v_tom_depuis_1943:
       title: v_tom_depuis_1943
       description: v_tom_depuis_1943
+      type: array
+      items:
+        type: object
+    v_commune_outremer_depuis_1943:
+      title: v_commune_outremer_depuis_1943
+      description: v_commune_outremer_depuis_1943
+      type: array
+      items:
+        type: object
+    v_pays_et_territoire_depuis_1943:
+      title: v_pays_et_territoire_depuis_1943
+      description: v_pays_et_territoire_depuis_1943
       type: array
       items:
         type: object

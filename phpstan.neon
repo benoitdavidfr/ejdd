@@ -36,6 +36,7 @@ parameters:
     - index.php
     - dataset.inc.php
     - geojson.inc.php
+    - predicate.inc.php
     - geojson.php
     - map.php
     - dataseteg.php
