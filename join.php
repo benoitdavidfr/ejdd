@@ -1,15 +1,16 @@
 <?php
 /** Immlémentation d'une jointure entre JdD/sections générant un nouveau JdD */
 
-define('A_FAIRE',[
+define('A_FAIRE_JOIN',[
 <<<'EOT'
 - ajouter un index pour accélérer la jointure
-  - en impélmentant getTuplesOnValue() en conséquence sur les JdD sur lesquels c'est pertinent
+  - en implémentant getTuplesOnValue() en conséquence sur les JdD sur lesquels c'est pertinent
+- compléter le schéma à partir des schémas des sections jointes
 EOT
 ]);
 require_once 'dataset.inc.php';
 
-/** Immlémentation d'une jointure entre JdD/sections générant un nouveau JdD
+/** Une jointure entre JdD/sections est une novelle section de JdD.
  * Par convention, le nom du jeu de données est de la forme:
  *   "{type}({dataset1}/{section1}/{field1} X {dataset2}/{section2}/{field2})"
  */
@@ -112,7 +113,7 @@ class Join extends Dataset {
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
-            $selects[$i] = HtmlForm::select("section$i", value2keyValue(array_keys($ds->sections)));
+            $selects[$i] = HtmlForm::select("section$i", array_keys($ds->sections));
           }
           //print_r($dsSectNames);
           echo "<table border=1><form>\n",
@@ -136,11 +137,10 @@ class Join extends Dataset {
             $dsTitles[$i] = $ds->title;
             $tuple = [];
             foreach ($ds->getTuples($_GET["section$i"]) as $tuple) { break; }
-            $selects[$i] = HtmlForm::select("field$i", value2keyValue(array_keys($tuple)));
+            $selects[$i] = HtmlForm::select("field$i", array_keys($tuple));
           }
           echo "<table border=1><form>\n",
-               implode(
-                 '',
+               implode('',
                  array_map(
                    function($k) { return "<input type='hidden' name='$k' value='$_GET[$k]'>\n"; },
                    ['dataset1', 'dataset2','section1','section2']
@@ -159,7 +159,7 @@ class Join extends Dataset {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
           }
-          $select = HtmlForm::select('type', value2keyValue(['inner-join','left-join']));
+          $select = HtmlForm::select('type', ['inner-join','left-join']);
           echo "<table border=1><form>\n",
                implode(
                  '',
@@ -200,17 +200,18 @@ class Join extends Dataset {
 };
 
 
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
+
 
 /** Prend une liste de valeurs et retour un array ayant les mêmes avleurs et des clés indentiques aux valeurs.
  * @param list<string> $values
  * @return array<string,string>
- */
+ *
 function value2keyValue(array $values): array {
   $result = [];
   foreach ($values as $v)
     $result[$v] = $v;
   return $result;
-}
+}*/
 
 Join::main();

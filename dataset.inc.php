@@ -139,12 +139,18 @@ class Html {
 /** Fonction facilitant la construction de formulaires Html */
 class HtmlForm {
   /** Génère un élémt select de formulaire Html.
-   * @param array<string,string> $options sous la forme [{value}=> {label}]
+   * Les options peuvent être soit une liste de de valeurs soit un dictionnaire [key => valeur]
+   * @param array<mixed> $options sous la forme [{value}=> {label}] ou [{value}]
    */
   static function select(string $name, array $options): string {
     $select = "<select name='$name'>\n";
-    foreach ($options as $k => $v)
-      $select .= "<option value='$k'>$v</option>\n";
+    if (array_is_list($options)) {
+      $select .= implode('', array_map(function($v) { return "<option>$v</option>\n"; }, $options));
+    }
+    else {
+      foreach ($options as $k => $v)
+        $select .= "<option value='$k'>$v</option>\n";
+    }
     $select .= "</select>";
     return $select;
   }
