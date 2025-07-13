@@ -28,13 +28,11 @@ define('A_FAIRE', [
 <<<'EOT'
 - nlles fonctionnalités
   - tester si j'ai les même communes dans AE COG et dans COG
-  - tester si un champ est ou non unique
   - faire une projection d'une section sur certains champs
   - jointure, semi-jointure, différence entre sections
   - stats
     - nbre de n-uplets ou estimation, taille de la section en octets
     - le nbre de n-uplets est rapide à compter, pas nécessaire de le stocker
-  
 
 - rajouter des sources bien connues de référence
   - WMS IGN ?
@@ -537,6 +535,14 @@ abstract class Dataset {
     return null;
   }
   
+  function getTuplesOnValue(string $section, string $field, string $value): array {
+    $result = [];
+    foreach ($this->getTuples($section) as $k => $tuple)
+      if ($tuple[$field] == $value)
+        $result[] = $tuple;
+    return $result;
+  }
+    
   /** Cosntruit le JdD sous la forme d'un array.
    * @return array<mixed>
    */
