@@ -109,6 +109,11 @@ class FeatureServer extends Dataset {
     parent::__construct($name, $registre['title'], $registre['description'], $this->cap->jsonSchemaOfTheDs());
   }
   
+  /** Retourne les filtres implémentés par getTuples().
+   * @return list<string>
+   */
+  function implementedFilters(): array { return ['skip']; }
+  
   /** L'accès aux tuples d'une section du JdD par un Generator.
    * @param string $section nom de la section
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer

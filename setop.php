@@ -1,6 +1,6 @@
 <?php
 /** setop. Tests opérations ensemblistes. */
-require_once 'dataset.inc.php';
+require_once 'join.php';
 
 class SetOp {
   const UNITS = [
@@ -113,7 +113,7 @@ class SetOp {
   }
 };
 
-class Join extends Dataset {
+/*class Join extends Dataset {
   readonly array $p;
   
   function __construct(array $datasets, array $sections, array $fields) {
@@ -122,15 +122,18 @@ class Join extends Dataset {
       'sections'=> $sections,
       'fields'=> $fields,
     ];
+    $title = "Jointure entre $datasets[1].$sections[1].$fields[1] et $datasets[2].$sections[2]. $fields[2]";
+    $descr = "Jointure entre $datasets[1].$sections[1] (s1) et $datasets[2].$sections[2] (s2) sur s1.$fields[1]=s2.$fields[2]";
     parent::__construct(
-      "Jointure entre $datasets[1].$sections[1].$fields[1] et $datasets[2].$sections[2]. $fields[2]",
-      "Réalisation d'une opération de jointure",
+      'join',
+      $title,
+      $descr,
       [
         '$schema'=> 'http://json-schema.org/draft-07/schema#',
         'properties'=> [
           'join'=> [
-            'title'=> "Jointure",
-            'description'=> "Cette section contient la jointure",
+            'title'=> $title,
+            'description'=> $descr,
             'type'=> 'array',
             'items'=> [],
           ]
@@ -143,9 +146,9 @@ class Join extends Dataset {
   function getTuples(string $section, array $filters=[]): Generator {
     $ds1 = Dataset::get($this->p['datasets'][1]);
     $ds2 = Dataset::get($this->p['datasets'][2]);
-    echo '<pre>join=';
     foreach ($ds1->getTuples($this->p['sections'][1]) as $tuple1) {
       $tuples2 = $ds2->getTuplesOnValue($this->p['sections'][2], $this->p['fields'][2], $tuple1[$this->p['fields'][1]]);
+      $tuple = [];
       foreach ($tuple1 as $k => $v)
         $tuple["s1.$k"] = $v;
       if (!$tuples2) {
@@ -160,7 +163,7 @@ class Join extends Dataset {
       }
     }
   }
-};
+};*/
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
@@ -381,15 +384,42 @@ switch($action = $_GET['action'] ?? null) {
            "</form></table>\n";
       die();
     }
-    //SetOp::join(
-    $join = new Join(
-      [1=> $_GET['dataset1'], 2=> $_GET['dataset2']],
-      [1=> $_GET['section1'], 2=> $_GET['section2']],
-      [1=> $_GET['field1'],   2=> $_GET['field2']]);
-    /*foreach ($join->getTuples('join') as $tuple) {
-      echo '<pre>'; print_r($tuple);
-    }*/
-    $join->sections['join']->display($join);
+    
+    if (0) { // 1ère version, ca n'est pas un JdD 
+      SetOp::join(
+        [1=> $_GET['dataset1'], 2=> $_GET['dataset2']],
+        [1=> $_GET['section1'], 2=> $_GET['section2']],
+        [1=> $_GET['field1'],   2=> $_GET['field2']]);
+      foreach ($join->getTuples('join') as $tuple) {
+        echo '<pre>'; print_r($tuple);
+      }
+      
+    }
+    elseif (0) { // 2nd version, c'est un JdD mais pas très standard 
+      $join = new Join(
+        [1=> $_GET['dataset1'], 2=> $_GET['dataset2']],
+        [1=> $_GET['section1'], 2=> $_GET['section2']],
+        [1=> $_GET['field1'],   2=> $_GET['field2']]);
+      $join->sections['join']->display($join);
+    }
+    else {
+      $name = "join($_GET[dataset1]/$_GET[section1]/$_GET[field1] X $_GET[dataset2]/$_GET[section2]/$_GET[field2])";
+      $join = new Join($name);
+      $join->display();
+    }
+    break;
+  }
+  case 'display': {
+    if (!isset($_GET['section']))
+      die("Erreur section non défie");
+    if (!isset($_GET['key'])) {
+      $ds = Dataset::get($_GET['dataset']);
+      $ds->sections[$_GET['section']]->display($ds);
+    }
+    else {
+      $ds = Dataset::get($_GET['dataset']);
+      echo "<pre>$_GET[key] -> "; print_r($ds->getOneTupleByKey($_GET['section'], $_GET['key']));
+    }
     break;
   }
 }

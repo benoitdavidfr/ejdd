@@ -904,7 +904,10 @@ EOT
         ];
       }
     }
-
+    
+    // Corrections
+    $depts['D07']['nom'] = 'Ardèche';
+    
     return [
       'title'=> self::TITLE,
       'description'=> self::DESCRIPTION[0],

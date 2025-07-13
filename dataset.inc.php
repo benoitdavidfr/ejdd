@@ -27,7 +27,6 @@ use Symfony\Component\Yaml\Yaml;
 define('A_FAIRE', [
 <<<'EOT'
 - nlles fonctionnalités
-  - tester si j'ai les même communes dans AE COG et dans COG
   - faire une projection d'une section sur certains champs
   - jointure, semi-jointure, différence entre sections
   - stats
@@ -61,6 +60,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+13/7/2025:
+  - intégration jointure
 11/7/2025:
   - ajout filtre sur prédicat sur COG Insee
   - ajout Dataset::implementedFilters()
@@ -361,7 +362,7 @@ class Section {
       if ($cols <> $cols_prec)
         echo '<th>',implode('</th><th>', $cols),"</th>\n";
       $cols_prec = $cols;
-      echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$this->name&key=$key'>$key</a></td>";
+      echo "<tr><td><a href='?action=display&dataset=$dataset->name&section=$this->name&key=$key'>$key</a></td>";
       foreach ($tuple as $k => $v) {
         if ($v === null)
           $v = '';
@@ -378,7 +379,7 @@ class Section {
     echo "</table>\n";
     if (in_array('skip', $dataset->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
       $skip += $i;
-      echo "<a href='?action=display&dataset=$_GET[dataset]&section=$this->name",
+      echo "<a href='?action=display&dataset=$dataset->name&section=$this->name",
              isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
              "&skip=$skip'>",
            "Suivants (skip=$skip)</a><br>\n";
@@ -501,14 +502,21 @@ abstract class Dataset {
   
   /** Retourne le JdD de ce nom */
   static function get(string $dsName): self {
-    if (!array_key_exists($dsName, self::REGISTRE))
+    //echo "dsname=$dsName\n";
+    if (array_key_exists($dsName, self::REGISTRE)) {
+      // Si le JdD appartient à une catégorie alors l classe est cette catégorie, sinon la classe est le JdD
+      $class = self::REGISTRE[$dsName] ?? $dsName;
+      if (!is_file(strtolower("$class.php")))
+        throw new Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
+      require_once strtolower("$class.php");
+      return new $class($dsName); // @phpstan-ignore-line
+    }
+    elseif (preg_match('!^join\(!', $dsName)) {
+      require_once 'join.php';
+      return new Join($dsName);
+    }
+    else
       throw new Exception("Erreur dataset $dsName inexistant");
-    // Si le JdD appartient à une catégorie alors l classe est cette catégorie, sinon la classe est le JdD
-    $class = self::REGISTRE[$dsName] ?? $dsName;
-    if (!is_file(strtolower("$class.php")))
-      throw new Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
-    require_once strtolower("$class.php");
-    return new $class($dsName); // @phpstan-ignore-line
   }
   
   /** Retourne les filtres implémentés par getTuples().
@@ -724,7 +732,7 @@ abstract class Dataset {
          "<tr><td>description</td><td>",str_replace("\n","<br>\n", $this->description),"</td></tr>\n";
     //echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
     foreach ($this->sections as $sname => $section) {
-      echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$sname'>$sname</a></td>",
+      echo "<tr><td><a href='?action=display&dataset=",urlencode($this->name),"&section=$sname'>$sname</a></td>",
            "<td>",$this->sections[$sname]->title,"</td></tr>\n";
     }
     echo "</table>\n";
