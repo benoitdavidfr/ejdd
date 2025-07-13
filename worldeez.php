@@ -13,9 +13,9 @@ class WorldEez extends Dataset {
   const COORDINATE_PRECISION=4;
   const MAP_SCALE = 1/1_000_000;
  
-  function __construct() {
+  function __construct(string $name) {
     $md = Yaml::parseFile(self::YAML_FILE);
-    parent::__construct($md['title'], $md['description'], $md['$schema']);
+    parent::__construct($name, $md['title'], $md['description'], $md['$schema']);
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.

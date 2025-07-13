@@ -17,9 +17,9 @@ class MapDataset extends Dataset {
   /** @var array<string,mixed> $data Les données des différentes sections du jeu */
   readonly array $data;
   
-  function __construct() {
+  function __construct(string $name) {
     $dataset = Yaml::parseFile(self::YAML_FILE_PATH);
-    parent::__construct($dataset['title'], $dataset['description'], $dataset['$schema']);
+    parent::__construct($name, $dataset['title'], $dataset['description'], $dataset['$schema']);
     $data = [];
     foreach ($dataset as $key => $value) {
       if (!in_array($key, ['title', 'description', '$schema']))

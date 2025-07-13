@@ -67,7 +67,7 @@ class Styler extends Dataset {
     }
     unset($schema['properties']['{styledLayer}']);
     //echo '<pre>$params='; print_r($this->params); echo "</pre>\n";
-    parent::__construct($this->styleSheet['title'], $this->styleSheet['description'], $schema);
+    parent::__construct($ssName, $this->styleSheet['title'], $this->styleSheet['description'], $schema);
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.

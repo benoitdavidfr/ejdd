@@ -6,12 +6,9 @@ require_once 'dataset.inc.php';
 use Symfony\Component\Yaml\Yaml;
 
 class InseeCog extends Dataset {
-  readonly string $name;
-  
   function __construct(string $name) {
-    $this->name = $name;
     $params = Yaml::parseFile(strToLower("$name.yaml"));
-    parent::__construct($params['title'], $params['description'], $params['$schema']);
+    parent::__construct($name, $params['title'], $params['description'], $params['$schema']);
   }
   
   /** Retourne les filtres implémentés par getTuples().

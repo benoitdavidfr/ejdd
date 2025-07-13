@@ -103,10 +103,10 @@ class FeatureServer extends Dataset {
   readonly WfsCap $cap;
   
   function __construct(string $name) {
-    $this->name = $name;
     $this->cap = new WfsCap($name);
     //echo '<pre>'; print_r($this);
-    parent::__construct(self::REGISTRE[$name]['title'], self::REGISTRE[$name]['description'], $this->cap->jsonSchemaOfTheDs());
+    $registre = self::REGISTRE[$name];
+    parent::__construct($name, $registre['title'], $registre['description'], $this->cap->jsonSchemaOfTheDs());
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.

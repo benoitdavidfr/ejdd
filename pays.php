@@ -8,7 +8,7 @@ require_once 'spreadsheetdataset.inc.php';
 class Pays extends SpreadSheetDataset {
   const FILE_PATH = 'pays.ods';
   
-  function __construct() { parent::__construct(self::FILE_PATH); }
+  function __construct(string $name) { parent::__construct($name, self::FILE_PATH); }
     
   static function main(): void {
     switch($_GET['action'] ?? null) {

@@ -87,7 +87,7 @@ abstract class SpreadSheetDataset extends Dataset {
   /** @var array<string,DocSection>  $docSections Les docSections indexées par leur nom */
   readonly array $docSections;
 
-  function __construct(string $filePath) {
+  function __construct(string $name, string $filePath) {
     $this->filePath = $filePath;
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($filePath);
@@ -143,7 +143,7 @@ abstract class SpreadSheetDataset extends Dataset {
     }
     $sections[$csect->name] = $csect;
     $this->docSections = $sections;
-    parent::__construct($title, $description, $this->jsonSchema());
+    parent::__construct($name, $title, $description, $this->jsonSchema());
   }
   
   /** @return array<mixed> */

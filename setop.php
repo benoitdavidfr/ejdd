@@ -1,5 +1,6 @@
 <?php
 /** setop. Tests opérations ensemblistes. */
+require_once 'dataset.inc.php';
 
 class SetOp {
   const UNITS = [
@@ -112,8 +113,58 @@ class SetOp {
   }
 };
 
+class Join extends Dataset {
+  readonly array $p;
+  
+  function __construct(array $datasets, array $sections, array $fields) {
+    $this->p = [
+      'datasets'=> $datasets,
+      'sections'=> $sections,
+      'fields'=> $fields,
+    ];
+    parent::__construct(
+      "Jointure entre $datasets[1].$sections[1].$fields[1] et $datasets[2].$sections[2]. $fields[2]",
+      "Réalisation d'une opération de jointure",
+      [
+        '$schema'=> 'http://json-schema.org/draft-07/schema#',
+        'properties'=> [
+          'join'=> [
+            'title'=> "Jointure",
+            'description'=> "Cette section contient la jointure",
+            'type'=> 'array',
+            'items'=> [],
+          ]
+        ],
+      ]
+    );
+    
+  }
+  
+  function getTuples(string $section, array $filters=[]): Generator {
+    $ds1 = Dataset::get($this->p['datasets'][1]);
+    $ds2 = Dataset::get($this->p['datasets'][2]);
+    echo '<pre>join=';
+    foreach ($ds1->getTuples($this->p['sections'][1]) as $tuple1) {
+      $tuples2 = $ds2->getTuplesOnValue($this->p['sections'][2], $this->p['fields'][2], $tuple1[$this->p['fields'][1]]);
+      foreach ($tuple1 as $k => $v)
+        $tuple["s1.$k"] = $v;
+      if (!$tuples2) {
+        yield $tuple;
+      }
+      else {
+        foreach ($tuples2 as $tuple2) {
+          foreach ($tuple2 as $k => $v)
+            $tuple["s2.$k"] = $v;
+          yield $tuple;
+        }
+      }
+    }
+  }
+};
+
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
+
 
 /** Génère un élémt select de formulaire
  * @params array<string,array<label,string>> $options sous la forme [{value}=> {label}]
@@ -134,8 +185,6 @@ function value2keyValue(array $values): array {
 }
 
 ini_set('memory_limit', '10G');
-
-require_once 'dataset.inc.php';
 
 switch($action = $_GET['action'] ?? null) {
   case null: {
@@ -332,10 +381,15 @@ switch($action = $_GET['action'] ?? null) {
            "</form></table>\n";
       die();
     }
-    SetOp::join(
+    //SetOp::join(
+    $join = new Join(
       [1=> $_GET['dataset1'], 2=> $_GET['dataset2']],
       [1=> $_GET['section1'], 2=> $_GET['section2']],
       [1=> $_GET['field1'],   2=> $_GET['field2']]);
+    /*foreach ($join->getTuples('join') as $tuple) {
+      echo '<pre>'; print_r($tuple);
+    }*/
+    $join->sections['join']->display($join);
     break;
   }
 }

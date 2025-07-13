@@ -462,8 +462,8 @@ class AeCogPe extends Dataset {
     ],
   ];
   
-  function __construct() {
-    parent::__construct(self::TITLE, self::DESCRIPTION, self::SCHEMA);
+  function __construct(string $name) {
+    parent::__construct($name, self::TITLE, self::DESCRIPTION, self::SCHEMA);
   }
   
   /* L'accès aux sections du JdD.

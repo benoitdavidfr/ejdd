@@ -11,9 +11,9 @@ class NomsCnig extends Dataset {
   /** @var array<mixed> $data Le contenu du fichier JSON */
   protected array $data;
   
-  function __construct() {
+  function __construct(string $name) {
     $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
-    parent::__construct($this->data['title'],  $this->data['description'], $this->data['$schema']);
+    parent::__construct($name, $this->data['title'],  $this->data['description'], $this->data['$schema']);
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.

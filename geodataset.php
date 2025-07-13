@@ -23,7 +23,7 @@ class GeoDataset extends Dataset {
   function __construct(string $dsName) {
     $this->dsName = $dsName;
     $md = Yaml::parseFile(strtolower("$dsName.yaml"));
-    parent::__construct($md['title'], $md['description'], $md['$schema']);
+    parent::__construct($dsName, $md['title'], $md['description'], $md['$schema']);
     $this->params = $md['params'];
   }
 

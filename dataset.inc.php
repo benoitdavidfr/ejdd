@@ -361,7 +361,7 @@ class Section {
       if ($cols <> $cols_prec)
         echo '<th>',implode('</th><th>', $cols),"</th>\n";
       $cols_prec = $cols;
-      echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$_GET[section]&key=$key'>$key</a></td>";
+      echo "<tr><td><a href='?action=display&dataset=$_GET[dataset]&section=$this->name&key=$key'>$key</a></td>";
       foreach ($tuple as $k => $v) {
         if ($v === null)
           $v = '';
@@ -472,6 +472,7 @@ abstract class Dataset {
     'wfs-fr-ign-gpf'=> 'FeatureServer',
   ];
   
+  readonly string $name;
   readonly string $title;
   readonly string $description;
   /** @var array<mixed> $schema Le schéma JSON du JdD */
@@ -480,7 +481,8 @@ abstract class Dataset {
   readonly array $sections;
   
   /** @param array<mixed> $schema Le schéma JSON de la section */
-  function __construct(string $title, string $description, array $schema) {
+  function __construct(string $name, string $title, string $description, array $schema) {
+    $this->name = $name;
     $this->title = $title;
     $this->description = $description;
     $this->schema = $schema;
