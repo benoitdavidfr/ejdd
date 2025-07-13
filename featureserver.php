@@ -97,8 +97,6 @@ class FeatureServer extends Dataset {
       'version'=> '2.0.0',
     ],
   ];
-  /** Le nom du présent JdD. */
-  readonly string $name;
   /** Les capacités du serveur WFS. */
   readonly WfsCap $cap;
   

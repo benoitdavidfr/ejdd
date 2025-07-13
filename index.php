@@ -15,6 +15,7 @@ switch ($_GET['action'] ?? null) {
         echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
       }
       echo "<h2>Autres</h2><ul>\n";
+      echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
       echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
       echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
       echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
@@ -88,25 +89,6 @@ switch ($_GET['action'] ?? null) {
         $dataset()['départements']
       ),
       "Projection de départements sur codeInsee et nom sans la clé",
-      false
-    );
-    break;
-  }
-  case 'join': { // Exemple de jointure
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    Part::displayTable(
-      array_map(
-        function(array $dept) use ($dataset) {
-          return [
-            'codeInsee'=> $dept['codeInsee'],
-            'nomDépartement'=>  $dept['nom'],
-            'nomRégion'=> $dataset()['régions'][$dept['région']]['nom'],
-            'prefdom'=> $dataset()['prefdom']['D'.$dept['codeInsee']] ?? null,
-          ];
-        },
-        $dataset()['départements']
-      ),
-      "Jointure départements X région X prefdom",
       false
     );
     break;

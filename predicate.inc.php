@@ -1,5 +1,5 @@
 <?php
-/** Gestion de prédicats sur desn-uplets */
+/** Gestion de prédicats sur les n-uplets */
 
 /** Objectif de tester si un n-uplet satisfait une prédicat pour réduire le nbre de n-uplets affichés.
  * Prédicat élémentaire de la forme {prop} {op} {const}, ex: nom = 'valeur' */
@@ -29,8 +29,10 @@ class Predicate {
     };
   }
   
-  /** Fabrique un formilaire de saisie */
-  static function form($getKeys = ['action','dataset','section']): string {
+  /** Fabrique un formilaire de saisie
+   * @param list<string> $getKeys Les clés _GET à transmettre
+   */
+  static function form(array $getKeys = ['action','dataset','section']): string {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
     foreach ($getKeys as $k)
       if (isset($_GET[$k]))

@@ -13,7 +13,7 @@ class Pays extends SpreadSheetDataset {
   static function main(): void {
     switch($_GET['action'] ?? null) {
       case null: {
-        $pays = new Pays;
+        $pays = new Pays('Pays');
         echo "<a href='?action=print_r'>Afficher l'objet Pays</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
         foreach (array_keys($pays->docSections) as $sname) {
@@ -22,12 +22,12 @@ class Pays extends SpreadSheetDataset {
         break;
       }
       case 'print_r': {
-        $pays = new Pays;
+        $pays = new Pays('Pays');;
         echo '<pre>$pays = '; print_r($pays);
         break;
       }
       case 'schema': {
-        $pays = new Pays;
+        $pays = new Pays('Pays');;
         echo '<pre>'; print_r([
           'title'=> $pays->title,
           'description'=> $pays->description,
@@ -36,7 +36,7 @@ class Pays extends SpreadSheetDataset {
         break;
       }
       case 'section': {
-        $objet = new Pays;
+        $objet = new Pays('Pays');;
         echo "<pre>section=";
         foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
           print_r([$key => $tuple]);

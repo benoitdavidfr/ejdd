@@ -39,6 +39,7 @@ parameters:
     - predicate.inc.php
     - geojson.php
     - map.php
+    - join.php
     - dataseteg.php
     - inseecog.php
     - deptreg.php

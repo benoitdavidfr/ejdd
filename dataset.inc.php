@@ -136,6 +136,20 @@ class Html {
   function __toString(): string { return $this->c; }
 };
 
+/** Fonction facilitant la construction de formulaires Html */
+class HtmlForm {
+  /** Génère un élémt select de formulaire Html.
+   * @param array<string,string> $options sous la forme [{value}=> {label}]
+   */
+  static function select(string $name, array $options): string {
+    $select = "<select name='$name'>\n";
+    foreach ($options as $k => $v)
+      $select .= "<option value='$k'>$v</option>\n";
+    $select .= "</select>";
+    return $select;
+  }
+};
+
 /** Traitements d'un array recursif, cad une structure composée d'array, de valeurs et d'objets convertissables en string. */
 class RecArray {
   /** Teste si le paramètre est une une liste d'atomes, cad pas d'array.
@@ -500,7 +514,11 @@ abstract class Dataset {
     $this->sections = $sections;
   }
   
-  /** Retourne le JdD de ce nom */
+  /** Retourne le JdD portant ce nom.
+   * Le jeu est soit dans le registre, soit son nom correspoond à un des motifs prédéfinis:
+   *   - inner-join -> jointure
+   *   - left-join  -> jointure
+   */
   static function get(string $dsName): self {
     //echo "dsname=$dsName\n";
     if (array_key_exists($dsName, self::REGISTRE)) {
@@ -511,20 +529,26 @@ abstract class Dataset {
       require_once strtolower("$class.php");
       return new $class($dsName); // @phpstan-ignore-line
     }
-    elseif (preg_match('!^join\(!', $dsName)) {
-      require_once 'join.php';
-      return new Join($dsName);
+    elseif (preg_match('!^([^(]+)\(!', $dsName, $matches)) {
+      switch ($matches[1]) {
+        case 'inner-join':
+        case 'left-join': {
+          require_once 'join.php';
+          return new Join($dsName);
+        }
+        default: throw new Exception("Motif non prévu dans Dataset::get($dsName)");
+      }
     }
     else
       throw new Exception("Erreur dataset $dsName inexistant");
   }
   
-  /** Retourne les filtres implémentés par getTuples().
+  /** Retourne les filtres implémentés par getTuples(). Peut être redéfinie par chaque Dataset.
    * @return list<string>
    */
   function implementedFilters(): array { return []; }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux tuples d'une section du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
    * @param string $section nom de la section
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
@@ -535,7 +559,7 @@ abstract class Dataset {
    */
   abstract function getTuples(string $section, array $filters=[]): Generator;
   
-  /** Retourne le n-uplet ou la valeur ayant la clé indiquée de la section.
+  /** Retourne le n-uplet ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<mixed>|string|null
    */ 
   function getOneTupleByKey(string $section, string|int $key): array|string|null {
@@ -545,6 +569,10 @@ abstract class Dataset {
     return null;
   }
   
+  /** Retourne la liste des n-uplets ayant pour champ field la valeur fournie.
+   * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
+   * @return list<array<mixed>>
+   */ 
   function getTuplesOnValue(string $section, string $field, string $value): array {
     $result = [];
     foreach ($this->getTuples($section) as $k => $tuple)

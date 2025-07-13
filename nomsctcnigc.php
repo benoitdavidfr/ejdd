@@ -10,7 +10,7 @@ class NomsCtCnigC extends SpreadSheetDataset {
   static function main(): void {
     switch($_GET['action'] ?? null) {
       case null: {
-        $objet = new NomsCtCnigC;
+        $objet = new NomsCtCnigC('NomsCtCnigC');
         echo "<a href='?action=print_r'>Afficher l'objet NomsCtCnigC</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
         foreach (array_keys($objet->docSections) as $sname) {
@@ -19,12 +19,12 @@ class NomsCtCnigC extends SpreadSheetDataset {
         break;
       }
       case 'print_r': {
-        $objet = new NomsCtCnigC;
+        $objet = new NomsCtCnigC('NomsCtCnigC');
         echo '<pre>$nomsCtCnigC = '; print_r($objet);
         break;
       }
       case 'schema': {
-        $objet = new NomsCtCnigC;
+        $objet = new NomsCtCnigC('NomsCtCnigC');
         echo '<pre>'; print_r([
           'title'=> $objet->title,
           'description'=> $objet->description,
@@ -33,7 +33,7 @@ class NomsCtCnigC extends SpreadSheetDataset {
         break;
       }
       case 'section': {
-        $objet = new NomsCtCnigC;
+        $objet = new NomsCtCnigC('NomsCtCnigC');
         echo "<pre>section=";
         foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
           print_r([$key => $tuple]);

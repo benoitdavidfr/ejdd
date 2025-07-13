@@ -240,12 +240,12 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur en
 class PaysTest extends SpreadSheetDataset {
   const FILE_PATH = 'pays.ods';
   
-  function __construct() { parent::__construct(self::FILE_PATH); }
+  function __construct() { parent::__construct('PaysTest', self::FILE_PATH); }
     
   static function main(): void {
     switch($_GET['action'] ?? null) {
       case null: {
-        $pays = new Pays;
+        $pays = new Pays('Pays');
         echo "<a href='?action=print_r'>Afficher l'objet Pays</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
         foreach (array_keys($pays->docSections) as $sname) {
@@ -254,12 +254,12 @@ class PaysTest extends SpreadSheetDataset {
         break;
       }
       case 'print_r': {
-        $pays = new Pays;
+        $pays = new Pays('Pays');
         echo '<pre>$pays = '; print_r($pays);
         break;
       }
       case 'schema': {
-        $pays = new Pays;
+        $pays = new Pays('Pays');
         echo '<pre>'; print_r([
           'title'=> $pays->title,
           'description'=> $pays->description,
@@ -268,7 +268,7 @@ class PaysTest extends SpreadSheetDataset {
         break;
       }
       case 'section': {
-        $objet = new Pays;
+        $objet = new Pays('Pays');
         echo "<pre>section=";
         foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
           print_r([$key => $tuple]);
