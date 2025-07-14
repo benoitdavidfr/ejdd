@@ -1,16 +1,9 @@
 <?php
-/** setop. Tests opérations ensemblistes. */
-require_once 'join.php';
+/** setop. Tests opérations ensemblistes.
+ * M'a permis de tester join, count et size qui ont été transférés dans dataset.inc.php
+ */
 
 class SetOp {
-  const UNITS = [
-    0 => 'octets',
-    3 => 'ko',
-    6 => 'Mo',
-    9 => 'Go',
-    12 => 'To',
-  ];
-  
   /** Teste si un champ d'une section est unique pour un éventuel prédicat. */
   static function fieldIsUniq(Dataset $dataset, string $sname, string $field, string $predicate): bool {
     $filters = $predicate ? ['predicate'=> new Predicate($predicate)] : [];
@@ -27,33 +20,6 @@ class SetOp {
     return true;
   }
   
-  /** Nbre de n-uplets */
-  static function count(Dataset $dataset, string $sname, string $predicate): int {
-    $filters = $predicate ? ['predicate'=> new Predicate($predicate)] : [];
-    $nbre = 0;
-    foreach ($dataset->getTuples($_GET['section'], $filters) as $key => $tuple) {
-      $nbre++;
-    }
-    echo "Dans $dataset->title, $nbre $sname",($predicate ? " / $predicate" : ''),"<br>\n";
-    return $nbre;    
-  }
-  
-  static function size(Dataset $dataset, string $sname, string $pred): int {
-    $filters = $pred ? ['predicate'=> new Predicate($pred)] : [];
-    $size = 0;
-    foreach ($dataset->getTuples($_GET['section'], $filters) as $key => $tuple) {
-      $size += strlen(json_encode($tuple));
-    }
-    $sizeInU = $size;
-    $unit = 0;
-    while ($sizeInU >= 1_000) {
-      $sizeInU /= 1_000;
-      $unit += 3;
-    }
-    printf("Dans $dataset->title, $sname%s -> %.2f %s<br>\n", ($pred ? " / $pred" : ''), $sizeInU, self::UNITS[$unit]);
-    return $size;    
-  }
-
   /** Différence entre 2 champs de 2 JdD/sections */
   static function fieldDiff(array $datasets, array $sections, array $fields): void {
     foreach ([1,2] as $i) {
@@ -89,28 +55,6 @@ class SetOp {
       $v = substr($v, 0, 57).'...';
     return $v;
   }
-  
-  /** Jointure entre les 2 sections sur égalité entre les 2 champs - version de test */
-  static function join(array $datasets, array $sections, array $fields): void {
-    $ds1 = Dataset::get($datasets[1]);
-    $ds2 = Dataset::get($datasets[2]);
-    echo '<pre>join=';
-    foreach ($ds1->getTuples($sections[1]) as $tuple1) {
-      $tuples2 = $ds2->getTuplesOnValue($sections[2], $fields[2], $tuple1[$fields[1]]);
-      foreach ($tuple1 as $k => $v)
-        $tuple["s1.$k"] = self::formatForPrint($v);
-      if (!$tuples2) {
-        print_r($tuple);
-      }
-      else {
-        foreach ($tuples2 as $tuple2) {
-          foreach ($tuple2 as $k => $v)
-            $tuple["s2.$k"] = self::formatForPrint($v);
-          print_r($tuple);
-        }
-      }
-    }
-  }
 };
 
 
@@ -122,8 +66,6 @@ ini_set('memory_limit', '10G');
 switch($action = $_GET['action'] ?? null) {
   case null: {
     echo "<a href='?action=fieldIsUniq'>Tester si un champ est unique</a><br>\n";
-    echo "<a href='?action=count'>Compte le nbre de nuplets</a><br>\n";
-    echo "<a href='?action=size'>Taille d'une section</a><br>\n";
     echo "<a href='?action=diff'>Valeurs d'un champ 1 absentes du champ 2</a><br>\n";
     break;
   }
@@ -161,32 +103,6 @@ switch($action = $_GET['action'] ?? null) {
       echo Predicate::form(['action','dataset','section', 'field']);
     
     SetOp::fieldIsUniq($dataset, $_GET['section'], $_GET['field'], $_GET['predicate'] ?? '');
-    break;
-  }
-  case 'count':
-  case 'size': {
-    if (!isset($_GET['dataset'])) {
-      echo "<h3>Choix d'un dataset</h3>\n";
-      foreach (array_keys(Dataset::REGISTRE) as $dsName) {
-        $dataset = Dataset::get($dsName);
-        echo "<a href='?action=$_GET[action]&dataset=$dsName'>",$dataset->title,"</a><br>\n";
-      }
-      die();
-    }
-    
-    $dataset = Dataset::get($_GET['dataset']);
-    if (!isset($_GET['section'])) {
-      echo "<h3>Choix d'une section</h3>\n";
-      foreach ($dataset->sections as $sname => $section) {
-        echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&section=$sname'>$section->title</a><br>\n";
-      }
-      die();
-    }
-    
-    if (in_array('predicate', $dataset->implementedFilters()))
-      echo Predicate::form(['action','dataset','section', 'field']);
-    
-    SetOp::$action($dataset, $_GET['section'], $_GET['predicate'] ?? '');
     break;
   }
   case 'diff': {

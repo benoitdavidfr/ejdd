@@ -1,44 +1,51 @@
 <?php
-/** Immlémentation d'une jointure entre JdD/sections générant un nouveau JdD */
+/** Immlémentation d'une jointure entre JdD/sections générant une nouvelle section de JdD.
+ * La manière la plus simple d'effectuer une jointure en Php est d'appeller Dataset::get()
+ * avec un nom correspondant au motif d'un nom de jointure.
+ */
 
 define('A_FAIRE_JOIN',[
 <<<'EOT'
 - ajouter un index pour accélérer la jointure
   - en implémentant getTuplesOnValue() en conséquence sur les JdD sur lesquels c'est pertinent
 - compléter le schéma à partir des schémas des sections jointes
+- ajouter le filtre skip
+- ajouter le filtre predicate
+- mieux gérer l'analyse du nom poour permettre des imbrications d'opérations ensemblistes
 EOT
 ]);
 require_once 'dataset.inc.php';
 
-/** Une jointure entre JdD/sections est une novelle section de JdD.
- * Par convention, le nom du jeu de données est de la forme:
- *   "{type}({dataset1}/{section1}/{field1} X {dataset2}/{section2}/{field2})"
- */
+/** Une jointure entre JdD/sections est une novelle section de JdD. */
 class Join extends Dataset {
-  /** Par convention, le nom du jeu de données est de la forme:
-   *  "join({dataset1}/{section1}/{field1} X {dataset2}/{section2}/{field2})"
+  const NAME_PATTERN = '!^(inner-join|left-join|diff-join)\(([^/]+)/([^/]+)/([^ ]+) X ([^/]+)/([^/]+)/([^)]+)\)$!';
+  
+  /** Décompose le nom du JdD dans les différents paramètres.
+   * Par convention, le nom du jeu de données est de la forme:
+   *  "{type}({dataset1}/{section1}/{field1} X {dataset2}/{section2}/{field2})"
+   * où {type} est:
+   *  - 'inner-join': seuls les n-uplets ayant une correspondance dans les 2 sections sont retournés
+   *  - 'left-join': tous les n-uplets de la 1ère section sont retournés avec s'ils existent ceux de la 2nd en correspondance
+   *  - 'diff-join': ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd
    * @return array<string,mixed>
    */
   static function params(string $name): array {
-    if (!preg_match('!^(inner-join|left-join)\(([^/]+)/([^/]+)/([^ ]+) X ([^/]+)/([^/]+)/([^)]+)\)$!', $name, $matches))
+    if (!preg_match(self::NAME_PATTERN, $name, $matches))
       throw new Exception("Erreur dans le nom '$name' qui n'est pas conforme au motif défini");
-    $datasets = [
-      1=> $matches[2],
-      2=> $matches[5],
-    ];
-    $sections = [
-      1=> $matches[3],
-      2=> $matches[6],
-    ];
-    $fields = [
-      1=> $matches[4],
-      2=> $matches[7],
-    ];
     return [
       'type'=> $matches[1],
-      'datasets'=> $datasets,
-      'sections'=> $sections,
-      'fields'=> $fields,
+      'datasets'=> [
+        1=> $matches[2],
+        2=> $matches[5],
+      ],
+      'sections'=> [
+        1=> $matches[3],
+        2=> $matches[6],
+      ],
+      'fields'=> [
+        1=> $matches[4],
+        2=> $matches[7],
+      ],
     ];
   }
   
@@ -77,22 +84,29 @@ class Join extends Dataset {
     foreach ($ds1->getTuples($p['sections'][1]) as $tuple1) {
       $tuples2 = $ds2->getTuplesOnValue($p['sections'][2], $p['fields'][2], $tuple1[$p['fields'][1]]);
       $tuple = [];
-      foreach ($tuple1 as $k => $v)
-        $tuple["s1.$k"] = $v;
-      if (!$tuples2) {
+      if ($p['type'] <> 'diff-join') {
+        foreach ($tuple1 as $k => $v)
+          $tuple["s1.$k"] = $v;
+      }
+      if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd section
         if ($p['type'] == 'left-join')
           yield $tuple;
+        elseif ($p['type'] == 'diff-join')
+          yield $tuple1;
       }
-      else {
-        foreach ($tuples2 as $tuple2) {
-          foreach ($tuple2 as $k => $v)
-            $tuple["s2.$k"] = $v;
-          yield $tuple;
+      else { // $tuple1 A de correspondance dans la 2nd section
+        if (in_array($p['type'], ['left-join', 'inner-join'])) {
+          foreach ($tuples2 as $tuple2) {
+            foreach ($tuple2 as $k => $v)
+              $tuple["s2.$k"] = $v;
+            yield $tuple;
+          }
         }
       }
     }
   }
 
+  /** Construit interactivement les paramètres de la jointure. */
   static function main(): void {
     switch ($action = $_GET['action'] ?? null) {
       case null: {
@@ -159,7 +173,11 @@ class Join extends Dataset {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
           }
-          $select = HtmlForm::select('type', ['inner-join','left-join']);
+          $select = HtmlForm::select('type', [
+            'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 sections sont retournés",
+            'left-join'=> "Left-Join - tous les n-uplets de la 1ère section sont retournés avec s'ils existent ceux de la 2nd en correspondance",
+            'diff-join'=> "Ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd",
+          ]);
           echo "<table border=1><form>\n",
                implode(
                  '',
@@ -178,15 +196,14 @@ class Join extends Dataset {
 
         $name = "$_GET[type]($_GET[dataset1]/$_GET[section1]/$_GET[field1] X $_GET[dataset2]/$_GET[section2]/$_GET[field2])";
         $join = new Join($name);
-        $join->display();
+        $join->displaySection('join');
         break;
       }
       case 'display': {
         if (!isset($_GET['section']))
           die("Erreur section non défie");
         if (!isset($_GET['key'])) {
-          $ds = Dataset::get($_GET['dataset']);
-          $ds->sections[$_GET['section']]->display($ds);
+          Dataset::get($_GET['dataset'])->displaySection($_GET['section']);
         }
         else {
           echo "<pre>$_GET[key] -> ";

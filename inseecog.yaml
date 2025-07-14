@@ -205,8 +205,8 @@ $schema:
                 V: Canton-Ville (ou pseudo-canton)
             type: {enum: [C, 'N', V]} 
     v_commune_2025:
-      title: Commune, Commune associée, Commune déléguée ou arrondissement municipal
-      description: Regroupe Commune, Commune associée, Commune déléguée et arrondissement municipal
+      title: Communes, Communes associées, Communes déléguées et arrondissements municipaux
+      description: Regroupe Communes, Communes associées, Communes déléguées et arrondissements municipaux.
       type: array
       items:
         oneOf:
@@ -331,9 +331,8 @@ $schema:
                 type: string
                 pattern: '^\d[\dAB]\d\d\d$'
     v_ctcd_2025:
-      title: Collectivité territoriale assurant le rôle de conseil départemental (?)
+      title: Collectivités territoriales ayant les compétences départementales
       description: |
-        A confirmer.
         Généralement le conseil départemental sauf:
           - en Corse où c'est la CTC
           - en Alsace où c'est la Collectivité européenne d'Alsace
@@ -377,7 +376,7 @@ $schema:
             type: string
     v_comer_2025:
       title: COM, TOM et autres outre-mers
-      description: COM, TOM, Nouvelle-Calédonie, La Passion-Clipperton et Île des Faisans
+      description: listes des collectivités et territoires français d’outre-mer + Île des Faisans.
       type: array
       items:
         type: object
@@ -411,7 +410,9 @@ $schema:
             type: string
     v_commune_comer_2025:
       title: Subdivisions des COM, TOM et autres outre-mers
-      description: Subdivisions des COM, TOM et autres outre-mers
+      description: >
+        Communes des collectivités et territoires français d’outre-mer et autres zonages équivalents pour ceux non découpés
+        en communes.
       type: array
       items:
         type: object
@@ -495,8 +496,8 @@ $schema:
             type: string
             pattern: '^([0-9]{3}|)$'
     v_codes_extension_2025:
-      title: v_codes_extension_2025 ???
-      description: v_codes_extension_2025
+      title: Couples code extension-territoire de rattachement (commune ou pays)
+      description: liste des couples code extension-territoire de rattachement (commune ou pays)
       type: array
       items:
         type: object
@@ -608,26 +609,28 @@ $schema:
             description: libellé après
             type: string
     v_commune_depuis_1943:
-      title: v_commune_depuis_1943
-      description: v_commune_depuis_1943
+      title: couples code-libellé de commune ayant existé depuis 1943
+      description: >
+        liste de tous les couples code-libellé de commune ayant existé depuis 1943 avec la période durant laquelle le code
+        correspondait au libellé
       type: array
       items:
         type: object
     v_tom_depuis_1943:
-      title: v_tom_depuis_1943
-      description: v_tom_depuis_1943
+      title: Historique des TOM depuis 1943
+      description: Historique des TOM depuis 1943
       type: array
       items:
         type: object
     v_commune_outremer_depuis_1943:
-      title: v_commune_outremer_depuis_1943
-      description: v_commune_outremer_depuis_1943
+      title: Historique des communes des TOM depuis 1943
+      description: Historique des communes des TOM depuis 1943
       type: array
       items:
         type: object
     v_pays_et_territoire_depuis_1943:
-      title: v_pays_et_territoire_depuis_1943
-      description: v_pays_et_territoire_depuis_1943
+      title: Historique des Pays et territoires depuis 1953
+      description: Historique des Pays et territoires depuis 1953
       type: array
       items:
         type: object

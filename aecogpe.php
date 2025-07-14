@@ -44,8 +44,8 @@ class AeCogPe extends Dataset {
       ],
       '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
       'region'=> [
-        'title'=> "Table des régions",
-        'description'=> "Table des régions",
+        'title'=> "Région",
+        'description'=> "Région",
         'type'=> 'array',
         'items'=> [
           'type'=> 'object',
@@ -86,8 +86,8 @@ class AeCogPe extends Dataset {
         ],
       ],
       'departement'=> [
-        'title'=> "Table des départements",
-        'description'=> "Table des départements",
+        'title'=> "Département",
+        'description'=> "Département",
         'type'=> 'array',
         'items'=> [
           'type'=> 'object',
@@ -132,7 +132,7 @@ class AeCogPe extends Dataset {
       ],
       'epci'=> [
         'title'=> "EPCI",
-        'description'=> "Etablissement Public de Coopération Municipale",
+        'description'=> "Etablissement Public de Coopération Intercommunale",
         'type'=> 'array',
         'items'=> [
           'type'=> 'object',
@@ -454,8 +454,8 @@ class AeCogPe extends Dataset {
         'items'=> [],
       ],
       'collectivite_territoriale'=> [
-        'title'=> "collectivite_territoriale ??",
-        'description'=> "collectivite_territoriale ??",
+        'title'=> "Collectivités territoriales ayant les compétences départementales",
+        'description'=> "Collectivités territoriales ayant les compétences départementales",
         'type'=> 'array',
         'items'=> [],
       ],

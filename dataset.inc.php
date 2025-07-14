@@ -28,7 +28,8 @@ define('A_FAIRE', [
 <<<'EOT'
 - nlles fonctionnalités
   - faire une projection d'une section sur certains champs
-  - jointure, semi-jointure, différence entre sections
+    - avec renommage de champs
+  - différence entre sections
   - stats
     - nbre de n-uplets ou estimation, taille de la section en octets
     - le nbre de n-uplets est rapide à compter, pas nécessaire de le stocker
@@ -492,6 +493,13 @@ abstract class Dataset {
     'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
     'wfs-fr-ign-gpf'=> 'FeatureServer',
   ];
+  const UNITS = [
+    0 => 'octets',
+    3 => 'ko',
+    6 => 'Mo',
+    9 => 'Go',
+    12 => 'To',
+  ];
   
   readonly string $name;
   readonly string $title;
@@ -759,7 +767,7 @@ abstract class Dataset {
     }
   }
   
-  /** Affiche l'objet en Html. */
+  /** Affiche le JdD en Html. */
   function display(): void {
     echo "<h2>",$this->title,"</h2>\n",
          "<table border=1>\n",
@@ -768,6 +776,55 @@ abstract class Dataset {
     foreach ($this->sections as $sname => $section) {
       echo "<tr><td><a href='?action=display&dataset=",urlencode($this->name),"&section=$sname'>$sname</a></td>",
            "<td>",$this->sections[$sname]->title,"</td></tr>\n";
+    }
+    echo "</table>\n";
+  }
+  
+  /** Affiche une sction du JdD JdD en Html. */
+  function displaySection(string $sname): void { $this->sections[$sname]->display($this); }
+  
+  /** Retourne le nbre de n-uplets formatté avec un séparateur des milliers. */
+  function count(string $sname, string $predicate=''): string {
+    $filters = $predicate ? ['predicate'=> new Predicate($predicate)] : [];
+    $nbre = 0;
+    foreach ($this->getTuples($sname, $filters) as $key => $tuple) {
+      $nbre++;
+    }
+    //echo "Dans $this->title, $nbre $sname",($predicate ? " / $predicate" : ''),"<br>\n";
+    if (preg_match('!^(\d+)(\d{3})(\d{3})$!', strval($nbre), $matches))
+      return "$matches[1]_$matches[2]_$matches[3]";
+    elseif (preg_match('!^(\d+)(\d{3})$!', strval($nbre), $matches))
+      return "$matches[1]_$matches[2]";
+    else
+      return strval($nbre);
+  }
+  
+  /** Retourne la taille en JSON formattée. */
+  function size(string $sname, string $pred=''): string {
+    $filters = $pred ? ['predicate'=> new Predicate($pred)] : [];
+    $size = 0;
+    foreach ($this->getTuples($sname, $filters) as $key => $tuple) {
+      $size += strlen(json_encode($tuple));
+    }
+    $sizeInU = $size;
+    $unit = 0;
+    while ($sizeInU >= 1_000) {
+      $sizeInU /= 1_000;
+      $unit += 3;
+    }
+    return sprintf('%.1f %s', $sizeInU, self::UNITS[$unit]);
+  }
+  
+  /** Affiche des stats */
+  function stats(): void {
+    echo "<h2>Statistiques de ",$this->title,"</h2>\n",
+         "<table border=1>\n",
+         "<th>Titre de la sction</th><th>Nbre</th><th>Taille</th>";
+    foreach ($this->sections as $sname => $section) {
+      echo "<tr><td>",$this->sections[$sname]->title,"</td>",
+           "<td align='right'>&nbsp;&nbsp;",$this->count($sname),"&nbsp;&nbsp;</td>",
+           "<td align='right'>&nbsp;&nbsp;",$this->size($sname),"</td>",
+           "</tr>\n";
     }
     echo "</table>\n";
   }
