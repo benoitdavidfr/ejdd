@@ -3,8 +3,9 @@
  * La manière la plus simple d'effectuer une jointure en Php est d'appeller Dataset::get()
  * avec un nom correspondant au motif d'un nom de jointure.
  */
+ini_set('memory_limit', '10G');
 
-define('A_FAIRE_JOIN',[
+define('A_FAIRE_JOIN', [
 <<<'EOT'
 - ajouter un index pour accélérer la jointure
   - en implémentant getTuplesOnValue() en conséquence sur les JdD sur lesquels c'est pertinent
@@ -12,8 +13,11 @@ define('A_FAIRE_JOIN',[
 - ajouter le filtre skip
 - ajouter le filtre predicate
 - mieux gérer l'analyse du nom poour permettre des imbrications d'opérations ensemblistes
+- définir une opération qui applique une fonction à chaque n-uplet
 EOT
-]);
+]
+);
+
 require_once 'dataset.inc.php';
 
 /** Une jointure entre JdD/sections est une novelle section de JdD. */
@@ -152,6 +156,7 @@ class Join extends Dataset {
             $tuple = [];
             foreach ($ds->getTuples($_GET["section$i"]) as $tuple) { break; }
             $selects[$i] = HtmlForm::select("field$i", array_keys($tuple));
+            $tuple = [];
           }
           echo "<table border=1><form>\n",
                implode('',
@@ -176,7 +181,7 @@ class Join extends Dataset {
           $select = HtmlForm::select('type', [
             'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 sections sont retournés",
             'left-join'=> "Left-Join - tous les n-uplets de la 1ère section sont retournés avec s'ils existent ceux de la 2nd en correspondance",
-            'diff-join'=> "Ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd",
+            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd",
           ]);
           echo "<table border=1><form>\n",
                implode(

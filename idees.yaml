@@ -1079,6 +1079,29 @@ conceptionWxS:
     Un JdD tile-servers contient comme sections les serveurs WFS, TMS ou WMTS connus stockés dans un fichier Yaml.
     Chaque serveur contient comme n-uplets les couches exposées avec les infos associées.
     Chaque couche exposée correspond à une couche L.TileLayer dans MapDataset.
+expression:
+  réflexions:
+    - définir une expression fonctionnelle correspondant à un enchainement d'opérateurs ensemblistes
+    - par ex:
+      - join(proj(x/y, join(xx/xx/xx, yyy/yy/yy)))
+    - les opérations de base sont a priori
+      - inner-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
+      - left-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
+      - diff-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
+      - spatial-join({DS1}/{section1} X {DS2}/{section2})
+      - proj(f1/g1, f2/g2, f3/g3, {DS}/{section})
+      - union({DS1}/{section1} + {DS2}/{section2})
+      - select({field} {op} "{const}", {DS}/{section})
+      - map({phpFun} {DS}/{section})
+    - {DS}/{section} peut être remplacé une opération
+  règlesSyntaxiques: |
+    {EXP} ::= {dataSource} | {operation}
+    {dataSource} ::= {datasetName} '/' {sectionName}
+    {operation} ::= {joinName} '(' {EXP} ',' {fieldName} ',' {EXP} ',' {fieldName} ')'
+                  l {unionName} '(' {EXP} ',' {EXP} ')'
+                  l {projName} '(' {listOfCouplesOfFields} ',' {EXP} ')'
+                  l 'select'
+    
 historique:
   v3:
     - replacement getData() par getTuples() qui retourne un Generator
