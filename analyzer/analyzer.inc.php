@@ -257,50 +257,55 @@ class Analsynt {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test du code ci-desus sur un cas
 
 
-// Test sur Expression arithmétique 
-define('TOKENS', [
-  'space'=> ' ',
-  'entier'=> '\d+',
-  'flottant'=> '\d+\.\d+',
-  'operation'=> '[-+*/]',
-  'function'=> '[a-zA-Z_][a-zA-Z0-9_]*',
-  '('=> '\(',
-  ')'=> '\)',
-  ','=> ',',
-]
-);
-define('RULES', [
-  '{exp}'=> [
-    ['{nombre}'],
-    ['(','{exp}', 'operation', '{exp}',')'],
-    ['function','(','{params}',')']
-  ],
-  '{nombre}'=> [
-    ['entier'],
-    ['flottant']
-  ],
-  '{params}'=> [
-    ['{exp}'],
-    ['{exp}',',','{params}'],
-  ],
-]
-);
-
 //POURQUOI L'ANALYSE DEPEND DE L'ORDRE DES SOUS-REGLES ?
 
-$analex = new Analex(TOKENS);
-$analsynt = new Analsynt(RULES, TOKENS);
-foreach ([
-  //"3.14", // cas simple ok
-  //"aa", // cas simple d'échec
-  //"3.14zzz",
-  //"(((1*3)+(2*5))+exp(6.8,5.9))",
-  "power(2, 5.9)",
-  ] as $input) {
-    if ($tokens = $analex->run($input, true)) {
-      if ($tree = $analsynt->run($tokens, true))
-        $tree->display();
-      else
-        echo "Echec de l'analyse sur \"$input\"<br>\n";
+/** Test sur Expression arithmétique */
+class AnalyzerTest {
+  const TOKENS = [
+    'space'=> ' ',
+    'entier'=> '\d+',
+    'flottant'=> '\d+\.\d+',
+    'operation'=> '[-+*/]',
+    'function'=> '[a-zA-Z_][a-zA-Z0-9_]*',
+    '('=> '\(',
+    ')'=> '\)',
+    ','=> ',',
+  ];
+  const RULES = [
+    '{exp}'=> [
+      ['{nombre}'],
+      ['(','{exp}', 'operation', '{exp}',')'],
+      ['function','(','{params}',')']
+    ],
+    '{nombre}'=> [
+      ['entier'],
+      ['flottant']
+    ],
+    '{params}'=> [
+      ['{exp}'],
+      ['{exp}',',','{params}'],
+    ],
+  ];
+  
+  const EXAMPLES = [
+    //"3.14", // cas simple ok
+    //"aa", // cas simple d'échec
+    //"3.14zzz",
+    //"(((1*3)+(2*5))+exp(6.8,5.9))",
+    "power(2, 5.9)",
+  ];
+  
+  static function main(): void {
+    $analex = new Analex(TOKENS);
+    $analsynt = new Analsynt(RULES, TOKENS);
+    foreach (self::EXAMPLES as $input) {
+      if ($tokens = $analex->run($input, true)) {
+        if ($tree = $analsynt->run($tokens, true))
+          $tree->display();
+        else
+          echo "Echec de l'analyse sur \"$input\"<br>\n";
+      }
     }
-}
+  }
+};
+AnalyzerTest::main();

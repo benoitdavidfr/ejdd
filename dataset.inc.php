@@ -30,9 +30,6 @@ define('A_FAIRE', [
   - faire une projection d'une section sur certains champs
     - avec renommage de champs
   - différence entre sections
-  - stats
-    - nbre de n-uplets ou estimation, taille de la section en octets
-    - le nbre de n-uplets est rapide à compter, pas nécessaire de le stocker
 
 - rajouter des sources bien connues de référence
   - WMS IGN ?
@@ -61,6 +58,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+16/7/2025:
+  - ajout d'un analyseur syntaxique sur expressions de création de dataset
 13/7/2025:
   - intégration jointure
 11/7/2025:
