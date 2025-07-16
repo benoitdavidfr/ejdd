@@ -1,14 +1,34 @@
 <?php
-/** analyzer.inc.php - analyseur fondé sur un analyseur lexical et un analyseur syntaxique.
+/** analyzer.inc.php - analyseur de texte fondé sur un analyseur lexical et un analyseur syntaxique.dans la logique BNF.
  * Les 2 analyseurs sont génériques, ils sont initialisés
- *  - pour le 1er par une liste de noms de tokens, chacun associé à son motif d'analyse
- *  - pour le 2nd par une liste de règles
- * J'appelle règle un couple constitué à gauche d'un symbole et à droite d'une liste de symboles ou de noms de token.
- * Les règles sont regroupées par le symbole en partie gauche en groupe de règles.
+ *  - pour le 1er par une liste de symboles terminaux ou noms de tokens, chacun associé à la regex correspondante
+ *  - pour le 2nd par une liste de règles de dérivation (au sens de BNF), chacune définie par un couple constitué 
+ *    à gauche d'un symbole non terminal et à droite d'une liste de symboles (terminaux ou non).
+ * Les règles sont regroupées par leur symbole en partie gauche en groupe de règles.
+ * L'ensemble des règles est définie par un structure Php
+ *   array<
+ *     string,    // le symbole non terminal en partie gauche
+ *     list<      // la liste des règles de dérivation en partie de droite
+ *       list<    // chaque règle en partie dfroite définie par une liste de string
+ *         string // chaque string correspondant à un symbole terminal ou non
+ *       >
+ *     >
+ *   >
  * Attention, j'utilise $tokens de manière ambigue, ca peut être soit:
  *  - dans la création d'un Analex la liste des noms de tokens associés à un motif d'analyse
  *  - dans Analsynt::run() une liste de Token donc de tokens instantiés par une valeur correspondante
+ * [BNF] https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form
  */
+define('BUGS', [
+  <<<'EOT'
+- POURQUOI L'ANALYSE DEPEND DE L'ORDRE DES REGLES ?
+  - dans le test AnalyzerOfArithmeticalExp, cela dépend de l'ordre des 2 règles de {params}
+  - Je ne reviens plus en arrière quand j'ai réellement appliqué une règle. Cela peut être la raison !
+- le test AnalyzerInfiniteLoop boucle infinimement si n'y avait pas un test adhoc
+  - comment éviter qu'une analyse boucle ?
+EOT
+]
+);
 
 /** Token instantié = couple ({nom de token}, {valeur issue du texte analysé}) */
 class Token {
@@ -91,7 +111,7 @@ class Analex {
 
 /** Arbre résultant de l'analyse syntaxique. */
 class AnalTree {
-  readonly Rule $head; // la sous-règle appliquée
+  readonly Rule $head; // la règle appliquée
   /** @var list<Token|AnalTree> - chaque enfant est soit un token instantié soit un sous-arbre */
   readonly array $children;
   
@@ -115,8 +135,9 @@ class AnalTree {
 
 /** Règle pour l'analyseur syntaxique. */
 class Rule {
-  readonly string $symbol;
-  /** @var list<string> $listOfElts Liste de string, chacun correspondant à un symbole ou un token */
+  const MAX_LEVEL = 20; // nbre max d'appels récursifs pour éviter les boucles infinies
+  readonly string $symbol; // le symbole non terminal en partie gauche
+  /** @var list<string> $listOfElts Liste de string, chacun correspondant à un symbole non terminal ou un token */
   readonly array $listOfElts;
   
   /** @param list<string> $listOfElts */
@@ -168,6 +189,9 @@ class Rule {
         }
       }
       else { // $ruleElt est un symbole en partie gauche d'une règle
+        if ($level > self::MAX_LEVEL) {
+          throw new Exception("Erreur, level > Rule::MAX_LEVEL");
+        }
         if ($subtree = $analsynt->applySymbol($ruleElt, $tokens, $trace, $level+1)) {
           $treeLeaves[] = $subtree;
         }
@@ -257,10 +281,8 @@ class Analsynt {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test du code ci-desus sur un cas
 
 
-//POURQUOI L'ANALYSE DEPEND DE L'ORDRE DES SOUS-REGLES ?
-
 /** Test sur Expression arithmétique */
-class AnalyzerTest {
+class AnalyzerOfArithmeticalExp {
   const TOKENS = [
     'space'=> ' ',
     'entier'=> '\d+',
@@ -282,8 +304,8 @@ class AnalyzerTest {
       ['flottant']
     ],
     '{params}'=> [
-      ['{exp}'],
       ['{exp}',',','{params}'],
+      ['{exp}'],
     ],
   ];
   
@@ -308,4 +330,45 @@ class AnalyzerTest {
     }
   }
 };
-AnalyzerTest::main();
+//AnalyzerOfArithmeticalExp::main();
+
+// Test générant une boucle infinie 
+class AnalyzerInfiniteLoop {
+  const TOKENS = [
+    'space'=> ' ',
+    'a'=> 'a',
+    'b'=> 'b',
+  ];
+  const RULES = [
+    '{exp}'=> [
+      ['{as}','{bs}'],
+      ['{exp}','{exp}']
+    ],
+    '{as}'=> [
+      ['a'],
+      ['a','{as}'],
+    ],
+    '{bs}'=> [
+      ['b'],
+      ['b','{bs}'],
+    ],
+  ];
+  
+  const EXAMPLES = [
+    "aaabbbaa",
+  ];
+  
+  static function main(): void {
+    $analex = new Analex(self::TOKENS);
+    $analsynt = new Analsynt(self::RULES, self::TOKENS);
+    foreach (self::EXAMPLES as $input) {
+      if ($tokens = $analex->run($input, true)) {
+        if ($tree = $analsynt->run($tokens, true))
+          $tree->display();
+        else
+          echo "Echec de l'analyse sur \"$input\"<br>\n";
+      }
+    }
+  }
+};
+AnalyzerInfiniteLoop::main();
