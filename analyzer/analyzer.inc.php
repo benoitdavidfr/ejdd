@@ -296,8 +296,8 @@ class AnalyzerTest {
   ];
   
   static function main(): void {
-    $analex = new Analex(TOKENS);
-    $analsynt = new Analsynt(RULES, TOKENS);
+    $analex = new Analex(self::TOKENS);
+    $analsynt = new Analsynt(self::RULES, self::TOKENS);
     foreach (self::EXAMPLES as $input) {
       if ($tokens = $analex->run($input, true)) {
         if ($tree = $analsynt->run($tokens, true))
