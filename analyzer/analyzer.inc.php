@@ -1,23 +1,25 @@
 <?php
-/** analyzer.inc.php - analyseur de texte fondé sur un analyseur lexical et un analyseur syntaxique.dans la logique BNF.
+/** analyzer.inc.php - analyseur de texte fondé sur un analyseur lexical et un analyseur syntaxique dans la logique BNF.
+ * 17/7/2025
  * Les 2 analyseurs sont génériques, ils sont initialisés
- *  - pour le 1er par une liste de symboles terminaux ou noms de tokens, chacun associé à la regex correspondante
+ *  - pour le 1er par une liste de symboles terminaux, ou noms de tokens, chacun associé à la regex correspondante
  *  - pour le 2nd par une liste de règles de dérivation (au sens de BNF), chacune définie par un couple constitué 
  *    à gauche d'un symbole non terminal et à droite d'une liste de symboles (terminaux ou non).
  * Les règles sont regroupées par leur symbole en partie gauche en groupe de règles.
  * L'ensemble des règles est définie par un structure Php
  *   array<
  *     string,    // le symbole non terminal en partie gauche
- *     list<      // la liste des règles de dérivation en partie de droite
- *       list<    // chaque règle en partie dfroite définie par une liste de string
+ *     list<      // la liste des règles du groupe correspondant
+ *       list<    // chaque règle en partie droite définie par une liste de string
  *         string // chaque string correspondant à un symbole terminal ou non
  *       >
  *     >
  *   >
  * Attention, j'utilise $tokens de manière ambigue, ca peut être soit:
- *  - dans la création d'un Analex la liste des noms de tokens associés à un motif d'analyse
+ *  - dans la création d'un Lex la liste des noms de tokens associés à un motif d'analyse
  *  - dans Analsynt::run() une liste de Token donc de tokens instantiés par une valeur correspondante
  * [BNF] https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form
+ * ATTENTION CE MODULE NE FONCTIONNE PAS CORRECTEMENT ! VOIR LA CONSTANTE BUGS
  */
 define('BUGS', [
   <<<'EOT'
@@ -26,6 +28,7 @@ define('BUGS', [
   - Je ne reviens plus en arrière quand j'ai réellement appliqué une règle. Cela peut être la raison !
 - le test AnalyzerInfiniteLoop boucle infinimement si n'y avait pas un test adhoc
   - comment éviter qu'une analyse boucle ?
+- il faut que je me documente sur la théorie pour corriger ces bugs
 EOT
 ]
 );
@@ -43,7 +46,7 @@ class Token {
 /** Analyseur lexical.
  * Par convention le token ayant comme nom SPACE correspond à un espace et n'est pas retourné dans la liste de résultats.
  */
-class Analex {
+class Lex {
   const SPACE = 'space'; // nom du token correspondant à un espace qui n'est pas retourné dans le résultat de l'analyse
   
   /** @var array<string,string> $tokens - Liste des noms de tokens sous la forme [{nom}=> {pattern}] */
@@ -318,10 +321,10 @@ class AnalyzerOfArithmeticalExp {
   ];
   
   static function main(): void {
-    $analex = new Analex(self::TOKENS);
+    $lex = new Lex(self::TOKENS);
     $analsynt = new Analsynt(self::RULES, self::TOKENS);
     foreach (self::EXAMPLES as $input) {
-      if ($tokens = $analex->run($input, true)) {
+      if ($tokens = $lex->run($input, true)) {
         if ($tree = $analsynt->run($tokens, true))
           $tree->display();
         else
@@ -359,10 +362,10 @@ class AnalyzerInfiniteLoop {
   ];
   
   static function main(): void {
-    $analex = new Analex(self::TOKENS);
+    $lex = new Lex(self::TOKENS);
     $analsynt = new Analsynt(self::RULES, self::TOKENS);
     foreach (self::EXAMPLES as $input) {
-      if ($tokens = $analex->run($input, true)) {
+      if ($tokens = $lex->run($input, true)) {
         if ($tree = $analsynt->run($tokens, true))
           $tree->display();
         else

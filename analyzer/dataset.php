@@ -1,7 +1,8 @@
 <?php
-/** Configuration de analyzer sur des expression ensemblsites pour datasets.
+/** Configuration d'analyzer sur des expression ensemblistes pour datasets (en cours).
  * Pour tester le code sur différents exemples appeler le script.
- * Pour utiliser l'analyzer en API, inclure ce fichier et appeler DatasetAnalyzer::run()
+ * Pour utiliser l'analyzer en API, inclure ce fichier et appeler DatasetAnalyzer::run().
+ * ATTENTION analyzer ne fonctionne pas correctement !
  */
 require_once 'analyzer.inc.php';
 
@@ -29,9 +30,9 @@ class DatasetAnalyzer {
   ];
   
   static function run(string $input, bool $trace): ?AnalTree {
-    $analex = new Analex(self::TOKENS);
+    $lex = new Lex(self::TOKENS);
     $analsynt = new Analsynt(self::RULES, self::TOKENS);
-    if ($tokens = $analex->run($input, $trace))
+    if ($tokens = $lex->run($input, $trace))
       return $analsynt->run($tokens, $trace);
     else
       return null;
