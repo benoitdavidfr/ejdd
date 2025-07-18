@@ -54,8 +54,8 @@ parameters:
     - styler.php
     - zoomleveL.php
     - featureserver.php
-    - analyzer/analyzer.inc.php
-    - analyzer/dataset.php
+    - parser/parser.inc.php
+    - parser/dataset.php
     - lib/coordsys.inc.php
     - lib/gebox.inc.php
     - lib/gegeom.inc.php

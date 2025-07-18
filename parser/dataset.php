@@ -4,9 +4,9 @@
  * Pour utiliser l'analyzer en API, inclure ce fichier et appeler DatasetAnalyzer::run().
  * ATTENTION analyzer ne fonctionne pas correctement !
  */
-require_once 'analyzer.inc.php';
+require_once 'parser.inc.php';
 
-class DatasetAnalyzer {
+class DatasetParser {
   const TOKENS = [
     'space'=> ' ',
     ','=> ',',
@@ -29,11 +29,11 @@ class DatasetAnalyzer {
     "inner-join(inner-join(InseeCog/v_region_2025, REG, AeCogPe/region, insee_reg), REG, AeCogPe/region, insee_reg)",
   ];
   
-  static function run(string $input, bool $trace): ?AnalTree {
+  static function run(string $input, bool $trace): ?AbstractSyntaxTree {
     $lex = new Lex(self::TOKENS);
-    $analsynt = new Analsynt(self::RULES, self::TOKENS);
-    if ($tokens = $lex->run($input, $trace))
-      return $analsynt->run($tokens, $trace);
+    $parser = new Parser(self::RULES, self::TOKENS);
+    if ($tokens = $lex($input, $trace))
+      return $parser($tokens, $trace);
     else
       return null;
   }
@@ -52,4 +52,4 @@ class DatasetAnalyzer {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test du code ci-desus sur un cas
 
 
-DatasetAnalyzer::test();
+DatasetParser::test();
