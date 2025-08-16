@@ -92,25 +92,29 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
-  echo '{"type": "FeatureCollection"',",\n",
+  echo '{ "type": "FeatureCollection"',",\n",
     '  "name": "',"$dsname/$sectname",'",',"\n",
     '  "features":',"[\n";
   $first = true;
-  foreach ($dataset->getTuples($sectname, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $tuple) {
-    $geometry = $tuple['geometry'];
-    $geom = \gegeom\Geometry::fromGeoArray($geometry);
-    //echo "<pre>geom="; print_r($geom);
-    if ($bbox) {
-      $gbox = $geom->gbox();
-      //echo "<pre>geom->gbox()="; print_r($gbox);
-      if (!$bbox->inters($gbox)) {
-        //echo "N'intersecte pas bbox<br>\n";
-        continue;
-      }
-      //echo "Intersecte bbox\n";
+  foreach ($dataset->getTuples($sectname, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $tuple) {
+    if (!is_array($tuple)) {
+      $tuple = ['value'=> $tuple]; 
     }
-    // le champ geometry est transféré en dehors de properties
-    unset($tuple['geometry']);
+    if ($geometry = $tuple['geometry'] ?? null) {
+      $geom = \gegeom\Geometry::fromGeoArray($geometry);
+      //echo "<pre>geom="; print_r($geom);
+      if ($bbox) {
+        $gbox = $geom->gbox();
+        //echo "<pre>geom->gbox()="; print_r($gbox);
+        if (!$bbox->inters($gbox)) {
+          //echo "N'intersecte pas bbox<br>\n";
+          continue;
+        }
+        //echo "Intersecte bbox\n";
+      }
+      // le champ geometry est transféré en dehors de properties
+      unset($tuple['geometry']);
+    }
     // le champ style est transféré en dehors de properties s'il existe
     // Ce champ style peut être par exemple rajouté par un styleur comme StyledNaturalEarth
     $style = $tuple['style'] ?? null;
@@ -126,17 +130,18 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     }
     $feature = array_merge(
       [ 'type'=> 'Feature',
+        'id'=> $key,
         'properties'=> $tuple,
       ],
       $style ? ['style'=> $style] : [],
-      [ 'geometry'=> $geometry],
+      $geometry ? [ 'geometry'=> $geometry] : [],
     );
     $json = json_encode($feature);
     echo ($first ? '' : ",\n"),
-         '  ',$json;
+         '    ',$json;
     $first = false;
   }
-  die("]}\n");
+  die("\n  ]\n}\n");
 }
 
 die("Path $path non traitée\n");

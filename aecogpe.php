@@ -1,5 +1,7 @@
 <?php
-/** Définition et utilisation du JdD AeCongPe. */
+/** Définition et utilisation du JdD AeCongPe.
+ * @package Dataset
+ */
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
 
@@ -25,6 +27,7 @@ EOT
 ]
 );
 
+/** JdD AeCogPe */
 class AeCogPe extends Dataset {
   const GEOJSON_DIR = 'aecogpe2025';
   const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";
@@ -495,6 +498,7 @@ class AeCogPe extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+/** Construction du JdD AeCogPe. */
 class AeCogPeBuild {
   /** Chemin du répertoire contenant les fichiers SHP */
   const SHP_DIR =  '../data/aecog2025/ADMIN-EXPRESS-COG-CARTO-PE_3-2__SHP_WGS84G_FRA_2025-04-07/ADMIN-EXPRESS-COG-CARTO-PE/1_DONNEES_LIVRAISON_2025-04-00317/ADECOGPE_3-2_SHP_WGS84G_FRA-ED2025-04-07/';

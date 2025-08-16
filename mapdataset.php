@@ -1,10 +1,6 @@
 <?php
 /** JdD des cartes.
- * Ce JdD définit des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
- * La définition des cartes est stockée dans le fichier mapdataset.yaml.
- * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
- * chacune définie dans la section layer notamment par un type et des paramètres.
- * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
+ * package Dataset
  */
 
 require_once 'dataset.inc.php';
@@ -12,6 +8,12 @@ require_once 'vendor/autoload.php';
 
 use Symfony\Component\Yaml\Yaml;
 
+/** JdD des cartes, définit des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
+ * La définition des cartes est stockée dans le fichier mapdataset.yaml.
+ * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
+ * chacune définie dans la section layer notamment par un type et des paramètres.
+ * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
+ */
 class MapDataset extends Dataset {
   const YAML_FILE_PATH = 'mapdataset.yaml';
   /** @var array<string,mixed> $data Les données des différentes sections du jeu */
@@ -51,7 +53,7 @@ class MapDataset extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
-/** Classe abstraite des couvches pour générer le code JS correspondant à la couche */
+/** Classe abstraite des couches pour générer le code JS correspondant à la couche */
 abstract class Layer {
   readonly string $lyrId;
   readonly string $title;
@@ -277,7 +279,8 @@ L.control.layers(baseLayers, overlays).addTo(map);
 EOT
 ]
 );
-/** Classe de la carte ; prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet pour la dessinner. */
+
+/** Classe de la carte ; prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet pour la dessiner. */
 class Map {
   /** @var array<mixed> $def La définition de la carte issue du JdD. */
   readonly array $def;

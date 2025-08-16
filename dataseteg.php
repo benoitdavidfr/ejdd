@@ -1,5 +1,7 @@
 <?php
-/** Définit une classe implémentant un JdD trivial */
+/** Définit une classe implémentant un JdD trivial.
+ * @package Dataset
+ */
 
 require_once 'dataset.inc.php';
 
@@ -7,29 +9,11 @@ require_once 'dataset.inc.php';
 class DatasetEg extends Dataset {
   const TITLE = "Exemple de jeu de données trivial utilisé pour tester les scripts";
   const DESCRIPTION = "Ce jeu de données trivial est utilisé pour tester les scripts";
-  const JSON_SCHEMA = [
-    '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma du jeu de données exemple",
-    'description'=> "Ce jeu et son schéma permettent de tester les scripts.",
-    'type'=> 'object',
-    'required'=> ['title','description','$schema', 'tableEg', 'dictEg','tableOneOf'],
-    'additionalProperties'=> false,
-    'properties'=> [
-      'title'=> [
-        'description'=> "Titre du jeu de données",
-        'type'=> 'string',
-      ],
-      'description'=> [
-        'description'=> "Description du jeu de données",
-        'type'=> 'string',
-      ],
-      '$schema'=> [
-        'description'=> "Schéma JSON du jeu de données",
-        'type'=> 'object',
-      ],
-      'tableEg'=> [
-        'title'=> "Exemple de table",
-        'description'=> "Un exemple très simple de table.",
+  const DATA = [
+    'exDictOfTuple'=> [
+      'schema'=> [
+        'title'=> "Exemple de DictOfTuple",
+        'description'=> "Un exemple très simple de DictOfTuple, cad table classique.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -50,8 +34,16 @@ class DatasetEg extends Dataset {
           ],
         ],
       ],
-      'dictEg'=> [
-        'title'=> "Exemple de dictionnaire",
+      'data'=> [
+        'ABC'=> [
+          'champ1'=> "champ1 pour ABC",
+          'champ2'=> "champ2 pour ABC",
+        ],
+      ],
+    ],
+    'exDictOfValue'=> [
+      'schema'=> [
+        'title'=> "Exemple de DictOfValue",
         'description'=> "Exemple de dictionnaire avec une erreur",
         'type'=> 'object',
         'additionalProperties'=> false,
@@ -62,7 +54,13 @@ class DatasetEg extends Dataset {
           ],
         ],
       ],
-      'tableOneOf'=> [
+      'data'=> [
+        'ABC'=> "Valeur pour ABC",
+        'CDE'=> 123, // Violation: Integer value found, but a string is required
+      ],
+    ],
+    'tableOneOf'=> [
+      'schema'=> [
         'title'=> "Exemple de table avec un type de tuple OneOf",
         'description'=> "Un exemple très simple de table.",
         'type'=> 'object',
@@ -104,7 +102,19 @@ class DatasetEg extends Dataset {
           ],
         ],
       ],
-      'listOfTuples'=> [
+      'data'=> [
+        'ABC'=> [
+          'champ1'=> "champ1 pour ABC",
+          'champ2'=> "champ2 pour ABC",
+        ],
+        'CDE'=> [
+          'champ3'=> "champ3 pour CDE",
+          'champ4'=> "champ4 pour CDE",
+        ],
+      ],
+    ],
+    'listOfTuples'=> [
+      'schema'=> [
         'title'=> "Exemple de liste de n-uplets",
         'description'=> "Un exemple très simple de liste de n-uplets avec une erreur.",
         'type'=> 'array',
@@ -124,7 +134,16 @@ class DatasetEg extends Dataset {
           ],
         ],
       ],
-      'listOfValues'=> [
+      'data'=> [
+        [
+          'champ1'=> "première valeur pour le champ 1",
+          'champ2'=> "champ2 pour le 1er tuple",
+        ],
+        ['champ1'=> "seconde valeur pour le champ 1"], // Violation: The property champ2 is required
+      ],
+    ],
+    'listOfValues'=> [
+      'schema'=> [
         'title'=> "Exemple de liste de valeurs",
         'description'=> "Un exemple très simple de liste de valeurs.",
         'type'=> 'array',
@@ -132,43 +151,43 @@ class DatasetEg extends Dataset {
           'type'=> 'string',
         ],
       ],
-    ],
-  ];
-  const SECTIONS = [
-    'tableEg'=> [
-      'ABC'=> [
-        'champ1'=> "champ1 pour ABC",
-        'champ2'=> "champ2 pour ABC",
+      'data'=> [
+        "première valeur",
+        "seconde valeur",
       ],
     ],
-    'dictEg'=> [
-      'ABC'=> "Valeur pour ABC",
-      'CDE'=> 123, // Violation: Integer value found, but a string is required
-    ],
-    'tableOneOf'=> [
-      'ABC'=> [
-        'champ1'=> "champ1 pour ABC",
-        'champ2'=> "champ2 pour ABC",
+  ]; // Examples organisés avec chacun son schéma et ses données
+  const JSON_SCHEMA = [
+    '$schema'=> 'http://json-schema.org/draft-07/schema#',
+    'title'=> "Schéma du jeu de données exemple",
+    'description'=> "Ce jeu et son schéma permettent de tester les scripts.",
+    'type'=> 'object',
+    'required'=> ['title','description','$schema', 'tableEg', 'dictEg','tableOneOf'],
+    'additionalProperties'=> false,
+    'properties'=> [
+      'title'=> [
+        'description'=> "Titre du jeu de données",
+        'type'=> 'string',
       ],
-      'CDE'=> [
-        'champ3'=> "champ3 pour CDE",
-        'champ4'=> "champ4 pour CDE",
+      'description'=> [
+        'description'=> "Description du jeu de données",
+        'type'=> 'string',
       ],
-    ],
-    'listOfTuples'=> [
-      [
-        'champ1'=> "première valeur pour le champ 1",
-        'champ2'=> "champ2 pour le 1er tuple",
+      '$schema'=> [
+        'description'=> "Schéma JSON du jeu de données",
+        'type'=> 'object',
       ],
-      ['champ1'=> "seconde valeur pour le champ 1"], // Violation: The property champ2 is required
-    ],
-    'listOfValues'=> [
-      "première valeur",
-      "seconde valeur",
     ],
   ];
   
-  function __construct(string $name) { parent::__construct($name, self::TITLE, self::DESCRIPTION, self::JSON_SCHEMA); }
+  function __construct(string $name) {
+    $schema = self::JSON_SCHEMA;
+    foreach (self::DATA as $sname => $example) {
+      $schema['properties'][$sname] = $example['schema'];
+    }
+    //echo '<pre>$schema='; print_r($schema); echo "</pre>\n";
+    parent::__construct($name, self::TITLE, self::DESCRIPTION, $schema);
+  }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
    * @param string $section nom de la section
@@ -180,7 +199,7 @@ class DatasetEg extends Dataset {
    */
   function getTuples(string $section, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach (self::SECTIONS[$section] as $key => $tuple) {
+    foreach (self::DATA[$section]['data'] as $key => $tuple) {
       if ($skip-- > 0)
         continue;
       yield $key => $tuple;
@@ -191,7 +210,7 @@ class DatasetEg extends Dataset {
    * @return array<mixed>|string|null
    */ 
   function getOneTupleByKey(string $section, string|int $key): array|string|null {
-    return self::SECTIONS[$section][$key];
+    return self::DATA[$section]['data'][$key];
   }
 };
 

@@ -1,5 +1,7 @@
 <?php
-/** Jeu de données WorldEez */
+/** Jeu de données WorldEez.
+ * package Dataset
+ */
 ini_set('memory_limit', '10G');
 
 require_once 'dataset.inc.php';
@@ -7,6 +9,7 @@ require_once 'geojson.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
+/** Jeu de données WorldEez */
 class WorldEez extends Dataset {
   const GEOJSON_DIR = 'worldeez';
   const YAML_FILE = 'worldeez.yaml';

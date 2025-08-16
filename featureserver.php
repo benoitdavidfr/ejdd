@@ -1,12 +1,14 @@
 <?php
 /** FeatureServer - Catégorie des Dataset WFS.
- * Chaque JdD correspond à une serveur WFS.
+ * Chaque JdD correspond à un serveur WFS.
  * Attention les coordonnées peuvent ne pas être en CRS:84.
+ *
+ * @package Dataset
  */
 
 require_once 'dataset.inc.php';
 
-/** Permet de gérer un cache de certains appels */
+/** Gère un cache de certains appels Http. */
 class Cache {
   static function get(string $filePath, string $url): string {
     if (is_file($filePath)) {

@@ -1,92 +1,4 @@
 title: Réflexion sur les possibilités de stockage et de manipulation d'un jeu de données (V3)
-besoins: |
-  - cette démarche répond à 5 besoins
-    - utiliser facilement en Php des JdD habituels
-      - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
-      - carto mondiale simplifiée
-    - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable
-    - gérer efficacement des données un peu volumineuses comme des données géo., avec des sections qui ne tiennent pas en mémoire
-    - cartographier les JdD en mode web
-    - faire facilement des traitemts ensemblistes comme des jointures et des projections
-JSON/Yaml/ODS/Php:
-  - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
-    - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
-    - standard
-    - facilité d'utilisation en Php (natif)
-    - utilisation des schémas JSON (avec justinrainbow/json-schema)
-    - utilisation du GeoJSON
-  - je privilégie le Yaml comme format éditable, notamment pour la gestion des MD, pour les raison suivantes
-    - par rapport à JSON il est plus facile à éditer
-    - il est moins performant que JSON mais pour les MD ce n'est pas génant
-    - il est facile à utiliser en Php (avec symfony/yaml)
-    - il permet d'utiliser des schémas JSON
-  - j'utilise aussi le format de stockage ODS
-    - il est facile à éditer pour gérer des petits jeux de données tabulaires
-    - le format est assez standard
-    - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
-  - Php est utilisé pour exécuter du code et j'évite de stocker des données en Php car
-    - c'est difficilement éditable
-    - c'est moins performant que JSON
-solution:
-  généralités:
-    - un JdD est identifié par un **nom court**, comme DeptReg
-    - en outre un JdD est constitué de **MD** et de **sections de données**
-      - un JdD doit a minima définir les 3 MD suivantes
-        - title -> titre du JdD, pas plus long qu'une ligne
-        - description -> texte de présentation du JdD aussi longue qu'utile
-        - $schema -> schéma JSON des sections de données
-      - un JdD est constitué enfin d'autant de sections de données nécessaires pour stocker des données
-        - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
-        - la référence d'une section est la notion de table de n-uplets
-        - une section de données peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
-    - la notion de schéma JSON des sections est un peu virtuelle
-      - car les données des sections ne sont pas forcément stockées selon ce schéma
-      - mais elles doivent par contre être disponibles en Php dans ce schéma
-        - en considérant qu'un Generator correspond à un object ou un array en fonction de la clé
-    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
-      - cette notion de catégorie permet de mutualiser le code Php entre différents jeux ayant le même comportement 
-    - une catégorie de JdD peut exiger des MD complémentaires ou différentes
-    - je distingue
-      - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
-      - de l'initialisation du JdD qui importe le JdD dans le système à partir d'une représentation externe
-  structurationEnPhp:
-    - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
-    - cette classe Php hérite d'une classe abstraite Dataset
-      - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
-    - une catégorie de JdD correspond à
-      - une classe Php héritant de Dataset et portant le nom de la catégorie
-      - un fichier Php qui
-        - porte comme comme nom le nom de la classe en minuscules et suivi de '.php' et
-        - possède 2 parties
-          - le début du fichier inclus par un require_once définit le classe Php de la catégorie
-            - et est utilisé pour l'instantiation du JdD
-          - la fin du fichier correspond à une application d'initialisation du JdD
-            - qui est exécutée en exécutant le fichier Php
-            - qui définit une seconde classe
-              - ayant comme nom celui de la catégorie suivi de 'Build' et
-              - qui définit une méthode statique main() qui est appelée à la fin du fichier
-    - la définition des MD d'un JdD doit être conforme à un méta-schéma des JdD
-  utilisationEnPhp:
-    - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
-    - je récupère ses MD par $ds->title, $ds->description et $ds->schema
-    - je récupère les données par $ds->getTuples({section}, {filtre})
-      - qui retourne un Generator sur les éléments de la section satisfaisant le filtre
-      - avec au moins 4 types de filtre
-        - valeur d'un champ dont la clé
-        - intervalle de valeurs d'un champ
-        - intersection avec un rectangle
-        - niveau de zoom
-    - plus traitement ensembliste de jointure
-  carte:
-    - un JdD MapDataset contient la définition de cartes
-    - ces cartes peuvent être affichées avec Leaflet
-    - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
-      - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
-  mise_en_oeuvre:
-    - un fichier index.php fournit l'IHM générale
-    - un fichier dataset.inc.php définit la classe Dataset
-    - un fichier Php par catégorie de jeux de données
-    - un fichier geojson.php expose en GeoJSON les sections des JdD
 applis:
   index.php:
     - appli interactive pour
@@ -1094,14 +1006,19 @@ expression:
       - select({field} {op} "{const}", {DS}/{section})
       - map({phpFun} {DS}/{section})
     - {DS}/{section} peut être remplacé une opération
+  tokens:
+    {couple}: "'[a-zA-Z]+/[a-zA-Z]+' //  {datasetName} '/' {sectionName} | CoupleOfFields"
+    {joinName}: '(inner-join|left-join|diff-join)'
   règlesSyntaxiques: |
     {EXP} ::= {dataSource} | {operation}
-    {dataSource} ::= {datasetName} '/' {sectionName}
     {operation} ::= {joinName} '(' {EXP} ',' {fieldName} ',' {EXP} ',' {fieldName} ')'
-                  l {unionName} '(' {EXP} ',' {EXP} ')'
-                  l {projName} '(' {listOfCouplesOfFields} ',' {EXP} ')'
-                  l 'select'
-    
+                  | 'spatial-join' '(' {EXP} ',' {EXP} ')'
+                  | 'union' '(' {EXP} ',' {EXP} ')'
+                  | 'proj' '(' {FieldPairs} ',' {EXP} ')'
+                  | 'select' '(' {cond} ',' {EXP} ')'
+                  | 'map' '(' {phpFun} ',' {EXP} ')'
+    {FieldPairs} ::= {pair}
+                   | {pair} ',' {FieldPairs}
 historique:
   v3:
     - replacement getData() par getTuples() qui retourne un Generator

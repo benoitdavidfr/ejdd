@@ -2,6 +2,8 @@
 /** Gestion d'un JdD géographique générique, utilisé par exemple pour les JdD Natural Earth.
  * Les données sont stockées dans les fichiers GeoJSON stockés dans un répertoire ayant comme nom celui du JdD en miniscules,
  * et les MD sont dans le fichier Yaml utilisant le nom du JdD en minuscules.
+ *
+ * package Dataset
  */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
@@ -36,9 +38,9 @@ class GeoDataset extends Dataset {
    * @return Generator
    */
   function getTuples(string $sname, array $filters=[]): Generator {
-    print_r($filters);
+    //print_r($filters);
     $skip = $filters['skip'] ?? 0;
-    echo "skip=$skip<br>\n";
+    //echo "skip=$skip<br>\n";
     $fileOfFC = new FileOfFC(strtolower($this->dsName."/$sname.geojson"));
     foreach ($fileOfFC->readFeatures() as $no => $feature)  {
       if ($no < $skip)
@@ -53,6 +55,7 @@ class GeoDataset extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+/** Construit un GeoDataset. */
 class GeoDatasetBuild {
   const DS_CLASS = 'GeoDataset';
   

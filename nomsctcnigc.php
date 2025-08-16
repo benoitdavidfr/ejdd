@@ -1,8 +1,12 @@
 <?php
-/** Jeu de données des noms des CT définis par le CNIG. */
+/** Jeu de données des noms des CT définis par le CNIG.
+ * @package Dataset
+ */
 require_once 'spreadsheetdataset.inc.php';
 
+/** JdD  des noms des CT définis par le CNIG (NomsCtCnigC) stockées dans un fichier ODS. */
 class NomsCtCnigC extends SpreadSheetDataset {
+  /** Nom du fichier ODS. */
   const FILE_PATH = 'nomsctcnigc.ods';
   
   function __construct(string $name) { parent::__construct($name, self::FILE_PATH); }

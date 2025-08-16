@@ -7,113 +7,83 @@ ini_set('memory_limit', '10G');
 
 define('A_FAIRE_JOIN', [
 <<<'EOT'
-- ajouter un index pour accélérer la jointure
-  - en implémentant getTuplesOnValue() en conséquence sur les JdD sur lesquels c'est pertinent
-- compléter le schéma à partir des schémas des sections jointes
-- ajouter le filtre skip
-- ajouter le filtre predicate
-- mieux gérer l'analyse du nom poour permettre des imbrications d'opérations ensemblistes
-- définir une opération qui applique une fonction à chaque n-uplet
 EOT
 ]
 );
 
 require_once 'dataset.inc.php';
 
-/** Une jointure entre JdD/sections est une novelle section de JdD. */
-class Join extends Dataset {
-  const NAME_PATTERN = '!^(inner-join|left-join|diff-join)\(([^/]+)/([^/]+)/([^ ]+) X ([^/]+)/([^/]+)/([^)]+)\)$!';
-  
-  /** Décompose le nom du JdD dans les différents paramètres.
-   * Par convention, le nom du jeu de données est de la forme:
-   *  "{type}({dataset1}/{section1}/{field1} X {dataset2}/{section2}/{field2})"
-   * où {type} est:
-   *  - 'inner-join': seuls les n-uplets ayant une correspondance dans les 2 sections sont retournés
-   *  - 'left-join': tous les n-uplets de la 1ère section sont retournés avec s'ils existent ceux de la 2nd en correspondance
-   *  - 'diff-join': ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd
-   * @return array<string,mixed>
-   */
-  static function params(string $name): array {
-    if (!preg_match(self::NAME_PATTERN, $name, $matches))
-      throw new Exception("Erreur dans le nom '$name' qui n'est pas conforme au motif défini");
-    return [
-      'type'=> $matches[1],
-      'datasets'=> [
-        1=> $matches[2],
-        2=> $matches[5],
-      ],
-      'sections'=> [
-        1=> $matches[3],
-        2=> $matches[6],
-      ],
-      'fields'=> [
-        1=> $matches[4],
-        2=> $matches[7],
-      ],
-    ];
+
+// {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
+/** Jointure entre 2 expressions. */
+class Join extends Section {
+  function __construct(readonly string $type, readonly Section $table1, readonly string $field1, readonly Section $table2, readonly string $field2) {
+    parent::__construct();
   }
-  
-  function __construct(string $name) {
-    $p = self::params($name);
-    $type = $p['type'];
-    $datasets = $p['datasets'];
-    $sections = $p['sections'];
-    $fields = $p['fields'];
-    $title = "Jointure entre $datasets[1].$sections[1].$fields[1] et $datasets[2].$sections[2]. $fields[2]";
-    $descr = "Jointure ($type) entre $datasets[1].$sections[1] (s1) et $datasets[2].$sections[2] (s2) "
-      ."sur s1.$fields[1]=s2.$fields[2]";
-    parent::__construct(
-      $name,
-      $title,
-      $descr,
-      [
-        '$schema'=> 'http://json-schema.org/draft-07/schema#',
-        'properties'=> [
-          'join'=> [
-            'title'=> $title,
-            'description'=> $descr,
-            'type'=> 'array',
-            'items'=> [],
-          ]
-        ],
-      ]
-    );
+
+  /** l'identifiant permettant de recréer la section. Reconstitue la requête. */
+  function id(): string {
+    return $this->type.'('.$this->table1->id().','.$this->field1.','.$this->table2->id().','.$this->field2.')';
+  }
     
-  }
+  /** Retourne les filtres implémentés par getTuples().
+   * @return list<string>
+   */
+  function implementedFilters(): array { return ['skip']; }
   
-  function getTuples(string $section, array $filters=[]): Generator {
-    $p = self::params($this->name);
-    $ds1 = Dataset::get($p['datasets'][1]);
-    $ds2 = Dataset::get($p['datasets'][2]);
-    foreach ($ds1->getTuples($p['sections'][1]) as $tuple1) {
-      $tuples2 = $ds2->getTuplesOnValue($p['sections'][2], $p['fields'][2], $tuple1[$p['fields'][1]]);
+  /** L'accès aux tuples du Join par un Generator.
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   */
+  function getTuples(array $filters=[]): Generator {
+    // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
+    $skip = $filters['skip'] ?? 0;
+    //echo "skip=$skip<br>\n";
+    $key = $skip;
+    foreach ($this->table1->getTuples() as $tuple1) {
+      $tuples2 = $this->table2->getTuplesOnValue($this->field2, $tuple1[$this->field1]);
       $tuple = [];
-      if ($p['type'] <> 'diff-join') {
+      if ($this->type <> 'diff-join') {
         foreach ($tuple1 as $k => $v)
           $tuple["s1.$k"] = $v;
       }
       if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd section
-        if ($p['type'] == 'left-join')
-          yield $tuple;
-        elseif ($p['type'] == 'diff-join')
-          yield $tuple1;
+        if ($skip-- <= 0) {
+          if ($this->type == 'left-join')
+            yield $key++ => $tuple;
+          elseif ($this->type == 'diff-join')
+            yield $key++ => $tuple1;
+        }
       }
-      else { // $tuple1 A de correspondance dans la 2nd section
-        if (in_array($p['type'], ['left-join', 'inner-join'])) {
+      else { // $tuple1 A une correspondance dans la 2nd section
+        if (in_array($this->type, ['left-join', 'inner-join'])) {
           foreach ($tuples2 as $tuple2) {
             foreach ($tuple2 as $k => $v)
               $tuple["s2.$k"] = $v;
-            yield $tuple;
+            if ($skip-- <= 0)
+              yield $key++ => $tuple;
           }
         }
       }
     }
+    return null;
   }
-
+  
+  /** Retourne un n-uplet par sa clé.
+   * Je considère qu'une jointure perd les clés. L'accès par clé est donc un accès par index dans la liste.
+   * @return array<mixed>|string|null
+   */ 
+  function getOneTupleByKey(int|string $key): array|string|null {
+    foreach ($this->getTuples() as $i => $tuple) {
+      if ($i == $key)
+        return $tuple;
+    }
+    return null;
+  }
+  
   /** Construit interactivement les paramètres de la jointure. */
   static function main(): void {
-    switch ($action = $_GET['action'] ?? null) {
-      case null: {
+    switch ($_GET['action'] ?? null) {
+      case null: { // Appel initial 
         if (!isset($_GET['dataset1'])) {
           echo "<h3>Choix des datasets</h3>\n";
           foreach (array_keys(Dataset::REGISTRE) as $dsName) {
@@ -126,7 +96,7 @@ class Join extends Dataset {
                "</form></tr></table>\n",
           die();
         }
-        if (!isset($_GET['section1'])) {
+        elseif (!isset($_GET['section1'])) {
           echo "<h3>Choix des sections</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
@@ -148,7 +118,7 @@ class Join extends Dataset {
                "</form></table>\n";
           die();
         }
-        if (!isset($_GET['field1'])) {
+        elseif (!isset($_GET['field1'])) {
           echo "<h3>Choix des champs</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
@@ -172,7 +142,7 @@ class Join extends Dataset {
                "</form></table>\n";
           die();
         }
-        if (!isset($_GET['type'])) {
+        elseif (!isset($_GET['type'])) {
           echo "<h3>Choix du type de jointure</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
@@ -198,25 +168,32 @@ class Join extends Dataset {
                "</form></table>\n";
           die();
         }
-
-        $name = "$_GET[type]($_GET[dataset1]/$_GET[section1]/$_GET[field1] X $_GET[dataset2]/$_GET[section2]/$_GET[field2])";
-        $join = new Join($name);
-        $join->displaySection('join');
-        break;
-      }
-      case 'display': {
-        if (!isset($_GET['section']))
-          die("Erreur section non défie");
-        if (!isset($_GET['key'])) {
-          Dataset::get($_GET['dataset'])->displaySection($_GET['section']);
-        }
         else {
-          echo "<pre>$_GET[key] -> ";
-          print_r(Dataset::get($_GET['dataset'])->getOneTupleByKey($_GET['section'], $_GET['key']));
+          $join = new Join(
+            $_GET['type'],
+            SectionOfDs::get(json_encode(['dataset'=>$_GET['dataset1'], 'section'=>$_GET["section1"]])),
+            $_GET['field1'],
+            SectionOfDs::get(json_encode(['dataset'=>$_GET['dataset2'], 'section'=>$_GET["section2"]])),
+            $_GET['field2'],
+          );
+          $join->displayTuples();
         }
         break;
       }
-      default: throw new Exception("Erreur action '$action' non prévue");
+      case 'display': { // rappel pour un skip
+        //echo '<pre>'; print_r($_GET); echo "</pre>\n";
+        if (!preg_match('!^([^(]+)\(({[^}]+}),([^,]+),({[^}]+}),([^,]+)\)$!', $_GET['section'], $matches))
+          throw new Exception("Erreur de décodage du sectionId");
+        echo '<pre>'; print_r($matches); echo "</pre>\n";
+        $type = $matches[1];
+        $section1 = $matches[2];
+        $field1 = $matches[3];
+        $section2 = $matches[4];
+        $field2 = $matches[5];
+        $join = new Join($type, SectionOfDs::get($section1), $field1, SectionOfDs::get($section2), $field2);
+        $join->displayTuples($_GET['skip']);
+        break;
+      }
     }
   }
 };

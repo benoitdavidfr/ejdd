@@ -1,5 +1,5 @@
 <?php
-/** Jeu de données générique géré dan s un fichier ods. */
+/** Jeu de données générique géré dans un fichier ods. */
 require_once 'dataset.inc.php';
 
 class DocProperty {

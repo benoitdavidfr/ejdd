@@ -29,7 +29,7 @@ class Predicate {
     };
   }
   
-  /** Fabrique un formilaire de saisie
+  /** Fabrique un formulaire de saisie
    * @param list<string> $getKeys Les clés _GET à transmettre
    */
   static function form(array $getKeys = ['action','dataset','section']): string {

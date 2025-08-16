@@ -20,7 +20,7 @@ class Pos {
   }
 };
 
-/** Géométrie GeoJSON */
+/** Classe abstraite de géométrie GeoJSON */
 abstract class Geometry {
   readonly string $type;
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
@@ -47,9 +47,12 @@ abstract class Geometry {
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }
 };
 
+/** Point GeoJSON. */
 class Point extends Geometry {};
+/** MultiPoint GeoJSON. */
 class MultiPoint extends Geometry {};
 
+/** Linestring GeoJSON. */
 class LineString extends Geometry {
   function reso(): float {
     $dists = [];
@@ -68,8 +71,10 @@ class LineString extends Geometry {
   }
 };
 
+/** MultiLineString GeoJSON. */
 class MultiLineString extends Geometry {};
 
+/** Polygon GeoJSON. */
 class Polygon extends Geometry {
   /** Estimation de la résolution */
   function reso(): float {
@@ -78,6 +83,7 @@ class Polygon extends Geometry {
   }
 };
 
+/** MultiPolygon GeoJSON. */
 class MultiPolygon extends Geometry {
   /** Estimation de la résolution */
   function reso(): float {
@@ -85,7 +91,8 @@ class MultiPolygon extends Geometry {
     return $ls->reso();
   }
 };
-  
+
+/** Feature GeoJSON. */
 class Feature {
   /** @var array<mixed> $properties */
   readonly array $properties;
@@ -107,6 +114,7 @@ class Feature {
   }
 };
 
+/** FeatureCollection GeoJSON. */
 class FeatureCollection {
   /** @var list<Feature> $features */
   readonly array $features;

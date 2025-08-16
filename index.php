@@ -1,5 +1,257 @@
 <?php
-/** Ce script définit l'IHM d'utilisation des JdD */
+/** Documentation générale de l'application.
+ * Besoins:
+ * --------
+ * Cette démarche répond à 5 besoins:
+ *   - utiliser facilement en Php des JdD habituels
+ *      - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
+ *      - carto mondiale simplifiée
+ *    - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable
+ *    - gérer efficacement des données un peu volumineuses comme des données géo., avec des sections qui ne tiennent pas
+ *      en  mémoire
+ *    - cartographier les JdD en mode web
+ *    - faire facilement des traitemts ensemblistes comme des jointures et des projections
+ *
+ * Techno (JSON/Yaml/ODS/Php):
+ * ---------------------------
+ *   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
+ *     - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
+ *     - standard
+ *     - facilité d'utilisation en Php (natif)
+ *     - utilisation des schémas JSON (avec justinrainbow/json-schema)
+ *     - utilisation du GeoJSON
+ *   - je privilégie le Yaml comme format éditable, notamment pour la gestion des MD, pour les raison suivantes
+ *     - par rapport à JSON il est plus facile à éditer
+ *     - il est moins performant que JSON mais pour les MD ce n'est pas génant
+ *     - il est facile à utiliser en Php (avec symfony/yaml)
+ *     - il permet d'utiliser des schémas JSON
+ *   - j'utilise aussi le format de stockage ODS
+ *     - il est facile à éditer pour gérer des petits jeux de données tabulaires
+ *     - le format est assez standard
+ *     - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
+ *   - Php est utilisé pour exécuter du code et j'évite de stocker des données en Php car
+ *     - c'est difficilement éditable
+ *     - c'est moins performant que JSON
+ *
+ * Solution:
+ * ---------
+ * ### Généralités:
+ *  - un JdD est identifié par un **nom court**, comme DeptReg
+ *  - en outre un JdD est constitué de **MD** et de **sections de données**
+ *  - un JdD doit a minima définir les 3 MD suivantes
+ *    - title -> titre du JdD, pas plus long qu'une ligne
+ *    - description -> texte de présentation du JdD aussi longue qu'utile
+ *    - $schema -> schéma JSON des sections de données
+ *  - un JdD est constitué enfin d'autant de sections de données nécessaires pour stocker des données
+ *    - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
+ *    - la référence d'une section est la notion de table de n-uplets
+ *    - une section de données peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
+ *  - la notion de schéma JSON des sections est un peu virtuelle
+ *    - car les données des sections ne sont pas forcément stockées selon ce schéma
+ *    - mais elles doivent par contre être disponibles en Php dans ce schéma
+ *      - en considérant qu'un Generator correspond à un object ou un array en fonction de la clé
+ *    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
+ *      - cette notion de catégorie permet de mutualiser le code Php entre différents jeux ayant le même comportement 
+ *    - une catégorie de JdD peut exiger des MD complémentaires ou différentes
+ *      - je distingue
+ *        - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
+ *        - de l'initialisation du JdD qui importe le JdD dans le système à partir d'une représentation externe
+ * ### structurationEnPhp:
+ *  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
+ *  - cette classe Php hérite de la classe abstraite Dataset
+ *    - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
+ *  - une catégorie de JdD correspond à
+ *    - une classe Php héritant de Dataset et portant le nom de la catégorie
+ *    - un fichier Php qui
+ *      - porte comme comme nom le nom de la classe en minuscules et suivi de '.php' et
+ *      - possède 2 parties
+ *        - le début du fichier inclus par un require_once définit la classe Php de la catégorie
+ *          - et est utilisée pour l'instantiation du JdD
+ *        - la fin du fichier correspond à une application d'initialisation du JdD
+ *          - qui est exécutée en exécutant le fichier Php
+ *          - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
+ *          - qui définit une méthode statique main() qui est appelée à la fin du fichier
+ *       - la définition des MD d'un JdD doit être conforme à un méta-schéma des JdD
+ * ### utilisationEnPhp:
+ *  - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
+ *  - je récupère ses MD par $ds->title, $ds->description et $ds->schema
+ *  - je récupère les données par $ds->getTuples({section}, {filtre})
+ *    - qui retourne un Generator sur les éléments de la section satisfaisant le filtre
+ *    - avec au moins 4 types de filtre
+ *      - valeur d'un champ dont la clé
+ *      - intervalle de valeurs d'un champ
+ *      - intersection avec un rectangle
+ *      - niveau de zoom
+ *  - plus traitement ensembliste de jointure
+ * ### carte:
+ *  - un JdD MapDataset contient la définition de cartes
+ *  - ces cartes peuvent être affichées avec Leaflet
+ *  - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
+ *    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
+ * ### mise_en_oeuvre:
+ *  - index.php fournit l'IHM générale de l'appli et contient cette doc
+ *  - dataset.inc.php définit la classe Dataset et qqs autres classes
+ *  - predicate.inc.php définit la classe Predicate qui permet de définir un critère de sélection sur un n-uplet
+ *  - join.php implémente une jointure entre sections
+ *  - geojson.php expose en GeoJSON les sections des JdD
+ *  - un fichier Php par catégorie de jeux de données et par JdD sans catégorie
+ *  - geojson.inc.php définit des classes correspondant aux primitives GeoJSON
+ *  - spreadsheetdataset.inc.php définit un JdD générique fondé sur un fichier ODS utilisé par NomsCtCnigC et Pays,
+ *    devrait être transformé en catégorie
+ *  - zoomleveL.php permet de calculer les échelles correspondant aux niveaux de zoom Leaflet
+ *  - map.php, script périmé générant une carte Leaflet, repris dans mapdataset.php
+ *  - setop.php, tests d'opérations ensemblistes
+ *
+ * Jeux de données par catégorie
+ * -----------------------------
+ * - Sans catégorie:
+ *   - DatasetEg
+ *   - InseeCog
+ *   - DeptReg
+ *   - NomsCnig
+ *   - NomsCtCnigC
+ *   - Pays
+ *   - MapDataset
+ *   - AeCogPe
+ *   - WorldEez
+ * - GeoDataset:
+ *   - NE110mPhysical
+ *   - NE110mCultural
+ *   - NE50mPhysical
+ *   - NE50mCultural
+ *   - NE10mPhysical
+ *   - NE10mCultural
+ * - Styler:
+ *   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
+ * - FeatureServer:
+ *   - wfs-fr-ign-gpf
+ *    
+ * Outre cette doc, ce script contient l'IHM d'utilisation des JdD.
+ */
+
+/* Actions à réaliser. */
+define('A_FAIRE', [
+<<<'EOT'
+- nlles fonctionnalités
+  - faire une projection d'une section sur certains champs
+    - avec renommage de champs
+  - différence entre sections
+
+- rajouter des sources bien connues de référence
+  - WMS IGN ?
+  - EU ? satellites ?
+  - NASA ?
+- rajouter un catalogue de ces sources ?
+  - JdD de sources/web-services ?
+    - titre
+    - type de webservice
+    - URL
+  - retrouver ce que j'avais fait précédemment
+    - /var/www/html/gexplor/visu/servers
+- créer un IHM de cartes et de couches
+- réfléchir à l'affichage de toponymes
+  - noms des pays, noms des villes, ...
+  - faire un serveur de tuiles ?
+  - il y a semble t'il des sources open de noms comme fluw WMS/TMS
+- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
+- revoir la gestion des rectangles
+- faire une catégorie SpreadSheet, y transférer les JdD concernés
+- transférer les JdD géo. en GeoDataset
+- publi sur internet ?
+EOT
+]
+);
+/* Journal des modifications du code. */
+define('JOURNAL', [
+<<<'EOT'
+16/8/2025:
+  - reconception de la classe Section en la décomposant en 2:
+    - une nouvelle classe Section abstraite pouvant soit être une section d'un JdD soit générée par une requête
+    - une classe SectionOfDs héritant de Section et correspondant à une section d'un JdD
+13/8/2025:
+  - adaptation pour fonctionner avec ../dexp
+11/8/2025:
+  - reprise du code, amélioration de la doc
+16/7/2025:
+  - ajout d'un analyseur syntaxique sur expressions de création de dataset
+  - autonomisation de l'analyseur
+13/7/2025:
+  - intégration jointure
+11/7/2025:
+  - ajout filtre sur prédicat sur COG Insee
+  - ajout Dataset::implementedFilters()
+10/7/2025:
+  - ajout COG Insee
+  - correction bugs
+9/7/2026:
+  - ajout utilisation serveur WFS 2.0.0 et notamment celui de la Géoplateforme
+  - ajout de la pagination dans l'affichage des n-uplets d'une section
+  - modif de la signature de getTuples() pour $filters, généralisation du filtre skip
+7/7/2025:
+  - ajout de la définition de thèmes dans les feuilles de style
+  - suppression de l'extension ss pour les feuilles de style
+  - vérification de la conformité de la feuille de style au schéma des feuilles de styles
+    - le schéma des feuilles de styles est dans styler.yaml et porte un URI
+  - vérifications sur les cartes et les couches avant de les dessiner afin d'éviter les errurs lors du dessin.
+6/7/2025:
+  - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
+5/7/2025:
+  - début implem StyledNaturalEarth 
+  - correction bug dans dataset.inc.php sur la propagation des définitions dans les sous-schemas
+2/7/2025:
+  - modif catégorie NaturalEarth -> GeoDataset
+  - transfert meta schema dans dataset.yaml
+1/7/2025:
+  - fin correction des différents jeux précédemment définis en V2
+  - conforme PhpStan (8:30)
+  - définition d'une catégorie de JdD comme NaturalEarth
+29/6/2025:
+  - v3 fondée sur getTuples() à la place de getData()
+  - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
+16/6/2025:
+  - 1ère version de v2 conforme PhpStan
+  - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
+14/6/2025:
+  - début v2 fondée sur idees.yaml
+  - à la différence de la V1 (stockée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
+  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
+EOT
+]
+);
+/** Cmdes utiles */
+define('LIGNE_DE_COMMANDE', [
+<<<'EOT'
+Lignes de commandes
+---------------------
+  Installation des modules nécessaires:
+    composer require --dev phpstan/phpstan
+    composer require justinrainbow/json-schema
+    composer require symfony/yaml
+    composer require phpoffice/phpspreadsheet
+  phpstan:
+    ./vendor/bin/phpstan --memory-limit=1G --pro
+  Fenêtre Php8.4:
+    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
+  phpDocumentor, utiliser la commande en Php8.2:
+    ../phpDocumentor.phar -f index.php,dataset.inc.php,zoomleveL.php,predicate.inc.php,join.php,\
+dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
+geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,\
+aecogpe.php,worldeez.php,\
+spreadsheetdataset.inc.php,\
+featureserver.php,\
+setop.php	       
+
+  Fenêtre Php8.2:
+    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Pour committer le git:
+    git commit -am "{commentaire}"
+  Pour se connecter sur Alwaysdata:
+    ssh -lbdavid ssh-bdavid.alwaysdata.net
+
+EOT
+]
+);
+
 require_once 'dataset.inc.php';
 
 ini_set('memory_limit', '10G');
@@ -8,7 +260,7 @@ set_time_limit(5*60);
 switch ($_GET['action'] ?? null) {
   case null: {
     if (!isset($_GET['dataset'])) {
-      echo "<h2>Choix du JdD</h2>\n";
+      echo "<title>dataset</title><h2>Choix du JdD</h2>\n";
       foreach (Dataset::REGISTRE as $dsName=> $class) {
         $dataset = Dataset::get($dsName);
         //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
@@ -17,6 +269,7 @@ switch ($_GET['action'] ?? null) {
       echo "<h2>Autres</h2><ul>\n";
       echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
       echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
+      echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
       echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
       echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
             "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
@@ -26,7 +279,7 @@ switch ($_GET['action'] ?? null) {
     }
     else {
       $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
-      echo "<h2>Choix de l'action</h2>\n";
+      echo "<title>dataset</title><h2>Choix de l'action</h2>\n";
       echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
       echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
@@ -43,13 +296,12 @@ switch ($_GET['action'] ?? null) {
     break;
   }
   case 'display': {
-    $dataset = Dataset::get($_GET['dataset']);
     if (!isset($_GET['section']))
-      $dataset->display();
+      Dataset::get($_GET['dataset'])->display();
     elseif (!isset($_GET['key']))
-      $dataset->sections[$_GET['section']]->display($dataset, $_GET['skip'] ?? 0);
+      SectionOfDs::get($_GET['section'])->display($_GET['skip'] ?? 0);
     else
-      $dataset->sections[$_GET['section']]->displayTuple($_GET['key'], $dataset);
+      SectionOfDs::get($_GET['section'])->displayTuple($_GET['key']);
     break;
   }
   case 'stats': {

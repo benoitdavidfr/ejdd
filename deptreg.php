@@ -6,6 +6,8 @@
  *    et de vérifier que le JdD est conforme à son schéma,
  *  - d'autre part lorsqu'il est inclus dans dataset.inc.php d'utiliser ce JdD en Php
  *
+ * PERIME:
+ *
  * Ce script illustre la gestion d'une BD en JSON pour Php.
  * Un JdD est défini:
  *  - en JSON par:
@@ -15,11 +17,13 @@
  *
  * Une table est un dictionnaire qui associe à une clé un n-uplet, cad un array de la foeme [{key}=> [{col1}=> {val1}, ...]].
  * Un dictionnaire associe à une clé une valeur atomique, cad un array de la foeme [{key}=> {val}].
+ *
+ * @package Dataset
  */
 require_once 'dataset.inc.php';
 require_once 'nomscnig.php';
 
-/** Classe d'utilisation du JdD. */
+/** JdD des données des départements et régions. */
 class DeptReg extends Dataset {
   const JSON_FILE_NAME = 'deptreg.json';
   
@@ -54,7 +58,7 @@ class DeptReg extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
-/** Classe masquée regroupant les éléments pour générer le jeu de données ainsi que le dialogue utilisateur. */
+/** Construction du JdD DeptReg. */
 class DeptRegBuild {
   /** Titre du jeu de données */
   const TITLE = "Jeu de données DeptReg décrivant les départements, les régions et les \"domaines internet des Préfectures\"";

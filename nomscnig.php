@@ -1,10 +1,12 @@
 <?php
 /** Définition des noms du CNIG, intégrées dans deptreg.php et JdD NomsCnig autonome.
  * Le JdD est produit par la 2ème partie du script qui permet de générer un fichier JSON qui contient le JdD.
+ *
+ * @package Dataset
  */
 require_once 'dataset.inc.php';
 
-/** Classe d'utilisation du JdD. */
+/** JdD des Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG (NomsCnig). */
 class NomsCnig extends Dataset {
   const JSON_FILE_NAME = 'nomscnig.json';
   
@@ -39,7 +41,7 @@ class NomsCnig extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-/** Classe de production du JdD */
+/** Construit NomsCnig. */
 class NomsCnigBuild {
   /** Textes issus de la note organisés par colonne du tableau. */
   const DATA = [

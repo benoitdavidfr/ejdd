@@ -2,6 +2,8 @@
 /** Catégorie Styler. Un styler correspond à une feuille de style qui va permettre d'ajouter à chaque Feature un style.
  * Version de test OK.
  * Un styler est créé avec en paramètre le nom de la feuille de style (ex NaturalEarth).
+ *
+ * package Dataset
  */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';

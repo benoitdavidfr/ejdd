@@ -1,13 +1,16 @@
 <?php
-/** inseecog.php */
+/** inseecog.php.
+ * @package Dataset
+ */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
+/** JdD InseeCog. */
 class InseeCog extends Dataset {
   function __construct(string $name) {
-    $params = Yaml::parseFile(strToLower("$name.yaml"));
+    $params = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));
     parent::__construct($name, $params['title'], $params['description'], $params['$schema']);
   }
   
@@ -27,7 +30,7 @@ class InseeCog extends Dataset {
   function getTuples(string $section, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
     $predicate = $filters['predicate'] ?? null;
-    $file = fopen(strToLower($this->name)."/$section.csv", 'r');
+    $file = fopen(__DIR__.'/'.strToLower($this->name)."/$section.csv", 'r');
     $headers = fgetcsv(stream: $file, escape: "\\");
     $nol = 0;
     while ($data = fgetcsv(stream: $file, escape: "\\")) {
