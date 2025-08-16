@@ -188,7 +188,10 @@ class SchemaOfSection {
   /** Déduit du schéma si le type de la section.
    * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
    */
-  function kind2(): string {
+  function kind2(int $debug): string {
+    if ($debug) {
+      echo '<pre>array='; print_r($this->array); echo "</pre>\n";
+    }
     switch ($type = $this->array['type']) {
       case 'object': {
         $patProps = $this->array['patternProperties'];
@@ -197,7 +200,7 @@ class SchemaOfSection {
           $type = $prop['type'];
         }
         elseif (array_keys($prop) == ['oneOf']) {
-          //echo "OneOf<br>\n";
+          echo "OneOf<br>\n";
           $oneOf = $prop['oneOf'];
           $type = $oneOf[0]['type'];
         }
@@ -212,10 +215,26 @@ class SchemaOfSection {
         }
       }
       case 'array': {
-        if ('object' == ($this->array['items']['type'] ?? null))
-          return 'listOfTuples';
-        else
-          return 'listOfValues';
+        switch ($type = $this->array['items']['type'] ?? null) {
+          case null: {
+            switch ($type2 = $this->array['items']['oneOf'][0]['type'] ?? null) {
+              case null: {
+                echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array="; print_r($this->array);
+                throw new Exception("this->array['items']['oneOf'][0]['type'] == null");
+              }
+              case 'object': return 'listOfTuples';
+              case 'array': return 'listOfValues';
+              default: throw new Exception("this->array['items']['oneOf'][0]['type'] == '$type2' non prévu");
+            }
+          }
+          case 'object': return 'listOfTuples';
+          case 'array': return 'listOfValues';
+          case 'string': return 'listOfValues';
+          default: {
+            echo ("this->array['items']['type'] == '$type' non prévu");
+            return "this->array['items']['type'] == '$type' non prévu";
+          }
+        }
       }
       default: {
         throw new Exception("Cas non traité sur type=$type");
@@ -224,9 +243,11 @@ class SchemaOfSection {
   }
   
   /** Debuggage de kind() */
-  function kind(?string $name=null): string {
-    $kind = $this->kind2();
-    //echo "SchemaOfSection::kind($name) -> $kind<br>\n";
+  function kind(?string $name=null, int $debug=0): string {
+    //$debug = ($name == 'InseeCog.v_commune_2025');
+    $kind = $this->kind2($debug);
+    if ($debug)
+      echo "SchemaOfSection::kind($name) -> $kind<br>\n";
     return $kind;
   }
 
@@ -760,7 +781,9 @@ abstract class Dataset {
     foreach ($this->sections as $sname => $section) {
       $sectionId = json_encode(['dataset'=> $this->name, 'section'=> $sname]);
       echo "<tr><td><a href='?action=display&section=",urlencode($sectionId),"'>$sname</a></td>",
-           "<td>",$this->sections[$sname]->title,"</td></tr>\n";
+           "<td>",$this->sections[$sname]->title,"</td>",
+           "<td>",$this->sections[$sname]->schema->kind(),"</td>",
+           "</tr>\n";
     }
     echo "</table>\n";
   }

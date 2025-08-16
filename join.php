@@ -1,5 +1,5 @@
 <?php
-/** Immlémentation d'une jointure entre JdD/sections générant une nouvelle section de JdD.
+/** Immlémentation d'une jointure entre 2 sections de JdD générant une nouvelle section de requête.
  * La manière la plus simple d'effectuer une jointure en Php est d'appeller Dataset::get()
  * avec un nom correspondant au motif d'un nom de jointure.
  */
@@ -13,8 +13,6 @@ EOT
 
 require_once 'dataset.inc.php';
 
-
-// {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
 /** Jointure entre 2 expressions. */
 class Join extends Section {
   function __construct(readonly string $type, readonly Section $table1, readonly string $field1, readonly Section $table2, readonly string $field2) {
@@ -79,13 +77,27 @@ class Join extends Section {
     }
     return null;
   }
-  
-  /** Construit interactivement les paramètres de la jointure. */
+};
+
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
+
+/** Test de Join. */
+class JoinTest {
+  const EXAMPLES = [
+   "Région X Préfectures" => 'inner-join(InseeCog.v_region_2025.CHEFLIEU,InseeCog.v_commune_2025.COM)',
+   "Dépt X Préfectures" => 'inner-join(InseeCog.v_departement_2025.CHEFLIEU,InseeCog.v_commune_2025.COM)',
+  ];
+  /** procédure principale. */
   static function main(): void {
+    echo "<title>dataset/join</title>\n";
     switch ($_GET['action'] ?? null) {
       case null: { // Appel initial 
         if (!isset($_GET['dataset1'])) {
-          echo "<h3>Choix des datasets</h3>\n";
+          echo "<h3>Test avec jointures prédéfinies</h3>\n";
+          foreach (self::EXAMPLES as $title => $query)
+            echo "<a href='?action=query&title=",urlencode($title),"'>$title</a><br>\n";
+          echo "<h3>Choix interactif des datasets à joindre</h3>\n";
           foreach (array_keys(Dataset::REGISTRE) as $dsName) {
             $datasets[$dsName] = Dataset::get($dsName)->title;
           }
@@ -180,6 +192,23 @@ class Join extends Section {
         }
         break;
       }
+      case 'query': {
+        if (!preg_match('!^([^(]+)\(([^.]+)\.([^.]+)\.([^,]+),([^.]+)\.([^.]+)\.([^,]+)\)$!', self::EXAMPLES[$_GET['title']], $m))
+          throw new Exception("Erreur de décodage de la query sur ".self::EXAMPLES[$_GET['title']]);
+        echo '<pre>'; print_r($m); echo "</pre>\n";
+        $type = $m[1];
+        $dataset1 = $m[2];
+        $section1 = $m[3];
+        $sectionId1 = json_encode(['dataset'=> $dataset1, 'section'=> $section1]);
+        $field1 = $m[4];
+        $dataset2 = $m[5];
+        $section2 = $m[6];
+        $sectionId2 = json_encode(['dataset'=> $dataset2, 'section'=> $section2]);
+        $field2 = $m[7];
+        $join = new Join($type, SectionOfDs::get($sectionId1), $field1, SectionOfDs::get($sectionId2), $field2);
+        $join->displayTuples($_GET['skip'] ?? 0);
+        break;
+      }
       case 'display': { // rappel pour un skip
         //echo '<pre>'; print_r($_GET); echo "</pre>\n";
         if (!preg_match('!^([^(]+)\(({[^}]+}),([^,]+),({[^}]+}),([^,]+)\)$!', $_GET['section'], $matches))
@@ -194,23 +223,8 @@ class Join extends Section {
         $join->displayTuples($_GET['skip']);
         break;
       }
+      default: throw new Exception("Action '$_GET[action]' non définie");
     }
   }
 };
-
-
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
-
-
-/** Prend une liste de valeurs et retour un array ayant les mêmes avleurs et des clés indentiques aux valeurs.
- * @param list<string> $values
- * @return array<string,string>
- *
-function value2keyValue(array $values): array {
-  $result = [];
-  foreach ($values as $v)
-    $result[$v] = $v;
-  return $result;
-}*/
-
-Join::main();
+JoinTest::main();
