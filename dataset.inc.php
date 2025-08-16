@@ -200,7 +200,7 @@ class SchemaOfSection {
           $type = $prop['type'];
         }
         elseif (array_keys($prop) == ['oneOf']) {
-          echo "OneOf<br>\n";
+          //echo "OneOf<br>\n";
           $oneOf = $prop['oneOf'];
           $type = $oneOf[0]['type'];
         }
@@ -217,14 +217,32 @@ class SchemaOfSection {
       case 'array': {
         switch ($type = $this->array['items']['type'] ?? null) {
           case null: {
-            switch ($type2 = $this->array['items']['oneOf'][0]['type'] ?? null) {
-              case null: {
-                echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array="; print_r($this->array);
-                throw new Exception("this->array['items']['oneOf'][0]['type'] == null");
+            if (isset($this->array['items']['oneOf'])) {
+              switch ($type2 = $this->array['items']['oneOf'][0]['type'] ?? null) {
+                case null: {
+                  echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array=";
+                  print_r($this->array);
+                  echo "</pre>\n";
+                  return "this->array['items']['oneOf'][0]['type'] == null";
+                  //throw new Exception("this->array['items']['oneOf'][0]['type'] == null");
+                }
+                case 'object': return 'listOfTuples';
+                case 'array': return 'listOfValues';
+                default: throw new Exception("this->array['items']['oneOf'][0]['type'] == '$type2' non prévu");
               }
-              case 'object': return 'listOfTuples';
-              case 'array': return 'listOfValues';
-              default: throw new Exception("this->array['items']['oneOf'][0]['type'] == '$type2' non prévu");
+            }
+            elseif (($this->array['items'] ?? null) == []) {
+              /*echo "<pre>this->array['items'] == []\nthis->array=";
+              print_r($this->array);
+              echo "</pre>\n";
+              return "this->array['items'] == []";*/
+              return 'listOfTuples'; // je prend par défaut
+            }
+            else {
+              echo "<pre>this->array['items']['oneOf'] non défini\nthis->array=";
+              print_r($this->array);
+              echo "</pre>\n";
+              return "this->array['items']['oneOf'] non défini";
             }
           }
           case 'object': return 'listOfTuples';
