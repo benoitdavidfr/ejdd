@@ -274,6 +274,7 @@ switch ($_GET['action'] ?? null) {
       echo "<li><a href='proj.php'>projection d'une section de JdD</a></li>\n";
       echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
       echo "<li><a href='expparser.php'>expparser</a></li>\n";
+      echo "<li><a href='expparserlight.php'>expparserlight</a></li>\n";
       echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
       echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
       echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";

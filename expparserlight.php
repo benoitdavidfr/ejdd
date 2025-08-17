@@ -6,6 +6,15 @@ require_once 'proj.php';
 
 class Program {
   function __construct(readonly string $operator, readonly Section $operand) {}
+  
+  function __invoke(): void {
+    switch ($this->operator) {
+      case 'display': {
+        $this->operand->displayTuples();
+        break;
+      }
+    }
+  }
 };
 
 class DsParserLight {
@@ -58,8 +67,10 @@ EOT
   }
   
   /** preg_match modifié qui modifie le texte en entrée en renvoyant le reste non matché.
-   * @param list<string> $matches */
-  static function pmatch(string $pattern, string &$text, ?array &$matches=[]): bool {
+   * @param list<string> $matches
+   * @param-out array<string> $matches
+   */
+  static function pmatch(string $pattern, string &$text, array &$matches=[]): bool {
     $text0 = $text;
     $matches = [];
     $p = (preg_match("!^$pattern!", $text, $matches));
@@ -81,6 +92,7 @@ EOT
   /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null */
   static function token(string $tokenName, string &$text): ?string {
     $pattern = self::TOKENS[$tokenName] ?? $tokenName;
+    $matches = [];
     if (self::pmatch($pattern, $text, $matches))
       return $matches[0];
     else
@@ -118,7 +130,7 @@ EOT
   }
   
   /** @param list<string> $path - chemin des appels */
-  static function expDataset(array $path, string &$text0): string {
+  static function expDataset(array $path, string &$text0): ?string {
     $path[] = 'expDataset';
     // {expDataset} ::= {name}                    // eg: InseeCog
     $text = $text0;
@@ -206,7 +218,7 @@ EOT
   }
   
   static function test(): void {
-    if (0) {
+    if (0) { // @phpstan-ignore if.alwaysFalse  
       $text = "display(inseeCog.region)";
       $p = self::pmatch('display\(', $text);
       echo 'res=',$p?'vrai':'false',", text=$text<br>\n";
@@ -240,15 +252,29 @@ class DsParserLightTest {
     switch ($_GET['action'] ?? null) {
       case null: {
         foreach (self::EXAMPLES as $title => $exp)
-          echo "<a href='?action=exec&title=",urlencode($title),"'>$title</a><br>\n";
+          echo "<a href='?action=display&title=",urlencode($title),"'>$title</a> ",
+               "(<a href='?action=exec&title=",urlencode($title),"'>exec</a>)<br>\n";
         break;
       }
-      case 'exec': {
+      case 'display': {
         $exp = self::EXAMPLES[$_GET['title']];
         echo "<pre>exp = $exp</pre>\n";
         echo '<pre>result='; print_r(DsParserLight::program($exp));
         echo "trace=\n";
         DsParserLight::displayTrace();
+        break;
+      }
+      case 'exec': {
+        $input = self::EXAMPLES[$_GET['title']];
+        echo "<pre>input = $input</pre>\n";
+        if (!($program = DsParserLight::program($input))) {
+          DsParserLight::displayTrace();
+          die();
+        }
+        //echo '<pre>$program='; print_r($program); echo "</pre>\n";
+        if (get_class($program) == 'Program') {
+          $program();
+        }
         break;
       }
       default: throw new Exception("Action $_GET[action] inconnue");
