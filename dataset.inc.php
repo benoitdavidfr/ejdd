@@ -19,7 +19,7 @@
  *    - soit un listOfTuples, cad une table dans laquelle aucune clé n'est définie,
  *    - soit un listOfValues, cad une liste de valeurs.
  */
-//require_once __DIR__.'/vendor/autoload.php';
+require_once 'vendor/autoload.php';
 require_once __DIR__.'/predicate.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
@@ -370,9 +370,8 @@ abstract class Section {
       default => throw new Exception("kind $this->kind non traité"),
     };
     //echo "<pre>"; print_r($tuple);
-    $sectionId = json_decode($_GET['section'], true);
-    echo "<h2>N-uplet de la section $sectionId[section] du JdD $sectionId[dataset] ayant pour clé $_GET[key]</h2>\n";
-    echo RecArray::toHtml(array_merge(['key'=>$key], $tuple));
+    echo "<h2>N-uplet de la section ",$this->id()," ayant pour clé $key</h2>\n";
+    echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
   }
 };
 
@@ -398,12 +397,14 @@ class SectionOfDs extends Section {
   function description(): string { return $this->schema->array['description']; }
   
   /** Génère un id pour être passé en paramètre $_GET */
-  function id(): string { return json_encode(['dataset'=> $this->dsName, 'section'=> $this->name]); }
+  //function id(): string { return json_encode(['dataset'=> $this->dsName, 'section'=> $this->name]); }
+  function id(): string { return $this->dsName.'.'.$this->name; }
   
   /** Refabrique une SectionOfDs à partir de son id. */
   static function get(string $sectionId): self {
-    $sectionId = json_decode($sectionId, true);
-    return Dataset::get($sectionId['dataset'])->sections[$sectionId['section']];
+    if (!preg_match('!^([^.]+)\.(.*)$!', $sectionId, $matches))
+      throw new Exception("Erreur, sectionId '$sectionId' ne respecte pas le pattern");
+    return Dataset::get($matches[1])->sections[$matches[2]];
   }
   
   /** Les filtres mis en oeuvre sont définis par le JdD. */
@@ -426,7 +427,7 @@ class SectionOfDs extends Section {
     return Dataset::get($this->dsName)->getTuplesOnValue($this->name, $field, $value);
   }
 
-  /** Affiche les données de la section */
+  /** Affiche les MD et données de la section */
   function display(int $skip=0): void {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
@@ -797,8 +798,8 @@ abstract class Dataset {
          "<tr><td>description</td><td>",str_replace("\n","<br>\n", $this->description),"</td></tr>\n";
     //echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
     foreach ($this->sections as $sname => $section) {
-      $sectionId = json_encode(['dataset'=> $this->name, 'section'=> $sname]);
-      echo "<tr><td><a href='?action=display&section=",urlencode($sectionId),"'>$sname</a></td>",
+      //$sectionId = json_encode(['dataset'=> $this->name, 'section'=> $sname]);
+      echo "<tr><td><a href='?action=display&section=",urlencode($this->name.'.'.$sname),"'>$sname</a></td>",
            "<td>",$this->sections[$sname]->title,"</td>",
            "<td>",$this->sections[$sname]->schema->kind(),"</td>",
            "</tr>\n";

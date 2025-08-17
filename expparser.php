@@ -1,8 +1,8 @@
 <?php
-/** Moteur pour définir et exécuter des expressions ensemblistes sur datasets.
+/** Moteur pour définir et exécuter des expressions ensemblistes sur JdD et tables.
  *
- * Cette version reprend celle dans ../parser/dataset.php pour y ajouter l'exécution des expressions.
- * ajouter display() dans la BNF pour afficher un résultat.
+ * L'analyse de l'expression construit des objets représentants cette expression.
+ * L'instantiation de ces objets crée des objets Section et Dataset.
  *
  * Pour tester le code sur différents exemples appeler le script.
  * Pour utiliser le DatasetParser en API, inclure ce fichier, créer un DatasetParser et l'appeler.
@@ -13,25 +13,28 @@ require_once 'dataset.inc.php';
 
 use Michelf\MarkdownExtra;
 
-/** Un programme. */
+/** Un programme sauf les expressions de tables. */
 abstract class DataProgram {
   function display(): void {
     echo '<pre>',get_called_class(),'='; print_r($this); echo "</pre>\n";
   }
 };
   
-/** Classe abstraite des expressions de table. */
+/** Classe abstraite des expressions sur des tables. */
 abstract class DataExpTable extends DataProgram {
   function display(): void {
     echo '<pre>',get_called_class(),'='; print_r($this); echo "</pre>\n";
   }
   
-  abstract function __invoke(): Generator;
+  abstract function __invoke(): Section;
 };
 
 /** DataTableId = Id d'une table par 2 noms */
 class DataTableId extends DataExpTable {
   function __construct(readonly string $datasetName, readonly string $sectionName) {}
+  
+  /** Retourne la requête correspondante. */
+  //function id(): string { return $this->datasetName.'.'.$this->sectionName; }
   
   function display(): void {
     //echo '<pre>DataSectionId='; print_r($this->pair); echo "</pre>\n";
@@ -39,26 +42,26 @@ class DataTableId extends DataExpTable {
          "<tr><td>",$this->datasetName,"</td><td>",$this->sectionName,"</td></tr></table>\n";
   }
   
-  function __invoke(): Generator {
+  function __invoke(): SectionOfDs {
     echo "DataTableId::__invoke()<br>\n";
-    return Dataset::get($this->datasetName)->getTuples($this->sectionName, []);
+    return Dataset::get($this->datasetName)[$this->sectionName];
   }
 };
 
-/** Opération d'affichage d'une expression; */
+/** Opération d'affichage d'une expression de tables */
 class DataDisplay extends DataProgram {
   function __construct(readonly DataExpTable $exp) {}
   
   function __invoke(): bool {
     echo "DataDisplay::__invoke()<br>\n";
-    foreach (($this->exp)() as $key => $tuple) {
+    foreach (($this->exp)->getTuples() as $key => $tuple) {
       echo "<pre>"; print_r([$key => $tuple]); echo "</pre>\n";
     }
     return false;
   }
 };
 
-/** jointure sauf spatiale. * /
+/** jointure non spatiale. * /
 class DataJoin extends DataOperation {
   function __construct(
     readonly string $name,
@@ -101,32 +104,20 @@ class DataProj extends DataExpTable {
   /** @param list<list<string>> $fieldPairs */
   function __construct(readonly DataExpTable $expTable, readonly array $fieldPairs) {}
     
-  function __invoke(): Generator {
-    $tuple2 = [];
-    foreach (($this->expTable)() as $key => $tuple) {
-      //echo "key=$key<br>\n";
-      foreach ($this->fieldPairs as $fieldPair) {
-        if (isset($tuple[$fieldPair[0]]))
-          $tuple2[$fieldPair[1]] = $tuple[$fieldPair[0]];
-        else
-          throw new Exception("$fieldPair[0] non défini pour $key");
-      }
-      yield $key => $tuple2;
-    }
-  }
+  function __invoke(): Proj { return new Proj(($this->expTable)(), $this->fieldPairs); }
 };
 
 /** Sélection. */
 class DataSelect extends DataExpTable {
   function __construct(readonly Condition $condition, readonly DataExpTable $expTable) {}
 
-  function __invoke(): Generator {
+  /*function __invoke(): Generator {
     echo "DataSelect::__invoke()<br>\n";
     foreach (($this->expTable)() as $key => $tuple) {
       if (($this->condition)($tuple))
         yield $key => $tuple;
     }
-  }
+  }*/
 };
 
 /** Condition */
@@ -194,8 +185,8 @@ class DatasetParser extends BanafInt {
             default => throw new Exception("ruleId '$tree->ruleId' non traité"),
           };
         }
-       ],
-      "{expTable} ::= {expDataset} {point} {name}   // eg: [InseeCog].v_region_2025
+      ],
+      "{expTable} ::= {expDataset} {point} {name}   // eg: InseeCog.v_region_2025
                     | {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
                     | 'spatial-join' '(' {expTable} ',' {expTable} ')'
                     | 'union' '(' {expTable} ',' {expTable} ')'
@@ -214,24 +205,24 @@ class DatasetParser extends BanafInt {
       ],
       "{FieldPairs} ::= {namePair}
                       | {namePair} ',' {FieldPairs}" => [
-        /** @return list<list<string>> */
+        /** @return array<string,string> */
         function(Interpret $i, AbstractSyntaxTree $tree): array {
           echo "Appel de {FieldPairs} "; $tree->display();
           return match ($tree->ruleId) {
-            '{FieldPairs}#0' => [ $i['{namePair}']($i, $tree->children[0]) ],
+            '{FieldPairs}#0' => $i['{namePair}']($i, $tree->children[0]),
             '{FieldPairs}#1' => array_merge(
-                [ $i['{namePair}']($i, $tree->children[0]) ],
+                $i['{namePair}']($i, $tree->children[0]),
                 $i['{FieldPairs}']($i, $tree->children[2])),
             default => throw new Exception("ruleId '$tree->ruleId' non traité"),
           };
         }
       ],
       "{namePair} ::= {name} '/' {name}" => [
-        /** @return list<string> */
+        /** @return array<string,string> */
         function(Interpret $i, AbstractSyntaxTree $tree): array {
           echo "Appel de {namePair} "; $tree->display();
           return match ($tree->ruleId) {
-            '{namePair}#0' => [$tree->children[0]->text, $tree->children[2]->text],
+            '{namePair}#0' => [$tree->children[0]->text => $tree->children[2]->text],
             default => throw new Exception("ruleId '$tree->ruleId' non traité"),
           };
         }

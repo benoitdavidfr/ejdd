@@ -40,6 +40,8 @@ parameters:
     - geojson.php
     - map.php
     - join.php
+    - proj.php
+    - expparser.php
     - dataseteg.php
     - inseecog.php
     - deptreg.php

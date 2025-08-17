@@ -7,7 +7,10 @@ require_once 'dataset.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** JdD InseeCog. */
+/** JdD InseeCog.
+ * Chaque section correspond à un fichier csv  dans le répertoire inseecog et chaque tuple correspond à une ligne du fichier.
+ * Le schéma est défini dans inseecog.yaml.
+ */
 class InseeCog extends Dataset {
   function __construct(string $name) {
     $params = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));

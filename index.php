@@ -170,6 +170,7 @@ define('JOURNAL', [
     - une classe SectionOfDs héritant de Section et correspondant à une section d'un JdD
   - reconception de la classe Join pour qu'elle hérite de la classe Section et qu'elle prenne en paramètres 2 sections
   - transfert de exparser.php de dexp dans dataset
+  - ajout de proj.php
 13/8/2025:
   - adaptation pour fonctionner avec ../dexp
 11/8/2025:
@@ -269,6 +270,7 @@ switch ($_GET['action'] ?? null) {
         echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
       }
       echo "<h2>Autres</h2><ul>\n";
+      echo "<li><a href='proj.php'>projection d'une section de JdD</a></li>\n";
       echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
       echo "<li><a href='expparser.php'>expparser</a></li>\n";
       echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";

@@ -199,11 +199,11 @@ class JoinTest {
         $type = $m[1];
         $dataset1 = $m[2];
         $section1 = $m[3];
-        $sectionId1 = json_encode(['dataset'=> $dataset1, 'section'=> $section1]);
+        $sectionId1 = "$dataset1.$section1";
         $field1 = $m[4];
         $dataset2 = $m[5];
         $section2 = $m[6];
-        $sectionId2 = json_encode(['dataset'=> $dataset2, 'section'=> $section2]);
+        $sectionId2 = "$dataset2.$section2";
         $field2 = $m[7];
         $join = new Join($type, SectionOfDs::get($sectionId1), $field1, SectionOfDs::get($sectionId2), $field2);
         $join->displayTuples($_GET['skip'] ?? 0);
