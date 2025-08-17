@@ -32,7 +32,12 @@ parameters:
         totalFeatures?: int
       }
       '''
+    # Définition du type correspondant au format d'import d'une grammaire dans le Parser
+    TGrammar: 'array<string,list<list<string>>>'
+    # Définition du type des fonctions d'interprétation pour l'interprête
+    TIntFun: 'Closure(Interpret, AbstractSyntaxTree, mixed ...): mixed'
   paths:
+    - expparserlight.php
     - index.php
     - dataset.inc.php
     - geojson.inc.php
@@ -41,7 +46,13 @@ parameters:
     - map.php
     - join.php
     - proj.php
-    - expparser.php
+    #- expparser.php
+    - ../parser/html.php
+    - ../parser/lexer.php
+    - ../parser/tdparser.php
+    - ../parser/interpret.php
+    - ../parser/bnf.php
+    - ../parser/bnfi.php
     - dataseteg.php
     - inseecog.php
     - deptreg.php

@@ -220,11 +220,11 @@ class SchemaOfSection {
             if (isset($this->array['items']['oneOf'])) {
               switch ($type2 = $this->array['items']['oneOf'][0]['type'] ?? null) {
                 case null: {
-                  echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array=";
-                  print_r($this->array);
-                  echo "</pre>\n";
-                  return "this->array['items']['oneOf'][0]['type'] == null";
-                  //throw new Exception("this->array['items']['oneOf'][0]['type'] == null");
+                  //echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array=";
+                  //print_r($this->array);
+                  //echo "</pre>\n";
+                  //return "this->array['items']['oneOf'][0]['type'] == null";
+                  throw new Exception("this->array['items']['oneOf'][0]['type'] == null");
                 }
                 case 'object': return 'listOfTuples';
                 case 'array': return 'listOfValues';
@@ -239,18 +239,20 @@ class SchemaOfSection {
               return 'listOfTuples'; // je prend par défaut
             }
             else {
-              echo "<pre>this->array['items']['oneOf'] non défini\nthis->array=";
-              print_r($this->array);
-              echo "</pre>\n";
-              return "this->array['items']['oneOf'] non défini";
+              //echo "<pre>this->array['items']['oneOf'] non défini\nthis->array=";
+              //print_r($this->array);
+              //echo "</pre>\n";
+              //return "this->array['items']['oneOf'] non défini";
+              throw new Exception("this->array['items']['oneOf'] non défini");
             }
           }
           case 'object': return 'listOfTuples';
           case 'array': return 'listOfValues';
           case 'string': return 'listOfValues';
           default: {
-            echo ("this->array['items']['type'] == '$type' non prévu");
-            return "this->array['items']['type'] == '$type' non prévu";
+            //echo ("this->array['items']['type'] == '$type' non prévu");
+            //return "this->array['items']['type'] == '$type' non prévu";
+            throw new Exception("this->array['items']['type'] == '$type' non prévu");
           }
         }
       }
@@ -397,7 +399,6 @@ class SectionOfDs extends Section {
   function description(): string { return $this->schema->array['description']; }
   
   /** Génère un id pour être passé en paramètre $_GET */
-  //function id(): string { return json_encode(['dataset'=> $this->dsName, 'section'=> $this->name]); }
   function id(): string { return $this->dsName.'.'.$this->name; }
   
   /** Refabrique une SectionOfDs à partir de son id. */

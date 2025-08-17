@@ -132,11 +132,10 @@
 /* Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- nlles fonctionnalités
-  - faire une projection d'une section sur certains champs
-    - avec renommage de champs
-  - différence entre sections
-
+- tester la possibilité d'un parser uniquement avec preg_match
+- réfléchir
+  - aux index
+  - à un optimiseur
 - rajouter des sources bien connues de référence
   - WMS IGN ?
   - EU ? satellites ?
@@ -164,13 +163,15 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+17/8/2025:
+  - transfert de exparser.php de dexp dans dataset
+  - ajout de proj.php
+  - test de la possibilité d'un parser simplifié fondé sur preg_match
 16/8/2025:
   - reconception de la classe Section en la décomposant en 2:
     - une nouvelle classe Section abstraite pouvant soit être une section d'un JdD soit générée par une requête
     - une classe SectionOfDs héritant de Section et correspondant à une section d'un JdD
-  - reconception de la classe Join pour qu'elle hérite de la classe Section et qu'elle prenne en paramètres 2 sections
-  - transfert de exparser.php de dexp dans dataset
-  - ajout de proj.php
+  - reconception de la classe Join qui hérite de la classe Section et prend en paramètres 2 sections
 13/8/2025:
   - adaptation pour fonctionner avec ../dexp
 11/8/2025:

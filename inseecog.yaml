@@ -206,7 +206,9 @@ $schema:
             type: {enum: [C, 'N', V]} 
     v_commune_2025:
       title: Communes, Communes associées, Communes déléguées et arrondissements municipaux
-      description: Regroupe Communes, Communes associées, Communes déléguées et arrondissements municipaux.
+      description: |
+        Cette section regroupe Communes, Communes associées, Communes déléguées et arrondissements municipaux.
+        Le schéma distingue le type des communes de celui des autres entités.
       type: array
       items:
         oneOf:
@@ -333,10 +335,13 @@ $schema:
     v_ctcd_2025:
       title: Collectivités territoriales ayant les compétences départementales
       description: |
-        Généralement le conseil départemental sauf:
-          - en Corse où c'est la CTC
-          - en Alsace où c'est la Collectivité européenne d'Alsace
-          - dans le Rhône où ce sont le Conseil départemental du Rhône et la Métropole de Lyon
+        Généralement le conseil départemental (codé xxD) sauf:
+          - en Corse où c'est la CTC (codée 20R)
+          - en Alsace où c'est la Collectivité européenne d'Alsace (6AE)
+          - dans le Rhône où la compétence est partagée territorialement entre le Conseil départemental du Rhône (69D) et
+            la Métropole de Lyon (69M)
+          - en Martinique où c'est la Collectivité territoriale unique de La Martinique (972R)
+          - en Guyane où c'est la Collectivité territoriale unique de La Guyane (973R)
         100 entités.
       type: array
       items:

@@ -54,7 +54,7 @@ class DataDisplay extends DataProgram {
   
   function __invoke(): bool {
     echo "DataDisplay::__invoke()<br>\n";
-    foreach (($this->exp)->getTuples() as $key => $tuple) {
+    foreach (($this->exp)()->getTuples() as $key => $tuple) {
       echo "<pre>"; print_r([$key => $tuple]); echo "</pre>\n";
     }
     return false;
@@ -101,24 +101,25 @@ class DataUnion extends DataOperation {
 */
 /** Projection du résultat d'une expression sur des champs en les renommant. */
 class DataProj extends DataExpTable {
-  /** @param list<list<string>> $fieldPairs */
+  /** @param array<string,string> $fieldPairs */
   function __construct(readonly DataExpTable $expTable, readonly array $fieldPairs) {}
     
   function __invoke(): Proj { return new Proj(($this->expTable)(), $this->fieldPairs); }
 };
 
-/** Sélection. */
+/** Sélection. * /
 class DataSelect extends DataExpTable {
   function __construct(readonly Condition $condition, readonly DataExpTable $expTable) {}
 
+  function __invoke(): Proj {}
   /*function __invoke(): Generator {
     echo "DataSelect::__invoke()<br>\n";
     foreach (($this->expTable)() as $key => $tuple) {
       if (($this->condition)($tuple))
         yield $key => $tuple;
     }
-  }*/
-};
+  }* /
+};*/
 
 /** Condition */
 class Condition {
