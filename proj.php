@@ -10,11 +10,13 @@ class Proj extends Section {
   function id(): string {
     return
       'proj('.$this->section->id()
-      .implode(array_map(
-        function ($from, $to) { return ",$from/$to"; },
-        array_keys($this->fieldPairs),
-        array_values($this->fieldPairs)))
-      .')';
+      .', ['
+      .implode(',',
+        array_map(
+          function ($from, $to) { return "$from>$to"; },
+          array_keys($this->fieldPairs),
+          array_values($this->fieldPairs)))
+      .'])';
   }
   
   /** Retourne les filtres implémentés par getTuples().

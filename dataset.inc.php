@@ -286,9 +286,10 @@ class SchemaOfSection {
 abstract class Section {
   /** Nb de n-uplets par défaut par page à afficher */
   const NB_TUPLES_PER_PAGE = 20;
-  /** @param ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues')$kind - type des éléments */
+  /** @var ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
   readonly string $kind; // 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
   
+  /** @param ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
   function __construct(string $kind='listOfTuples') { $this->kind = $kind; }
   
   /** l'identifiant permettant de recréer la section. */

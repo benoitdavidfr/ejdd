@@ -1,8 +1,29 @@
 <?php
 /** Parser simplifié d'expressions ensemblistes fondé sur preg_match().
- * A l'avantage d'être plus compact que le parser expparser.
+ * A l'avantage d'être plus compact que le parser expparser fondé sur BanafInt.
  * 18/8/2025: DEV en cours. Marche sur display, join et proj
  */
+/* Actions à réaliser. */
+define('A_FAIRE_PARSER', [
+<<<'EOT'
+- coder select et union
+- améliorer la gestion des clés
+  - dans une jointure, je perd les clés des tables des 2 côtés pour créer une liste de tuples
+    - solution choisie
+    - si j'ai 1 dictOfValues ou listOfValues alors je les transforme en dictOfTuples/listOfTuples
+    - si j'ai 2 listOfValues alors je crée un listOfValues sans clé
+    - sinon je crée un dictOfValues et je prends comme clé la contacténation des clés avec le caractère '-' entre les 2
+  - il faudrait pouvoir utiliser la clé comme champ de jointure en utilisant le nom de champ 'key'
+- ajouter
+  - agrégation
+  - jointure spatiale ?
+  - map ?
+  - utilisation d'un champ comme clé, transformation d'un listOfTuples en dictOfTuples
+  - transfert de la clé comme champ, transformation d'un dictOfTuples en listOfTuples
+- pourquoi ODS st très lent alors que ca allait avant ?
+EOT
+]
+);
 
 require_once 'dataset.inc.php';
 require_once 'proj.php';
@@ -37,7 +58,7 @@ class DsParser {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
-    '{name}' => '[a-zA-Z][a-zA-Z0-9_]*', // nom représentant {datasetName}, {sectionName} ou {field}
+    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {sectionName} ou {field}
     '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
     '{integer}'=> '[0-9]+',
@@ -55,7 +76,7 @@ class DsParser {
              | {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
              | 'spatial-join' '(' {expTable} ',' {expTable} ')'
              | 'union' '(' {expTable} ',' {expTable} ')'
-             | 'proj' '(' {expTable} ',' {FieldPairs} ')'
+             | 'proj' '(' {expTable} ',' '[' {FieldPairs} ']' ')'
              | 'select' '(' {cond} ',' {expTable} ')'
             // | 'map' '(' {phpFun} ',' {expTable} ')' - à voir plus tard
 {FieldPairs} ::= {namePair}
@@ -181,8 +202,9 @@ EOT
     // {expTable}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
     $text = $text0;
     if (($expDataset = self::expDataset($path, $text))
-    && self::token($path, '{point}', $text)
-    && ($name = self::token($path, '{name}', $text))) {
+      && self::token($path, '{point}', $text)
+        && ($name = self::token($path, '{name}', $text))
+    ) {
       self::addTrace($path, "Succès expTable#0", $text0);
       $text0 = $text;
       return SectionOfDs::get("$expDataset.$name");
@@ -208,13 +230,16 @@ EOT
     }
     self::addTrace($path, "Echec expTable#1", $text0);
     
-    // {expTable}#4 : 'proj' '(' {expTable} ',' {FieldPairs} ')'
+    // {expTable}#4 : 'proj' '(' {expTable} ',' '[' {FieldPairs} ']' ')'
     $text = $text0;
     if (self::pmatch('proj\(', $text) 
-    && ($expTable = self::expTable($path, $text))
-    && self::pmatch(',', $text)
-    && ($fieldPairs = self::fieldPairs($path, $text))
-    && self::pmatch('\)', $text)) {
+      && ($expTable = self::expTable($path, $text))
+        && self::pmatch(',', $text)
+          && self::pmatch('\[', $text)
+            && ($fieldPairs = self::fieldPairs($path, $text))
+              && self::pmatch('\]', $text)
+                && self::pmatch('\)', $text)
+    ) {
       $text0 = $text;
       return new Proj($expTable, $fieldPairs);
     }
@@ -290,29 +315,34 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 class DsParserTest {
   const EXAMPLES = [
     "display"=> "display(InseeCog.v_region_2025)",
-    "xx"=> "xx",
-    "display(xx)"=> "display(xx)",
-    "display(proj)"=> "display(proj(InseeCog.v_region_2025, REG>reg, LIBELLE>lib))",
-    "projSsBlancs"=> "proj(InseeCog.v_region_2025,REG>reg,LIBELLE>lib)",
-    "projAvecBlancs"=> "proj(InseeCog.v_region_2025, REG>reg, LIBELLE>lib)",
+    "xx -> erreur"=> "xx",
+    "display(xx) -> erreur"=> "display(xx)",
+    "display(proj)"=> "display(proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
+    "proj -> renvoie rien"=> "proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
     "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
-    "jointure simple" => "inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
+    "jointure simple -> renvoie rien" => "inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
     "display(jointure simple)" => "display(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
-    "Expression complexe" =>
-       "inner-join(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
+    "Expression complexe -> renvoie rien"
+      => "inner-join(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
     "spatial join"=>"spatial-join(InseeCog.v_region_2025, AeCogPe.region)",
     "union"=> "union(InseeCog.v_region_2025, AeCogPe.region)",
+    "DeptReg.régions" => "DeptReg.régions",
+    "display DeptReg.régions" => "display(DeptReg.régions)",
+    "display DeptReg.régions codeInsee=REG InseeCog.v_region_2025"
+      => "display(inner-join(DeptReg.régions, codeInsee, InseeCog.v_region_2025, REG))",
   ];
   
   static function main(): void {
+    echo "<title>parser</title>\n";
     switch ($_GET['action'] ?? null) {
       case null: {
+        echo "<h2>Test de DsParser</h2>\n";
         foreach (self::EXAMPLES as $title => $exp)
-          echo "<a href='?action=display&title=",urlencode($title),"'>$title</a> ",
+          echo "<a href='?action=show&title=",urlencode($title),"'>$title</a> ",
                "(<a href='?action=exec&title=",urlencode($title),"'>exec</a>)<br>\n";
         break;
       }
-      case 'display': {
+      case 'show': { // affiche le requête compilée 
         $exp = self::EXAMPLES[$_GET['title']];
         echo "<pre>exp = $exp</pre>\n";
         echo '<pre>result='; print_r(DsParser::program($exp));
@@ -320,7 +350,7 @@ class DsParserTest {
         DsParser::displayTrace();
         break;
       }
-      case 'exec': {
+      case 'exec': { // exécute la requête 
         $input = self::EXAMPLES[$_GET['title']];
         echo "<pre>input = $input</pre>\n";
         if (!($program = DsParser::program($input))) {
@@ -331,6 +361,15 @@ class DsParserTest {
         if (get_class($program) == 'Program') {
           $program();
         }
+        break;
+      }
+      case 'display': { // traite une demande d'affichage d'un n-uplet générée par un display du résultat 
+        echo '<pre>'; print_r($_GET); echo "</pre>\n";
+        if (!($section = DsParser::program($_GET['section']))) {
+          DsParser::displayTrace();
+          die();
+        }
+        $section->displayTuple($_GET['key']);
         break;
       }
       default: throw new Exception("Action $_GET[action] inconnue");
