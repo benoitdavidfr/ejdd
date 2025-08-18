@@ -163,6 +163,8 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+18/8/2025:
+  - ajout jointure dans expparserlight.php
 17/8/2025:
   - transfert de exparser.php de dexp dans dataset
   - ajout de proj.php
@@ -217,7 +219,7 @@ define('JOURNAL', [
   - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
 14/6/2025:
   - début v2 fondée sur idees.yaml
-  - à la différence de la V1 (stockée dans v1) il n'est plus nécessaire de stocker un JdD en JSON
+  - à la différence de la V1 il n'est plus nécessaire de stocker un JdD en JSON
   - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
 EOT
 ]

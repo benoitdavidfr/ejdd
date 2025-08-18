@@ -1,8 +1,9 @@
 <?php
-/** Test d'un parser light uniquement avec preg_match(). */
+/** Test d'un parser light fondé sur preg_match(). */
 
 require_once 'dataset.inc.php';
 require_once 'proj.php';
+require_once 'join.php';
 
 class Program {
   function __construct(readonly string $operator, readonly Section $operand) {}
@@ -54,15 +55,16 @@ EOT
   static array $trace;
   
   /** @param list<string> $path - chemin des appels */
-  static function addTrace(array $path, string $message): void {
-    self::$trace[] = ['path'=> $path, 'message'=> $message];
+  static function addTrace(array $path, string $message, string $text): void {
+    self::$trace[] = ['path'=> $path, 'message'=> $message, 'text'=> $text];
   }
   
   static function displayTrace(): void {
     echo "<pre>trace:\n";
     foreach (self::$trace as $trace) {
       echo "  - path: ",implode('/', $trace['path']),"\n",
-           "    message: ",$trace['message'],"\n";
+           "    message: ",$trace['message'],"\n",
+           "    text: ",$trace['text'],"\n";
     }
   }
   
@@ -78,7 +80,7 @@ EOT
       //echo '<pre>matches='; print_r($matches); echo "</pre>\n";
       $text = substr($text, strlen($matches[0]));
       // je consomme d'éventuels blans après
-      self::token('space', $text);
+      self::token([], 'space', $text);
       //echo "pmatch($pattern, $text0) -> true && text=\"$text\"<br>\n";
       return true;
     }
@@ -90,13 +92,23 @@ EOT
   }
   
   /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null */
-  static function token(string $tokenName, string &$text): ?string {
-    $pattern = self::TOKENS[$tokenName] ?? $tokenName;
+  static function token(array $path, string $tokenName, string &$text): ?string {
+    $text0 = $text;
+    if ($path)
+      $path[] = "token($tokenName)";
+    if (!($pattern = self::TOKENS[$tokenName] ?? null))
+      throw new Exception("Erreur dans token, tokenName=$tokenName inexistant");
     $matches = [];
-    if (self::pmatch($pattern, $text, $matches))
+    if (self::pmatch($pattern, $text, $matches)) {
+      if ($path)
+        self::addTrace($path, "Succès token($tokenName)", "$text0 -> $text");
       return $matches[0];
-    else
+    }
+    else {
+      if ($path)
+        self::addTrace($path, "Echec token($tokenName)", "$text0 -> $text");
       return null;
+    }
   }
   
   static function program(string &$text0): Program|Section|null {
@@ -108,24 +120,24 @@ EOT
     && ($expTable = self::expTable($path, $text))
     && (self::pmatch('^\)', $text))
     && ($text == '')) {
-      self::addTrace($path, "succès sur $text0 -> $text");
+      self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
       return new Program('display', $expTable);
     }
-    self::addTrace($path, "Echec {program}#0 sur $text0");
+    self::addTrace($path, "Echec {program}#0", $text0);
     
     // {program}#2 : {expTable}
     $text = $text0;
     if (($expTable = self::expTable($path, $text))
     && ($text == '')) {
-      self::addTrace($path, "succès sur $text0 -> $text");
+      self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
       return $expTable;
     }
-    self::addTrace($path, "Echec {program}#2 sur $text0");
+    self::addTrace($path, "Echec {program}#2", $text0);
     
     //throw new Exception("Erreur sur program($text0), reste \"$text\"");
-    self::addTrace($path, "Echec {program}#2 sur $text0");
+    self::addTrace($path, "Echec {program}", $text0);
     return null;
   }
   
@@ -134,30 +146,49 @@ EOT
     $path[] = 'expDataset';
     // {expDataset} ::= {name}                    // eg: InseeCog
     $text = $text0;
-    if ($name = self::token('{name}', $text)) {
-      self::addTrace($path, "Echec {expDataset} sur $text0");
+    if ($name = self::token($path, '{name}', $text)) {
+      self::addTrace($path, "Echec {expDataset}", $text0);
       $text0 = $text;
       return $name;
     }
 
-    self::addTrace($path, "Echec {expDataset} sur $text0");
+    self::addTrace($path, "Echec {expDataset}", $text0);
     return null;
   }
   
   /** @param list<string> $path - chemin des appels */
   static function expTable(array $path, string &$text0): ?Section {
-    $path[] = "expTable($text0)";
+    $path[] = "expTable";
     //echo "Test expTable($text0)<br>\n";
     // {expTable}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
     $text = $text0;
     if (($expDataset = self::expDataset($path, $text))
-    && self::token('{point}', $text)
-    && ($name = self::token('{name}', $text))) {
-      self::addTrace($path, "Succès expTable($text0)");
+    && self::token($path, '{point}', $text)
+    && ($name = self::token($path, '{name}', $text))) {
+      self::addTrace($path, "Succès expTable#0", $text0);
       $text0 = $text;
       return SectionOfDs::get("$expDataset.$name");
     }
-    self::addTrace($path, "Echec expTable#0($text0)");
+    self::addTrace($path, "Echec expTable#0", $text0);
+    
+    // {expTable}#1 : {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
+    $text = $text0;
+    if (($joinName = self::token($path, '{joinName}', $text))
+      && self::pmatch('\(', $text)
+        && ($expTable1 = self::expTable($path, $text))
+          && self::pmatch(',', $text)
+            && ($field1 = self::token($path, '{name}', $text))
+              && self::pmatch(',', $text)
+                && ($expTable2 = self::expTable($path, $text))
+                  && self::pmatch(',', $text)
+                    && ($field2 = self::token($path, '{name}', $text))
+                      && self::pmatch('\)', $text)
+    ) {
+      self::addTrace($path, "Succès expTable#1", $text0);
+      $text0 = $text;
+      return new Join($joinName, $expTable1, $field1, $expTable2, $field2);
+    }
+    self::addTrace($path, "Echec expTable#1", $text0);
     
     // {expTable}#4 : 'proj' '(' {expTable} ',' {FieldPairs} ')'
     $text = $text0;
@@ -169,9 +200,9 @@ EOT
       $text0 = $text;
       return new Proj($expTable, $fieldPairs);
     }
-    self::addTrace($path, "Echec expTable#4($text0)");
+    self::addTrace($path, "Echec expTable#4", $text0);
 
-    self::addTrace($path, "Echec expTable($text0)");
+    self::addTrace($path, "Echec expTable", $text0);
     return null;
   }
   
@@ -183,8 +214,10 @@ EOT
     //                | {namePair} ',' {FieldPairs}
     //echo "fieldPairs($text0)<br>\n";
     $text = $text0;
-    if (!($namePair0 = self::namePair($path, $text)))
-      throw new Exception("Erreur sur fieldPairs($text0)");
+    if (!($namePair0 = self::namePair($path, $text))) {
+      self::addTrace($path, "Echec sur namePair0", $text0);
+      return null;
+    }
     $text1 = $text;
     if (self::pmatch(',', $text) && ($fieldPairs = self::fieldPairs($path, $text))) {
       $text0 = $text;
@@ -204,16 +237,16 @@ EOT
     $path[] = 'namePair';
     // {namePair} ::= {name} '/' {name}
     $text = $text0;
-    if (($key = self::token('{name}', $text))
+    if (($key = self::token($path, '{name}', $text))
     && self::pmatch('/', $text)
-    && ($value = self::token('{name}', $text))) {
-      self::addTrace($path, "succès");
+    && ($value = self::token($path, '{name}', $text))) {
+      self::addTrace($path, "succès", $text0);
       $text0 = $text;
       return [$key => $value];
     }
     
     //throw new Exception("Erreur sur namePair($text0)");
-    self::addTrace($path, "échec");
+    self::addTrace($path, "échec", $text0);
     return null;
   }
   
@@ -225,7 +258,7 @@ EOT
     }
     elseif (1) {
       $text = 'inseeCog.region';
-      echo 'res=',self::token('{name}', $text),", text=$text<br>\n";
+      echo 'res=',self::token($path, '{name}', $text),", text=$text<br>\n";
     }
     die("Fin ligne ".__LINE__);
   }
@@ -241,11 +274,12 @@ class DsParserLightTest {
     "projSsBlancs"=> "proj(InseeCog.v_region_2025,REG/reg,LIBELLE/lib)",
     "projAvecBlancs"=> "proj(InseeCog.v_region_2025, REG/reg, LIBELLE/lib)",
     "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
-    "jointure simple" => "inner-join(InseeCog/v_region_2025, REG, AeCogPe/region, insee_reg)",
+    "jointure simple" => "inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
+    "display(jointure simple)" => "display(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
     "Expression complexe" =>
-       "inner-join(inner-join(InseeCog/v_region_2025, REG, AeCogPe/region, insee_reg), REG, AeCogPe/region, insee_reg)",
-    "spatial join"=>"spatial-join(InseeCog/v_region_2025, AeCogPe/region)",
-    "union"=> "union(InseeCog/v_region_2025, AeCogPe/region)",
+       "inner-join(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
+    "spatial join"=>"spatial-join(InseeCog.v_region_2025, AeCogPe.region)",
+    "union"=> "union(InseeCog.v_region_2025, AeCogPe.region)",
   ];
   
   static function main(): void {
