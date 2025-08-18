@@ -29,6 +29,7 @@
  *     - il est facile à éditer pour gérer des petits jeux de données tabulaires
  *     - le format est assez standard
  *     - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
+ *     - voir son efficacité
  *   - Php est utilisé pour exécuter du code et j'évite de stocker des données en Php car
  *     - c'est difficilement éditable
  *     - c'est moins performant que JSON
@@ -37,19 +38,19 @@
  * ---------
  * ### Généralités:
  *  - un JdD est identifié par un **nom court**, comme DeptReg
- *  - en outre un JdD est constitué de **MD** et de **sections de données**
+ *  - en outre un JdD agrège des **sections de données** et contient des **MD**
  *  - un JdD doit a minima définir les 3 MD suivantes
  *    - title -> titre du JdD, pas plus long qu'une ligne
- *    - description -> texte de présentation du JdD aussi longue qu'utile
+ *    - description -> texte de présentation du JdD aussi longue qu'utile, il faudrait la mettre en Markdown
  *    - $schema -> schéma JSON des sections de données
- *  - un JdD est constitué enfin d'autant de sections de données nécessaires pour stocker des données
+ *  - les données d'un JdD sont structurées en sections de données
  *    - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
  *    - la référence d'une section est la notion de table de n-uplets
  *    - une section de données peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
  *  - la notion de schéma JSON des sections est un peu virtuelle
  *    - car les données des sections ne sont pas forcément stockées selon ce schéma
  *    - mais elles doivent par contre être disponibles en Php dans ce schéma
- *      - en considérant qu'un Generator correspond à un object ou un array en fonction de la clé
+ *      - en considérant qu'un Generator est un dictionnaire (object JSON) ou une liste (array JSON) en fonction de la clé
  *    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
  *      - cette notion de catégorie permet de mutualiser le code Php entre différents jeux ayant le même comportement 
  *    - une catégorie de JdD peut exiger des MD complémentaires ou différentes
@@ -60,6 +61,10 @@
  *  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
  *  - cette classe Php hérite de la classe abstraite Dataset
  *    - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
+ *  - un Dataset est composé d'objets SectionOfDs qui hérite de la classe Section
+ *    - la classe Section représente un itérable d'éléments qui peut
+ *      - soit appartenir à un JdD,
+ *      - soit être généré dynamiquement par une opération ensembliste (join, projection, ...)
  *  - une catégorie de JdD correspond à
  *    - une classe Php héritant de Dataset et portant le nom de la catégorie
  *    - un fichier Php qui
@@ -71,7 +76,7 @@
  *          - qui est exécutée en exécutant le fichier Php
  *          - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
  *          - qui définit une méthode statique main() qui est appelée à la fin du fichier
- *       - la définition des MD d'un JdD doit être conforme à un méta-schéma des JdD
+ *       - les MD d'un JdD respectent la forme du schéma JSON et doivent être conformes à un méta-schéma des JdD
  * ### utilisationEnPhp:
  *  - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
  *  - je récupère ses MD par $ds->title, $ds->description et $ds->schema
@@ -82,7 +87,7 @@
  *      - intervalle de valeurs d'un champ
  *      - intersection avec un rectangle
  *      - niveau de zoom
- *  - plus traitement ensembliste de jointure
+ *  - un langage défini par une BNF permet d'exprimer XXXX
  * ### carte:
  *  - un JdD MapDataset contient la définition de cartes
  *  - ces cartes peuvent être affichées avec Leaflet
@@ -132,7 +137,6 @@
 /* Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- tester la possibilité d'un parser uniquement avec preg_match
 - réfléchir
   - aux index
   - à un optimiseur

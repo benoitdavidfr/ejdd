@@ -116,20 +116,18 @@ class Join extends Section {
    * @return array<mixed>|string|null
    */ 
   function getOneTupleByKey(int|string $key): array|string|null {
-      $keys = self::decatKeys($key);
-      if (!($tuple1 = $this->table1->getOneTupleByKey($keys[1])))
-        return null;
-      if (!($tuple2 = $this->table2->getOneTupleByKey($keys[2])))
-        return null;
-      
-      $tuple = [];
-      foreach ($tuple1 as $k => $v)
-        $tuple["s1.$k"] = $v;
-      foreach ($tuple2 as $k => $v)
-        $tuple["s2.$k"] = $v;
-      return $tuple;
-    }
-    return null;
+    $keys = self::decatKeys($key);
+    if (!($tuple1 = $this->table1->getOneTupleByKey($keys[1])))
+      return null;
+    if (!($tuple2 = $this->table2->getOneTupleByKey($keys[2])))
+      return null;
+    
+    $tuple = [];
+    foreach ($tuple1 as $k => $v)
+      $tuple["s1.$k"] = $v;
+    foreach ($tuple2 as $k => $v)
+      $tuple["s2.$k"] = $v;
+    return $tuple;
   }
 };
 

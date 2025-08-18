@@ -337,9 +337,29 @@ class DsParserTest {
     switch ($_GET['action'] ?? null) {
       case null: {
         echo "<h2>Test de DsParser</h2>\n";
+        echo "<a href='?action=bnf'>Affiche la BNF du langage</a><br>\n";
+        echo "<h3>Exemples pour tester</h3>\n";
         foreach (self::EXAMPLES as $title => $exp)
           echo "<a href='?action=show&title=",urlencode($title),"'>$title</a> ",
                "(<a href='?action=exec&title=",urlencode($title),"'>exec</a>)<br>\n";
+        break;
+      }
+      case 'bnf': { // Affiche la BNF du langage 
+        echo "<h2>BNF du langage de requêtes</h2>\n";
+        echo '<pre>',DsParser::BNF[0],"</pre>\n";
+        echo "Les nonterminaux sont définis par des symboles entre accolades.<br>
+          Les terminaux sont:<br>
+          - d'une part les symboles entre guillemets dans la BNF qui correspondent à la chaîne entre guillemets et,<br>
+          - d'autre part les symboles suivants définis par l'expression régulière indiquée:</p>";
+        echo "<table border=1><th>symbole</th><th>expression régulière</th>\n";
+        echo implode('', array_map(
+          function($symbol, $reg) { return "<tr><td>$symbol</td><td>$reg</td></tr>\n"; },
+          array_keys(DsParser::TOKENS),
+          array_values(DsParser::TOKENS)
+        ));
+        echo "</table>\n";
+        echo "Le symbole <b>space</b> est correspond à un blanc dans l'analyse lexicale.";
+        //echo '<pre>'; print_r(DsParser::TOKENS); echo "</pre>\n";
         break;
       }
       case 'show': { // affiche le requête compilée 
