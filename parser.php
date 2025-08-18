@@ -1,10 +1,14 @@
 <?php
-/** Test d'un parser light fondé sur preg_match(). */
+/** Parser simplifié d'expressions ensemblistes fondé sur preg_match().
+ * A l'avantage d'être plus compact que le parser expparser.
+ * 18/8/2025: DEV en cours. Marche sur display, join et proj
+ */
 
 require_once 'dataset.inc.php';
 require_once 'proj.php';
 require_once 'join.php';
 
+/** Classe utilisée pour exécuter display ou draw */
 class Program {
   function __construct(readonly string $operator, readonly Section $operand) {}
   
@@ -18,7 +22,18 @@ class Program {
   }
 };
 
-class DsParserLight {
+/** Le parser, appelé par program(), retourne un Program, une Section ou null en cas d'erreur.
+ * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
+ * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
+ * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
+ *
+ * Du point de vue implémentation, la classe est statique et regroupe des fonctions:
+ *  - addTrace() et displayTrace() gèrent la trace
+ *  - pmatch() est un preg_match() amélioré
+ *  - token() teste si le texte commence par un token donné
+ *  - une fonction par nonterminal qui retourne l'élément analysé en cas de succès et faux en cas d'échec
+ */
+class DsParser {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
@@ -45,13 +60,13 @@ class DsParserLight {
             // | 'map' '(' {phpFun} ',' {expTable} ')' - à voir plus tard
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
-{namePair} ::= {name} '/' {name}
+{namePair} ::= {name} '>' {name}
 {cond} ::= {name} {condOp} {constant}
 {constant} ::= {integer} | {float} | {string}
 EOT
   ];
   
-  /** @var list<array{'path': list<string>, 'message': string}> $trace - Trace des succès et échecs d'appels à des non terminaux */
+  /** @var list<array{'path': list<string>, 'message': string, 'text': string}> $trace - Trace des succès et échecs d'appels à des non terminaux et terminaux de TOKENS (sauf space) */
   static array $trace;
   
   /** @param list<string> $path - chemin des appels */
@@ -68,14 +83,14 @@ EOT
     }
   }
   
-  /** preg_match modifié qui modifie le texte en entrée en renvoyant le reste non matché.
+  /** preg_match modifié qui notamment si match modifie le texte en entrée en renvoyant le reste non matché.
    * @param list<string> $matches
    * @param-out array<string> $matches
    */
   static function pmatch(string $pattern, string &$text, array &$matches=[]): bool {
     $text0 = $text;
     $matches = [];
-    $p = (preg_match("!^$pattern!", $text, $matches));
+    $p = preg_match("!^$pattern!", $text, $matches);
     if ($p === 1) {
       //echo '<pre>matches='; print_r($matches); echo "</pre>\n";
       $text = substr($text, strlen($matches[0]));
@@ -88,10 +103,13 @@ EOT
       //echo "pmatch(\"$pattern\", \"$text\")->false<br>\n";
       return false;
     }
-    throw new Exception("Erreur de preg_match sur pattern $pattern");
+    else
+      throw new Exception("Erreur de preg_match sur pattern $pattern");
   }
   
-  /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null */
+  /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null.
+   * @param list<string> $path - chemin des appels
+   */
   static function token(array $path, string $tokenName, string &$text): ?string {
     $text0 = $text;
     if ($path)
@@ -178,9 +196,9 @@ EOT
         && ($expTable1 = self::expTable($path, $text))
           && self::pmatch(',', $text)
             && ($field1 = self::token($path, '{name}', $text))
-              && self::pmatch(',', $text)
+              && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
                 && ($expTable2 = self::expTable($path, $text))
-                  && self::pmatch(',', $text)
+                  && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
                     && ($field2 = self::token($path, '{name}', $text))
                       && self::pmatch('\)', $text)
     ) {
@@ -216,7 +234,7 @@ EOT
     $text = $text0;
     if (!($namePair0 = self::namePair($path, $text))) {
       self::addTrace($path, "Echec sur namePair0", $text0);
-      return null;
+      return [];
     }
     $text1 = $text;
     if (self::pmatch(',', $text) && ($fieldPairs = self::fieldPairs($path, $text))) {
@@ -238,16 +256,16 @@ EOT
     // {namePair} ::= {name} '/' {name}
     $text = $text0;
     if (($key = self::token($path, '{name}', $text))
-    && self::pmatch('/', $text)
-    && ($value = self::token($path, '{name}', $text))) {
+      && self::pmatch('>', $text)
+        && ($value = self::token($path, '{name}', $text))
+    ) {
       self::addTrace($path, "succès", $text0);
       $text0 = $text;
       return [$key => $value];
     }
     
-    //throw new Exception("Erreur sur namePair($text0)");
     self::addTrace($path, "échec", $text0);
-    return null;
+    return [];
   }
   
   static function test(): void {
@@ -258,21 +276,25 @@ EOT
     }
     elseif (1) {
       $text = 'inseeCog.region';
-      echo 'res=',self::token($path, '{name}', $text),", text=$text<br>\n";
+      echo 'res=',self::token([], '{name}', $text),", text=$text<br>\n";
     }
     die("Fin ligne ".__LINE__);
   }
 };
-//DsParserLight::test();
+//DsParser::test();
 
-class DsParserLightTest {
+
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
+
+
+class DsParserTest {
   const EXAMPLES = [
     "display"=> "display(InseeCog.v_region_2025)",
     "xx"=> "xx",
     "display(xx)"=> "display(xx)",
-    "display(proj)"=> "display(proj(InseeCog.v_region_2025, REG/reg, LIBELLE/lib))",
-    "projSsBlancs"=> "proj(InseeCog.v_region_2025,REG/reg,LIBELLE/lib)",
-    "projAvecBlancs"=> "proj(InseeCog.v_region_2025, REG/reg, LIBELLE/lib)",
+    "display(proj)"=> "display(proj(InseeCog.v_region_2025, REG>reg, LIBELLE>lib))",
+    "projSsBlancs"=> "proj(InseeCog.v_region_2025,REG>reg,LIBELLE>lib)",
+    "projAvecBlancs"=> "proj(InseeCog.v_region_2025, REG>reg, LIBELLE>lib)",
     "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
     "jointure simple" => "inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
     "display(jointure simple)" => "display(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
@@ -293,16 +315,16 @@ class DsParserLightTest {
       case 'display': {
         $exp = self::EXAMPLES[$_GET['title']];
         echo "<pre>exp = $exp</pre>\n";
-        echo '<pre>result='; print_r(DsParserLight::program($exp));
+        echo '<pre>result='; print_r(DsParser::program($exp));
         echo "trace=\n";
-        DsParserLight::displayTrace();
+        DsParser::displayTrace();
         break;
       }
       case 'exec': {
         $input = self::EXAMPLES[$_GET['title']];
         echo "<pre>input = $input</pre>\n";
-        if (!($program = DsParserLight::program($input))) {
-          DsParserLight::displayTrace();
+        if (!($program = DsParser::program($input))) {
+          DsParser::displayTrace();
           die();
         }
         //echo '<pre>$program='; print_r($program); echo "</pre>\n";
@@ -315,4 +337,4 @@ class DsParserLightTest {
     }
   }
 };
-DsParserLightTest::main();
+DsParserTest::main();
