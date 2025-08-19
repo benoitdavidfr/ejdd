@@ -1,6 +1,6 @@
 <?php
 /** Jeu de données WorldEez.
- * package Dataset
+ * @package Dataset
  */
 ini_set('memory_limit', '10G');
 
@@ -45,6 +45,7 @@ class WorldEez extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+/** Constructeur de WorldEez. */
 class WorldEezBuild {
   const GEOJSON_DIR = WorldEez::GEOJSON_DIR;
   /** Chemin du répertoire contenant les fichiers SHP */

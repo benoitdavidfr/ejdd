@@ -5,6 +5,7 @@
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
 
+/** Description du JdD AeCogPe. */
 define('AECOGPE_DESCRIPTION', [
   <<<'EOT'
 Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartien à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).

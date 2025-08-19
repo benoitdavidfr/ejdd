@@ -1,6 +1,8 @@
 <?php
 /** setop. Tests opérations ensemblistes.
  * M'a permis de tester join, count et size qui ont été transférés dans dataset.inc.php
+ *
+ * @package Algebra
  */
 
 class SetOp {

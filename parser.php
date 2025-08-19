@@ -2,6 +2,8 @@
 /** Parser simplifié d'expressions ensemblistes fondé sur preg_match().
  * A l'avantage d'être plus compact que le parser expparser fondé sur BanafInt.
  * 18/8/2025: DEV en cours. Marche sur display, join et proj
+ *
+ * @package Algebra
  */
 /* Actions à réaliser. */
 define('A_FAIRE_PARSER', [

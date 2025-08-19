@@ -2,6 +2,7 @@
 /** Jeu de données générique géré dans un fichier ods. */
 require_once 'dataset.inc.php';
 
+/** Feuille de documentation d'un fichier ODS. */
 class DocProperty {
   readonly ?string $description;
   /** @var list<string> $options Les options la proipriété parmi key, optional, integer */
@@ -21,6 +22,7 @@ class DocProperty {
   }
 };
 
+/** Feuille d'une section d'un fichier ODS. */
 class DocSection {
   readonly string $name;
   protected ?string $title=null;

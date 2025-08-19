@@ -1,5 +1,6 @@
 <?php
 /** Immlémentation d'une jointure entre 2 sections de JdD générant une nouvelle section de requête.
+ * @package Algebra
  */
 ini_set('memory_limit', '10G');
 

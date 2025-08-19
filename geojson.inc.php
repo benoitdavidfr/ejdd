@@ -1,5 +1,7 @@
 <?php
-/** Bibliothèque d'utilisation du GeoJSON */
+/** Bibliothèque d'utilisation du GeoJSON
+ * @package GeoJSON
+ */
 //ini_set('memory_limit', '10G');
 
 /** Les grandeurs kilo, Méga, Giga, ... */

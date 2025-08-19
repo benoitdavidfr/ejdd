@@ -24,14 +24,14 @@ require_once __DIR__.'/predicate.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** Pour mettre du code Html dans un RecArray */
+/** Pour mettre du code Html dans un RecArray. */
 class HtmlCode {
   readonly string $c;
   function __construct(string $c) { $this->c = $c; }
   function __toString(): string { return $this->c; }
 };
 
-/** Fonction facilitant la construction de formulaires Html */
+/** Fonction facilitant la construction de formulaires Html. */
 class HtmlForm {
   /** Génère un élémt select de formulaire Html.
    * Les options peuvent être soit une liste de de valeurs soit un dictionnaire [key => valeur]
@@ -179,7 +179,7 @@ class RecArray {
 };
 //RecArray::test(); // Test RecArray 
 
-/** Le schéma JSON de la section */
+/** Le schéma JSON d'une Section. */
 class SchemaOfSection {
   /** @var array<mixed> $array */
   readonly array $array;
@@ -281,9 +281,9 @@ class SchemaOfSection {
   }
 };
 
-/** Une section 
+/** Une Section, cad un itérable de n-uplets soit exposé par un Dataset, soit issu d'une requête.
  * Est capable d'itérer sur ses n-uplets, d'indiquer les filtres mis en oeuvre et d'afficher les n-uplets.
- * Il y a 2 types de section, celles associées à un JdD (SectionOfDs) et celles issues d'une requête (Join, Proj, ...).
+ * Il y a 2 types de section, celles exposées par un JdD (SectionOfDs) et celles issues d'une requête (Join, Proj, ...).
  * Une classe concrète doit indiquer le kind de la section et définir les méthodes suivantes:
  *   - id()
  *   - getTuples()
@@ -387,7 +387,7 @@ abstract class Section {
   }
 };
 
-/** Sections d'un JdD.
+/** Une Section d'un JdD.
  * La plupart des fonctionnalités d'une telle section sont mises en oeuvre par la classe de JdD concrète héritant de Dataset. */
 class SectionOfDs extends Section {
   /** @var string $dsName - Le nom du JdD contenant la section. */

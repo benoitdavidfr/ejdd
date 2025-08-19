@@ -3,14 +3,14 @@
  * Version de test OK.
  * Un styler est créé avec en paramètre le nom de la feuille de style (ex NaturalEarth).
  *
- * package Dataset
+ * @package Dataset
  */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** JdD StyledNaturalEarth. */
+/** Catégorie de JdD Styler permettant de styler des features. */
 class Styler extends Dataset {
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
@@ -112,6 +112,7 @@ class Styler extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
+/** Construction de Styler. */
 class StylerBuild {
   static function main(): void {
     switch($_GET['action'] ?? null) {

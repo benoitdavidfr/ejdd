@@ -1,12 +1,18 @@
 <?php
-/** Sélection de n-uplets d'une section sur un prédicat. */
+/** Sélection de n-uplets d'une section sur un prédicat.
+ * @package Algebra
+ */
 require_once 'dataset.inc.php';
 
-/** Sélection. */
+/** Opérateur de sélection des n-uplets sur un prédicat fournissant une section.
+ * Il y a une duplication entre l'opérateur Select et la possibilité pour une Section de prendre en compte un filtre Peredicate.
+ * Dans les 2 cas le Predicate est le même.
+ * De plus, lorqu'un opérateur Select est appliqué à une Section acceptant le filtre predicate, ce dernier est utilisé.
+ */
 class Select extends Section {
   function __construct(readonly Predicate $predicate, readonly Section $section) { parent::__construct('dictOfTuples'); }
 
-  /** l'identifiant permettant de recréer la section. Reconstitue la requête. */
+  /** l'identifiant permettant de recréer la section dans le parser. */
   function id(): string {
     return 'select('.$this->predicate->id().','.$this->section->id().')';
   }
@@ -56,15 +62,16 @@ class Select extends Section {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
 
+/** Test de Select. */
 class SelectTest {
   /** @return array<mixed> */
   static function examples(): array {
     return [
-      "InseeCog.v_region_2025.NCC match '!FRANCE!'" => [
+      "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une section acceptant predicate)" => [
         'section'=> SectionOfDs::get('InseeCog.v_region_2025'),
         'predicate'=> new Predicate('NCC', 'match', new Constant('string', '!FRANCE!')),
       ],
-      "DeptReg.régions.nom match '!France'" => [
+      "DeptReg.régions.nom match '!France!' (cas d'une section n'acceptant pas predicate)" => [
         'section'=> SectionOfDs::get('DeptReg.régions'),
         'predicate'=> new Predicate('nom', 'match', new Constant('string', '!France!')),
       ],

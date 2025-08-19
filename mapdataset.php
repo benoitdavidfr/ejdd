@@ -1,6 +1,6 @@
 <?php
 /** JdD des cartes.
- * package Dataset
+ * @package Dataset
  */
 
 require_once 'dataset.inc.php';
@@ -200,7 +200,7 @@ class L_geoJSON extends Layer {
   }
 };
 
-/** Le code JavaScript paramétré de la carte */
+/** Le code JavaScript paramétré de la carte utilisé par Map::draw(). */
 define('JS_SRCE', [
 <<<'EOT'
 <!DOCTYPE HTML>
@@ -280,7 +280,7 @@ EOT
 ]
 );
 
-/** Classe de la carte ; prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet pour la dessiner. */
+/** Prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet la dessinant. */
 class Map {
   /** @var array<mixed> $def La définition de la carte issue du JdD. */
   readonly array $def;

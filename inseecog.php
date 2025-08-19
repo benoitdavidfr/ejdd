@@ -61,6 +61,7 @@ class InseeCog extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
+/** Construction d'InseeCog. */
 class InseeCogBuild {
   /** Répertoire de stockage des fichiers CSV */
   const FILE_DIR = 'inseecog';

@@ -1,5 +1,7 @@
 <?php
-/** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec DsParser. */
+/** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec DsParser.
+ * @package Algebra
+ */
 require_once 'parser.php';
 
 /** Une constante définie par son type et sa valeur. */
@@ -24,7 +26,7 @@ class Constant {
   }
 };
 
-/** Le parser des prédicats, fonctionne avec le parser DsParser. */
+/** Le parser des prédicats, fonctionne en harmonie avec le parser DsParser. */
 class PredicateParser {
   const TOKENS = [
     '{float}'=> '[0-9]+\.[0-9]+',
@@ -109,7 +111,7 @@ EOT
   }
 };
 
-/** Un Predicate est une expression bouléenne qui peut être évaluée sur un n-uplet. 
+/** Un Predicate est une expression bouléenne évaluée sur un n-uplet. 
  * Dans un 1er temps on se limite à un prédicat élémentaire de la forme {field} {op} {const}, ex: nom = "valeur".
  * Cette définition pourrra évoluer en lien notamment avec le parser pour parser l'expression.
  */

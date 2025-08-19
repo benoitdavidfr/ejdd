@@ -3,7 +3,7 @@
  * Les données sont stockées dans les fichiers GeoJSON stockés dans un répertoire ayant comme nom celui du JdD en miniscules,
  * et les MD sont dans le fichier Yaml utilisant le nom du JdD en minuscules.
  *
- * package Dataset
+ * @package Dataset
  */
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';

@@ -1,8 +1,11 @@
 <?php
-/** Implémentation de l'opération de projection qui est une Section. */
+/** Implémentation de l'opération de projection qui est une Section.
+ * @package Algebra
+ */
 require_once 'dataset.inc.php';
 require_once 'join.php';
 
+/** L'opérateur de projection qui applique à une Section une sélection et un renommage de ses champs et fournit une Section. */
 class Proj extends Section {
   /** @param array<string,string> $fieldPairs */
   function __construct(readonly Section $section, readonly array $fieldPairs) { parent::__construct(); }
@@ -58,6 +61,7 @@ class Proj extends Section {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
 
+/** Test de Proj. */
 class ProjTest {
   static function main(): void {
     switch ($_GET['action'] ?? null) {

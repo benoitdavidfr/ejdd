@@ -1,4 +1,129 @@
 <?php
+/** Fichier racine de dataset.
+ * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte la documentation générale de l'application
+ * ainsi que le code initial de l'application.
+ */
+
+/** Actions à réaliser. */
+define('A_FAIRE', [
+<<<'EOT'
+- réfléchir aux index et à un optimiseur
+- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
+- revoir la gestion des rectangles
+- faire une catégorie SpreadSheet, y transférer les JdD concernés
+- transférer les JdD géo. en GeoDataset
+- publi sur internet ?
+EOT
+]
+);
+/** Journal des modifications du code. */
+define('JOURNAL', [
+<<<'EOT'
+19/8/2025:
+  - ajout Select
+  - modification Predicate pour correspondre à Select et pour parser le prédicat
+18/8/2025:
+  - ajout jointure dans expparserlight.php
+  - validation d'un parser simplifié, renommage expparserlight.php en parser.php
+  - amélioration de la jointure en utilisant les clés des sources
+17/8/2025:
+  - transfert de exparser.php de dexp dans dataset
+  - ajout de proj.php
+  - test de la possibilité d'un parser simplifié fondé sur preg_match
+16/8/2025:
+  - reconception de la classe Section en la décomposant en 2:
+    - une nouvelle classe Section abstraite pouvant soit être une section d'un JdD soit générée par une requête
+    - une classe SectionOfDs héritant de Section et correspondant à une section d'un JdD
+  - reconception de la classe Join qui hérite de la classe Section et prend en paramètres 2 sections
+13/8/2025:
+  - adaptation pour fonctionner avec ../dexp
+11/8/2025:
+  - reprise du code, amélioration de la doc
+16/7/2025:
+  - ajout d'un analyseur syntaxique sur expressions de création de dataset
+  - autonomisation de l'analyseur
+13/7/2025:
+  - intégration jointure
+11/7/2025:
+  - ajout filtre sur prédicat sur COG Insee
+  - ajout Dataset::implementedFilters()
+10/7/2025:
+  - ajout COG Insee
+  - correction bugs
+9/7/2026:
+  - ajout utilisation serveur WFS 2.0.0 et notamment celui de la Géoplateforme
+  - ajout de la pagination dans l'affichage des n-uplets d'une section
+  - modif de la signature de getTuples() pour $filters, généralisation du filtre skip
+7/7/2025:
+  - ajout de la définition de thèmes dans les feuilles de style
+  - suppression de l'extension ss pour les feuilles de style
+  - vérification de la conformité de la feuille de style au schéma des feuilles de styles
+    - le schéma des feuilles de styles est dans styler.yaml et porte un URI
+  - vérifications sur les cartes et les couches avant de les dessiner afin d'éviter les errurs lors du dessin.
+6/7/2025:
+  - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
+5/7/2025:
+  - début implem StyledNaturalEarth 
+  - correction bug dans dataset.inc.php sur la propagation des définitions dans les sous-schemas
+2/7/2025:
+  - modif catégorie NaturalEarth -> GeoDataset
+  - transfert meta schema dans dataset.yaml
+1/7/2025:
+  - fin correction des différents jeux précédemment définis en V2
+  - conforme PhpStan (8:30)
+  - définition d'une catégorie de JdD comme NaturalEarth
+29/6/2025:
+  - v3 fondée sur getTuples() à la place de getData()
+  - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
+16/6/2025:
+  - 1ère version de v2 conforme PhpStan
+  - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
+14/6/2025:
+  - début v2 fondée sur idees.yaml
+  - à la différence de la V1 il n'est plus nécessaire de stocker un JdD en JSON
+  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
+EOT
+]
+);
+/** Cmdes utiles */
+define('LIGNE_DE_COMMANDE', [
+<<<'EOT'
+Lignes de commandes
+---------------------
+  Installation des modules nécessaires:
+    composer require --dev phpstan/phpstan
+    composer require justinrainbow/json-schema
+    composer require symfony/yaml
+    composer require phpoffice/phpspreadsheet
+  phpstan:
+    ./vendor/bin/phpstan --memory-limit=1G --pro
+  Fenêtre Php8.4:
+    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
+  phpDocumentor, utiliser la commande en Php8.2:
+    ../phpDocumentor.phar -f index.php,dataset.inc.php,predicate.inc.php,join.php,proj.php,select.php,\
+dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
+geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,zoomleveL.php,\
+aecogpe.php,worldeez.php,\
+spreadsheetdataset.inc.php,\
+featureserver.php,\
+setop.php	       
+
+  Fenêtre Php8.2:
+    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Pour committer le git:
+    git commit -am "{commentaire}"
+  Pour se connecter sur Alwaysdata:
+    ssh -lbdavid ssh-bdavid.alwaysdata.net
+
+EOT
+]
+);
+
+require_once 'dataset.inc.php';
+
+ini_set('memory_limit', '10G');
+set_time_limit(5*60);
+
 /** Documentation générale de l'application.
  * Besoins:
  * --------
@@ -135,303 +260,130 @@
  *    
  * Outre cette doc, ce script contient l'IHM d'utilisation des JdD.
  */
-
-/* Actions à réaliser. */
-define('A_FAIRE', [
-<<<'EOT'
-- réfléchir aux index et à un optimiseur
-- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
-- revoir la gestion des rectangles
-- faire une catégorie SpreadSheet, y transférer les JdD concernés
-- transférer les JdD géo. en GeoDataset
-- publi sur internet ?
-EOT
-]
-);
-/* Journal des modifications du code. */
-define('JOURNAL', [
-<<<'EOT'
-19/8/2025:
-  - ajout Select
-  - modification Predicate pour correspondre à Select et pour parser le prédicat
-18/8/2025:
-  - ajout jointure dans expparserlight.php
-  - validation d'un parser simplifié, renommage expparserlight.php en parser.php
-  - amélioration de la jointure en utilisant les clés des sources
-17/8/2025:
-  - transfert de exparser.php de dexp dans dataset
-  - ajout de proj.php
-  - test de la possibilité d'un parser simplifié fondé sur preg_match
-16/8/2025:
-  - reconception de la classe Section en la décomposant en 2:
-    - une nouvelle classe Section abstraite pouvant soit être une section d'un JdD soit générée par une requête
-    - une classe SectionOfDs héritant de Section et correspondant à une section d'un JdD
-  - reconception de la classe Join qui hérite de la classe Section et prend en paramètres 2 sections
-13/8/2025:
-  - adaptation pour fonctionner avec ../dexp
-11/8/2025:
-  - reprise du code, amélioration de la doc
-16/7/2025:
-  - ajout d'un analyseur syntaxique sur expressions de création de dataset
-  - autonomisation de l'analyseur
-13/7/2025:
-  - intégration jointure
-11/7/2025:
-  - ajout filtre sur prédicat sur COG Insee
-  - ajout Dataset::implementedFilters()
-10/7/2025:
-  - ajout COG Insee
-  - correction bugs
-9/7/2026:
-  - ajout utilisation serveur WFS 2.0.0 et notamment celui de la Géoplateforme
-  - ajout de la pagination dans l'affichage des n-uplets d'une section
-  - modif de la signature de getTuples() pour $filters, généralisation du filtre skip
-7/7/2025:
-  - ajout de la définition de thèmes dans les feuilles de style
-  - suppression de l'extension ss pour les feuilles de style
-  - vérification de la conformité de la feuille de style au schéma des feuilles de styles
-    - le schéma des feuilles de styles est dans styler.yaml et porte un URI
-  - vérifications sur les cartes et les couches avant de les dessiner afin d'éviter les errurs lors du dessin.
-6/7/2025:
-  - 1ère version fonctionnelle de Styler et de la feuille de styles NaturaEarth
-5/7/2025:
-  - début implem StyledNaturalEarth 
-  - correction bug dans dataset.inc.php sur la propagation des définitions dans les sous-schemas
-2/7/2025:
-  - modif catégorie NaturalEarth -> GeoDataset
-  - transfert meta schema dans dataset.yaml
-1/7/2025:
-  - fin correction des différents jeux précédemment définis en V2
-  - conforme PhpStan (8:30)
-  - définition d'une catégorie de JdD comme NaturalEarth
-29/6/2025:
-  - v3 fondée sur getTuples() à la place de getData()
-  - correction progressive DatasetEg, AeCogPe, MapsDataset, geojson.php, map.php
-16/6/2025:
-  - 1ère version de v2 conforme PhpStan
-  - redéfinition des types de section, adaptation du code pour listOfTuples et listOfValues
-14/6/2025:
-  - début v2 fondée sur idees.yaml
-  - à la différence de la V1 il n'est plus nécessaire de stocker un JdD en JSON
-  - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
-EOT
-]
-);
-/** Cmdes utiles */
-define('LIGNE_DE_COMMANDE', [
-<<<'EOT'
-Lignes de commandes
----------------------
-  Installation des modules nécessaires:
-    composer require --dev phpstan/phpstan
-    composer require justinrainbow/json-schema
-    composer require symfony/yaml
-    composer require phpoffice/phpspreadsheet
-  phpstan:
-    ./vendor/bin/phpstan --memory-limit=1G --pro
-  Fenêtre Php8.4:
-    docker exec -it --user=www-data dockerc-php84-1 /bin/bash
-  phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f index.php,dataset.inc.php,zoomleveL.php,predicate.inc.php,join.php,\
-dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
-geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,\
-aecogpe.php,worldeez.php,\
-spreadsheetdataset.inc.php,\
-featureserver.php,\
-setop.php	       
-
-  Fenêtre Php8.2:
-    docker exec -it --user=www-data dockerc-php82-1 /bin/bash
-  Pour committer le git:
-    git commit -am "{commentaire}"
-  Pour se connecter sur Alwaysdata:
-    ssh -lbdavid ssh-bdavid.alwaysdata.net
-
-EOT
-]
-);
-
-require_once 'dataset.inc.php';
-
-ini_set('memory_limit', '10G');
-set_time_limit(5*60);
-
-switch ($_GET['action'] ?? null) {
-  case null: {
-    if (!isset($_GET['dataset'])) {
-      echo "<title>dataset</title><h2>Choix du JdD</h2>\n";
-      foreach (Dataset::REGISTRE as $dsName=> $class) {
-        $dataset = Dataset::get($dsName);
-        //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
-        echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
+class Application {
+  /** Code initial de l'application. */
+  static function main(): void {
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        if (!isset($_GET['dataset'])) {
+          echo "<title>dataset</title><h2>Choix du JdD</h2>\n";
+          foreach (Dataset::REGISTRE as $dsName=> $class) {
+            $dataset = Dataset::get($dsName);
+            //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
+            echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
+          }
+          echo "<h2>Autres</h2><ul>\n";
+          echo "<li><a href='proj.php'>projection d'une section de JdD</a></li>\n";
+          echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
+          //echo "<li><a href='expparser.php'>expparser</a></li>\n";
+          echo "<li><a href='parser.php'>Parser</a></li>\n";
+          echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
+          echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
+          echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
+          echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
+                "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
+          echo "<li><a href='https://github.com/calvinmetcalf/leaflet-ajax' target='_blank'>",
+                "Lien vers leaflet-ajaxr</a></li>\n";
+          echo "</ul>\n";
+        }
+        else {
+          $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
+          echo "<title>dataset</title><h2>Choix de l'action</h2>\n";
+          echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
+          echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
+          /*echo "<a href='?action=union&file=$_GET[file]'>Exemple d'une union homogène</a><br>\n";
+          echo "<a href='?action=heteroUnion&file=$_GET[file]'>Exemple d'une union hétérogène</a><br>\n";
+          */
+        }
+        break;
       }
-      echo "<h2>Autres</h2><ul>\n";
-      echo "<li><a href='proj.php'>projection d'une section de JdD</a></li>\n";
-      echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
-      //echo "<li><a href='expparser.php'>expparser</a></li>\n";
-      echo "<li><a href='parser.php'>Parser</a></li>\n";
-      echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
-      echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
-      echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
-      echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
-            "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
-      echo "<li><a href='https://github.com/calvinmetcalf/leaflet-ajax' target='_blank'>",
-            "Lien vers leaflet-ajaxr</a></li>\n";
-      echo "</ul>\n";
-    }
-    else {
-      $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
-      echo "<title>dataset</title><h2>Choix de l'action</h2>\n";
-      echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
-      echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
-      echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
-      echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";
-      echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
-      echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
-      /*echo "<a href='?action=proj&file=$_GET[file]'>Exemple d'une projection</a><br>\n";
-      echo "<a href='?action=join&file=$_GET[file]'>Exemple d'une jointure</a><br>\n";
-      echo "<a href='?action=union&file=$_GET[file]'>Exemple d'une union homogène</a><br>\n";
-      echo "<a href='?action=select&file=$_GET[file]'>Exemple d'une sélection</a><br>\n";
-      echo "<a href='?action=heteroUnion&file=$_GET[file]'>Exemple d'une union hétérogène</a><br>\n";
+      case 'display': {
+        if (!isset($_GET['section']))
+          Dataset::get($_GET['dataset'])->display();
+        elseif (!isset($_GET['key']))
+          SectionOfDs::get($_GET['section'])->display($_GET['skip'] ?? 0);
+        else
+          SectionOfDs::get($_GET['section'])->displayTuple($_GET['key']);
+        break;
+      }
+      case 'stats': {
+        Dataset::get($_GET['dataset'])->stats();
+        break;
+      }
+      case 'json': {
+        $dataset = Dataset::get($_GET['dataset']);
+        header('Content-Type: application/json');
+        die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
+      }
+      case 'validate': {
+        require_once __DIR__.'/vendor/autoload.php';
+
+        $dataset = Dataset::get($_GET['dataset']);
+        if ($dataset->schemaIsValid()) {
+          echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
+        }
+        else {
+          $dataset->displaySchemaErrors();
+        }
+
+        if ($dataset->isValid(true)) {
+          echo "Le JdD est conforme à son schéma.<br>\n";
+        }
+        else {
+          $dataset->displayErrors();
+        }
+        break;
+      }
+      /*
+      case 'heteroUnion': { // Exemple d'union hétérogène
+        $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
+        //Part::displayTable([], "vide");
+        Part::displayTable(
+          array_merge($dataset()['départements'], $dataset()['outre-mer']),
+          "union(départements, outre-mer) hétérogène",
+          true
+        );
+        break;
+      }
+      case 'homogenisedUnion': { // Exemple d'union homogénéisée
+        $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
+        Part::displayTable(
+          array_merge(
+            array_map(
+              function(array $dept) {
+                return array_merge($dept,[
+                  'alpha2'=> $dept['codeInsee'],
+                  'alpha3'=> "D$dept[codeInsee]",
+                  'statut'=> "Département de métropole",
+                ]);
+              },
+              $dataset()['départements']
+            ),
+            array_map(
+              function(array $om) {
+                return array_merge($om, [
+                  'ancienneRégion'=> $om['nom'],
+                  'région'=> $om['alpha3'],
+                ]);
+              },
+              $dataset()['outre-mer']
+            )
+          ),
+          "union(départements, outre-mer) homogénéisée",
+          true
+        );
+        break;
+      }
       */
+      default: {
+        echo "Action $_GET[action] inconnue dans ",__FILE__," ligne ",__LINE__,".<br>\n";
+        break;
+      }
     }
-    break;
   }
-  case 'display': {
-    if (!isset($_GET['section']))
-      Dataset::get($_GET['dataset'])->display();
-    elseif (!isset($_GET['key']))
-      SectionOfDs::get($_GET['section'])->display($_GET['skip'] ?? 0);
-    else
-      SectionOfDs::get($_GET['section'])->displayTuple($_GET['key']);
-    break;
-  }
-  case 'stats': {
-    Dataset::get($_GET['dataset'])->stats();
-    break;
-  }
-  case 'json': {
-    $dataset = Dataset::get($_GET['dataset']);
-    header('Content-Type: application/json');
-    die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
-  }
-  case 'validate': {
-    require_once __DIR__.'/vendor/autoload.php';
-
-    $dataset = Dataset::get($_GET['dataset']);
-    if ($dataset->schemaIsValid()) {
-      echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
-    }
-    else {
-      $dataset->displaySchemaErrors();
-    }
-
-    if ($dataset->isValid(true)) {
-      echo "Le JdD est conforme à son schéma.<br>\n";
-    }
-    else {
-      $dataset->displayErrors();
-    }
-    break;
-  }
-  
-  /*case 'proj': { // Exemple de projection
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    Part::displayTable(
-      array_map(
-        function(array $dept) {
-          return [
-            'codeInsee'=> $dept['codeInsee'],
-            'nom'=>  $dept['nom']
-          ];
-        },
-        $dataset()['départements']
-      ),
-      "Projection de départements sur codeInsee et nom sans la clé",
-      false
-    );
-    break;
-  }
-  case 'union': { // exemple de d'union homogénéisée
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    Part::displayTable(
-      array_map(
-        function(array $dept) {
-          return [
-            'codeInsee'=> $dept['codeInsee'],
-            'nom'=>  $dept['nom'],
-          ];
-        },
-        array_merge($dataset()['départements'], $dataset()['outre-mer'])
-      ),
-      "Départements de métropole et d'outre-mer + StP&M",
-      false
-    );
-    break;
-  }
-  case 'select': { // Exemple d'une sélection 
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    Part::displayTable(
-      array_map(
-        function(array $dept) {
-          if ($dept['région'] == 'ARA')
-            return [
-              'codeInsee'=> $dept['codeInsee'],
-              'nom'=>  $dept['nom'],
-              'région'=>  $dept['région'],
-            ];
-          else
-            return null;
-        },
-        $dataset()['départements']
-      ),
-      "Sélection des départements de ARA et projection sur codeInsee, nom et région, sans la clé",
-      false
-    );
-    break;
-  }
-  case 'heteroUnion': { // Exemple d'union hétérogène
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    //Part::displayTable([], "vide");
-    Part::displayTable(
-      array_merge($dataset()['départements'], $dataset()['outre-mer']),
-      "union(départements, outre-mer) hétérogène",
-      true
-    );
-    break;
-  }
-  case 'homogenisedUnion': { // Exemple d'union homogénéisée
-    $dataset = new Dataset(json_decode(file_get_contents("$_GET[file].json"), true));
-    Part::displayTable(
-      array_merge(
-        array_map(
-          function(array $dept) {
-            return array_merge($dept,[
-              'alpha2'=> $dept['codeInsee'],
-              'alpha3'=> "D$dept[codeInsee]",
-              'statut'=> "Département de métropole",
-            ]);
-          },
-          $dataset()['départements']
-        ),
-        array_map(
-          function(array $om) {
-            return array_merge($om, [
-              'ancienneRégion'=> $om['nom'],
-              'région'=> $om['alpha3'],
-            ]);
-          },
-          $dataset()['outre-mer']
-        )
-      ),
-      "union(départements, outre-mer) homogénéisée",
-      true
-    );
-    break;
-  }
-  */
-  default: {
-    echo "Action $_GET[action] inconnue dans ",__FILE__," ligne ",__LINE__,".<br>\n";
-    break;
-  }
-}
+};
+Application::main();
