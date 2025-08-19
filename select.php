@@ -9,12 +9,12 @@ require_once 'dataset.inc.php';
  * Dans les 2 cas le Predicate est le même.
  * De plus, lorqu'un opérateur Select est appliqué à une Section acceptant le filtre predicate, ce dernier est utilisé.
  */
-class Select extends Section {
-  function __construct(readonly Predicate $predicate, readonly Section $section) { parent::__construct('dictOfTuples'); }
+class Select extends Collection {
+  function __construct(readonly Predicate $predicate, readonly Collection $coll) { parent::__construct('dictOfTuples'); }
 
   /** l'identifiant permettant de recréer la section dans le parser. */
   function id(): string {
-    return 'select('.$this->predicate->id().','.$this->section->id().')';
+    return 'select('.$this->predicate->id().','.$this->coll->id().')';
   }
   
   /** Retourne les filtres implémentés par getTuples().
@@ -22,25 +22,25 @@ class Select extends Section {
    */
   function implementedFilters(): array { return ['skip']; }
   
-  /** L'accès aux tuples du Select par un Generator.
+  /** L'accès aux items du Select par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    */
-  function getTuples(array $filters=[]): Generator {
+  function getItems(array $filters=[]): Generator {
     if (isset($filters['predicate']))
       throw new Exception("Erreur, Select::getTuples() n'accepte pas de filtre ayant un prédicat");
-    if (in_array('predicate', $this->section->implementedFilters()) && in_array('skip', $this->section->implementedFilters())) {
+    if (in_array('predicate', $this->coll->implementedFilters()) && in_array('skip', $this->coll->implementedFilters())) {
       $filters = [
         'skip'=> $filters['skip'] ?? 0,
         'predicate'=> $this->predicate,
       ];
-      $filteredSection = $this->section->getTuples($filters);
-      foreach ($filteredSection as $key => $tuple) { yield $key => $tuple; }
+      $filteredCollection = $this->coll->getItems($filters);
+      foreach ($filteredCollection as $key => $tuple) { yield $key => $tuple; }
       return null;
     }
     
     // Implémentation naïve du select
     $skip = $filters['skip'] ?? 0;
-    foreach ($this->section->getTuples() as $key => $tuple) {
+    foreach ($this->coll->getItems() as $key => $tuple) {
       $tuple['key'] = $key; // permet d'utiliser key dans le prédicat 
       if ($this->predicate->eval($tuple)) {
         if ($skip-- <= 0)
@@ -53,8 +53,8 @@ class Select extends Section {
    * La sélection ne modifiant pas les clés, il suffit de demander le tuple à la section d'origine.
    * @return array<mixed>|string|null
    */ 
-  function getOneTupleByKey(int|string $key): array|string|null {
-    return $this->section->getOneTupleByKey($key);
+  function getOneItemByKey(int|string $key): array|string|null {
+    return $this->coll->getOneItemByKey($key);
   }
 };
 
@@ -68,11 +68,11 @@ class SelectTest {
   static function examples(): array {
     return [
       "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une section acceptant predicate)" => [
-        'section'=> SectionOfDs::get('InseeCog.v_region_2025'),
+        'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
         'predicate'=> new Predicate('NCC', 'match', new Constant('string', '!FRANCE!')),
       ],
       "DeptReg.régions.nom match '!France!' (cas d'une section n'acceptant pas predicate)" => [
-        'section'=> SectionOfDs::get('DeptReg.régions'),
+        'collection'=> CollectionOfDs::get('DeptReg.régions'),
         'predicate'=> new Predicate('nom', 'match', new Constant('string', '!France!')),
       ],
     ];
@@ -84,12 +84,12 @@ class SelectTest {
     foreach (self::examples() as $title => $example) {
       echo "<h2>$title</h2>\n";
       //$example = self::examples()[$title];
-      $section = $example['section'];
+      $collection = $example['collection'];
       //echo '<pre>$section='; print_r($section);
-      echo '<pre>implementedFilters='; print_r($section->implementedFilters());
+      echo '<pre>implementedFilters='; print_r($collection->implementedFilters());
       $predicate = $example['predicate'];
-      $select = new Select($predicate, $section);
-      foreach ($select->getTuples() as $key => $tuple) {
+      $select = new Select($predicate, $collection);
+      foreach ($select->getItems() as $key => $tuple) {
         print_r([$key => $tuple]);
       }
       echo "</pre>\n";

@@ -20,8 +20,8 @@ if (!$path) { // menu, liste des datasets
 if (preg_match('!^/([^/]+)$!', $path, $matches)) { // liste des parties du JdD  
   $dsname = $matches[1];
   $dataset = Dataset::get($dsname);
-  foreach (array_keys($dataset->sections) as $sname) {
-    echo "<a href='$script_name/$dsname/collections/$sname/items'>$sname</a><br>\n";
+  foreach (array_keys($dataset->collections) as $cName) {
+    echo "<a href='$script_name/$dsname/collections/$cName/items'>$cName</a><br>\n";
   }
   die();
 }
@@ -79,27 +79,25 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
 }*/
 
 if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la section 
-  $dsname = $matches[1];
-  $sectname = $matches[2];
+  $dsName = $matches[1];
+  $cName = $matches[2];
   if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
     $bbox =  new \gegeom\GBox($bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
   }
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
 
-  $dataset = Dataset::get($dsname);
-  $sectionMD = $dataset->sections[$sectname]; // les MD de la section
+  $dataset = Dataset::get($dsName);
+  $sectionMD = $dataset->collections[$cName]; // les MD de la section
   
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
   echo '{ "type": "FeatureCollection"',",\n",
-    '  "name": "',"$dsname/$sectname",'",',"\n",
+    '  "name": "',"$dsName/$cName",'",',"\n",
     '  "features":',"[\n";
   $first = true;
-  foreach ($dataset->getTuples($sectname, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $tuple) {
-    if (!is_array($tuple)) {
-      $tuple = ['value'=> $tuple]; 
-    }
+  foreach ($dataset->getItems($cName, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
+    $tuple = is_array($item) ? $item : ['value'=> $item];
     if ($geometry = $tuple['geometry'] ?? null) {
       $geom = \gegeom\Geometry::fromGeoArray($geometry);
       //echo "<pre>geom="; print_r($geom);

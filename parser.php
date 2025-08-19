@@ -1,5 +1,5 @@
 <?php
-/** Parser du langage de requêtes sur les sections.
+/** Définition et parsing du langage de requêtes sur les collections.
  * A l'avantage d'être plus compact que le parser expparser fondé sur BanafInt.
  *
  * @package Algebra
@@ -34,12 +34,12 @@ require_once 'select.php';
 
 /** Classe utilisée pour exécuter display ou draw */
 class Program {
-  function __construct(readonly string $operator, readonly Section $operand) {}
+  function __construct(readonly string $operator, readonly Collection $operand) {}
   
   function __invoke(): void {
     switch ($this->operator) {
       case 'display': {
-        $this->operand->displayTuples();
+        $this->operand->displayItems();
         break;
       }
     }
@@ -68,17 +68,17 @@ class DsParser {
   ];
   const BNF = [
     <<<'EOT'
-{program} ::= 'display' '(' {expTable} ')' // affiche le contenu d'une table'
+{program} ::= 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
             | 'draw' '(' {expDataset} ')'  // dessine la carte d'un Dataset'
-            | {expTable}                   // retourne un Generator pour exploitation par API
+            | {expCollection}              // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                    // eg: InseeCog
-{expTable} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-             | {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
-             | 'spatial-join' '(' {expTable} ',' {expTable} ')'
-             | 'union' '(' {expTable} ',' {expTable} ')'
-             | 'proj' '(' {expTable} ',' '[' {FieldPairs} ']' ')'
-             | 'select' '(' {predicate} ',' {expTable} ')'
-            // | 'map' '(' {phpFun} ',' {expTable} ')' - à voir plus tard
+{expCollection} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
+                  | {joinName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+                  | 'spatial-join' '(' {expCollection} ',' {expCollection} ')'
+                  | 'union' '(' {expCollection} ',' {expCollection} ')'
+                  | 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
+                  | 'select' '(' {predicate} ',' {expCollection} ')'
+               // | 'map' '(' {phpFun} ',' {expCollection} ')' - à voir plus tard
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
 {namePair} ::= {name} '>' {name}
@@ -148,28 +148,28 @@ EOT
     }
   }
   
-  static function program(string &$text0): Program|Section|null {
+  static function program(string &$text0): Program|Collection|null {
     self::$trace = [];
     $path = ['program'];
-    // {program}#0 : 'display' '(' {expTable} ')' // affiche le contenu d'une table'
+    // {program}#0 : 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
     $text = $text0;
     if (self::pmatch('display\(', $text)
-    && ($expTable = self::expTable($path, $text))
+    && ($expCollection = self::expCollection($path, $text))
     && (self::pmatch('^\)', $text))
     && ($text == '')) {
       self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
-      return new Program('display', $expTable);
+      return new Program('display', $expCollection);
     }
     self::addTrace($path, "Echec {program}#0", $text0);
     
-    // {program}#2 : {expTable}
+    // {program}#2 : {expCollection}
     $text = $text0;
-    if (($expTable = self::expTable($path, $text))
+    if (($expCollection = self::expCollection($path, $text))
     && ($text == '')) {
       self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
-      return $expTable;
+      return $expCollection;
     }
     self::addTrace($path, "Echec {program}#2", $text0);
     
@@ -201,44 +201,44 @@ EOT
   }
   
   /** @param list<string> $path - chemin des appels */
-  static function expTable(array $path, string &$text0): ?Section {
-    $path[] = "expTable";
-    //echo "Test expTable($text0)<br>\n";
-    // {expTable}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
+  static function expCollection(array $path, string &$text0): ?Collection {
+    $path[] = "expCollection";
+    //echo "Test expCollection($text0)<br>\n";
+    // {expCollection}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
     $text = $text0;
     if (($dataset = self::expDataset($path, $text))
       && self::token($path, '{point}', $text)
         && ($name = self::token($path, '{name}', $text))
     ) {
-      self::addTrace($path, "Succès expTable#0", $text0);
+      self::addTrace($path, "Succès expCollection#0", $text0);
       $text0 = $text;
-      return $dataset->sections[$name];
+      return $dataset->collections[$name];
     }
-    self::addTrace($path, "Echec expTable#0", $text0);
+    self::addTrace($path, "Echec expCollection#0", $text0);
     
-    // {expTable}#1 : {joinName} '(' {expTable} ',' {name} ',' {expTable} ',' {name} ')'
+    // {expCollection}#1 : {joinName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
     $text = $text0;
     if (($joinName = self::token($path, '{joinName}', $text))
       && self::pmatch('\(', $text)
-        && ($expTable1 = self::expTable($path, $text))
+        && ($expCollection1 = self::expCollection($path, $text))
           && self::pmatch(',', $text)
             && ($field1 = self::token($path, '{name}', $text))
               && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
-                && ($expTable2 = self::expTable($path, $text))
+                && ($expCollection2 = self::expCollection($path, $text))
                   && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
                     && ($field2 = self::token($path, '{name}', $text))
                       && self::pmatch('\)', $text)
     ) {
-      self::addTrace($path, "Succès expTable#1", $text0);
+      self::addTrace($path, "Succès expCollection#1", $text0);
       $text0 = $text;
-      return new Join($joinName, $expTable1, $field1, $expTable2, $field2);
+      return new Join($joinName, $expCollection1, $field1, $expCollection2, $field2);
     }
-    self::addTrace($path, "Echec expTable#1", $text0);
+    self::addTrace($path, "Echec expCollection#1", $text0);
     
-    // {expTable}#4 : 'proj' '(' {expTable} ',' '[' {FieldPairs} ']' ')'
+    // {expCollection}#4 : 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
     $text = $text0;
     if (self::pmatch('proj\(', $text) 
-      && ($expTable = self::expTable($path, $text))
+      && ($expCollection = self::expCollection($path, $text))
         && self::pmatch(',', $text)
           && self::pmatch('\[', $text)
             && ($fieldPairs = self::fieldPairs($path, $text))
@@ -246,24 +246,24 @@ EOT
                 && self::pmatch('\)', $text)
     ) {
       $text0 = $text;
-      return new Proj($expTable, $fieldPairs);
+      return new Proj($expCollection, $fieldPairs);
     }
-    self::addTrace($path, "Echec expTable#4", $text0);
+    self::addTrace($path, "Echec expCollection#4", $text0);
 
-    // {expTable}#5 : 'select' '(' {predicate} ',' {expTable} ')'
+    // {expCollection}#5 : 'select' '(' {predicate} ',' {expCollection} ')'
     $text = $text0;
     if (self::pmatch('select\(', $text)
       && ($predicate = PredicateParser::predicate($path, $text))
         && self::pmatch(',', $text)
-          && ($expTable = self::expTable($path, $text))
+          && ($expCollection = self::expCollection($path, $text))
             && self::pmatch('\)', $text)
     ) {
       $text0 = $text;
-      return new Select($predicate, $expTable);
+      return new Select($predicate, $expCollection);
     }
-    self::addTrace($path, "Echec expTable#5", $text0);
+    self::addTrace($path, "Echec expCollection#5", $text0);
 
-    self::addTrace($path, "Echec expTable", $text0);
+    self::addTrace($path, "Echec expCollection", $text0);
     return null;
   }
   
@@ -403,11 +403,11 @@ class DsParserTest {
       }
       case 'display': { // traite une demande d'affichage d'un n-uplet générée par un display du résultat 
         echo '<pre>'; print_r($_GET); echo "</pre>\n";
-        if (!($section = DsParser::program($_GET['section']))) {
+        if (!($collection = DsParser::program($_GET['collection']))) {
           DsParser::displayTrace();
           die();
         }
-        $section->displayTuple($_GET['key']);
+        $collection->displayItem($_GET['key']);
         break;
       }
       default: throw new Exception("Action $_GET[action] inconnue");

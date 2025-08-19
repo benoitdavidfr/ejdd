@@ -35,20 +35,20 @@ class DeptReg extends Dataset {
     parent::__construct($name, $this->data['title'], $this->data['description'], $this->data['$schema']);
   }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $sectionName nom de la section
-   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+  /** L'accès aux items d'une collection du JdD par un Generator.
+   * @param string $cName nom de la collection
+   * @param array<string,mixed> $filters filtres éventuels sur les items à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $sectionName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach ($this->data[$sectionName] as $key => $tuple) {
+    foreach ($this->data[$cName] as $key => $item) {
       if ($skip-- > 0)
         continue;
-      yield $key => $tuple;
+      yield $key => $item;
     }
     return null;
   }

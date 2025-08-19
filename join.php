@@ -16,18 +16,18 @@ require_once 'dataset.inc.php';
  * La clé d'une jointure est la concaténation des clés des sections d'origine;
  * cela permet un accès plus efficace au n-uplet par clé.
  */
-class Join extends Section {
-  function __construct(readonly string $type, readonly Section $table1, readonly string $field1, readonly Section $table2, readonly string $field2) {
-    if (in_array($table1->kind, ['dictOfValues','listOfValues']))
+class Join extends Collection {
+  function __construct(readonly string $type, readonly Collection $coll1, readonly string $field1, readonly Collection $coll2, readonly string $field2) {
+    if (in_array($coll1->kind, ['dictOfValues','listOfValues']))
       throw new Exception("Erreur, join impossible avec dictOfValues|listOfValues");
-    if (in_array($table2->kind, ['dictOfValues','listOfValues']))
+    if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
       throw new Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
   }
 
   /** l'identifiant permettant de recréer la section. Reconstitue la requête. */
   function id(): string {
-    return $this->type.'('.$this->table1->id().','.$this->field1.','.$this->table2->id().','.$this->field2.')';
+    return $this->type.'('.$this->coll1->id().','.$this->field1.','.$this->coll2->id().','.$this->field2.')';
   }
     
   /** Retourne les filtres implémentés par getTuples().
@@ -70,16 +70,16 @@ class Join extends Section {
     return $result;
   }
   
-  /** L'accès aux tuples du Join par un Generator.
+  /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    */
-  function getTuples(array $filters=[]): Generator {
+  function getItems(array $filters=[]): Generator {
     // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
     $no = $skip;
-    foreach ($this->table1->getTuples() as $key1 => $tuple1) {
-      $tuples2 = $this->table2->getTuplesOnValue($this->field2, $tuple1[$this->field1]);
+    foreach ($this->coll1->getItems() as $key1 => $tuple1) {
+      $tuples2 = $this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]);
       $tuple = [];
       if ($this->type <> 'diff-join') {
         foreach ($tuple1 as $k => $v)
@@ -117,11 +117,11 @@ class Join extends Section {
    * Je considère qu'une jointure perd les clés. L'accès par clé est donc un accès par index dans la liste.
    * @return array<mixed>|string|null
    */ 
-  function getOneTupleByKey(int|string $key): array|string|null {
+  function getOneItemByKey(int|string $key): array|string|null {
     $keys = self::decatKeys($key);
-    if (!($tuple1 = $this->table1->getOneTupleByKey($keys[1])))
+    if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
-    if (!($tuple2 = $this->table2->getOneTupleByKey($keys[2])))
+    if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
       return null;
     
     $tuple = [];
@@ -269,11 +269,11 @@ class JoinTest {
           die();
         }
         elseif (!isset($_GET['section1'])) {
-          echo "<h3>Choix des sections</h3>\n";
+          echo "<h3>Choix des collections</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
-            $selects[$i] = HtmlForm::select("section$i", array_keys($ds->sections));
+            $selects[$i] = HtmlForm::select("coll$i", array_keys($ds->collections));
           }
           //print_r($dsSectNames);
           echo "<table border=1><form>\n",
@@ -295,20 +295,20 @@ class JoinTest {
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
-            $tuple = [];
-            foreach ($ds->getTuples($_GET["section$i"]) as $tuple) { break; }
-            $selects[$i] = HtmlForm::select("field$i", array_keys($tuple));
-            $tuple = [];
+            $item = [];
+            foreach ($ds->getItems($_GET["collection$i"]) as $item) { break; }
+            $selects[$i] = HtmlForm::select("field$i", array_keys($item));
+            $item = [];
           }
           echo "<table border=1><form>\n",
                implode('',
                  array_map(
                    function($k) { return "<input type='hidden' name='$k' value='$_GET[$k]'>\n"; },
-                   ['dataset1', 'dataset2','section1','section2']
+                   ['dataset1', 'dataset2','collection1','collection2']
                  )
                ),
                "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[2]</td></tr>\n",
-               "<tr><td>sections</td><td>$_GET[section1]</td><td>$_GET[section2]</td></tr>\n",
+               "<tr><td>collections</td><td>$_GET[collection1]</td><td>$_GET[collection2]</td></tr>\n",
                "<tr><td>fields</th><td>$selects[1]</td><td>$selects[2]</td>",
                "<td><input type='submit' value='ok'></td></tr>\n",
                "</form></table>\n";
@@ -343,12 +343,12 @@ class JoinTest {
         else {
           $join = new Join(
             $_GET['type'],
-            SectionOfDs::get(json_encode(['dataset'=>$_GET['dataset1'], 'section'=>$_GET["section1"]])),
+            CollectionOfDs::get(json_encode(['dataset'=>$_GET['dataset1'], 'collection'=>$_GET["collection1"]])),
             $_GET['field1'],
-            SectionOfDs::get(json_encode(['dataset'=>$_GET['dataset2'], 'section'=>$_GET["section2"]])),
+            CollectionOfDs::get(json_encode(['dataset'=>$_GET['dataset2'], 'collection'=>$_GET["collection2"]])),
             $_GET['field2'],
           );
-          $join->displayTuples();
+          $join->displayItems();
         }
         break;
       }
@@ -359,12 +359,12 @@ class JoinTest {
         if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $query, $matches))
           throw new Exception("Erreur de décodage du sectionId=$_GET[section]");
         $type = $matches[1];
-        $section1 = $matches[2];
+        $coll1 = $matches[2];
         $field1 = $matches[3];
-        $section2 = $matches[4];
+        $coll2 = $matches[4];
         $field2 = $matches[5];
-        $join = new Join($type, SectionOfDs::get($section1), $field1, SectionOfDs::get($section2), $field2);
-        $join->displayTuples($_GET['skip'] ?? 0);
+        $join = new Join($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
+        $join->displayItems($_GET['skip'] ?? 0);
         break;
       }
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
@@ -373,16 +373,16 @@ class JoinTest {
           throw new Exception("Erreur de décodage du sectionId=$_GET[section]");
         //echo '<pre>$matches='; print_r($matches); echo "</pre>\n";
         $type = $matches[1];
-        $section1 = $matches[2];
+        $coll1 = $matches[2];
         $field1 = $matches[3];
-        $section2 = $matches[4];
+        $coll2 = $matches[4];
         $field2 = $matches[5];
-        $join = new Join($type, SectionOfDs::get($section1), $field1, SectionOfDs::get($section2), $field2);
+        $join = new Join($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
         if (isset($_GET['skip'])) {
-          $join->displayTuples($_GET['skip']);
+          $join->displayItems($_GET['skip']);
         }
         elseif (isset($_GET['key'])) {
-          $join->displayTuple($_GET['key']);
+          $join->displayItem($_GET['key']);
         }
         else
           throw new Exception("ni skip ni key");

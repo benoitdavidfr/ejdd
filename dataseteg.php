@@ -197,12 +197,12 @@ class DatasetEg extends Dataset {
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $section, array $filters=[]): Generator {
+  function getItems(string $section, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach (self::DATA[$section]['data'] as $key => $tuple) {
+    foreach (self::DATA[$section]['data'] as $key => $item) {
       if ($skip-- > 0)
         continue;
-      yield $key => $tuple;
+      yield $key => $item;
     }
   }
   

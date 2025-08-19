@@ -19,8 +19,8 @@ class Pays extends SpreadSheetDataset {
         $pays = new Pays('Pays');
         echo "<a href='?action=print_r'>Afficher l'objet Pays</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
-        foreach (array_keys($pays->docSections) as $sname) {
-          echo "<a href='?action=section&section=$sname'>Afficher la section $sname</a><br>\n";
+        foreach (array_keys($pays->docCollections) as $cname) {
+          echo "<a href='?action=collection&collection=$cname'>Afficher la collection $cname</a><br>\n";
         }
         break;
       }
@@ -38,10 +38,10 @@ class Pays extends SpreadSheetDataset {
         ]);
         break;
       }
-      case 'section': {
+      case 'collection': {
         $objet = new Pays('Pays');;
-        echo "<pre>section=";
-        foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
+        echo "<pre>collection=";
+        foreach ($objet->getItems($_GET['collection']) as $key => $tuple)
           print_r([$key => $tuple]);
         break;
       }

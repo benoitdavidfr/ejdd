@@ -73,34 +73,34 @@ class Styler extends Dataset {
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $section nom de la section
+   * @param string $collection nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $section, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
     $zoom = $filters['zoom'] ?? 6;    
-    foreach (array_reverse($this->styleSheet['themes'][$section]['datasets']) as $dsName => $dataset) {
+    foreach (array_reverse($this->styleSheet['themes'][$collection]['datasets']) as $dsName => $dataset) {
       if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
         continue;
       $ds = Dataset::get($dsName);
-      foreach (array_reverse($dataset['sections']) as $sName => $section) {
-        $sectionMD = $ds->sections[$sName]; // les MD de la section
-        foreach ($ds->getTuples($sName) as $tuple) {
+      foreach (array_reverse($dataset['collections']) as $cName => $collection) {
+        $collectionMD = $ds->collections[$cName]; // les MD de la collection
+        foreach ($ds->getItems($cName) as $tuple) {
           if ($skip-- > 0)
             continue;
-          if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+          if (isset($collectionMD->schema->array['items']['propertiesForGeoJSON'])) {
             //print_r($tuple);
             $tuple2 = ['geometry'=> $tuple['geometry']];
-            foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+            foreach ($collectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
               $tuple2[$prop] = $tuple[$prop];
             //print_r($tuple2);
             $tuple = $tuple2;
           }
-          $tuple['style'] = $section['style'];
+          $tuple['style'] = $collection['style'];
           yield $tuple;
         }
       }

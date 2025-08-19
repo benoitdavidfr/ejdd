@@ -214,8 +214,8 @@ class PredicateTest {
         if (!isset($_GET['section'])) {
           $dataset = Dataset::get($_GET['dataset']);
           echo "<h3>Choix d'une section</h3>\n";
-          foreach ($dataset->sections as $sname => $section) {
-            echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&section=$sname'>$section->title</a><br>\n";
+          foreach ($dataset->collections as $cname => $collection) {
+            echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$cname'>$collection->title</a><br>\n";
           }
           die();
         }
@@ -228,7 +228,7 @@ class PredicateTest {
         echo "<p><table border=1>\n";
         $no = 0;
         $filters = ['predicate'=> Predicate::fromText($_GET['predicate'])];
-        foreach(SectionOfDs::get("$_GET[dataset].$_GET[section]")->getTuples($filters) as $key => $tuple) {
+        foreach(CollectionOfDs::get("$_GET[dataset].$_GET[collection]")->getItems($filters) as $key => $tuple) {
           //echo "<pre>key=$key, tuple="; print_r($tuple); echo "</pre>\n";
           //echo json_encode($tuple),"<br>\n";
           if (!$no++) {

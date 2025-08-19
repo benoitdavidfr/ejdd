@@ -23,17 +23,17 @@ class InseeCog extends Dataset {
   function implementedFilters(): array { return ['skip', 'predicate']; }
 
   /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $section nom de la section
+   * @param string $collection nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $section, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
     $predicate = $filters['predicate'] ?? null;
-    $file = fopen(__DIR__.'/'.strToLower($this->name)."/$section.csv", 'r');
+    $file = fopen(__DIR__.'/'.strToLower($this->name)."/$collection.csv", 'r');
     $headers = fgetcsv(stream: $file, escape: "\\");
     $nol = 0;
     while ($data = fgetcsv(stream: $file, escape: "\\")) {

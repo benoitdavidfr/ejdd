@@ -470,23 +470,11 @@ class AeCogPe extends Dataset {
     parent::__construct($name, self::TITLE, self::DESCRIPTION, self::SCHEMA);
   }
   
-  /* L'accès aux sections du JdD.
+  /* L'accès aux Items du JdD.
    * @return array<mixed>
-   *
-  function getData(string $sname, mixed $filtre=null): array {
-    $geojson = json_decode(file_get_contents(self::GEOJSON_DIR."/$sname.geojson"), true);
-    return array_map(
-      function(array $feature): array {
-        //print_r($feature);
-        $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
-        //print_r($tuple);
-        return $tuple;
-      },
-      $geojson['features']
-    );
-  }*/
-  function getTuples(string $sname, mixed $filtre=null): Generator {
-    $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$sname.geojson");
+  */
+  function getItems(string $cname, mixed $filtre=null): Generator {
+    $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
     foreach ($fileOfFC->readFeatures() as $no => $feature) {
       $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
       yield $no => $tuple;

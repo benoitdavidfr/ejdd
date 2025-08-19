@@ -31,16 +31,16 @@ class MapDataset extends Dataset {
   }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $sectionName nom de la section
+   * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $sectionName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach ($this->data[$sectionName] as $key => $tuple) {
+    foreach ($this->data[$cName] as $key => $tuple) {
       if ($skip-- > 0)
         continue;
       yield $key => $tuple;
@@ -148,10 +148,10 @@ class L_UGeoJSONLayer extends Layer {
       throw new Exception("params[endpoint]=".$this->params['endpoint']." don't match");
     }
     $dsName = $matches[1];
-    $sectName = $matches[2];
+    $cName = $matches[2];
     $ds = Dataset::get($dsName);
-    if (!array_key_exists($sectName, $ds->sections))
-      throw new Exception("Erreur, la section $sectName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
+    if (!array_key_exists($cName, $ds->collections))
+      throw new Exception("Erreur, la collection $cName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
   }
   
   function toJS(): string {
@@ -390,10 +390,10 @@ switch ($_GET['action'] ?? null) {
   case 'refIntegrity': {
     echo "<h2>Contraintes d'intégrité</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
-    foreach ($mapDataset->getTuples('layers') as $lyrId => $layer) {
+    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
-    foreach ($mapDataset->getTuples('maps') as $mapId => $map) {
+    foreach ($mapDataset->getItems('maps') as $mapId => $map) {
       $map = new Map($map);
       if ($errors = $map->integrityErrors($mapId)) {
         echo "<pre>errors="; print_r($errors); echo "</pre>\n";
@@ -424,7 +424,7 @@ switch ($_GET['action'] ?? null) {
   case 'listMaps': {
     echo "<h2>Liste des cartes à dessiner</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
-    foreach ($mapDataset->getTuples('maps') as $mapKey => $map)
+    foreach ($mapDataset->getItems('maps') as $mapKey => $map)
       echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a><br>\n";
     break;
   }
@@ -440,8 +440,8 @@ switch ($_GET['action'] ?? null) {
            "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";
       die();
     }
-    $map = new Map($mapDataset->getOneTupleByKey('maps', $_GET['map']));
-    foreach ($mapDataset->getTuples('layers') as $lyrId => $layer) {
+    $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
+    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
     if ($errors = $map->integrityErrors($_GET['map'])) {

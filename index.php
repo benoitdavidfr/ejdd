@@ -8,6 +8,11 @@
 define('A_FAIRE', [
 <<<'EOT'
 - réfléchir aux index et à un optimiseur
+- implémenter la sélection spatiale et la jointure spatiale sur des rectangles et des points.
+- réfléchir à un un bouquets de serveurs OGC API Features
+  - ptDAccès = Dataset | Query
+  - collection = Section   <<<--- Remplacer le terme Section par Collection
+  - item = Tuple           <<<--- Remplacer le terme Tuple par Item
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
@@ -22,6 +27,7 @@ define('JOURNAL', [
 19/8/2025:
   - ajout Select
   - modification Predicate pour correspondre à Select et pour parser le prédicat
+  - changement du terme section en collection et du terme élt en item
 18/8/2025:
   - ajout jointure dans expparserlight.php
   - validation d'un parser simplifié, renommage expparserlight.php en parser.php
@@ -302,12 +308,12 @@ class Application {
         break;
       }
       case 'display': {
-        if (!isset($_GET['section']))
+        if (!isset($_GET['collection']))
           Dataset::get($_GET['dataset'])->display();
         elseif (!isset($_GET['key']))
-          SectionOfDs::get($_GET['section'])->display($_GET['skip'] ?? 0);
+          CollectionOfDs::get($_GET['collection'])->display($_GET['skip'] ?? 0);
         else
-          SectionOfDs::get($_GET['section'])->displayTuple($_GET['key']);
+          CollectionOfDs::get($_GET['collection'])->displayItem($_GET['key']);
         break;
       }
       case 'stats': {

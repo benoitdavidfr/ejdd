@@ -22,8 +22,8 @@ class DocProperty {
   }
 };
 
-/** Feuille d'une section d'un fichier ODS. */
-class DocSection {
+/** Feuille d'une Collection d'un fichier ODS. */
+class DocCollection {
   readonly string $name;
   protected ?string $title=null;
   protected ?string $description=null;
@@ -86,8 +86,8 @@ class DocSection {
 /** Lecture et interprétation de la feuille de doc du classeur */
 abstract class SpreadSheetDataset extends Dataset {
   readonly string $filePath;
-  /** @var array<string,DocSection>  $docSections Les docSections indexées par leur nom */
-  readonly array $docSections;
+  /** @var array<string,DocCollection> $docCollections - Les docCollections indexées par leur nom */
+  readonly array $docCollections;
 
   function __construct(string $name, string $filePath) {
     $this->filePath = $filePath;
@@ -104,21 +104,21 @@ abstract class SpreadSheetDataset extends Dataset {
     //echo "<pre>\n";
     $title = null;
     $description = null;
-    $csect = null; // section courante
+    $ccoll = null; // collection courante
     foreach ($dataArray as $no => $line) {
       //echo '$line = '; print_r($line);
       switch ($line['A']) {
         case 'title': {
-          //echo '$csect='; var_dump($csect);
-          if (!$csect)
+          //echo '$ccoll='; var_dump($ccoll);
+          if (!$ccoll)
             $title = $line['B'];
           else
-            $csect->setTitle($line['B']);
+            $ccoll->setTitle($line['B']);
           break;
         }
         case 'description': {
-          if ($csect) {
-            $csect->addToDescription($line['B']);
+          if ($ccoll) {
+            $ccoll->addToDescription($line['B']);
           }
           elseif (!$description)
             $description = $line['B'];
@@ -126,14 +126,14 @@ abstract class SpreadSheetDataset extends Dataset {
             $description .= "\n".$line['B'];
           break;
         }
-        case 'section': {
-          if ($csect)
-            $sections[$csect->name] = $csect;
-          $csect = new DocSection($line['B']);
+        case 'collection': {
+          if ($ccoll)
+            $sections[$ccoll->name] = $ccoll;
+          $ccoll = new DocCollection($line['B']);
           break;
         }
         case 'property': {
-          $csect->addProperty($line['B'], $line['C'], $line['D']);
+          $ccoll->addProperty($line['B'], $line['C'], $line['D']);
           break;
         }
         case '-': break;
@@ -143,8 +143,8 @@ abstract class SpreadSheetDataset extends Dataset {
         }
       }
     }
-    $sections[$csect->name] = $csect;
-    $this->docSections = $sections;
+    $collections[$ccoll->name] = $ccoll;
+    $this->docCollections = $collections;
     parent::__construct($name, $title, $description, $this->jsonSchema());
   }
   
@@ -156,7 +156,7 @@ abstract class SpreadSheetDataset extends Dataset {
       'title'=> "Schéma générè à partir de la feuille doc de ".$this->filePath,
       'description'=> "Ce jeu et son schéma sont générés à partir de la feuille doc de ".$this->filePath,
       'type'=> 'object',
-      'required'=> array_merge(['title','description','$schema'], array_keys($this->docSections)),
+      'required'=> array_merge(['title','description','$schema'], array_keys($this->docCollections)),
       'additionalProperties'=> false,
       'properties'=> array_merge(
         [
@@ -165,8 +165,8 @@ abstract class SpreadSheetDataset extends Dataset {
           '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
         ],
         array_map(
-          function (DocSection $sect): array { return $sect->jsonSchema(); },
-          $this->docSections
+          function (DocCollection $coll): array { return $coll->jsonSchema(); },
+          $this->docCollections
         )
       ),
     ];
@@ -174,19 +174,19 @@ abstract class SpreadSheetDataset extends Dataset {
     return $schema;
   }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $sectionName nom de la section
+  /** L'accès aux items d'une collection du JdD par un Generator.
+   * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $sectionName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($this->filePath);
-    $dataArray = $spreadsheet->getSheetByName($sectionName)
+    $dataArray = $spreadsheet->getSheetByName($cName)
       ->rangeToArray(
           'A1:Z1000',     // The worksheet range that we want to retrieve
           NULL,        // Value that should be returned for empty cells
@@ -195,14 +195,14 @@ abstract class SpreadSheetDataset extends Dataset {
           TRUE         // Should the array be indexed by cell row and cell column
       );
     //echo "<pre>\n"; print_r($dataArray);
-    $section = $this->docSections[$sectionName];
+    $collection = $this->docCollections[$cName];
     $key = null;
-    foreach ($section->properties() as $pName => $property) {
+    foreach ($collection->properties() as $pName => $property) {
       if (in_array('key', $property->options))
         $key = $pName;
     }
     if (!$key)
-      throw new Exception("Pas de clé dans $sectionName");
+      throw new Exception("Pas de clé dans $cName");
     // je prends nes noms de col. dans la première ligne
     $colNames = [];
     foreach ($dataArray[1] as $colName) {
@@ -220,7 +220,7 @@ abstract class SpreadSheetDataset extends Dataset {
         return;
       $tuple = [];
       for ($i=0; $i<count($colNames); $i++) {
-        $property = $section->properties()[$colNames[$i]];
+        $property = $collection->properties()[$colNames[$i]];
         $val = $line[chr(ord('A')+$i)];
         if (!$val)
           continue;
@@ -250,8 +250,8 @@ class PaysTest extends SpreadSheetDataset {
         $pays = new Pays('Pays');
         echo "<a href='?action=print_r'>Afficher l'objet Pays</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
-        foreach (array_keys($pays->docSections) as $sname) {
-          echo "<a href='?action=section&section=$sname'>Afficher la section $sname</a><br>\n";
+        foreach (array_keys($pays->docCollections) as $cname) {
+          echo "<a href='?action=section&collection=$cname'>Afficher la collection $cname</a><br>\n";
         }
         break;
       }
@@ -269,10 +269,10 @@ class PaysTest extends SpreadSheetDataset {
         ]);
         break;
       }
-      case 'section': {
+      case 'collection': {
         $objet = new Pays('Pays');
-        echo "<pre>section=";
-        foreach ($objet->getTuples($_GET['section']) as $key => $tuple)
+        echo "<pre>collection=";
+        foreach ($objet->getItems($_GET['collection']) as $key => $tuple)
           print_r([$key => $tuple]);
         break;
       }

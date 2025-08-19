@@ -115,22 +115,22 @@ class FeatureServer extends Dataset {
   function implementedFilters(): array { return ['skip']; }
   
   /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $section nom de la section
+   * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getTuples(string $section, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): Generator {
     $start = $filters['skip'] ?? 0;
     while (true) {
       $url = self::REGISTRE[$this->name]['url']
-          ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=$section"
+          ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=$cName"
           ."&outputFormat=".urlencode('application/json')
           ."&startIndex=$start&count=1";
       $fcoll = Cache::get(
-        "featureserver/features/$this->name-$section-$start.json",
+        "featureserver/features/$this->name-$cName-$start.json",
         $url
       );
       if ($fcoll == false)
@@ -185,8 +185,8 @@ switch ($_GET['action'] ?? null) {
   }
   case 'getTuples': {
     $fs = new FeatureServer($_GET['dataset']);
-    foreach ($fs->getTuples($_GET['ft']) as $tuple) {
-      echo '<pre>$tuple='; print_r($tuple); echo "</pre>\n";
+    foreach ($fs->getItems($_GET['ft']) as $item) {
+      echo '<pre>$item='; print_r($item); echo "</pre>\n";
     }
     break;
   }
