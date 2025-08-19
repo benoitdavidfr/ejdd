@@ -28,7 +28,7 @@ EOT
 ]
 );
 
-/** JdD AeCogPe */
+/** JdD Admin Express COG Carto petite échelle 2025 de l'IGN (AeCogPe). */
 class AeCogPe extends Dataset {
   const GEOJSON_DIR = 'aecogpe2025';
   const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";

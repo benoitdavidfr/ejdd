@@ -11,7 +11,7 @@ require_once 'geojson.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** Classes pour les jeux de données Nartural Earth */
+/** JdD géographique générique, utilisé pour les JdD Nartural Earth */
 class GeoDataset extends Dataset {
   readonly string $dsName;
   /** @var array<string,mixed> $params, des paramètres complémentaires au schéma Dataset utilisés pour les GéoDataset.

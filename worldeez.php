@@ -9,7 +9,7 @@ require_once 'geojson.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** Jeu de données WorldEez */
+/** Jeu de données WorldEez des ZEE mondiales. */
 class WorldEez extends Dataset {
   const GEOJSON_DIR = 'worldeez';
   const YAML_FILE = 'worldeez.yaml';

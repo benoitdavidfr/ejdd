@@ -8,7 +8,7 @@ require_once 'vendor/autoload.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** JdD des cartes, définit des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
+/** JdD des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
  * La définition des cartes est stockée dans le fichier mapdataset.yaml.
  * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
  * chacune définie dans la section layer notamment par un type et des paramètres.

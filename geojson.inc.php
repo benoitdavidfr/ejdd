@@ -11,7 +11,7 @@ class U {
   const G = 1024 * self::M;
 };
 
-/** Fonctions sur les positions */
+/** Fonctions sur les positions définies comme une liste de 2 nombres. */
 class Pos {
   /** distance entre 2 positions.
    * @param TPos $pos1
@@ -22,7 +22,7 @@ class Pos {
   }
 };
 
-/** Classe abstraite de géométrie GeoJSON */
+/** Classe abstraite de géométrie GeoJSON portant la méthode create() de création d'une géométrie. */
 abstract class Geometry {
   readonly string $type;
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
@@ -130,18 +130,23 @@ class FeatureCollection {
   }
 };
 
-/** Un fichier contenant une FeatureCollection */
+/** Lit un fichier contenant une FeatureCollection. */
 class FileOfFC {
   readonly string $filePath;
   
+  /** Initialisation. */
   function __construct(string $filePath) { $this->filePath = $filePath; }
   
+  /** Lecture du fichier comme objet FeatureCollection. */
   function readFC(): FeatureCollection {
     $fc = file_get_contents($this->filePath);
     $fc = json_decode($fc, true);
     return new FeatureCollection($fc);
   }
   
+  /** Lecture du fichier par un Generator générant des Feature.
+   * Le fichier doit être structuré avec 1 ligne par Feature comme le produit ogr2ogr.
+   */
   function readFeatures(): Generator {
     $fgjs = fopen($this->filePath, 'r');
     $nol = 0;

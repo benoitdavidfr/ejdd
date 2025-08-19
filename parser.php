@@ -1,7 +1,6 @@
 <?php
-/** Parser simplifié d'expressions ensemblistes fondé sur preg_match().
+/** Parser du langage de requêtes sur les sections.
  * A l'avantage d'être plus compact que le parser expparser fondé sur BanafInt.
- * 18/8/2025: DEV en cours. Marche sur display, join et proj
  *
  * @package Algebra
  */
@@ -51,7 +50,7 @@ class Program {
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
- * Le parsing d'un {predicate} est délégué à PredicateParser
+ * Le parsing d'un {predicate} est délégué à la classe PredicateParser
  *
  * Du point de vue implémentation, la classe est statique et regroupe des fonctions:
  *  - addTrace() et displayTrace() gèrent la trace
@@ -365,7 +364,7 @@ class DsParserTest {
       }
       case 'bnf': { // Affiche la BNF du langage et les tokens 
         echo "<h2>BNF du langage de requêtes</h2>\n";
-        echo '<pre>',DsParser::BNF[0],"</pre>\n";
+        echo '<pre>',DsParser::BNF[0]."\n".PredicateParser::BNF[0],"</pre>\n";
         echo "Les nonterminaux sont définis par des symboles entre accolades.<br>
           Les terminaux sont:<br>
           - d'une part les symboles entre guillemets dans la BNF qui correspondent à la chaîne entre guillemets et,<br>
@@ -373,8 +372,8 @@ class DsParserTest {
         echo "<table border=1><th>symbole</th><th>expression régulière</th>\n";
         echo implode('', array_map(
           function($symbol, $reg) { return "<tr><td>$symbol</td><td>$reg</td></tr>\n"; },
-          array_keys(DsParser::TOKENS),
-          array_values(DsParser::TOKENS)
+          array_keys(array_merge(DsParser::TOKENS, PredicateParser::TOKENS)),
+          array_values(array_merge(DsParser::TOKENS, PredicateParser::TOKENS))
         ));
         echo "</table>\n";
         echo "Le symbole <b>space</b> est correspond à un blanc dans l'analyse lexicale.";

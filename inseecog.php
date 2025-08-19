@@ -7,7 +7,7 @@ require_once 'dataset.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 
-/** JdD InseeCog.
+/** JdD Code officiel géographique au 1er janvier 2025 (Insee) (InseeCog).
  * Chaque section correspond à un fichier csv  dans le répertoire inseecog et chaque tuple correspond à une ligne du fichier.
  * Le schéma est défini dans inseecog.yaml.
  */
