@@ -59,6 +59,7 @@ class Join extends Section {
   
   /** Décompose la clé dans les 2 clés d'origine qui ont été concaténées; retourne un tableau avec les clés 1 et 2.
    * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous en commentaire.
+   * @return array{1: string, 2: string}
    */
   static function decatKeys(string $keys): array {
     $result = [];

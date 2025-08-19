@@ -43,8 +43,9 @@ class HtmlForm {
       $select .= implode('', array_map(function($v) { return "<option>$v</option>\n"; }, $options));
     }
     else {
-      foreach ($options as $k => $v)
-        $select .= "<option value='$k'>$v</option>\n";
+      $select .= implode('', array_map(
+        function($k, $v) { return "<option value='$k'>$v</option>\n"; },
+        array_keys($options), array_values($options)));
     }
     $select .= "</select>";
     return $select;
@@ -107,8 +108,8 @@ class RecArray {
   }
 
   /** Transforme récursivement un RecArray en objet de StdClass.
-   * Seuls es array non listes sont transformés en objet, les listes sont conservées.
-   * L'objectif est de construire ce que retourne un jeson_decode().
+   * Seuls les array non listes sont transformés en objet, les listes sont conservées.
+   * L'objectif est de construire ce que retourne un json_decode().
    * @param array<mixed> $input Le RecArray à transformer.
    * @return stdClass|array<mixed>
    */
@@ -173,9 +174,10 @@ class RecArray {
         break;
       }
     }
+    die();
   }
 };
-//RecArray::test(); die(); // Test RecArray 
+//RecArray::test(); // Test RecArray 
 
 /** Le schéma JSON de la section */
 class SchemaOfSection {
@@ -279,9 +281,16 @@ class SchemaOfSection {
   }
 };
 
-/** Section d'un JdD.
- * Est capable d'itérer sir ses n-uplets, d'indiquer les filtres mis en oeuvre et d'afficher les n-uplets.
- * Il y a 2 types de section, celles associées à un JdD et celles issues d'une requête.
+/** Une section 
+ * Est capable d'itérer sur ses n-uplets, d'indiquer les filtres mis en oeuvre et d'afficher les n-uplets.
+ * Il y a 2 types de section, celles associées à un JdD (SectionOfDs) et celles issues d'une requête (Join, Proj, ...).
+ * Une classe concrète doit indiquer le kind de la section et définir les méthodes suivantes:
+ *   - id()
+ *   - getTuples()
+ *   - implementedFilters()
+ *   - getOneTupleByKey()
+ * Par ailleurs elle peut définir les méthodes suivantes:
+ *   - getTuplesOnValue(), s'il existe un algo plus performant
  */
 abstract class Section {
   /** Nb de n-uplets par défaut par page à afficher */
@@ -310,8 +319,8 @@ abstract class Section {
    */ 
   abstract function getOneTupleByKey(int|string $key): array|string|null;
   
-  /** Retourne la liste des n-uplets pour lesquels le field contient la valeur.
-   * @return list<array<mixed>>
+  /** Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.
+   * @return array<array<mixed>>
    */ 
   function getTuplesOnValue(string $field, string $value): array {
     $result = [];
@@ -329,7 +338,7 @@ abstract class Section {
     $i = 0; // no de tuple
     $filters = array_merge(
       ['skip'=> $skip],
-      isset($_GET['predicate']) ? ['predicate'=> new Predicate($_GET['predicate'])] : []
+      isset($_GET['predicate']) ? ['predicate'=> Predicate::fromText($_GET['predicate'])] : []
     );
     foreach ($this->getTuples($filters) as $key => $tupleOrValue) {
       $tuple = match ($this->kind) {
@@ -378,7 +387,8 @@ abstract class Section {
   }
 };
 
-/** Sections d'un JdD. */
+/** Sections d'un JdD.
+ * La plupart des fonctionnalités d'une telle section sont mises en oeuvre par la classe de JdD concrète héritant de Dataset. */
 class SectionOfDs extends Section {
   /** @var string $dsName - Le nom du JdD contenant la section. */
   readonly string $dsName;
@@ -399,7 +409,7 @@ class SectionOfDs extends Section {
   
   function description(): string { return $this->schema->array['description']; }
   
-  /** Génère un id pour être passé en paramètre $_GET */
+  /** Génère un identifiant de la section, par exemple pour être passé en paramètre $_GET */
   function id(): string { return $this->dsName.'.'.$this->name; }
   
   /** Refabrique une SectionOfDs à partir de son id. */
@@ -423,7 +433,7 @@ class SectionOfDs extends Section {
   }
 
   /** La méthode getTuplesOnValue() est mise en oeuvre par le JdD.
-   * @return list<array<mixed>>
+   * @return array<array<mixed>>
    */ 
   function getTuplesOnValue(string $field, string $value): array {
     return Dataset::get($this->dsName)->getTuplesOnValue($this->name, $field, $value);
@@ -499,7 +509,13 @@ class SectionOfDs extends Section {
   }
 };
 
-/** Classe abstraite des JdD */
+/** Classe abstraite des JdD.
+ * Une sous-classe concrète doit définir la méthode getTuples().
+ * Elle peut par ailleurs redéfinir les méthodes:
+ *   - implementedFilters() pour indiquer les filtres pris en compte dans getTuples(),
+ *   - getOneTupleByKey() d'accès aux n-uplets sur clé s'il existe un algo. plus performant.
+ *   - getTuplesOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
+ */
 abstract class Dataset {
   /** Registre contenant la liste des JdD sous la forme {dsName} => {className}|null */
   const REGISTRE = [
@@ -600,6 +616,7 @@ abstract class Dataset {
   abstract function getTuples(string $section, array $filters=[]): Generator;
   
   /** Retourne le n-uplet ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
+   * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<mixed>|string|null
    */ 
   function getOneTupleByKey(string $section, string|int $key): array|string|null {
@@ -609,9 +626,9 @@ abstract class Dataset {
     return null;
   }
   
-  /** Retourne la liste des n-uplets ayant pour champ field la valeur fournie.
+  /** Retourne la liste des n-uplets avec leur clé, ayant pour champ field la valeur fournie.
    * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
-   * @return list<array<mixed>>
+   * @return array<array<mixed>>
    */ 
   function getTuplesOnValue(string $section, string $field, string $value): array {
     $result = [];
@@ -812,14 +829,29 @@ abstract class Dataset {
   /** Affiche une sction du JdD JdD en Html. */
   function displaySection(string $sname): void { $this->sections[$sname]->display(); }
   
-  /** Retourne le nbre de n-uplets formatté avec un séparateur des milliers. */
-  function count(string $sname, string $predicate=''): string {
-    $filters = $predicate ? ['predicate'=> new Predicate($predicate)] : [];
+  /** Retourne le nbre de n-uplets. */
+  function count(string $sname, string $predicate=''): int {
+    $filters = $predicate ? ['predicate'=> Predicate::fromText($predicate)] : [];
     $nbre = 0;
     foreach ($this->getTuples($sname, $filters) as $key => $tuple) {
       $nbre++;
     }
     //echo "Dans $this->title, $nbre $sname",($predicate ? " / $predicate" : ''),"<br>\n";
+    return $nbre;
+  }
+  
+  /** Retourne la taille de la section formattée en JSON. */
+  function size(string $sname, string $predicate=''): float {
+    $filters = $predicate ? ['predicate'=> Predicate::fromText($predicate)] : [];
+    $size = 0;
+    foreach ($this->getTuples($sname, $filters) as $key => $tuple) {
+      $size += strlen(json_encode($tuple));
+    }
+    return $size;
+  }
+  
+  /** Formatte un entier avec un séparateur des milliers. */
+  static function formatThousands(int $nbre): string {
     if (preg_match('!^(\d+)(\d{3})(\d{3})$!', strval($nbre), $matches))
       return "$matches[1]_$matches[2]_$matches[3]";
     elseif (preg_match('!^(\d+)(\d{3})$!', strval($nbre), $matches))
@@ -828,13 +860,8 @@ abstract class Dataset {
       return strval($nbre);
   }
   
-  /** Retourne la taille en JSON formattée. */
-  function size(string $sname, string $pred=''): string {
-    $filters = $pred ? ['predicate'=> new Predicate($pred)] : [];
-    $size = 0;
-    foreach ($this->getTuples($sname, $filters) as $key => $tuple) {
-      $size += strlen(json_encode($tuple));
-    }
+  /** Formatte un flottant avec les unités. */
+  static function formatUnit(float $size): string {
     $sizeInU = $size;
     $unit = 0;
     while ($sizeInU >= 1_000) {
@@ -848,11 +875,11 @@ abstract class Dataset {
   function stats(): void {
     echo "<h2>Statistiques de ",$this->title,"</h2>\n",
          "<table border=1>\n",
-         "<th>Titre de la sction</th><th>Nbre</th><th>Taille</th>";
+         "<th>Titre de la section</th><th>Nbre</th><th>Taille</th>";
     foreach ($this->sections as $sname => $section) {
       echo "<tr><td>",$this->sections[$sname]->title,"</td>",
-           "<td align='right'>&nbsp;&nbsp;",$this->count($sname),"&nbsp;&nbsp;</td>",
-           "<td align='right'>&nbsp;&nbsp;",$this->size($sname),"</td>",
+           "<td align='right'>&nbsp;&nbsp;",self::formatThousands($this->count($sname)),"&nbsp;&nbsp;</td>",
+           "<td align='right'>&nbsp;&nbsp;",self::formatUnit($this->size($sname)),"</td>",
            "</tr>\n";
     }
     echo "</table>\n";

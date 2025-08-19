@@ -28,6 +28,8 @@ EOT
 require_once 'dataset.inc.php';
 require_once 'proj.php';
 require_once 'join.php';
+require_once 'predicate.inc.php';
+require_once 'select.php';
 
 /** Classe utilisée pour exécuter display ou draw */
 class Program {
@@ -47,6 +49,7 @@ class Program {
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
+ * Le parsing d'un {predicate} est délégué à PredicateParser
  *
  * Du point de vue implémentation, la classe est statique et regroupe des fonctions:
  *  - addTrace() et displayTrace() gèrent la trace
@@ -61,10 +64,6 @@ class DsParser {
     '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {sectionName} ou {field}
     '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
-    '{integer}'=> '[0-9]+',
-    '{float}'=> '[0-9]+\.[0-9]+',
-    '{string}'=> '("[^"]*"|\'[^\']*\')',
-    '{condOp}'=> '(=|<>|<|<=|>|>=)',
   ];
   const BNF = [
     <<<'EOT'
@@ -77,13 +76,11 @@ class DsParser {
              | 'spatial-join' '(' {expTable} ',' {expTable} ')'
              | 'union' '(' {expTable} ',' {expTable} ')'
              | 'proj' '(' {expTable} ',' '[' {FieldPairs} ']' ')'
-             | 'select' '(' {cond} ',' {expTable} ')'
+             | 'select' '(' {predicate} ',' {expTable} ')'
             // | 'map' '(' {phpFun} ',' {expTable} ')' - à voir plus tard
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
 {namePair} ::= {name} '>' {name}
-{cond} ::= {name} {condOp} {constant}
-{constant} ::= {integer} | {float} | {string}
 EOT
   ];
   
@@ -181,14 +178,21 @@ EOT
   }
   
   /** @param list<string> $path - chemin des appels */
-  static function expDataset(array $path, string &$text0): ?string {
+  static function expDataset(array $path, string &$text0): ?Dataset {
     $path[] = 'expDataset';
     // {expDataset} ::= {name}                    // eg: InseeCog
     $text = $text0;
     if ($name = self::token($path, '{name}', $text)) {
-      self::addTrace($path, "Echec {expDataset}", $text0);
+      try {
+        $dataset = Dataset::get($name);
+      }
+      catch (Exception $e) {
+        self::addTrace($path, "Echec {expDataset}", $text0);
+        return null;
+      }
+      self::addTrace($path, "Succès {expDataset}", $text0);
       $text0 = $text;
-      return $name;
+      return $dataset;
     }
 
     self::addTrace($path, "Echec {expDataset}", $text0);
@@ -201,13 +205,13 @@ EOT
     //echo "Test expTable($text0)<br>\n";
     // {expTable}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
     $text = $text0;
-    if (($expDataset = self::expDataset($path, $text))
+    if (($dataset = self::expDataset($path, $text))
       && self::token($path, '{point}', $text)
         && ($name = self::token($path, '{name}', $text))
     ) {
       self::addTrace($path, "Succès expTable#0", $text0);
       $text0 = $text;
-      return SectionOfDs::get("$expDataset.$name");
+      return $dataset->sections[$name];
     }
     self::addTrace($path, "Echec expTable#0", $text0);
     
@@ -245,6 +249,19 @@ EOT
     }
     self::addTrace($path, "Echec expTable#4", $text0);
 
+    // {expTable}#5 : 'select' '(' {predicate} ',' {expTable} ')'
+    $text = $text0;
+    if (self::pmatch('select\(', $text)
+      && ($predicate = PredicateParser::predicate($path, $text))
+        && self::pmatch(',', $text)
+          && ($expTable = self::expTable($path, $text))
+            && self::pmatch('\)', $text)
+    ) {
+      $text0 = $text;
+      return new Select($predicate, $expTable);
+    }
+    self::addTrace($path, "Echec expTable#5", $text0);
+
     self::addTrace($path, "Echec expTable", $text0);
     return null;
   }
@@ -275,7 +292,7 @@ EOT
   }
   
   /** @param list<string> $path - chemin des appels
-   * @return array<string,string> - [{name1}=> {name2}] avec un seul coupe*/
+   * @return array<string,string> - [{name1}=> {name2}] avec un seul couple */
   static function namePair(array $path, string &$text0): ?array {
     $path[] = 'namePair';
     // {namePair} ::= {name} '/' {name}
@@ -344,7 +361,7 @@ class DsParserTest {
                "(<a href='?action=exec&title=",urlencode($title),"'>exec</a>)<br>\n";
         break;
       }
-      case 'bnf': { // Affiche la BNF du langage 
+      case 'bnf': { // Affiche la BNF du langage et les tokens 
         echo "<h2>BNF du langage de requêtes</h2>\n";
         echo '<pre>',DsParser::BNF[0],"</pre>\n";
         echo "Les nonterminaux sont définis par des symboles entre accolades.<br>

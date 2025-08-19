@@ -87,7 +87,8 @@
  *      - intervalle de valeurs d'un champ
  *      - intersection avec un rectangle
  *      - niveau de zoom
- *  - un langage défini par une BNF permet d'exprimer XXXX
+ *  - des requêtes peuvent être effectuées au moyen d'un langage, défini par une BNF, permettant notamment
+ *    des opérateurs algébriques comme jointure, projection, ...
  * ### carte:
  *  - un JdD MapDataset contient la définition de cartes
  *  - ces cartes peuvent être affichées avec Leaflet
@@ -95,15 +96,16 @@
  *    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
  * ### mise_en_oeuvre:
  *  - index.php fournit l'IHM générale de l'appli et contient cette doc
- *  - dataset.inc.php définit la classe Dataset et qqs autres classes
+ *  - dataset.inc.php définit les classes Dataset, Section, SectionOfDs et qqs autres classes
  *  - predicate.inc.php définit la classe Predicate qui permet de définir un critère de sélection sur un n-uplet
  *  - join.php implémente une jointure entre sections
+ *  - proj.php implémente une projection sur une section
  *  - geojson.php expose en GeoJSON les sections des JdD
  *  - un fichier Php par catégorie de jeux de données et par JdD sans catégorie
  *  - geojson.inc.php définit des classes correspondant aux primitives GeoJSON
  *  - spreadsheetdataset.inc.php définit un JdD générique fondé sur un fichier ODS utilisé par NomsCtCnigC et Pays,
  *    devrait être transformé en catégorie
- *  - zoomleveL.php permet de calculer les échelles correspondant aux niveaux de zoom Leaflet
+ *  - zoomlevel.php permet de calculer les échelles correspondant aux niveaux de zoom Leaflet
  *  - map.php, script périmé générant une carte Leaflet, repris dans mapdataset.php
  *  - setop.php, tests d'opérations ensemblistes
  *
@@ -137,25 +139,7 @@
 /* Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- réfléchir
-  - aux index
-  - à un optimiseur
-- rajouter des sources bien connues de référence
-  - WMS IGN ?
-  - EU ? satellites ?
-  - NASA ?
-- rajouter un catalogue de ces sources ?
-  - JdD de sources/web-services ?
-    - titre
-    - type de webservice
-    - URL
-  - retrouver ce que j'avais fait précédemment
-    - /var/www/html/gexplor/visu/servers
-- créer un IHM de cartes et de couches
-- réfléchir à l'affichage de toponymes
-  - noms des pays, noms des villes, ...
-  - faire un serveur de tuiles ?
-  - il y a semble t'il des sources open de noms comme fluw WMS/TMS
+- réfléchir aux index et à un optimiseur
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
@@ -167,6 +151,9 @@ EOT
 /* Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+19/8/2025:
+  - ajout Select
+  - modification Predicate pour correspondre à Select et pour parser le prédicat
 18/8/2025:
   - ajout jointure dans expparserlight.php
   - validation d'un parser simplifié, renommage expparserlight.php en parser.php

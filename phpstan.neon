@@ -45,6 +45,7 @@ parameters:
     - map.php
     - join.php
     - proj.php
+    - select.php
     - parser.php
     - dataseteg.php
     - inseecog.php
