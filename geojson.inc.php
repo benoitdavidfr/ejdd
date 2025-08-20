@@ -46,7 +46,10 @@ abstract class Geometry {
   }
   
   /** @param TGJSimpleGeometry $geom */
-  function __construct(array $geom) { $this->type = $geom['type']; $this->coordinates = $geom['coordinates']; }
+  function __construct(array $geom) {
+    $this->type = $geom['type'];
+    $this->coordinates = $geom['coordinates'];
+  }
   
   /** @return TGJSimpleGeometry $geom */
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }

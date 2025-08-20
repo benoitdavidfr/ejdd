@@ -79,8 +79,6 @@ class BBox {
     if ($sw && !$sw->islSW($ne))
       throw new \Exception("Erreur dans la construction d'une BBox, le coin SW doit être au SW du coin NE.");
   }
-    
-  function isEmpty(): bool { return is_null($this->sw) || is_null($this->ne); }
   
   /** Construit à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou ''. */
   static function fromText(string $text): self {
@@ -93,6 +91,8 @@ class BBox {
     else
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
   }
+    
+  function isEmpty(): bool { return is_null($this->sw) || is_null($this->ne); }
 
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
@@ -146,6 +146,8 @@ class BBox {
     echo "pt=$pt -> bbox=$bbox\n";
     return $lpts ? $bbox->extend($lpts) : $bbox;
   }
+
+  //static function fromGeoJSON(): BBox {}
 };
 /** Cosntante pour l'espace vide. */
 define('NONE', new BBox(null, null));
