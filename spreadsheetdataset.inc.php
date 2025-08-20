@@ -27,7 +27,7 @@ class DocCollection {
   readonly string $name;
   protected ?string $title=null;
   protected ?string $description=null;
-  /** @var array<string,DocProperty> $properties Les propriétés de la section indexées par le nom de la propriété. */
+  /** @var array<string,DocProperty> $properties Les propriétés de la collection indexées par le nom de la propriété. */
   protected array $properties=[];
   
   function __construct(string $name) { $this->name = $name; }
@@ -45,7 +45,7 @@ class DocCollection {
     $this->properties[$name] = new DocProperty($description, $options);
   }
   
-  /** @return array<string,DocProperty> $properties Les propriétés de la section indexées par le nom de la propriété. */
+  /** @return array<string,DocProperty> $properties Les propriétés de la collection indexées par le nom de la propriété. */
   function properties(): array { return $this->properties; }
   
   /** Liste des propriétés obligatoires.
@@ -128,7 +128,7 @@ abstract class SpreadSheetDataset extends Dataset {
         }
         case 'collection': {
           if ($ccoll)
-            $sections[$ccoll->name] = $ccoll;
+            $collections[$ccoll->name] = $ccoll;
           $ccoll = new DocCollection($line['B']);
           break;
         }
@@ -251,7 +251,7 @@ class PaysTest extends SpreadSheetDataset {
         echo "<a href='?action=print_r'>Afficher l'objet Pays</a><br>\n";
         echo "<a href='?action=schema'>Afficher le schéma</a><br>\n";
         foreach (array_keys($pays->docCollections) as $cname) {
-          echo "<a href='?action=section&collection=$cname'>Afficher la collection $cname</a><br>\n";
+          echo "<a href='?action=collection&collection=$cname'>Afficher la collection $cname</a><br>\n";
         }
         break;
       }

@@ -61,7 +61,7 @@ class WorldEezBuild {
     $shpdir->close();
   }
   
-  /** Calcul d'une estimation de la résolution de la section $sname */
+  /** Calcul d'une estimation de la résolution de la collection $cname */
   static function reso(string $cname): void {
     $dataset = Dataset::get('WorldEez');
     foreach ($dataset->getItems($cname) as $tuple) {
@@ -106,7 +106,7 @@ class WorldEezBuild {
             * WorldEez::MAP_SCALE // l'échalle de la carte
             * 1_000); // pour avoir des mm
         echo "<a href='?action=listShp'>Liste les fichiers SHP de la livraison</a><br>\n";
-        echo "<a href='?action=reso&section=eez_v11'>Estimation de la résolution</a><br>\n";
+        echo "<a href='?action=reso&collection=eez_v11'>Estimation de la résolution</a><br>\n";
         echo "<a href='?action=buildGeoJson'>Produit les fichier GeoJSON à partir des fichiers SHP de la livraison</a><br>\n";
         //echo "<a href='?action=read&geojson=eez_v11'>Test lecture GeoJSON</a><br>\n";
         break;
@@ -116,7 +116,7 @@ class WorldEezBuild {
         break;
       }
       case 'reso': {
-        self::reso($_GET['section']);
+        self::reso($_GET['collection']);
         break;
       }
       case 'buildGeoJson': {

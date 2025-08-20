@@ -1,5 +1,5 @@
 <?php
-/** Immlémentation d'une jointure entre 2 sections de JdD générant une nouvelle section de requête.
+/** Immlémentation d'une jointure entre 2 collections de JdD générant une nouvelle collection de requête.
  * @package Algebra
  */
 ini_set('memory_limit', '10G');
@@ -12,9 +12,9 @@ EOT
 
 require_once 'dataset.inc.php';
 
-/** Jointure entre 2 sections.
- * La clé d'une jointure est la concaténation des clés des sections d'origine;
- * cela permet un accès plus efficace au n-uplet par clé.
+/** Jointure entre 2 collections.
+ * La clé d'une jointure est la concaténation des clés des collections d'origine;
+ * cela permet un accès plus efficace au items par clé.
  */
 class Join extends Collection {
   function __construct(readonly string $type, readonly Collection $coll1, readonly string $field1, readonly Collection $coll2, readonly string $field2) {
@@ -25,7 +25,7 @@ class Join extends Collection {
     parent::__construct('dictOfTuples');
   }
 
-  /** l'identifiant permettant de recréer la section. Reconstitue la requête. */
+  /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
   function id(): string {
     return $this->type.'('.$this->coll1->id().','.$this->field1.','.$this->coll2->id().','.$this->field2.')';
   }
@@ -85,7 +85,7 @@ class Join extends Collection {
         foreach ($tuple1 as $k => $v)
           $tuple["s1.$k"] = $v;
       }
-      if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd section
+      if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd collection
         if ($skip-- <= 0) {
           // attention à la manière de concaténer !!!
           $key = ($this->kind == 'dictOfTuples') ? self::concatKeys($key1,'') : $no;
@@ -96,7 +96,7 @@ class Join extends Collection {
           $no++;
         }
       }
-      else { // $tuple1 A une correspondance dans la 2nd section
+      else { // $tuple1 A une correspondance dans la 2nd collection
         if (in_array($this->type, ['left-join', 'inner-join'])) {
           foreach ($tuples2 as $key2 => $tuple2) {
             foreach ($tuple2 as $k => $v)
@@ -268,7 +268,7 @@ class JoinTest {
                "</form></tr></table>\n",
           die();
         }
-        elseif (!isset($_GET['section1'])) {
+        elseif (!isset($_GET['collection1'])) {
           echo "<h3>Choix des collections</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
@@ -285,7 +285,7 @@ class JoinTest {
                  )
                ),
                "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[2]</td></tr>\n",
-               "<tr><td>sections</th><td>$selects[1]</td><td>$selects[2]</td>",
+               "<tr><td>collections</th><td>$selects[1]</td><td>$selects[2]</td>",
                "<td><input type='submit' value='ok'></td></tr>\n",
                "</form></table>\n";
           die();
@@ -321,20 +321,20 @@ class JoinTest {
             $dsTitles[$i] = $ds->title;
           }
           $select = HtmlForm::select('type', [
-            'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 sections sont retournés",
-            'left-join'=> "Left-Join - tous les n-uplets de la 1ère section sont retournés avec s'ils existent ceux de la 2nd en correspondance",
-            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère section n'ayant pas de correspondance dans le 2nd",
+            'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
+            'left-join'=> "Left-Join - tous les n-uplets de la 1ère coll. sont retournés avec s'ils existent ceux de la 2nd en correspondance",
+            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. n'ayant pas de correspondance dans le 2nd",
           ]);
           echo "<table border=1><form>\n",
                implode(
                  '',
                  array_map(
                    function($k) { return "<input type='hidden' name='$k' value='$_GET[$k]'>\n"; },
-                   ['dataset1', 'dataset2','section1','section2','field1','field2']
+                   ['dataset1', 'dataset2','collection1','collection2','field1','field2']
                  )
                ),
                "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[2]</td></tr>\n",
-               "<tr><td>sections</td><td>$_GET[section1]</td><td>$_GET[section2]</td></tr>\n",
+               "<tr><td>collections</td><td>$_GET[collection1]</td><td>$_GET[collection2]</td></tr>\n",
                "<tr><td>fields</th><td>$_GET[field1]</td><td>$_GET[field2]</td></tr>",
                "<tr><td>type</td><td colspan=2>$select</td><td><input type='submit' value='ok'></td></tr>\n",
                "</form></table>\n";
@@ -353,11 +353,9 @@ class JoinTest {
         break;
       }
       case 'query': { // query transmises par l'appel initial 
-        /*$join = new Join($type, SectionOfDs::get($sectionId1), $field1, SectionOfDs::get($sectionId2), $field2);
-        $join->displayTuples($_GET['skip'] ?? 0);*/
         $query = self::EXAMPLES[$_GET['title']];
         if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $query, $matches))
-          throw new Exception("Erreur de décodage du sectionId=$_GET[section]");
+          throw new Exception("Erreur de décodage du collectionId=$_GET[collection]");
         $type = $matches[1];
         $coll1 = $matches[2];
         $field1 = $matches[3];
@@ -369,8 +367,8 @@ class JoinTest {
       }
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
         //echo '<pre>$_GET='; print_r($_GET); echo "</pre>\n";
-        if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $_GET['section'], $matches))
-          throw new Exception("Erreur de décodage du sectionId=$_GET[section]");
+        if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $_GET['collection'], $matches))
+          throw new Exception("Erreur de décodage ducollId=$_GET[collection]");
         //echo '<pre>$matches='; print_r($matches); echo "</pre>\n";
         $type = $matches[1];
         $coll1 = $matches[2];

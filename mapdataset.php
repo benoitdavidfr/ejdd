@@ -11,12 +11,12 @@ use Symfony\Component\Yaml\Yaml;
 /** JdD des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.
  * La définition des cartes est stockée dans le fichier mapdataset.yaml.
  * Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
- * chacune définie dans la section layer notamment par un type et des paramètres.
+ * chacune définie dans la collection layer notamment par un type et des paramètres.
  * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
  */
 class MapDataset extends Dataset {
   const YAML_FILE_PATH = 'mapdataset.yaml';
-  /** @var array<string,mixed> $data Les données des différentes sections du jeu */
+  /** @var array<string,mixed> $data Les données des différentes collections du jeu */
   readonly array $data;
   
   function __construct(string $name) {
@@ -30,7 +30,7 @@ class MapDataset extends Dataset {
     $this->data = $data;
   }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
@@ -142,7 +142,7 @@ class L_UGeoJSONLayer extends Layer {
   
   /** Les erreurs d'intégité soulèvent des exceptions. */
   function checkIntegrity(): void {
-    // Le paramètre endpoint doit correspondre à un JdD et une section de ce JdD
+    // Le paramètre endpoint doit correspondre à un JdD et une collection de ce JdD
     // ex:       endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
     if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items$!', $this->params['endpoint'], $matches)) {
       throw new Exception("params[endpoint]=".$this->params['endpoint']." don't match");

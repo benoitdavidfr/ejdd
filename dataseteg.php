@@ -189,28 +189,28 @@ class DatasetEg extends Dataset {
     parent::__construct($name, self::TITLE, self::DESCRIPTION, $schema);
   }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
-   * @param string $section nom de la section
+  /** L'accès aux items d'une collection du JdD par un Generator.
+   * @param string $collection nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
    * @return Generator
    */
-  function getItems(string $section, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach (self::DATA[$section]['data'] as $key => $item) {
+    foreach (self::DATA[$collection]['data'] as $key => $item) {
       if ($skip-- > 0)
         continue;
       yield $key => $item;
     }
   }
   
-  /** Retourne le n-uplet ou la valeur ayant la clé indiquée de la section.
+  /** Retourne l'item' ou la valeur ayant la clé indiquée de la collection.
    * @return array<mixed>|string|null
    */ 
-  function getOneTupleByKey(string $section, string|int $key): array|string|null {
-    return self::DATA[$section]['data'][$key];
+  function getOneTupleByKey(string $collection, string|int $key): array|string|null {
+    return self::DATA[$collection]['data'][$key];
   }
 };
 

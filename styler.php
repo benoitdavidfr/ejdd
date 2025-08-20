@@ -72,7 +72,7 @@ class Styler extends Dataset {
     parent::__construct($ssName, $this->styleSheet['title'], $this->styleSheet['description'], $schema);
   }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux tuples d'une collection du JdD par un Generator.
    * @param string $collection nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:

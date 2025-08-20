@@ -1,16 +1,17 @@
 <?php
 /** setop. Tests opérations ensemblistes.
  * M'a permis de tester join, count et size qui ont été transférés dans dataset.inc.php
+ * PLUS MIS A JOUR
  *
  * @package Algebra
  */
 
 class SetOp {
-  /** Teste si un champ d'une section est unique pour un éventuel prédicat. */
+  /** Teste si un champ d'une collection est unique pour un éventuel prédicat. */
   static function fieldIsUniq(Dataset $dataset, string $sname, string $field, string $predicate): bool {
-    $filters = $predicate ? ['predicate'=> new Predicate($predicate)] : [];
+    $filters = $predicate ? ['predicate'=> Predicate::fromText($predicate)] : [];
     $fieldValues = []; // [{fieldValue} => 1]
-    foreach ($dataset->getTuples($_GET['section'], $filters) as $key => $tuple) {
+    foreach ($dataset->getItems($_GET['collection'], $filters) as $key => $tuple) {
       if (isset($fieldValues[$tuple[$field]])) {
         echo "$field non unique au moins pour ",
              '<pre>$tuple='; print_r([$key => $tuple]); echo "</pre>\n";
@@ -22,22 +23,22 @@ class SetOp {
     return true;
   }
   
-  /** Différence entre 2 champs de 2 JdD/sections */
-  static function fieldDiff(array $datasets, array $sections, array $fields): void {
+  /** Différence entre 2 champs de 2 JdD/collections */
+  static function fieldDiff(array $datasets, array $collections, array $fields): void {
     foreach ([1,2] as $i) {
-      foreach (Dataset::get($datasets[$i])->getTuples($sections[$i]) as $tuple) {
+      foreach (Dataset::get($datasets[$i])->getItems($collections[$i]) as $tuple) {
         $values[$i][] = $tuple[$fields[$i]];
       }
     }
     //echo '<pre>'; print_r($values);
     //echo '<pre>array_diff='; print_r(array_diff($values[1], $values[2]));
-    echo "Les n-uplets de $datasets[1].$sections[1] pour lesquels $fields[1] ",
-         "n'est pas dans $datasets[2].$sections[2]. $fields[2]<br>\n";
+    echo "Les n-uplets de $datasets[1].$collections[1] pour lesquels $fields[1] ",
+         "n'est pas dans $datasets[2].$collections[2]. $fields[2]<br>\n";
     echo '<pre>fieldDiff=';
     $empty = true;
     $ds1 = Dataset::get($datasets[1]);
     foreach (array_diff($values[1], $values[2]) as $val1) {
-      $tuples1 = $ds1->getTuplesOnValue($sections[1], $fields[1], $val1);
+      $tuples1 = $ds1->getItemsOnValue($collections[1], $fields[1], $val1);
       foreach ($tuples1 as $tuple1) {
         foreach ($tuple1 as $k => $v)
           $tuple1[$k] = self::formatForPrint($v);
@@ -82,29 +83,29 @@ switch($action = $_GET['action'] ?? null) {
     }
     
     $dataset = Dataset::get($_GET['dataset']);
-    if (!isset($_GET['section'])) {
-      echo "<h3>Choix d'une section</h3>\n";
-      foreach ($dataset->sections as $sname => $section) {
-        echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&section=$sname'>$section->title</a><br>\n";
+    if (!isset($_GET['collection'])) {
+      echo "<h3>Choix d'une collection</h3>\n";
+      foreach ($dataset->collections as $cname => $collection) {
+        echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$cname'>$collection->title</a><br>\n";
       }
       die();
     }
     
     if (!isset($_GET['field'])) {
-      foreach ($dataset->getTuples($_GET['section']) as $key => $tuple) {
+      foreach ($dataset->getItems($_GET['collection']) as $key => $tuple) {
         //echo '<pre>$tuple='; print_r([$key => $tuple]); echo "</pre>\n";
         break;
       }
       foreach (array_keys($tuple) as $field) {
-        echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&section=$_GET[section]&field=$field'>$field</a><br>\n";
+        echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$_GET[collection]&field=$field'>$field</a><br>\n";
       }
       die();
     }
     
     if (in_array('predicate', $dataset->implementedFilters()))
-      echo Predicate::form(['action','dataset','section', 'field']);
+      echo Predicate::form(['action','dataset','collection', 'field']);
     
-    SetOp::fieldIsUniq($dataset, $_GET['section'], $_GET['field'], $_GET['predicate'] ?? '');
+    SetOp::fieldIsUniq($dataset, $_GET['collection'], $_GET['field'], $_GET['predicate'] ?? '');
     break;
   }
   case 'diff': {
@@ -121,12 +122,12 @@ switch($action = $_GET['action'] ?? null) {
            "</form></tr></table>\n",
       die();
     }
-    if (!isset($_GET['section1'])) {
-      echo "<h3>Choix des sections</h3>\n";
+    if (!isset($_GET['collection1'])) {
+      echo "<h3>Choix des collections</h3>\n";
       foreach ([1,2] as $i) {
         $ds = Dataset::get($_GET["dataset$i"]);
         $dsTitles[$i] = $ds->title;
-        $selects[$i] = select("section$i", value2keyValue(array_keys($ds->sections)));
+        $selects[$i] = select("collection$i", value2keyValue(array_keys($ds->collections)));
       }
       //print_r($dsSectNames);
       echo "<table border=1><form>\n",
@@ -138,7 +139,7 @@ switch($action = $_GET['action'] ?? null) {
              )
            ),
            "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[1]</td></tr>\n",
-           "<tr><td>sections</th><td>$selects[1]</td><td>$selects[2]</td>",
+           "<tr><td>collections</th><td>$selects[1]</td><td>$selects[2]</td>",
            "<td><input type='submit' value='ok'></td></tr>\n",
            "</form></table>\n";
       die();
@@ -168,7 +169,7 @@ switch($action = $_GET['action'] ?? null) {
     }
     SetOp::fieldDiff(
       [1=> $_GET['dataset1'], 2=> $_GET['dataset2']],
-      [1=> $_GET['section1'], 2=> $_GET['section2']],
+      [1=> $_GET['collection1'], 2=> $_GET['collection2']],
       [1=> $_GET['field1'],   2=> $_GET['field2']]);
     break;
   }

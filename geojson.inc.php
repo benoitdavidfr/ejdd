@@ -4,6 +4,8 @@
  */
 //ini_set('memory_limit', '10G');
 
+require_once('bbox.php');
+
 /** Les grandeurs kilo, Méga, Giga, ... */
 class U {
   const K = 1024;
@@ -25,6 +27,7 @@ class Pos {
 /** Classe abstraite de géométrie GeoJSON portant la méthode create() de création d'une géométrie. */
 abstract class Geometry {
   readonly string $type;
+  readonly ?\bbox\BBox $bbox; 
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
   readonly array $coordinates;
   
@@ -197,16 +200,26 @@ if (0) { // @phpstan-ignore if.alwaysFalse
   echo '$fc='; print_r($fc);
 }
 
-if (0) { // @phpstan-ignore if.alwaysFalse 
+elseif (0) { // @phpstan-ignore if.alwaysFalse 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   print_r($foffc->readFC());
 }
 
-if (1) { // @phpstan-ignore if.alwaysTrue 
+elseif (0) { // @phpstan-ignore if.alwaysFalse 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   foreach ($foffc->readFeatures() as $feature) {
+    echo '$feature='; print_r($feature);
+  }
+}
+
+elseif (1) { // @phpstan-ignore if.alwaysTrue
+  ini_set('memory_limit', '10G');
+  set_time_limit(5*60);
+  $foffc = new FileOfFC('aecogpe2025/region.geojson');
+  foreach ($foffc->readFeatures() as $feature) {
+    $feature = new Feature($feature);
     echo '$feature='; print_r($feature);
   }
 }

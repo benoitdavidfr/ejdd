@@ -156,7 +156,7 @@ class Predicate {
   /** Fabrique un formulaire de saisie
    * @param list<string> $getKeys Les clés _GET à transmettre
    */
-  static function form(array $getKeys = ['action','dataset','section']): string {
+  static function form(array $getKeys = ['action','dataset','collection']): string {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
     foreach ($getKeys as $k)
       if (isset($_GET[$k]))
@@ -211,9 +211,9 @@ class PredicateTest {
           die();
         }
         
-        if (!isset($_GET['section'])) {
+        if (!isset($_GET['collection'])) {
           $dataset = Dataset::get($_GET['dataset']);
-          echo "<h3>Choix d'une section</h3>\n";
+          echo "<h3>Choix d'une collection</h3>\n";
           foreach ($dataset->collections as $cname => $collection) {
             echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$cname'>$collection->title</a><br>\n";
           }

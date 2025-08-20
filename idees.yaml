@@ -991,37 +991,19 @@ conceptionWxS:
     Un JdD tile-servers contient comme sections les serveurs WFS, TMS ou WMTS connus stockés dans un fichier Yaml.
     Chaque serveur contient comme n-uplets les couches exposées avec les infos associées.
     Chaque couche exposée correspond à une couche L.TileLayer dans MapDataset.
-expression:
-  réflexions:
-    - définir une expression fonctionnelle correspondant à un enchainement d'opérateurs ensemblistes
-    - par ex:
-      - join(proj(x/y, join(xx/xx/xx, yyy/yy/yy)))
-    - les opérations de base sont a priori
-      - inner-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
-      - left-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
-      - diff-join({DS1}/{section1}, {field1}, {DS2}/{section2}, {field2})
-      - spatial-join({DS1}/{section1} X {DS2}/{section2})
-      - proj(f1/g1, f2/g2, f3/g3, {DS}/{section})
-      - union({DS1}/{section1} + {DS2}/{section2})
-      - select({field} {op} "{const}", {DS}/{section})
-      - map({phpFun} {DS}/{section})
-    - {DS}/{section} peut être remplacé une opération
-  tokens:
-    {couple}: "'[a-zA-Z]+/[a-zA-Z]+' //  {datasetName} '/' {sectionName} | CoupleOfFields"
-    {joinName}: '(inner-join|left-join|diff-join)'
-  règlesSyntaxiques: |
-    {EXP} ::= {dataSource} | {operation}
-    {operation} ::= {joinName} '(' {EXP} ',' {fieldName} ',' {EXP} ',' {fieldName} ')'
-                  | 'spatial-join' '(' {EXP} ',' {EXP} ')'
-                  | 'union' '(' {EXP} ',' {EXP} ')'
-                  | 'proj' '(' {FieldPairs} ',' {EXP} ')'
-                  | 'select' '(' {cond} ',' {EXP} ')'
-                  | 'map' '(' {phpFun} ',' {EXP} ')'
-    {FieldPairs} ::= {pair}
-                   | {pair} ',' {FieldPairs}
+jointureSpatiale:
+  - classe RectPt -> rect.php
+  - implémenter la jointure spatiale comme une jointure sur l'intersection des rectangles englobants
+  - afficher une géométrie par son rectangle englobant sous la forme "(sw,ne)" pour une ligne et "{sw,ne}" pour un Pol
+  - en arrondissant les coordonnées à 2 chiffres significatifs (résolution du km)
 historique:
+  v3.1(19/8/25):
+    - ajout parser d'expressions ensemblistes
+    - remplacement du concept de section/élt par collection/item
+    - parallèle avec OGC API Feature et CQL
+    - remplacement getTuples() par getItems() qui retourne un Generator
   v3:
-    - replacement getData() par getTuples() qui retourne un Generator
+    - remplacement getData() par getTuples() qui retourne un Generator
     - rend possible de gérer des sections qui ne tiennent pas en mémoire
     - définition de catégories de JdD, ex de GeoDataset pour les NaturalEarth
     - définition du mécanisme de feuilles de styles, application à NaturalEarth

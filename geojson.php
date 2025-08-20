@@ -1,5 +1,5 @@
 <?php
-/** Génère un flux GeoJSON pour une section d'un JdD. */
+/** Génère un flux GeoJSON pour une collection d'un JdD. */
 require_once 'dataset.inc.php';
 require_once 'lib/gebox.inc.php';
 require_once 'lib/gegeom.inc.php';
@@ -26,59 +26,7 @@ if (preg_match('!^/([^/]+)$!', $path, $matches)) { // liste des parties du JdD
   die();
 }
 
-/* Ancienne version périmée
-if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la partie 
-  $dsname = $matches[1];
-  $sectname = $matches[2];
-  if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
-    $bbox =  new \gegeom\GBox($bbox);
-    //echo "<pre>bbox="; print_r($bbox); //die();
-  }
-  $sectionMD = Dataset::get($dsname)->sections[$sectname]; // les MD de la section
-  $section = Dataset::get($dsname)->getData($sectname); // les données de la section
-  $features = [];
-  foreach ($section as $tuple) {
-    $geometry = $tuple['geometry'];
-    $geom = \gegeom\Geometry::fromGeoArray($geometry);
-    //echo "<pre>geom="; print_r($geom);
-    if ($bbox) {
-      $gbox = $geom->gbox();
-      //echo "<pre>geom->gbox()="; print_r($gbox);
-      if (!$bbox->inters($gbox)) {
-        //echo "N'intersecte pas bbox<br>\n";
-        continue;
-      }
-      //echo "Intersecte bbox\n";
-    }
-    unset($tuple['geometry']);
-    //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
-    if (isset($sectionMD->schema['items']['propertiesForGeoJSON'])) {
-      //print_r($tuple);
-      $tuple2 = [];
-      foreach ($sectionMD->schema['items']['propertiesForGeoJSON'] as $prop)
-        $tuple2[$prop] = $tuple[$prop];
-      //print_r($tuple2);
-      $tuple = $tuple2;
-    }
-    $features[] = [
-      'type'=> 'Feature',
-      'properties'=> $tuple,
-      'geometry'=> $geometry,
-    ];
-  }
-  header('Access-Control-Allow-Origin: *');
-  header('Content-Type: application/json');
-  die(json_encode(
-    [
-      'type'=> 'FeatureCollection',
-      'name'=> "$dsname/$sectname",
-      'features'=> $features,
-    ],
-    JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE
-  ));
-}*/
-
-if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la section 
+if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la collection 
   $dsName = $matches[1];
   $cName = $matches[2];
   if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
@@ -88,7 +36,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
 
   $dataset = Dataset::get($dsName);
-  $sectionMD = $dataset->collections[$cName]; // les MD de la section
+  $collectionMD = $dataset->collections[$cName]; // les MD de la collection
   
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
@@ -117,11 +65,11 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     // Ce champ style peut être par exemple rajouté par un styleur comme StyledNaturalEarth
     $style = $tuple['style'] ?? null;
     unset($tuple['style']);
-    //echo '<pre>propertiesForGeoJSON='; print_r($sectionMD->schema['items']['propertiesForGeoJSON']);
-    if (isset($sectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+    //echo '<pre>propertiesForGeoJSON='; print_r($collectionMD->schema['items']['propertiesForGeoJSON']);
+    if (isset($collectionMD->schema->array['items']['propertiesForGeoJSON'])) {
       //print_r($tuple);
       $tuple2 = [];
-      foreach ($sectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+      foreach ($collectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
         $tuple2[$prop] = $tuple[$prop];
       //print_r($tuple2);
       $tuple = $tuple2;

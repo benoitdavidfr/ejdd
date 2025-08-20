@@ -29,7 +29,7 @@ class GeoDataset extends Dataset {
     $this->params = $md['params'];
   }
 
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les items à renvoyer
    * Les filtres possibles sont:

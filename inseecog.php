@@ -8,7 +8,7 @@ require_once 'dataset.inc.php';
 use Symfony\Component\Yaml\Yaml;
 
 /** JdD Code officiel géographique au 1er janvier 2025 (Insee) (InseeCog).
- * Chaque section correspond à un fichier csv  dans le répertoire inseecog et chaque tuple correspond à une ligne du fichier.
+ * Chaque collection correspond à un fichier csv  dans le répertoire inseecog et chaque tuple correspond à une ligne du fichier.
  * Le schéma est défini dans inseecog.yaml.
  */
 class InseeCog extends Dataset {
@@ -22,7 +22,7 @@ class InseeCog extends Dataset {
    */
   function implementedFilters(): array { return ['skip', 'predicate']; }
 
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $collection nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:

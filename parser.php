@@ -46,7 +46,7 @@ class Program {
   }
 };
 
-/** Le parser, appelé par program(), retourne un Program, une Section ou null en cas d'erreur.
+/** Le parser, appelé par program(), retourne un Program, une Collection ou null en cas d'erreur.
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
@@ -62,7 +62,7 @@ class DsParser {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
-    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {sectionName} ou {field}
+    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {field}
     '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
   ];

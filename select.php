@@ -1,18 +1,18 @@
 <?php
-/** Sélection de n-uplets d'une section sur un prédicat.
+/** Sélection de n-uplets d'une collection sur un prédicat.
  * @package Algebra
  */
 require_once 'dataset.inc.php';
 
-/** Opérateur de sélection des n-uplets sur un prédicat fournissant une section.
- * Il y a une duplication entre l'opérateur Select et la possibilité pour une Section de prendre en compte un filtre Peredicate.
+/** Opérateur de sélection des n-uplets sur un prédicat fournissant une collection.
+ * Il y a une duplication entre l'opérateur Select et la possibilité pour une Collection de prendre en compte un filtre Predicate.
  * Dans les 2 cas le Predicate est le même.
- * De plus, lorqu'un opérateur Select est appliqué à une Section acceptant le filtre predicate, ce dernier est utilisé.
+ * De plus, lorqu'un opérateur Select est appliqué à une Collection acceptant le filtre predicate, ce dernier est utilisé.
  */
 class Select extends Collection {
   function __construct(readonly Predicate $predicate, readonly Collection $coll) { parent::__construct('dictOfTuples'); }
 
-  /** l'identifiant permettant de recréer la section dans le parser. */
+  /** l'identifiant permettant de recréer la collection dans le parser. */
   function id(): string {
     return 'select('.$this->predicate->id().','.$this->coll->id().')';
   }
@@ -50,7 +50,7 @@ class Select extends Collection {
   }
   
   /** Retourne un n-uplet par sa clé.
-   * La sélection ne modifiant pas les clés, il suffit de demander le tuple à la section d'origine.
+   * La sélection ne modifiant pas les clés, il suffit de demander le tuple à la collection d'origine.
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(int|string $key): array|string|null {
@@ -67,11 +67,11 @@ class SelectTest {
   /** @return array<mixed> */
   static function examples(): array {
     return [
-      "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une section acceptant predicate)" => [
+      "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une collection acceptant predicate)" => [
         'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
         'predicate'=> new Predicate('NCC', 'match', new Constant('string', '!FRANCE!')),
       ],
-      "DeptReg.régions.nom match '!France!' (cas d'une section n'acceptant pas predicate)" => [
+      "DeptReg.régions.nom match '!France!' (cas d'une collection n'acceptant pas predicate)" => [
         'collection'=> CollectionOfDs::get('DeptReg.régions'),
         'predicate'=> new Predicate('nom', 'match', new Constant('string', '!France!')),
       ],
@@ -85,7 +85,6 @@ class SelectTest {
       echo "<h2>$title</h2>\n";
       //$example = self::examples()[$title];
       $collection = $example['collection'];
-      //echo '<pre>$section='; print_r($section);
       echo '<pre>implementedFilters='; print_r($collection->implementedFilters());
       $predicate = $example['predicate'];
       $select = new Select($predicate, $collection);

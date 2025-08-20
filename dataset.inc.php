@@ -8,7 +8,7 @@
  * Un JdD est utilisé par:
  *  - la fonction Dataset::get({nomDataset}): Dataset pour en obtenir sa représentation Php
  *  - l'accès aux champs readonly de MD title, description et schema
- *  - l'appel de Dataset::getTuples({nomCollection}, {filtre}) pour obtenir un Generator de la collection
+ *  - l'appel de Dataset::getItems({nomCollection}, {filtre}) pour obtenir un Generator de la collection
  * Un JdD doit comporter un schéma JSON conforme au méta-schéma des JdD qui impose notamment que:
  *  - le JdD soit décrit dans le schéma par un titre, une description et un schéma
  *  - chaque collection de données soit décrite dans le schéma par un titre et une description
@@ -186,7 +186,7 @@ class SchemaOfCollection {
   /** @param array<mixed> $schema */
   function __construct(array $schema) { $this->array = $schema; }
   
-  /** Déduit du schéma si le type de la section.
+  /** Déduit du schéma si le type de la collection.
    * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
    */
   function kind2(int $debug): string {
@@ -268,7 +268,7 @@ class SchemaOfCollection {
     //$debug = ($name == 'InseeCog.v_commune_2025');
     $kind = $this->kind2($debug);
     if ($debug)
-      echo "SchemaOfSection::kind($name) -> $kind<br>\n";
+      echo "SchemaOfCollection::kind($name) -> $kind<br>\n";
     return $kind;
   }
 
@@ -308,7 +308,7 @@ abstract class Collection {
    */
   abstract function implementedFilters(): array;
   
-  /** L'accès aux tuples d'une section par un Generator.
+  /** L'accès aux items d'une collection par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    */
   abstract function getItems(array $filters=[]): Generator;
@@ -329,7 +329,7 @@ abstract class Collection {
     return $result;
   }
 
-  /** Affiche les données de la section */
+  /** Affiche les données de la collection */
   function displayItems(int $skip=0): void {
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
@@ -349,7 +349,7 @@ abstract class Collection {
       if ($cols <> $cols_prec)
         echo '<th>',implode('</th><th>', $cols),"</th>\n";
       $cols_prec = $cols;
-      echo "<tr><td><a href='?action=display&section=",urlencode($this->id()),"&key=$key'>$key</a></td>";
+      echo "<tr><td><a href='?action=display&collection=",urlencode($this->id()),"&key=$key'>$key</a></td>";
       foreach ($tuple as $k => $v) {
         if ($v === null)
           $v = '';
@@ -366,7 +366,7 @@ abstract class Collection {
     echo "</table>\n";
     if (in_array('skip', $this->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
       $skip += $i;
-      echo "<a href='?action=display&section=",urlencode($this->id()),
+      echo "<a href='?action=display&collection=",urlencode($this->id()),
              isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
              "&skip=$skip'>",
            "Suivants (skip=$skip)</a><br>\n";
@@ -381,7 +381,7 @@ abstract class Collection {
       default => throw new Exception("kind $this->kind non traité"),
     };
     //echo "<pre>"; print_r($tuple);
-    echo "<h2>N-uplet de la section ",$this->id()," ayant pour clé $key</h2>\n";
+    echo "<h2>N-uplet de la collection ",$this->id()," ayant pour clé $key</h2>\n";
     echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
   }
 };
@@ -389,7 +389,7 @@ abstract class Collection {
 /** Une Collection d'un Dataset.
  * La plupart des fonctionnalités d'une telle collection sont mises en oeuvre par la classe de JdD concrète héritant de Dataset. */
 class CollectionOfDs extends Collection {
-  /** @var string $dsName - Le nom du JdD contenant la section. */
+  /** @var string $dsName - Le nom du JdD contenant la collection. */
   readonly string $dsName;
   /** @var string $name - Le nom de la collection dans le JdD */
   readonly string $name;
@@ -408,7 +408,7 @@ class CollectionOfDs extends Collection {
   
   function description(): string { return $this->schema->array['description']; }
   
-  /** Génère un identifiant de la section, par exemple pour être passé en paramètre $_GET */
+  /** Génère un identifiant de la collection, par exemple pour être passé en paramètre $_GET */
   function id(): string { return $this->dsName.'.'.$this->name; }
   
   /** Refabrique une CollectionOfDs à partir de son id. */
@@ -436,7 +436,7 @@ class CollectionOfDs extends Collection {
     return Dataset::get($this->dsName)->getItemsOnValue($this->name, $field, $value);
   }
 
-  /** Affiche les MD et données de la section */
+  /** Affiche les MD et données de la collection */
   function display(int $skip=0): void {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
@@ -451,7 +451,7 @@ class CollectionOfDs extends Collection {
     $this->displayItems($skip);
   }
   
-  /** Vérifie que la section est conforme à son schéma */
+  /** Vérifie que la collection est conforme à son schéma */
   function isValid(bool $verbose): bool {
     $t0 = microtime(true);
     $nbTuples = 0;
@@ -477,7 +477,7 @@ class CollectionOfDs extends Collection {
     return true;
   }
   
-  /** Retourne les erreurs de conformité de la section à son schéma;
+  /** Retourne les erreurs de conformité de la collection à son schéma;
    * @return list<mixed>
    */
   function getErrors(): array {
@@ -550,7 +550,7 @@ abstract class Dataset {
   /** @var array<string,CollectionOfDs> $collections Le dict. des collections. */
   readonly array $collections;
   
-  /** @param array<mixed> $schema Le schéma JSON de la section */
+  /** @param array<mixed> $schema Le schéma JSON de la collection */
   function __construct(string $name, string $title, string $description, array $schema) {
     $this->name = $name;
     $this->title = $title;
@@ -605,31 +605,30 @@ abstract class Dataset {
    */
   function implementedFilters(): array { return []; }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
-   * @param string $section nom de la section
-   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+  /** L'accès aux items d'une collection du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
+   * @param string $collection nom de la collection
+   * @param array<string,mixed> $filters filtres éventuels sur les items à renvoyer
    * @return Generator
    */
-  abstract function getItems(string $section, array $filters=[]): Generator;
+  abstract function getItems(string $collection, array $filters=[]): Generator;
   
-  /** Retourne le n-uplet ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
-   * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
+  /** Retourne l'item ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<mixed>|string|null
    */ 
-  function getOneItemByKey(string $section, string|int $key): array|string|null {
-    foreach ($this->getItems($section) as $k => $tuple)
+  function getOneItemByKey(string $collection, string|int $key): array|string|null {
+    foreach ($this->getItems($collection) as $k => $tuple)
       if ($k == $key)
         return $tuple;
     return null;
   }
   
-  /** Retourne la liste des n-uplets avec leur clé, ayant pour champ field la valeur fournie.
+  /** Retourne la liste des items avec leur clé, ayant pour champ field la valeur fournie.
    * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<array<mixed>>
    */ 
-  function getItemsOnValue(string $section, string $field, string $value): array {
+  function getItemsOnValue(string $collection, string $field, string $value): array {
     $result = [];
-    foreach ($this->getItems($section) as $k => $tuple)
+    foreach ($this->getItems($collection) as $k => $tuple)
       if ($tuple[$field] == $value)
         $result[$k] = $tuple;
     return $result;
@@ -739,7 +738,7 @@ abstract class Dataset {
     if (!$validator->isValid())
       return false;
     
-    // Validation de chaque section
+    // Validation de chaque collection
     foreach ($this->collections as $collection) {
       if (!$collection->isValid($verbose))
         return false;
@@ -785,7 +784,7 @@ abstract class Dataset {
       $errors = array_merge($errors, $validator->getErrors()); 
     }
     
-    // Validation de chaque section
+    // Validation de chaque collection
     foreach ($this->collections as $collection) {
       if (!$collection->isValid(false))
         $errors = array_merge($errors, $collection->getErrors()); 
@@ -814,8 +813,7 @@ abstract class Dataset {
          "<tr><td>description</td><td>",str_replace("\n","<br>\n", $this->description),"</td></tr>\n";
     //echo "<tr><td>schéma</td><td>",RecArray::toHtml($this->schema),"</td></tr>\n";
     foreach ($this->collections as $cname => $collection) {
-      //$sectionId = json_encode(['dataset'=> $this->name, 'section'=> $sname]);
-      echo "<tr><td><a href='?action=display&section=",urlencode($this->name.'.'.$cname),"'>$cname</a></td>",
+      echo "<tr><td><a href='?action=display&collection=",urlencode($this->name.'.'.$cname),"'>$cname</a></td>",
            "<td>",$this->collections[$cname]->title,"</td>",
            "<td>",$this->collections[$cname]->schema->kind(),"</td>",
            "</tr>\n";
@@ -837,11 +835,11 @@ abstract class Dataset {
     return $nbre;
   }
   
-  /** Retourne la taille de la section formattée en JSON. */
-  function size(string $sname, string $predicate=''): float {
+  /** Retourne la taille  formattée en JSONde la collection. */
+  function size(string $cname, string $predicate=''): float {
     $filters = $predicate ? ['predicate'=> Predicate::fromText($predicate)] : [];
     $size = 0;
-    foreach ($this->getItems($sname, $filters) as $key => $item) {
+    foreach ($this->getItems($cname, $filters) as $key => $item) {
       $size += strlen(json_encode($item));
     }
     return $size;
@@ -872,7 +870,7 @@ abstract class Dataset {
   function stats(): void {
     echo "<h2>Statistiques de ",$this->title,"</h2>\n",
          "<table border=1>\n",
-         "<th>Titre de la section</th><th>Nbre</th><th>Taille</th>";
+         "<th>Titre de la collection</th><th>Nbre</th><th>Taille</th>";
     foreach ($this->collections as $cname => $collection) {
       echo "<tr><td>",$collection->title,"</td>",
            "<td align='right'>&nbsp;&nbsp;",self::formatThousands($this->count($cname)),"&nbsp;&nbsp;</td>",

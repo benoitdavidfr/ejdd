@@ -11,8 +11,8 @@ define('A_FAIRE', [
 - implémenter la sélection spatiale et la jointure spatiale sur des rectangles et des points.
 - réfléchir à un un bouquets de serveurs OGC API Features
   - ptDAccès = Dataset | Query
-  - collection = Section   <<<--- Remplacer le terme Section par Collection
-  - item = Tuple           <<<--- Remplacer le terme Tuple par Item
+  - collection = Section   <<<--- Remplacer le terme Section par Collection (en cours)
+  - item = Tuple           <<<--- Remplacer le terme Tuple par Item (en cours)
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
@@ -24,6 +24,8 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+20/8/2025:
+  - réflexions du Rect
 19/8/2025:
   - ajout Select
   - modification Predicate pour correspondre à Select et pour parser le prédicat
@@ -108,11 +110,13 @@ Lignes de commandes
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f index.php,dataset.inc.php,predicate.inc.php,join.php,proj.php,select.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
+spreadsheetdataset.inc.php,\
 geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,zoomleveL.php,\
 aecogpe.php,worldeez.php,\
-spreadsheetdataset.inc.php,\
 featureserver.php,\
-setop.php	       
+lib/gegeom.inc.php,lib/coordsys.inc.php,lib/zoom.inc.php,lib/gebox.inc.php,lib/sexcept.inc.php,\
+rect.php
+
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
@@ -138,10 +142,10 @@ set_time_limit(5*60);
  *      - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
  *      - carto mondiale simplifiée
  *    - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable
- *    - gérer efficacement des données un peu volumineuses comme des données géo., avec des sections qui ne tiennent pas
+ *    - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas
  *      en  mémoire
  *    - cartographier les JdD en mode web
- *    - faire facilement des traitemts ensemblistes comme des jointures et des projections
+ *    - faire facilement des traitements ensemblistes comme des jointures et des projections
  *
  * Techno (JSON/Yaml/ODS/Php):
  * ---------------------------
@@ -169,17 +173,17 @@ set_time_limit(5*60);
  * ---------
  * ### Généralités:
  *  - un JdD est identifié par un **nom court**, comme DeptReg
- *  - en outre un JdD agrège des **sections de données** et contient des **MD**
+ *  - en outre un JdD agrège des **collections de données** et contient des **MD**
  *  - un JdD doit a minima définir les 3 MD suivantes
  *    - title -> titre du JdD, pas plus long qu'une ligne
  *    - description -> texte de présentation du JdD aussi longue qu'utile, il faudrait la mettre en Markdown
- *    - $schema -> schéma JSON des sections de données
- *  - les données d'un JdD sont structurées en sections de données
- *    - chacune est logiquement un itérable d'éléments, si possible homogènes mais pas forcément
- *    - la référence d'une section est la notion de table de n-uplets
- *    - une section de données peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
- *  - la notion de schéma JSON des sections est un peu virtuelle
- *    - car les données des sections ne sont pas forcément stockées selon ce schéma
+ *    - $schema -> schéma JSON des collections de données
+ *  - les données d'un JdD sont organisées en collections
+ *    - chacune est logiquement un itérable d'items, si possible homogènes mais pas forcément
+ *    - la référence d'une collection est la notion de table de n-uplets, ou de collection d'OGC API Features
+ *    - une collection peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
+ *  - la notion de schéma JSON des collections est un peu virtuelle
+ *    - car les données des collections ne sont pas forcément stockées selon ce schéma
  *    - mais elles doivent par contre être disponibles en Php dans ce schéma
  *      - en considérant qu'un Generator est un dictionnaire (object JSON) ou une liste (array JSON) en fonction de la clé
  *    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
@@ -192,8 +196,8 @@ set_time_limit(5*60);
  *  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
  *  - cette classe Php hérite de la classe abstraite Dataset
  *    - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
- *  - un Dataset est composé d'objets SectionOfDs qui hérite de la classe Section
- *    - la classe Section représente un itérable d'éléments qui peut
+ *  - un Dataset est composé d'objets CollectionOfDs qui hérite de la classe Collection
+ *    - la classe Collection représente un itérable d'items qui peut
  *      - soit appartenir à un JdD,
  *      - soit être généré dynamiquement par une opération ensembliste (join, projection, ...)
  *  - une catégorie de JdD correspond à
@@ -211,13 +215,13 @@ set_time_limit(5*60);
  * ### utilisationEnPhp:
  *  - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
  *  - je récupère ses MD par $ds->title, $ds->description et $ds->schema
- *  - je récupère les données par $ds->getTuples({section}, {filtre})
- *    - qui retourne un Generator sur les éléments de la section satisfaisant le filtre
- *    - avec au moins 4 types de filtre
- *      - valeur d'un champ dont la clé
- *      - intervalle de valeurs d'un champ
+ *  - je récupère les données par $ds->getItems({collection}, {filtre})
+ *    - qui retourne un Generator sur les items de la collection satisfaisant le filtre
+ *    - avec différents filtres
+ *      - prédicat sur les items
  *      - intersection avec un rectangle
  *      - niveau de zoom
+ *      - nbre d'items à sauter en début de liste (skip)
  *  - des requêtes peuvent être effectuées au moyen d'un langage, défini par une BNF, permettant notamment
  *    des opérateurs algébriques comme jointure, projection, ...
  * ### carte:
@@ -227,11 +231,11 @@ set_time_limit(5*60);
  *    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
  * ### mise_en_oeuvre:
  *  - index.php fournit l'IHM générale de l'appli et contient cette doc
- *  - dataset.inc.php définit les classes Dataset, Section, SectionOfDs et qqs autres classes
+ *  - dataset.inc.php définit les classes Dataset, Collection, CollectionOfDs et qqs autres classes
  *  - predicate.inc.php définit la classe Predicate qui permet de définir un critère de sélection sur un n-uplet
- *  - join.php implémente une jointure entre sections
- *  - proj.php implémente une projection sur une section
- *  - geojson.php expose en GeoJSON les sections des JdD
+ *  - join.php implémente une jointure entre Collections
+ *  - proj.php implémente une projection sur une Collection
+ *  - geojson.php expose en GeoJSON les Collections des JdD
  *  - un fichier Php par catégorie de jeux de données et par JdD sans catégorie
  *  - geojson.inc.php définit des classes correspondant aux primitives GeoJSON
  *  - spreadsheetdataset.inc.php définit un JdD générique fondé sur un fichier ODS utilisé par NomsCtCnigC et Pays,
@@ -279,8 +283,8 @@ class Application {
             echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
           }
           echo "<h2>Autres</h2><ul>\n";
-          echo "<li><a href='proj.php'>projection d'une section de JdD</a></li>\n";
-          echo "<li><a href='join.php'>Jointure entre 2 sections de JdD</a></li>\n";
+          echo "<li><a href='proj.php'>projection d'une collection de JdD</a></li>\n";
+          echo "<li><a href='join.php'>Jointure entre 2 collections de JdD</a></li>\n";
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
           echo "<li><a href='parser.php'>Parser</a></li>\n";
           echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
@@ -298,7 +302,7 @@ class Application {
           echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='geojson.php/$_GET[dataset]'>Affiche GeoJSON les sections du JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='geojson.php/$_GET[dataset]'>Affiche en GeoJSON les collections du JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
           echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
           /*echo "<a href='?action=union&file=$_GET[file]'>Exemple d'une union homogène</a><br>\n";

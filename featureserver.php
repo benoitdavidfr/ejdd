@@ -48,13 +48,13 @@ class WfsCap {
   /** Déduction du schema à partir des capacités.
    * @return array<mixed> */
   function jsonSchemaOfTheDs(): array {
-    $sections = [];
+    $collections = [];
     //echo '$elt='; print_r($this->elt);
     //echo 'FeatureTypeList='; print_r($this->elt->FeatureTypeList->FeatureType);
     foreach ($this->elt->FeatureTypeList->FeatureType as $featureType) {
       //print_r($featureType);
       $name = str_replace('__', ':', (string)$featureType->Name);
-      $sections[$name] = [
+      $collections[$name] = [
         'title'=> (string)$featureType->Title,
         'description'=> 'Abstract: '.(string)$featureType->Abstract
           ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
@@ -64,13 +64,13 @@ class WfsCap {
         'type'=> 'array',
       ];
     }
-    ksort($sections);
+    ksort($collections);
     return [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
       'title'=> "Schema du serveur WFS",
       'description'=> "Schema du serveur WFS",
       'type'=> 'object',
-      'properties'=> $sections,
+      'properties'=> $collections,
     ];
   }
   
@@ -114,7 +114,7 @@ class FeatureServer extends Dataset {
    */
   function implementedFilters(): array { return ['skip']; }
   
-  /** L'accès aux tuples d'une section du JdD par un Generator.
+  /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
