@@ -58,7 +58,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
         $gbox = \geojson\Geometry::create($geometry)->bbox();
       }
       // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
-      if ($bbox->inters($gbox) == \bbox\BBox::NONE) {
+      if ($bbox->inters($gbox) == \bbox\NONE) {
         continue;
       }
       unset($tuple['geometry']);

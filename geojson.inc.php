@@ -1,6 +1,7 @@
 <?php
 namespace geojson;
-/** Bibliothèque d'utilisation du GeoJSON
+/** Bibliothèque des primitives GeoJSON.
+ * Cette bibliothèque fonctionne en harmonie avec bbox.php
  * @package GeoJSON
  */
 //ini_set('memory_limit', '10G');
@@ -25,7 +26,9 @@ class Pos {
   }
 };
 
-/** Classe abstraite de géométrie GeoJSON portant la méthode create() de création d'une géométrie. */
+/** Classe abstraite de géométrie GeoJSON portant la méthode create() de création d'une géométrie.
+ * Les différentes primitives géométritques héritent de cette classe abstraite.
+ */
 abstract class Geometry {
   readonly string $type;
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
@@ -39,8 +42,8 @@ abstract class Geometry {
       'MultiPoint'=> new MultiPoint($geom),
       'LineString'=> new LineString($geom),
       'MultiLineString'=> new MultiLineString($geom),
-      //'Polygon'=> new Polygon($geom),
-      //'MultiPolygon'=> new MultiPolygon($geom),
+      'Polygon'=> new Polygon($geom),
+      'MultiPolygon'=> new MultiPolygon($geom),
       default=> throw new \Exception("Dans Geometry::create(), type=".($type?"'$type'":'null')." non reconnu"),
     };
   }
@@ -54,6 +57,7 @@ abstract class Geometry {
   /** @return TGJSimpleGeometry $geom */
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }
   
+  /** calcule le BBox à partir des coordonnées. */
   abstract function bbox(): \bbox\BBox;
 };
 
@@ -123,6 +127,8 @@ class MultiPolygon extends Geometry {
 
 /** Feature GeoJSON. */
 class Feature {
+  /** ?int|string $id - Eventuellement un içdentifiant du Feature. */
+  readonly mixed $id;
   /** @var array<mixed> $properties  - les properties GeoJSON */
   readonly array $properties;
   /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox. */
@@ -130,11 +136,13 @@ class Feature {
   /* La géométrie GeoJSON, éventuellement absente */
   readonly ?Geometry $geometry;
   
-  /** @param TGeoJsonFeature $feature */
-  function __construct(array $feature) {
+  /** @param TGeoJsonFeature $feature
+   * @param ?int|string $id */
+  function __construct(array $feature, mixed $id=null) {
+    $this->id = $id;
     $this->properties = $feature['properties'] ?? null;
-    $this->bbox = ($bbox = $feature['bbox'] ?? null) ? \bbox\BBox::From4Coords($bbox) : null;
-    $this->geometry = Geometry::create($feature['geometry'] ?? null);
+    $this->bbox = ($bbox = $feature['bbox'] ?? null) ? \bbox\BBox::from4Coords($bbox) : null;
+    $this->geometry = $feature['geometry'] ? Geometry::create($feature['geometry']) : null;
   }
   
   /** @return TGeoJsonFeature */
@@ -144,6 +152,20 @@ class Feature {
       'properties'=> $this->properties,
       'geometry'=> $this->geometry->asArray(),
     ];
+  }
+  
+  /** Retourne le BBox et s'il n'est pas stocké alors le calcule. Retourne null si aucune géométrie n'est définie. */
+  function bbox(): \bbox\BBox { return $this->bbox ?? $this->geometry->bbox(); }
+  
+  /** Génère un affichage du Feature en éludant les coordonnées de la géométrie. */
+  function __toString(): string {
+    $geom = $this->geometry->asArray(); unset($geom['coordinates']);
+    return '{type:"Feature"'
+      .(!is_null($this->id) ? ', id:'.json_encode($this->id) : '')
+      .', properties:'.json_encode($this->properties, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)
+      .', bbox:'.$this->bbox()->__toString()
+      .', geometry:{type:"'.$geom['type'].',"coordinates":...}'
+      .'}';
   }
 };
 
@@ -162,9 +184,9 @@ class FeatureCollection {
 };
 
 /** Lit un fichier contenant une FeatureCollection.
- * Je ne list par le bbox de la FeatureCollection pour 2 raisons:
+ * Je ne lit par le bbox de la FeatureCollection pour 2 raisons:
  *  1) c'est assez compliqué car il faut commencer à lire le fichier
- $  é) ce n'est pas forcément très utile.
+ *  2) ce n'est pas forcément très utile.
  */
 class FileOfFC {
   readonly string $filePath;
@@ -172,14 +194,14 @@ class FileOfFC {
   /** Initialisation. */
   function __construct(string $filePath) { $this->filePath = $filePath; }
   
-  /** Lecture du fichier comme objet FeatureCollection. */
+  /** Lecture du fichier comme objet FeatureCollection. En général cela ne tient pas en mémoire.*/
   function readFC(): FeatureCollection {
     $fc = file_get_contents($this->filePath);
     $fc = json_decode($fc, true);
     return new FeatureCollection($fc);
   }
   
-  /** Lecture du fichier par un Generator générant des Feature.
+  /** Lecture du fichier par un Generator générant des Feature. Plus facile pour ce ca tienne en mémoire.
    * Le fichier doit être structuré avec 1 ligne par Feature comme le produit ogr2ogr.
    */
   function readFeatures(): \Generator {
@@ -187,13 +209,14 @@ class FileOfFC {
     $nol = 0;
     $maxlen = 0; // pour connaitre la longueur max d'une ligne
     // fgets garde le \n à la fin
+    $noFeature = 0;
     $buffLen = U::G; // je met $buffLen à 1 Go
     while ($buff = fgets($fgjs, $buffLen)) {
       /*echo "$nol (",strlen($buff),")> ",
         strlen($buff) < 1000 ? $buff : substr($buff, 0, 500)."...".substr($buff, -50),"<br>\n";*/
       $nol++;
-      if (strlen($buff) > $maxlen)
-        $maxlen = strlen($buff);
+      if (($len = strlen($buff)) > $maxlen)
+        $maxlen = $len;
       if (substr($buff, 0, 20) <> '{ "type": "Feature",')
         continue;
       if (substr($buff, -3) == "},\n")
@@ -204,9 +227,9 @@ class FileOfFC {
         throw new \Exception("Aucun cas de fin de buffer sur '".substr($buff, -100)."', la longueur du buffer ($buffLen) est probablement trop courte");
       $feature = json_decode($buff, true);
       if (!$feature)
-        throw new \Exception("Erreur de json_decode()");
+        throw new \Exception("Erreur de json_decode() sur la ligne $nol (à partir de 1)");
       //$feature = new Feature($feature);
-      yield $feature;
+      yield $noFeature++ => $feature;
     }
     //echo "maxlen=$maxlen</p>\n"; // maxlen=75_343_092
   }
@@ -216,7 +239,7 @@ class FileOfFC {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-echo "<pre>\n";
+echo "<title>geojson.inc.php</title><pre>\n";
 if (0) { // @phpstan-ignore if.alwaysFalse 
   $point = Geometry::create(['type'=> 'Point', 'coordinates'=> [0,0]]);
   echo '$point='; print_r($point);
@@ -247,13 +270,14 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
 }
 
 elseif (1) {
+  echo "<h2>Lecture et affichage du fichier aecogpe2025/region.geojson</h2>\n";
   ini_set('memory_limit', '10G');
   set_time_limit(5*60);
   $foffc = new FileOfFC('aecogpe2025/region.geojson');
-  foreach ($foffc->readFeatures() as $feature) {
-    $feature['geometry']['coordinates'] = [];
-    echo '$feature='; print_r($feature);
-    $feature = new Feature($feature);
-    echo '$feature='; print_r($feature);
+  foreach ($foffc->readFeatures() as $noFeature => $feature) {
+    //$feature['geometry']['coordinates'] = [];
+    //echo '$feature='; print_r($feature);
+    $feature = new Feature($feature, $noFeature);
+    echo "feature=$feature<br>\n";
   }
 }

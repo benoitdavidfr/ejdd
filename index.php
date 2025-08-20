@@ -25,9 +25,10 @@ EOT
 define('JOURNAL', [
 <<<'EOT'
 20/8/2025:
-  - réflexions du BBox -> bbox.php
+  - réflexions du BBox, création bbox.php
   - intégration dans geojson.inc.php du bbox sous la forme d'un BBox
-  - migration de geojson.php pour utiliser BBox et plus gegeom
+  - migration de geojson.php pour utiliser BBox et plus gegeom, ainsi le code n'utilise plus gegeom
+  - ajout d'un affichage d'un Feature
 19/8/2025:
   - ajout Select
   - modification Predicate pour correspondre à Select et pour parser le prédicat
