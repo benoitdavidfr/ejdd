@@ -474,7 +474,7 @@ class AeCogPe extends Dataset {
    * @return array<mixed>
   */
   function getItems(string $cname, mixed $filtre=null): Generator {
-    $fileOfFC = new FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
+    $fileOfFC = new \geojson\FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
     foreach ($fileOfFC->readFeatures() as $no => $feature) {
       $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
       yield $no => $tuple;

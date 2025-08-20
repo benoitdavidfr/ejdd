@@ -41,7 +41,7 @@ class GeoDataset extends Dataset {
     //print_r($filters);
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
-    $fileOfFC = new FileOfFC(strtolower($this->dsName."/$cName.geojson"));
+    $fileOfFC = new \geojson\FileOfFC(strtolower($this->dsName."/$cName.geojson"));
     foreach ($fileOfFC->readFeatures() as $no => $feature)  {
       if ($no < $skip)
         continue;

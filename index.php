@@ -25,7 +25,8 @@ EOT
 define('JOURNAL', [
 <<<'EOT'
 20/8/2025:
-  - réflexions du Rect
+  - réflexions du BBox -> bbox.php
+  - intégration dans geojson.inc.php du bbox sous la forme d'un BBox
 19/8/2025:
   - ajout Select
   - modification Predicate pour correspondre à Select et pour parser le prédicat
@@ -115,8 +116,7 @@ geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,zoo
 aecogpe.php,worldeez.php,\
 featureserver.php,\
 lib/gegeom.inc.php,lib/coordsys.inc.php,lib/zoom.inc.php,lib/gebox.inc.php,lib/sexcept.inc.php,\
-rect.php
-
+bbox.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash

@@ -26,6 +26,7 @@ namespace bbox;
  * 2ème implémentation en gardant l'idée de construire une algèbre mais en implémentant une seule classe BBox dans laquelle
  * l'info est évent. dégénérée. Permet un code plus simple et plus compact.
  */
+require_once('geojson.inc.php');
 
 /** Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox. */
 class Pt {
@@ -147,7 +148,8 @@ class BBox {
     return $lpts ? $bbox->extend($lpts) : $bbox;
   }
 
-  //static function fromGeoJSON(): BBox {}
+  /** Construction d'un BBox à partir d'un Geometry GeoJSON. */
+  //static function fromGeoJsonGeom(\geojson\Geometry $geometry): BBox {}
 };
 /** Cosntante pour l'espace vide. */
 define('NONE', new BBox(null, null));
@@ -186,7 +188,9 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   $r1 = BBox::fromText('[5@15,15@15]');
   echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
 }
-elseif (1) {
+elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   $lpts = [new Pt(0,0), new Pt(4,5), new Pt(-4, -5)];
   echo NONE->extend($lpts);
+}
+elseif (1) {
 }

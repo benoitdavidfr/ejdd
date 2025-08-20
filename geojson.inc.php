@@ -1,4 +1,5 @@
 <?php
+namespace geojson;
 /** Bibliothèque d'utilisation du GeoJSON
  * @package GeoJSON
  */
@@ -27,7 +28,6 @@ class Pos {
 /** Classe abstraite de géométrie GeoJSON portant la méthode create() de création d'une géométrie. */
 abstract class Geometry {
   readonly string $type;
-  readonly ?\bbox\BBox $bbox; 
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
   readonly array $coordinates;
   
@@ -41,7 +41,7 @@ abstract class Geometry {
       case 'MultiLineString': return new MultiLineString($geom);
       case 'Polygon': return new Polygon($geom);
       case 'MultiPolygon': return new MultiPolygon($geom);
-      default: throw new Exception("Dans Geometry::create(), type ".($type ? "'$type'" : 'null')." non reconnu");
+      default: throw new \Exception("Dans Geometry::create(), type ".($type ? "'$type'" : 'null')." non reconnu");
     }
   }
   
@@ -102,13 +102,19 @@ class MultiPolygon extends Geometry {
 
 /** Feature GeoJSON. */
 class Feature {
-  /** @var array<mixed> $properties */
+  /** @var array<mixed> $properties  - les properties GeoJSON */
   readonly array $properties;
-  readonly Geometry $geometry;
+  /* Si le bbox est présent dans le GeoJson alors création d'un BBox. */
+  readonly ?\bbox\BBox $bbox;
+  /* La géométrie GeoJSON, éventuellement absente */
+  readonly ?Geometry $geometry;
   
   /** @param TGeoJsonFeature $feature */
   function __construct(array $feature) {
     $this->properties = $feature['properties'] ?? null;
+    $this->bbox = ($bbox = $feature['bbox'] ?? null) ?
+      new \bbox\BBox(new \bbox\Pt($bbox[0], $bbox[1]), new \bbox\Pt($bbox[2], $bbox[3]))
+      : null;
     $this->geometry = Geometry::create($feature['geometry'] ?? null);
   }
   
@@ -136,7 +142,11 @@ class FeatureCollection {
   }
 };
 
-/** Lit un fichier contenant une FeatureCollection. */
+/** Lit un fichier contenant une FeatureCollection.
+ * Je ne list par le bbox de la FeatureCollection pour 2 raisons:
+ *  1) c'est assez compliqué car il faut commencer à lire le fichier
+ $  é) ce n'est pas forcément très utile.
+ */
 class FileOfFC {
   readonly string $filePath;
   
@@ -153,12 +163,12 @@ class FileOfFC {
   /** Lecture du fichier par un Generator générant des Feature.
    * Le fichier doit être structuré avec 1 ligne par Feature comme le produit ogr2ogr.
    */
-  function readFeatures(): Generator {
+  function readFeatures(): \Generator {
     $fgjs = fopen($this->filePath, 'r');
     $nol = 0;
-    $maxlen = 0;
+    $maxlen = 0; // pour connaitre la longueur max d'une ligne
     // fgets garde le \n à la fin
-    $buffLen = U::G;
+    $buffLen = U::G; // je met $buffLen à 1 Go
     while ($buff = fgets($fgjs, $buffLen)) {
       /*echo "$nol (",strlen($buff),")> ",
         strlen($buff) < 1000 ? $buff : substr($buff, 0, 500)."...".substr($buff, -50),"<br>\n";*/
@@ -172,10 +182,10 @@ class FileOfFC {
       elseif (substr($buff, -2) == "}\n")
         $buff = substr($buff, 0, strlen($buff)-1);
       else
-        throw new Exception("Aucun cas de fin de buffer sur '".substr($buff, -100)."', la longueur du buffer ($buffLen) est probablement trop courte");
+        throw new \Exception("Aucun cas de fin de buffer sur '".substr($buff, -100)."', la longueur du buffer ($buffLen) est probablement trop courte");
       $feature = json_decode($buff, true);
       if (!$feature)
-        throw new Exception("Erreur de json_decode()");
+        throw new \Exception("Erreur de json_decode()");
       //$feature = new Feature($feature);
       yield $feature;
     }
@@ -203,13 +213,13 @@ if (0) { // @phpstan-ignore if.alwaysFalse
   echo '$fc='; print_r($fc);
 }
 
-elseif (0) { // @phpstan-ignore if.alwaysFalse 
+elseif (0) { // @phpstan-ignore elseif.alwaysFalse 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   print_r($foffc->readFC());
 }
 
-elseif (0) { // @phpstan-ignore if.alwaysFalse 
+elseif (0) { // @phpstan-ignore elseif.alwaysFalse 
   $foffc = new FileOfFC('ne110mphysical/ne_110m_coastline.geojson');
   echo '$foffc='; print_r($foffc);
   foreach ($foffc->readFeatures() as $feature) {
@@ -217,11 +227,13 @@ elseif (0) { // @phpstan-ignore if.alwaysFalse
   }
 }
 
-elseif (1) { // @phpstan-ignore if.alwaysTrue
+elseif (1) {
   ini_set('memory_limit', '10G');
   set_time_limit(5*60);
   $foffc = new FileOfFC('aecogpe2025/region.geojson');
   foreach ($foffc->readFeatures() as $feature) {
+    $feature['geometry']['coordinates'] = [];
+    echo '$feature='; print_r($feature);
     $feature = new Feature($feature);
     echo '$feature='; print_r($feature);
   }
