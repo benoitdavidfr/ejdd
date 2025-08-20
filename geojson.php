@@ -1,8 +1,9 @@
 <?php
 /** Génère un flux GeoJSON pour une collection d'un JdD. */
 require_once 'dataset.inc.php';
-require_once 'lib/gebox.inc.php';
-require_once 'lib/gegeom.inc.php';
+//require_once 'lib/gebox.inc.php';
+//require_once 'lib/gegeom.inc.php';
+require_once 'bbox.php';
 
 ini_set('memory_limit', '10G');
 //echo "<pre>"; print_r($_SERVER);
@@ -12,8 +13,8 @@ $script_name = $_SERVER['SCRIPT_NAME'];
 //echo "path=$path<br>\n";
 
 if (!$path) { // menu, liste des datasets 
-  echo "<a href='$script_name/aecogpe'>aecogpe</a><br>\n";
-  echo "<a href='$script_name/aecogpe/collections/region/items?bbox=0,46,1,47'>aecogpe/region?bbox=0,46,1,47</a><br>\n";
+  echo "<a href='$script_name/AeCogPe'>AeCogPe</a><br>\n";
+  echo "<a href='$script_name/AeCogPe/collections/region/items?bbox=0,46,1,47'>AeCogPe/region?bbox=0,46,1,47</a><br>\n";
   die();
 }
 
@@ -30,8 +31,11 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   $dsName = $matches[1];
   $cName = $matches[2];
   if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
-    $bbox =  new \gegeom\GBox($bbox);
-    //echo "<pre>bbox="; print_r($bbox); //die();
+    echo "<pre>bbox="; print_r($bbox); //die();
+    $bbox = explode(',', $bbox);
+    echo "<pre>bbox="; print_r($bbox); //die();
+    $bbox =  \bbox\BBox::from4Coords($bbox);
+    echo "<pre>bbox="; print_r($bbox); //die();
   }
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
 
@@ -46,19 +50,17 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   $first = true;
   foreach ($dataset->getItems($cName, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
     $tuple = is_array($item) ? $item : ['value'=> $item];
-    if ($geometry = $tuple['geometry'] ?? null) {
-      $geom = \gegeom\Geometry::fromGeoArray($geometry);
-      //echo "<pre>geom="; print_r($geom);
-      if ($bbox) {
-        $gbox = $geom->gbox();
-        //echo "<pre>geom->gbox()="; print_r($gbox);
-        if (!$bbox->inters($gbox)) {
-          //echo "N'intersecte pas bbox<br>\n";
-          continue;
-        }
-        //echo "Intersecte bbox\n";
+    if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si le tuple comporte une géométrie et bbox est défini
+      if ($gbox = $geometry['bbox']) { // Si la bbox de la géométrie est définie
+        $gbox = \bbox\BBox::from4Coords($gbox); // je la convertit en BBox
       }
-      // le champ geometry est transféré en dehors de properties
+      else { // Sinon je la calcule à partir de la géométrie
+        $gbox = \geojson\Geometry::create($geometry)->bbox();
+      }
+      // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
+      if ($bbox->inters($gbox) == \bbox\BBox::NONE) {
+        continue;
+      }
       unset($tuple['geometry']);
     }
     // le champ style est transféré en dehors de properties s'il existe

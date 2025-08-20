@@ -27,6 +27,7 @@ define('JOURNAL', [
 20/8/2025:
   - réflexions du BBox -> bbox.php
   - intégration dans geojson.inc.php du bbox sous la forme d'un BBox
+  - migration de geojson.php pour utiliser BBox et plus gegeom
 19/8/2025:
   - ajout Select
   - modification Predicate pour correspondre à Select et pour parser le prédicat

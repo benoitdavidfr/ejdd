@@ -23,10 +23,13 @@ namespace bbox;
  *   - a >= NONE vrai
  *   - a > NONE ssi a<>NONE
  *
- * 2ème implémentation en gardant l'idée de construire une algèbre mais en implémentant une seule classe BBox dans laquelle
- * l'info est évent. dégénérée. Permet un code plus simple et plus compact.
+ * Cette implémentation implémente une seule classe BBox dans laquelle l'info est évent. dégénérée,
+ * ce qui permet un code plus simple et plus compact.
+ *
+ * Cette implémentation intègre des fonctionnalités nécessaires à geojson.inc.php sans connaitre les classes GeoJSON
+ * en utilisant les types Pos, LPos et LLPos.
+ * La classe Pt ne semble pas indispensable et pourrait être remplacée par des fonctions sur Pos.
  */
-require_once('geojson.inc.php');
 
 /** Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox. */
 class Pt {
@@ -62,6 +65,14 @@ class Pt {
   
   /** Le point juste au NE des 2 points. */
   function ne(self $b): self { return new self(max($this->x, $b->x), max($this->y, $b->y)); }
+  
+  /** Fabrique une liste de Pt à partir d'une TLPos.
+   * @param TLPos $lpos - liste de positions
+   * @return list<Pt> - retourne une liste de Pt
+   */
+  static function lPos2LPt(array $lpos): array {
+    return array_map(function(array $pos) { return new Pt($pos[0],$pos[1]); }, $lpos);
+  }
 };
 
 /**
@@ -73,6 +84,9 @@ class Pt {
  *  2) Si les coins sont non nuls alors le coin SW doit être au SW de coin NE.
  */
 class BBox {
+  /** Constante pour l'espace vide. */
+  const NONE = new BBox(null, null);
+  
   /** Construction avec vérification des contraintes d'intégrité. */
   function __construct(readonly ?Pt $sw, readonly ?Pt $ne) {
     if ((is_null($sw) && !is_null($ne)) || (!is_null($sw) && is_null($ne)))
@@ -92,7 +106,43 @@ class BBox {
     else
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
   }
-    
+  
+  /** Fabrique un BBox à partir de 4 coordonnées [xmin, ymin, xmax, ymax].
+   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
+  static function from4Coords(array $coords): self {
+    if (count($coords) <> 4)
+      throw new \Exception("Erreur, dans BBox::from4Coords(), coords doit comportar 4 coordonnées, ".count($coords)." fournies");
+    return self::NONE->extends([
+      new Pt(floatval($coords[0]), floatval($coords[1])),
+      new Pt(floatval($coords[2]), floatval($coords[3]))
+    ]);
+  }
+  
+  /** Fabrique une BBox à partir d'une Pos.
+   * @param TPos $pos
+   */
+  static function fromPos(array $pos): self { $pt = new Pt($pos[0], $pos[1]); return new self($pt,$pt); }
+  
+  /** Fabrique une BBox à partir d'une LPos.
+   * @param TLPos $lpos
+   */
+  static function fromLPos(array $lpos): self { return self::NONE->extends(Pt::lPos2LPt($lpos)); }
+  
+  /** Fabrique une BBox à partir d'une LLPos.
+   * @param TLLPos $llPos
+   */
+  static function fromLLPos(array $llPos): self {
+    // Je transforme la LLPos en LLPt
+    $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $llPos);
+    // Tranforme la LLPt en LBBox
+    $lBBox = array_map(function(array $lPt) { return \bbox\BBox::NONE->extends($lPt); }, $llPt);
+    // Union des bbox de LBBox pour donner le résultat
+    $rbbox = \bbox\BBox::NONE;
+    foreach ($lBBox as $bbox)
+      $rbbox = $rbbox->union($bbox);
+    return $rbbox;
+  }
+  
   function isEmpty(): bool { return is_null($this->sw) || is_null($this->ne); }
 
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
@@ -118,13 +168,13 @@ class BBox {
   /** Intersection géométrique de $this et $b. Le résultat est toujours une BBox ! */
   function inters(self $b): self {
     if ($this->isEmpty() || $b->isEmpty())
-      return NONE;
+      return self::NONE;
     $sw = $this->sw->ne($b->sw); // le SW du nv bbox est le pt juste au NE des 2 SW
     $ne = $this->ne->sw($b->ne); // le NE du nv bbox est le pt juste au SW des 2 NE
     if ($sw->islSW($ne))         // si le coin SW est au SW du point NE
       return new self($sw, $ne); //  alors ils définissent un nouveau BBox
     else                         // sinon
-      return NONE;               //  l'intersection est vide
+      return self::NONE;         //  l'intersection est vide
   }
   
   /** Union géométrique de $this et $b. Le résultat est toujours une BBox. */
@@ -141,19 +191,15 @@ class BBox {
   /** Agrandit une BBox pour contenir la liste de points.
    * @param list<Pt> $lpts
    */
-  function extend(array $lpts): self {
+  function extends(array $lpts): self {
     $pt = array_pop($lpts);
     $bbox = (new self($this->sw ? $this->sw->sw($pt) : $pt, $this->ne ? $this->ne->ne($pt) : $pt));
     echo "pt=$pt -> bbox=$bbox\n";
-    return $lpts ? $bbox->extend($lpts) : $bbox;
+    return $lpts ? $bbox->extends($lpts) : $bbox;
   }
-
-  /** Construction d'un BBox à partir d'un Geometry GeoJSON. */
-  //static function fromGeoJsonGeom(\geojson\Geometry $geometry): BBox {}
 };
-/** Cosntante pour l'espace vide. */
-define('NONE', new BBox(null, null));
-
+//define('NONE', new BBox(null, null));
+//const NONE = new BBox(null, null);
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
@@ -164,14 +210,14 @@ if (0) { // @phpstan-ignore if.alwaysFalse
   $pt = Pt::fromText('1@4.56789'); echo "pt=$pt\n"; //die();
   
   $pt = Pt::fromText('0@0'); echo "pt=$pt\n";
-  echo "$pt==NONE: ", ($pt == NONE) ? "vrai\n" : "faux\n";
+  echo "$pt==NONE: ", ($pt == BBox::NONE) ? "vrai\n" : "faux\n";
 
   $bbox = BBox::fromText('[0@0,1@1]'); echo "bbox=$bbox\n";
 
   //print_r(NONE);
   $emptySp2 = new BBox(null, null);
-  echo "$emptySp2==NONE: ", ($emptySp2 == NONE) ? "vrai\n" : "faux\n";
-  echo "$emptySp2===NONE: ", ($emptySp2 === NONE) ? "vrai\n" : "faux\n";
+  echo "$emptySp2==NONE: ", ($emptySp2 == BBox::NONE) ? "vrai\n" : "faux\n";
+  echo "$emptySp2===NONE: ", ($emptySp2 === BBox::NONE) ? "vrai\n" : "faux\n";
 }
 elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   $r0 = BBox::fromText('[0@0,1@1]');
@@ -190,7 +236,7 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
 }
 elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   $lpts = [new Pt(0,0), new Pt(4,5), new Pt(-4, -5)];
-  echo NONE->extend($lpts);
+  echo BBox::NONE->extends($lpts);
 }
 elseif (1) {
 }

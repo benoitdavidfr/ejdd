@@ -31,18 +31,18 @@ abstract class Geometry {
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
   readonly array $coordinates;
   
-  /** Crée un objet géométrie.
+  /** Crée un sous-objet concret de Geometry à partir d'une géométrie simple GeoJSON.
    * @param TGJSimpleGeometry $geom */
   static function create(array $geom): self {
-    switch ($type = $geom['type'] ?? null) {
-      case 'Point': return new Point($geom);
-      case 'MultiPoint': return new MultiPoint($geom);
-      case 'LineString': return new LineString($geom);
-      case 'MultiLineString': return new MultiLineString($geom);
-      case 'Polygon': return new Polygon($geom);
-      case 'MultiPolygon': return new MultiPolygon($geom);
-      default: throw new \Exception("Dans Geometry::create(), type ".($type ? "'$type'" : 'null')." non reconnu");
-    }
+    return match ($type = $geom['type'] ?? null) {
+      'Point'=> new Point($geom),
+      'MultiPoint'=> new MultiPoint($geom),
+      'LineString'=> new LineString($geom),
+      'MultiLineString'=> new MultiLineString($geom),
+      //'Polygon'=> new Polygon($geom),
+      //'MultiPolygon'=> new MultiPolygon($geom),
+      default=> throw new \Exception("Dans Geometry::create(), type=".($type?"'$type'":'null')." non reconnu"),
+    };
   }
   
   /** @param TGJSimpleGeometry $geom */
@@ -53,15 +53,24 @@ abstract class Geometry {
   
   /** @return TGJSimpleGeometry $geom */
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }
+  
+  abstract function bbox(): \bbox\BBox;
 };
 
-/** Point GeoJSON. */
-class Point extends Geometry {};
-/** MultiPoint GeoJSON. */
-class MultiPoint extends Geometry {};
+/** Point GeoJSON ; coordinates est un TPos. */
+class Point extends Geometry {
+  function bbox(): \bbox\BBox { return \bbox\BBox::fromPos($this->coordinates); }
+};
 
-/** Linestring GeoJSON. */
+/** MultiPoint GeoJSON ; coordinates est un TLPos. */
+class MultiPoint extends Geometry {
+  function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates); }
+};
+
+/** Linestring GeoJSON ; coordinates est un TLPos. */
 class LineString extends Geometry {
+  function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates); }
+  
   function reso(): float {
     $dists = [];
     $precPos = null;
@@ -79,11 +88,16 @@ class LineString extends Geometry {
   }
 };
 
-/** MultiLineString GeoJSON. */
-class MultiLineString extends Geometry {};
+/** MultiLineString GeoJSON ; coordinates est un TLLPos. */
+class MultiLineString extends Geometry {
+  function bbox(): \bbox\BBox { return \bbox\BBox::fromLLPos($this->coordinates); }
+};
 
-/** Polygon GeoJSON. */
+/** Polygon GeoJSON ; coordinates est un TLLPos. */
 class Polygon extends Geometry {
+  /** Calcule la bbox sur l'extérieur du polygone, cad le ring 0. */
+  function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates[0]); }
+  
   /** Estimation de la résolution */
   function reso(): float {
     $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0]]);
@@ -91,8 +105,15 @@ class Polygon extends Geometry {
   }
 };
 
-/** MultiPolygon GeoJSON. */
+/** MultiPolygon GeoJSON ; coordinates est un TLLLPos. */
 class MultiPolygon extends Geometry {
+  function bbox(): \bbox\BBox {
+    // Fabrique la liste des rings extérieurs des polygones en prenant dans chaque polygone son extérieur 
+    $lExtRings = array_map(function(array $llpos) { return $llpos[0]; }, $this->coordinates);
+    // Je peux fabriquer le BBox à partir de ce LLPos
+    return \bbox\BBox::fromLLPos($lExtRings);
+  }
+  
   /** Estimation de la résolution */
   function reso(): float {
     $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0][0]]);
@@ -104,7 +125,7 @@ class MultiPolygon extends Geometry {
 class Feature {
   /** @var array<mixed> $properties  - les properties GeoJSON */
   readonly array $properties;
-  /* Si le bbox est présent dans le GeoJson alors création d'un BBox. */
+  /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox. */
   readonly ?\bbox\BBox $bbox;
   /* La géométrie GeoJSON, éventuellement absente */
   readonly ?Geometry $geometry;
@@ -112,9 +133,7 @@ class Feature {
   /** @param TGeoJsonFeature $feature */
   function __construct(array $feature) {
     $this->properties = $feature['properties'] ?? null;
-    $this->bbox = ($bbox = $feature['bbox'] ?? null) ?
-      new \bbox\BBox(new \bbox\Pt($bbox[0], $bbox[1]), new \bbox\Pt($bbox[2], $bbox[3]))
-      : null;
+    $this->bbox = ($bbox = $feature['bbox'] ?? null) ? \bbox\BBox::From4Coords($bbox) : null;
     $this->geometry = Geometry::create($feature['geometry'] ?? null);
   }
   
