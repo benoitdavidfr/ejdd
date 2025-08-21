@@ -1,46 +1,44 @@
 $schema: 'http://json-schema.org/draft-07/schema#'
 title: 'Méta schéma des JdD'
 definitions:
-    sectionDict:
-        description: "Cas d'une section dictOfTuples ou dictOfValues"
+  collectionDict:
+    description: "Cas d'une collection dictOfTuples ou dictOfValues"
+    type: object
+    required:
+          - title
+          - description
+          - type
+          - additionalProperties
+          - patternProperties
+    properties:
+      title:
+        type: string
+      description:
+        type: string
+      type:
+        const: object
+      additionalProperties:
+        const: false
+      patternProperties:
         type: object
-        required:
-            - title
-            - description
-            - type
-            - additionalProperties
-            - patternProperties
-        properties:
-            title:
-                type: string
-            description:
-                type: string
-            type:
-                const: object
-            additionalProperties:
-                const: false
-            patternProperties:
-                type: object
-    sectionList:
-        description: "Cas d'une section listOfTuples ou listOfValues"
-        required:
-            - title
-            - description
-            - type
-            - items
-        properties:
-            title:
-                type: string
-            description:
-                type: string
-            type:
-                const: array
-    section:
-        oneOf:
-            -
-                $ref: '#/definitions/sectionDict'
-            -
-                $ref: '#/definitions/sectionList'
+  collectionList:
+    description: "Cas d'une section listOfTuples ou listOfValues"
+    required:
+          - title
+          - description
+          - type
+          - items
+    properties:
+          title:
+              type: string
+          description:
+              type: string
+          type:
+              const: array
+  collection:
+    oneOf:
+      - $ref: '#/definitions/collectionDict'
+      - $ref: '#/definitions/collectionList'
 type: object
 required:
     - $schema
@@ -72,7 +70,7 @@ properties:
         description: 'toujours false'
         const: false
     properties:
-        description: 'Les sections du JdD'
+        description: 'Les collections du JdD'
         type: object
         required:
             - title
@@ -110,5 +108,5 @@ properties:
                     type:
                         const: object
         additionalProperties:
-            $ref: '#/definitions/section'
+            $ref: '#/definitions/collection'
 eof:

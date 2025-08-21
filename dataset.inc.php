@@ -22,6 +22,9 @@ require_once 'vendor/autoload.php';
 require_once __DIR__.'/predicate.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
+use BBox\BBox;
+use GeoJSON\Geometry;
+use GeoJSON\Feature;
 
 /** Pour mettre du code Html dans un RecArray. */
 class HtmlCode {
@@ -356,12 +359,12 @@ abstract class Collection {
         elseif ($k == 'geometry') { // affichage particulier d'une géométrie
           $bbox = null;
           if (isset($v['bbox'])) {
-            $bbox = \bbox\BBox::from4Coords($v['bbox']);
+            $bbox = BBox::from4Coords($v['bbox']);
           }
-          $geom = \geojson\Geometry::create($v);
+          $geom = Geometry::create($v);
           if (!$bbox)
             $bbox = $geom->bbox();
-          $v = '<pre>'.\geojson\Feature::geomToString($bbox, $geom).'</pre>';
+          $v = '<pre>'.Feature::geomToString($bbox, $geom).'</pre>';
         }
         elseif (is_array($v))
           $v = '<pre>'.json_encode($v).'</pre>';

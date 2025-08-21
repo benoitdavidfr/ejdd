@@ -4,6 +4,7 @@
  */
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
+use GeoJSON\Feature;
 
 /** Description du JdD AeCogPe. */
 define('AECOGPE_DESCRIPTION', [
@@ -24,6 +25,7 @@ Il contient les classes d'objets suivants:
  - REGION
 La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
 Le produit ADMIN EXPRESS COG PE est de plus conforme au code officiel géographique publié chaque année par l’INSEE et est destiné à des usages statistiques.
+Les champs ID issus du format SHP sont transformés en ID GeoJSON.
 EOT
 ]
 );
@@ -49,40 +51,39 @@ class AeCogPe extends Dataset {
       '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
       'region'=> [
         'title'=> "Région",
-        'description'=> "Région",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','nom_m','nom','insee_reg','geometry'],
-          'additionalProperties'=> false,
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom_m'=> [
-              'description'=> "nom en majuscules",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom",
-              'type'=> 'string',
-            ],
-            'insee_reg'=> [
-              'description'=> "code INSEE de la région",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'description'=> "Région indexée sur le champs ID",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['nom_m','nom','insee_reg','geometry'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'nom_m'=> [
+                'description'=> "nom en majuscules",
+                'type'=> 'string',
+              ],
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'insee_reg'=> [
+                'description'=> "code INSEE de la région",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -91,43 +92,42 @@ class AeCogPe extends Dataset {
       ],
       'departement'=> [
         'title'=> "Département",
-        'description'=> "Département",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','nom_m','nom','insee_dep','insee_reg','geometry'],
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom_m'=> [
-              'description'=> "nom en majuscules",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom",
-              'type'=> 'string',
-            ],
-            'insee_dep'=> [
-              'description'=> "code INSEE du département",
-              'type'=> 'string',
-            ],
-            'insee_reg'=> [
-              'description'=> "code INSEE de la région à laquelle appartient le département",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'description'=> "Département indexé sur le champs ID",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['nom_m','nom','insee_dep','insee_reg','geometry'],
+            'properties'=> [
+              'nom_m'=> [
+                'description'=> "nom en majuscules",
+                'type'=> 'string',
+              ],
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'insee_dep'=> [
+                'description'=> "code INSEE du département",
+                'type'=> 'string',
+              ],
+              'insee_reg'=> [
+                'description'=> "code INSEE de la région à laquelle appartient le département",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -136,46 +136,44 @@ class AeCogPe extends Dataset {
       ],
       'epci'=> [
         'title'=> "EPCI",
-        'description'=> "Etablissement Public de Coopération Intercommunale",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','code_siren','nom','nature','geometry'],
-          'additionalProperties'=> false,
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'code_siren'=> [
-              'description'=> "code SIREN",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom",
-              'type'=> 'string',
-            ],
-            'nature'=> [
-              'description'=> "nature",
-              'enum'=> [
-                "Communauté d'agglomération",
-                "Communauté de communes",
-                "Etablissement public territorial",
-                "Métropole",
-                "Communauté urbaine",
+        'description'=> "Etablissement Public de Coopération Intercommunale, indexé sur le champs ID",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['code_siren','nom','nature','geometry'],
+            'additionalProperties'=> false,
+            'properties'=> [              'code_siren'=> [
+                'description'=> "code SIREN",
+                'type'=> 'string',
               ],
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'nature'=> [
+                'description'=> "nature",
+                'enum'=> [
+                  "Communauté d'agglomération",
+                  "Communauté de communes",
+                  "Etablissement public territorial",
+                  "Métropole",
+                  "Communauté urbaine",
                 ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -184,47 +182,46 @@ class AeCogPe extends Dataset {
       ],
       'arrondissement'=> [
         'title'=> "Arrondissement",
-        'description'=> "Arrondissement",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','nom_m','nom','insee_arr','insee_dep','insee_reg','geometry'],
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom_m'=> [
-              'description'=> "nom en majuscules",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom",
-              'type'=> 'string',
-            ],
-            'insee_arr'=> [
-              'description'=> "code INSEE de l'arrondissement",
-              'type'=> 'string',
-            ],
-            'insee_dep'=> [
-              'description'=> "code INSEE du département",
-              'type'=> 'string',
-            ],
-            'insee_reg'=> [
-              'description'=> "code INSEE de la région à laquelle appartient le département",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'description'=> "Arrondissement, indexé sur le champs ID",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['nom_m','nom','insee_arr','insee_dep','insee_reg','geometry'],
+            'properties'=> [
+              'nom_m'=> [
+                'description'=> "nom en majuscules",
+                'type'=> 'string',
+              ],
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'insee_arr'=> [
+                'description'=> "code INSEE de l'arrondissement",
+                'type'=> 'string',
+              ],
+              'insee_dep'=> [
+                'description'=> "code INSEE du département",
+                'type'=> 'string',
+              ],
+              'insee_reg'=> [
+                'description'=> "code INSEE de la région à laquelle appartient le département",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -233,112 +230,109 @@ class AeCogPe extends Dataset {
       ],
       'canton'=> [
         'title'=> "Canton",
-        'description'=> "Canton",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','insee_can','insee_dep','insee_reg','geometry'],
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'insee_can'=> [
-              'description'=> "code INSEE du Canton",
-              'type'=> 'string',
-            ],
-            'insee_dep'=> [
-              'description'=> "code INSEE du département",
-              'type'=> 'string',
-            ],
-            'insee_reg'=> [
-              'description'=> "code INSEE de la région à laquelle appartient le département",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'description'=> "Canton, indexé sur le champs ID",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['insee_can','insee_dep','insee_reg','geometry'],
+            'properties'=> [
+              'insee_can'=> [
+                'description'=> "code INSEE du Canton",
+                'type'=> 'string',
+              ],
+              'insee_dep'=> [
+                'description'=> "code INSEE du département",
+                'type'=> 'string',
+              ],
+              'insee_reg'=> [
+                'description'=> "code INSEE de la région à laquelle appartient le département",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
           ],
         ],
-        
       ],
       'commune'=> [
         'title'=> "Commune",
         'description'=> "Commune",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> [
-            'id','nom','nom_m','insee_com','statut','population',
-            'insee_can', 'insee_arr', 'insee_dep', 'insee_reg', 'siren_epci', 'geometry'],
-          'additionalProperties'=> false,
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom en minuscules",
-              'type'=> 'string',
-            ],
-            'nom_m'=> [
-              'description'=> "nom en majuscules",
-              'type'=> 'string',
-            ],
-            'insee_com'=> [
-              'description'=> "code Insee de la commune",
-              'type'=> 'string',
-            ],
-            'statut'=> [
-              'description'=> "statut de la commune",
-              'enum'=> ['Commune simple'],
-            ],
-            'population'=> [
-              'description'=> "population en nombre d'habitants",
-              'type'=> 'integer',
-            ],
-            'insee_can'=> [
-              'description'=> "code Insee du canton ?? auquel la commune appartient",
-              'type'=> 'string',
-            ],
-            'insee_arr'=> [
-              'description'=> "code Insee de l'arrondissement auquel la commune appartient",
-              'type'=> 'string',
-            ],
-            'insee_dep'=> [
-              'description'=> "code Insee du département auquel la commune appartient",
-              'type'=> 'string',
-            ],
-            'insee_reg'=> [
-              'description'=> "code Insee de la région à laquelle la commune appartient",
-              'type'=> 'string',
-            ],
-            'siren_epci'=> [
-              'description'=> "code Siren de l'EPCI auquel la commune appartient",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> [
+              'nom','nom_m','insee_com','statut','population',
+              'insee_can', 'insee_arr', 'insee_dep', 'insee_reg', 'siren_epci', 'geometry'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'nom'=> [
+                'description'=> "nom en minuscules",
+                'type'=> 'string',
+              ],
+              'nom_m'=> [
+                'description'=> "nom en majuscules",
+                'type'=> 'string',
+              ],
+              'insee_com'=> [
+                'description'=> "code Insee de la commune",
+                'type'=> 'string',
+              ],
+              'statut'=> [
+                'description'=> "statut de la commune",
+                'enum'=> ['Commune simple'],
+              ],
+              'population'=> [
+                'description'=> "population en nombre d'habitants",
+                'type'=> 'integer',
+              ],
+              'insee_can'=> [
+                'description'=> "code Insee du canton ?? auquel la commune appartient",
+                'type'=> 'string',
+              ],
+              'insee_arr'=> [
+                'description'=> "code Insee de l'arrondissement auquel la commune appartient",
+                'type'=> 'string',
+              ],
+              'insee_dep'=> [
+                'description'=> "code Insee du département auquel la commune appartient",
+                'type'=> 'string',
+              ],
+              'insee_reg'=> [
+                'description'=> "code Insee de la région à laquelle la commune appartient",
+                'type'=> 'string',
+              ],
+              'siren_epci'=> [
+                'description'=> "code Siren de l'EPCI auquel la commune appartient",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -348,37 +342,36 @@ class AeCogPe extends Dataset {
       'chflieu_commune'=> [
         'title'=> "Chef-lieu de commmune",
         'description'=> "Chef-lieu de commmune",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom",
-              'type'=> 'string',
-            ],
-            'id_com'=> [
-              'description'=> "id de la commune",
-              'type'=> 'string',
-            ],
-            'insee_com'=> [
-              'description'=> "code INSEE du Canton",
-              'type'=> 'string',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['Point'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'properties'=> [
+              'nom'=> [
+                'description'=> "nom",
+                'type'=> 'string',
+              ],
+              'id_com'=> [
+                'description'=> "id de la commune",
+                'type'=> 'string',
+              ],
+              'insee_com'=> [
+                'description'=> "code INSEE du Canton",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['Point'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -388,51 +381,50 @@ class AeCogPe extends Dataset {
       'commune_associee_ou_deleguee'=> [
         'title'=> "Commune associée ou déléguée",
         'description'=> "Commune associée ou déléguée",
-        'type'=> 'array',
-        'items'=> [
-          'type'=> 'object',
-          'required'=> ['id','nom','nom_m','insee_cad','insee_com','nature','population','geometry'],
-          'additionalProperties'=> false,
-          'properties'=> [
-            'id'=> [
-              'description'=> "id AE",
-              'type'=> 'string',
-            ],
-            'nom'=> [
-              'description'=> "nom en minuscules",
-              'type'=> 'string',
-            ],
-            'nom_m'=> [
-              'description'=> "nom en majuscules",
-              'type'=> 'string',
-            ],
-            'insee_cad'=> [
-              'description'=> "code Insee de la commune associée ou déléguée",
-              'type'=> 'string',
-            ],
-            'insee_com'=> [
-              'description'=> "code Insee de la commune",
-              'type'=> 'string',
-            ],
-            'nature'=> [
-              'description'=> "nature",
-              'enum'=> ['COMD','COMA'],
-            ],
-            'population'=> [
-              'description'=> "population en nombre d'habitants",
-              'type'=> 'integer',
-            ],
-            'geometry'=> [
-              'description'=> "Géométrie GeoJSON",
-              'type'=> 'object',
-              'properties'=> [
-                'type'=> [
-                  'description'=> "Type de géométrie",
-                  'enum'=> ['MultiPolygon','Polygon'],
-                ],
-                'coordinates'=> [
-                  'description' => "Coordonnées",
-                  'type'=> 'array',
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'required'=> ['nom','nom_m','insee_cad','insee_com','nature','population','geometry'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'nom'=> [
+                'description'=> "nom en minuscules",
+                'type'=> 'string',
+              ],
+              'nom_m'=> [
+                'description'=> "nom en majuscules",
+                'type'=> 'string',
+              ],
+              'insee_cad'=> [
+                'description'=> "code Insee de la commune associée ou déléguée",
+                'type'=> 'string',
+              ],
+              'insee_com'=> [
+                'description'=> "code Insee de la commune",
+                'type'=> 'string',
+              ],
+              'nature'=> [
+                'description'=> "nature",
+                'enum'=> ['COMD','COMA'],
+              ],
+              'population'=> [
+                'description'=> "population en nombre d'habitants",
+                'type'=> 'integer',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie GeoJSON",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'description'=> "Type de géométrie",
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'description' => "Coordonnées",
+                    'type'=> 'array',
+                  ],
                 ],
               ],
             ],
@@ -442,26 +434,54 @@ class AeCogPe extends Dataset {
       'chflieu_commune_associee_ou_deleguee'=> [
         'title'=> "Chef-lieu de ommune associée ou déléguée",
         'description'=> "Chef-lieu de ommune associée ou déléguée",
-        'type'=> 'array',
-        'items'=> [],
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'additionalProperties'=> true,
+            'properties'=> [],
+          ],
+        ],
       ],
       'arrondissement_municipal'=> [
         'title'=> "Arrondissement municipal",
         'description'=> "Arrondissement municipal",
-        'type'=> 'array',
-        'items'=> [],
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'additionalProperties'=> true,
+            'properties'=> [],
+          ],
+        ],
       ],
       'chflieu_arrondissement_municipal'=> [
         'title'=> "Chef-lieu d'arrondissement municipal",
         'description'=> "Chef-lieu d'arrondissement municipal",
-        'type'=> 'array',
-        'items'=> [],
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'additionalProperties'=> true,
+            'properties'=> [],
+          ],
+        ],
       ],
       'collectivite_territoriale'=> [
         'title'=> "Collectivités territoriales ayant les compétences départementales",
         'description'=> "Collectivités territoriales ayant les compétences départementales",
-        'type'=> 'array',
-        'items'=> [],
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          '.*'=> [
+            'type'=> 'object',
+            'additionalProperties'=> true,
+            'properties'=> [],
+          ],
+        ],
       ],
     ],
   ];
@@ -471,17 +491,16 @@ class AeCogPe extends Dataset {
   }
   
   /* L'accès aux Items du JdD par un générateur.
-   * @return Generator
+   * @return Generator<int|string, array<mixed>>
   */
   function getItems(string $cname, mixed $filtre=null): Generator {
-    $fileOfFC = new \geojson\FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
-    foreach ($fileOfFC->readFeatures() as $no => $feature) {
+    foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature) {
+      $feature = $feature->asArray();
       $tuple = array_change_key_case($feature['properties']);
-      $id = $no; // par défaut
-      if (isset($tuple['id'])) {
-        $id = $tuple['id'];
-        unset($tuple['id']);
-      }
+      if (!isset($tuple['id']))
+        throw new Exception("Champ 'id' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
+      $id = $tuple['id'];
+      unset($tuple['id']);
       // Si la bbbox est présente alors je la stoke dans la géométrie
       $geometry = $feature['geometry'] ?? [];
       if ($bbox = $feature['bbox'] ?? null) {

@@ -1,9 +1,11 @@
 <?php
 /** Génère un flux GeoJSON pour une collection d'un JdD. */
 require_once 'dataset.inc.php';
-//require_once 'lib/gebox.inc.php';
-//require_once 'lib/gegeom.inc.php';
 require_once 'bbox.php';
+
+use BBox\BBox;
+use BBox\NONE;
+use GeoJSON\Geometry;
 
 ini_set('memory_limit', '10G');
 //echo "<pre>"; print_r($_SERVER);
@@ -34,13 +36,15 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     //echo "<pre>bbox="; print_r($bbox); //die();
     $bbox = explode(',', $bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
-    $bbox =  \bbox\BBox::from4Coords($bbox);
+    $bbox =  BBox::from4Coords($bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
   }
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
 
   $dataset = Dataset::get($dsName);
   $collectionMD = $dataset->collections[$cName]; // les MD de la collection
+  $kind = $collectionMD->kind;
+  //print_r($collectionMD);
   
   header('Access-Control-Allow-Origin: *');
   header('Content-Type: application/json');
@@ -52,13 +56,13 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     $tuple = is_array($item) ? $item : ['value'=> $item];
     if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si le tuple comporte une géométrie et bbox est défini
       if ($gbox = $geometry['bbox'] ?? null) { // Si la bbox de la géométrie est définie
-        $gbox = \bbox\BBox::from4Coords($gbox); // je la convertit en BBox
+        $gbox = BBox::from4Coords($gbox); // je la convertit en BBox
       }
       else { // Sinon je la calcule à partir de la géométrie
-        $gbox = \geojson\Geometry::create($geometry)->bbox();
+        $gbox = Geometry::create($geometry)->bbox();
       }
       // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
-      if ($bbox->inters($gbox) == \bbox\NONE) {
+      if ($bbox->inters($gbox) == \BBox\NONE) {
         continue;
       }
       unset($tuple['geometry']);
@@ -77,10 +81,10 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       $tuple = $tuple2;
     }
     $feature = array_merge(
-      [ 'type'=> 'Feature',
-        'id'=> $key,
-        'properties'=> $tuple,
-      ],
+      ['type'=> 'Feature'],
+      //['kind'=> $kind],
+      ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
+      ['properties'=> $tuple],
       $style ? ['style'=> $style] : [],
       $geometry ? [ 'geometry'=> $geometry] : [],
     );

@@ -9,6 +9,7 @@ require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
 
+use GeoJSON\Feature;
 use Symfony\Component\Yaml\Yaml;
 
 /** JdD géographique générique, utilisé pour les JdD Nartural Earth */
@@ -41,8 +42,7 @@ class GeoDataset extends Dataset {
     //print_r($filters);
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
-    $fileOfFC = new \geojson\FileOfFC(strtolower($this->dsName."/$cName.geojson"));
-    foreach ($fileOfFC->readFeatures() as $no => $feature)  {
+    foreach (Feature::fromFile(strtolower($this->dsName."/$cName.geojson")) as $no => $feature)  {
       if ($no < $skip)
         continue;
       $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);

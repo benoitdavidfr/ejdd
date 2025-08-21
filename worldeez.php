@@ -7,6 +7,10 @@ ini_set('memory_limit', '10G');
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
 
+use GeoJSON\Feature;
+use GeoJSON\Geometry;
+use GeoJSON\Polygon;
+use GeoJSON\MultiPolygon;
 use Symfony\Component\Yaml\Yaml;
 
 /** Jeu de données WorldEez des ZEE mondiales. */
@@ -31,8 +35,7 @@ class WorldEez extends Dataset {
    */
   function getItems(string $cname, array $filters=[]): Generator {
     $skip = $filters['skip'] ?? 0;
-    $fileOfFC = new \geojson\FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
-    foreach ($fileOfFC->readFeatures() as $no => $feature)  {
+    foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature)  {
       if ($no < $skip)
         continue;
       $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
@@ -65,8 +68,8 @@ class WorldEezBuild {
   static function reso(string $cname): void {
     $dataset = Dataset::get('WorldEez');
     foreach ($dataset->getItems($cname) as $tuple) {
-      /** @var \geojson\Polygon|\geojson\MultiPolygon $geom */
-      $geom = \geojson\Geometry::create($tuple['geometry']);
+      /** @var Polygon|MultiPolygon $geom */
+      $geom = Geometry::create($tuple['geometry']);
       echo "reso=",$geom->reso(),"<br>\n";
       break;
     }

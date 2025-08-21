@@ -22,10 +22,10 @@ parameters:
     TGeoJsonFeature: '''
       array{
         type: 'Feature', 
-        id?: string, 
-        properties?: TGeoJsonProperties, 
+        id?: string|int, 
+        properties: ?TGeoJsonProperties, 
         bbox?: TGJBox, 
-        geometry?: TGeoJsonGeometry
+        geometry: ?TGeoJsonGeometry
       }
       '''
     # Les champs numberReturned et totalFeatures sont ajoutés quand la collection est produite par un serveur WFS
@@ -69,6 +69,7 @@ parameters:
     - featureserver.php
     - geojson.inc.php
     - bbox.php
+    - pos.inc.php
     #- lib/coordsys.inc.php
     #- lib/gebox.inc.php
     #- lib/gegeom.inc.php

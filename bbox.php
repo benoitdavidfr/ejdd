@@ -1,5 +1,4 @@
 <?php
-namespace bbox;
 /** Définition d'une algèbre sur les rectangles englobants y.c. les points.
  *  opérations
  *    - a * b est l'intersection entre a et b qui est un rect, un point ou 0
@@ -9,10 +8,6 @@ namespace bbox;
  *    - a >= b <=> a inclut b
  *    - a > b <=> a inclut strictement b
  *    - a = b <=> a identique à b
- *
- * Dans l'intersection entre bbox, on considère que les bbox sont topologiquement fermées.
- * Cela veut dire que 2 bbox qui se touchent sur un bord ont comme intersection le segment commun (considéré comme une bbox) ;
- * et que 2 bbox. qui se touchent dans un coin ont comme intersection le point correspondant à ce coin.
  *
  * Je considère qu'un point s'inclut lui-même.
  * Sur l'espace vide (NONE):
@@ -31,19 +26,35 @@ namespace bbox;
  *
  * @package BBox
  */
+namespace BBox;
+use Pos\Pos;
+
+require_once('pos.inc.php');
 
 /** Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox. */
 class Pt {
   /** Nombre de chiffres significatifs à l'affichage. */
   const PRECISON = 2;
+  readonly float $x;
+  readonly float $y;
   
-  function __construct(readonly float $x, readonly float $y) {}
+  /** @param TPos $pos. */
+  function __construct(array $pos) {
+    if (!Pos::is($pos))
+      throw new \Exception("Un Pt se fabrique à partir d'un TPos");
+    $this->x = $pos[0];
+    $this->y = $pos[1];
+  }
     
+  /** Un TPos à partir d'un Pt.
+   * @return TPos */
+  function pos(): array { return [$this->x, $this->y]; }
+
   /** Construit à partir d'un texte au format {nbre}@{nbre}. */
   static function fromText(string $text): self {
     if (!preg_match('!^([.0-9]+)@([.0-9]+)$!', $text, $matches))
       throw new \Exception("le texte en entrée '$text' ne correspont pas au motif d'un Pt");
-    return new self(floatval($matches[1]), floatval($matches[2]));
+    return new self([floatval($matches[1]), floatval($matches[2])]);
   }
   
   /** Affiche ss limiter le nmbre de chiffres significatifs. */
@@ -62,45 +73,68 @@ class Pt {
   function islSW(Pt $b): bool { return ($this->x <= $b->x) && ($this->y <= $b->y); }
   
   /** Le point juste au SW des 2 points. */
-  function sw(self $b): self { return new self(min($this->x, $b->x), min($this->y, $b->y)); }
+  function sw(self $b): self { return new self([min($this->x, $b->x), min($this->y, $b->y)]); }
   
   /** Le point juste au NE des 2 points. */
-  function ne(self $b): self { return new self(max($this->x, $b->x), max($this->y, $b->y)); }
+  function ne(self $b): self { return new self([max($this->x, $b->x), max($this->y, $b->y)]); }
   
   /** Fabrique une liste de Pt à partir d'une TLPos.
    * @param TLPos $lpos - liste de positions
    * @return list<Pt> - retourne une liste de Pt
    */
   static function lPos2LPt(array $lpos): array {
-    return array_map(function(array $pos) { return new Pt($pos[0],$pos[1]); }, $lpos);
+    return array_map(function(array $pos) { return new Pt($pos); }, $lpos);
   }
 };
 
 /**
- * BBox implémente un rect. englobant en coord. geo. qui peut être dégénéré en un point ou même l'espace vide.
- * Défini par ses 2 coins SW et NE. Un point est représenté par 2 coins identiques.
- * L'espace vide est représenté par 2 points null.
- * Il y a 2 contraintes d'intégrité:
+ * Un rectangle englobant en coord. geo. pour le stoker et effectuer diverses opérations et tester des conditions.
+ * Les opérations sont l'intersection et l'union entre 2 BBox. Les tests sont ceux d'intersection et d'inclusion.
+ * Dans l'intersection entre BBox, elles sont considérées comme topologiquement fermées.
+ * Cela veut dire que 2 bbox qui se touchent sur un bord ont comme intersection le segment commun ;
+ * et que 2 bbox. qui se touchent dans un coin ont comme intersection le point correspondant à ce coin.
+ * Un point, un segment vertical ou horizontal sont représentés comme des BBox dégénérés.
+ * L'espace vide est représenté par un BBox particulier défini comme une constante,
+ * permettant ainsi de tester si une intersection est vide ou non.
+ * Les BBox munies des opérations est une algèbre, cad que le résultat d'une opération est toujours un BBox.
+ *
+ * Du point de vue implémentation:
+ * Un BBox est défini par ses 2 coins SW et NE avec 2 contraintes d'intégrité:
  *  1) Si 1 des 2 coins est null alors l'autre doit aussi l'être.
  *  2) Si les coins sont non nuls alors le coin SW doit être au SW de coin NE.
+ *
+ * Un point est représenté par 2 coins identiques. L'espace vide est représenté par 2 points null.
+ *
+ * Enfin le constructeur prend en paramètres des TPos et non des Pt pour qu'il soit appelable de l'extérieur
+ * sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'avoir des Pt que des TPos.
  */
 class BBox {
-  /** Construction avec vérification des contraintes d'intégrité. */
-  function __construct(readonly ?Pt $sw, readonly ?Pt $ne) {
-    if ((is_null($sw) && !is_null($ne)) || (!is_null($sw) && is_null($ne)))
-      throw new \Exception("Erreur dans la construction d'une BBox, soit les 2 coins sont null, soit aucun.");
-    if ($sw && !$sw->islSW($ne))
-      throw new \Exception("Erreur dans la construction d'une BBox, le coin SW doit être au SW du coin NE.");
+  /** Coin SW */
+  readonly ?Pt $sw;
+  /** Coin NE */
+  readonly ?Pt $ne;
+  
+  /** Fabrique avec vérification des contraintes d'intégrité.
+   @param ?TPos $sw - le coin SW comme TPos
+   @param ?TPos $ne - le coin NE comme TPos
+   */
+  function __construct(?array $sw, ?array $ne) {
+    $this->sw = $sw ? new Pt($sw) : null;
+    $this->ne = $ne ? new Pt($ne) : null;
+    if ((is_null($this->sw) && !is_null($this->ne)) || (!is_null($this->sw) && is_null($this->ne)))
+      throw new \Exception("Dans la construction d'une BBox, soit les 2 coins sont null, soit aucun.");
+    if ($this->sw && !$this->sw->islSW($this->ne))
+      throw new \Exception("Dans la construction d'une BBox, le coin SW doit être au SW du coin NE.");
   }
   
-  /** Construit à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou ''. */
+  /** Fabrique un BBox à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou chaine vide. */
   static function fromText(string $text): self {
     if ($text == '')
       return new self(null, null);
     if (preg_match('!^([.0-9@]+)$!', $text, $matches))
-      return new self($pt = Pt::fromText($matches[1]), $pt);
+      return new self($pos = Pt::fromText($matches[1])->pos(), $pos);
     elseif (preg_match('!^\[([.0-9@]+),([.0-9@]+)\]$!', $text, $matches))
-      return new self(Pt::fromText($matches[1]), Pt::fromText($matches[2]));
+      return new self(Pt::fromText($matches[1])->pos(), Pt::fromText($matches[2])->pos());
     else
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
   }
@@ -111,15 +145,15 @@ class BBox {
     if (count($coords) <> 4)
       throw new \Exception("Erreur, dans BBox::from4Coords(), coords doit comportar 4 coordonnées, ".count($coords)." fournies");
     return NONE->extends([
-      new Pt(floatval($coords[0]), floatval($coords[1])),
-      new Pt(floatval($coords[2]), floatval($coords[3]))
+      new Pt([floatval($coords[0]), floatval($coords[1])]),
+      new Pt([floatval($coords[2]), floatval($coords[3])])
     ]);
   }
   
   /** Fabrique une BBox à partir d'une Pos.
    * @param TPos $pos
    */
-  static function fromPos(array $pos): self { $pt = new Pt($pos[0], $pos[1]); return new self($pt,$pt); }
+  static function fromPos(array $pos): self { return new self($pos, $pos); }
   
   /** Fabrique une BBox à partir d'une LPos.
    * @param TLPos $lpos
@@ -134,7 +168,7 @@ class BBox {
     $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $llPos);
     // Tranforme la LLPt en LBBox
     $lBBox = array_map(function(array $lPt) { return NONE->extends($lPt); }, $llPt);
-    // Union des bbox de LBBox pour donner le résultat
+    // Union des bbox de lBBox pour donner le résultat
     $rbbox = NONE;
     foreach ($lBBox as $bbox)
       $rbbox = $rbbox->union($bbox);
@@ -153,7 +187,7 @@ class BBox {
       return "[$this->sw,$this->ne]";
   }
   
-  /** $this inclus(large) $b. */
+  /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
   function includes(self $b): bool {
     if ($b->isEmpty())
       return true; // l'espace vide est inclus dans tout y.c. lui-même 
@@ -163,14 +197,14 @@ class BBox {
       return $this->sw->isLSW($b->sw) && $b->ne->islSW($this->ne);
   }
 
-  /** Intersection géométrique de $this et $b. Le résultat est toujours une BBox ! */
+  /** Intersection géométrique de $this avec $b. Le résultat est toujours une BBox ! */
   function inters(self $b): self {
     if (($this == NONE) || ($b == NONE))
       return NONE;
     $sw = $this->sw->ne($b->sw); // le SW du nv bbox est le pt juste au NE des 2 SW
     $ne = $this->ne->sw($b->ne); // le NE du nv bbox est le pt juste au SW des 2 NE
     if ($sw->islSW($ne))         // si le coin SW est au SW du point NE
-      return new self($sw, $ne); //  alors ils définissent un nouveau BBox
+      return new self($sw->pos(), $ne->pos()); //  alors ils définissent un nouveau BBox
     else                         // sinon
       return NONE;               //  l'intersection est vide
   }
@@ -183,17 +217,20 @@ class BBox {
       return $this;
     $sw = $this->sw->sw($b->sw); // le SW de l'union est le pt juste au SW des 2 SW
     $ne = $this->ne->ne($b->ne); // le NE de l'union est le pt juste au NE des 2 NE
-    return new self($sw, $ne);
+    return new self($sw->pos(), $ne->pos());
   }
   
-  /** Agrandit une BBox pour contenir la liste de points.
+  /** Agrandit la BBox au plus juste pour qu'elle contienne la liste de points.
    * @param list<Pt> $lpts
    */
   function extends(array $lpts): self {
-    $pt = array_pop($lpts);
-    $bbox = (new self($this->sw ? $this->sw->sw($pt) : $pt, $this->ne ? $this->ne->ne($pt) : $pt));
-    //echo "pt=$pt -> bbox=$bbox\n";
-    return $lpts ? $bbox->extends($lpts) : $bbox;
+    $sw = $this->sw;
+    $ne = $this->ne;
+    foreach ($lpts as $pt) {
+      $sw = $sw ? $sw->sw($pt) : $pt;
+      $ne = $ne ? $ne->ne($pt) : $pt;
+    }
+    return new self($sw->pos(), $ne->pos());
   }
 };
 
@@ -236,7 +273,7 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
 }
 elseif (0) { // @phpstan-ignore elseif.alwaysFalse
-  $lpts = [new Pt(0,0), new Pt(4,5), new Pt(-4, -5)];
+  $lpts = [new Pt([0,0]), new Pt([4,5]), new Pt([-4, -5])];
   echo NONE->extends($lpts);
 }
 elseif (1) {

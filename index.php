@@ -7,6 +7,7 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
+- dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
 - implémenter CQL ? partiellement ?
@@ -31,7 +32,12 @@ define('JOURNAL', [
   - amélioration de l'affichage du champ geometry stocké dans un tuple de Collection, test ok sur AeCogPe
     - son déploiement nécessite
       - 1) de s'assurer que le GeoJSON source contient un bbox
-      - 2) de corriger le code Php de lecture du GeoJSON
+      - 2) de corriger si nécessaire le code Php de lecture du GeoJSON pour qu'il prenne en compte le bbox
+  - création de pos.inc.php à partir de geoson.inc.php avec un namespace spécifique
+  - ajustement des types GeoJSON sur la RFC 7946
+  - autres modifs de geojson.inc.php: suppression de la classe FileOfFC et transfert des 2 méthodes de lecture d'un fichier
+    dans les classes Feature et FeatureCollection
+  - adaptation des fichiers utilisant ces méthodes
 20/8/2025:
   - création bbox.php pour gérer les BBox et effectuer dessus des opérations et tests
   - intégration dans geojson.inc.php du bbox sous la forme d'un BBox
@@ -119,14 +125,10 @@ Lignes de commandes
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f index.php,dataset.inc.php,predicate.inc.php,join.php,proj.php,select.php,\
+    ../phpDocumentor.phar -f index.php,geojson.php,dataset.inc.php,geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,\
+join.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
-spreadsheetdataset.inc.php,\
-geodataset.php,mapdataset.php,map.php,geojson.inc.php,geojson.php,styler.php,zoomleveL.php,\
-aecogpe.php,worldeez.php,\
-featureserver.php,\
-lib/gegeom.inc.php,lib/coordsys.inc.php,lib/zoom.inc.php,lib/gebox.inc.php,lib/sexcept.inc.php,\
-bbox.php
+geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
