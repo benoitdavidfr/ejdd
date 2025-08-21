@@ -20,7 +20,13 @@ parameters:
     TGeoJsonGeometry: TGJSimpleGeometry|TGJGeometryCollection
     TGeoJsonProperties: "array<string, mixed>"
     TGeoJsonFeature: '''
-      array{type: 'Feature', id?: string, properties?: TGeoJsonProperties, bbox?: TGJBox, geometry: TGeoJsonGeometry}
+      array{
+        type: 'Feature', 
+        id?: string, 
+        properties?: TGeoJsonProperties, 
+        bbox?: TGJBox, 
+        geometry?: TGeoJsonGeometry
+      }
       '''
     # Les champs numberReturned et totalFeatures sont ajoutés quand la collection est produite par un serveur WFS
     TGeoJsonFeatureCollection: '''

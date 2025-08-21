@@ -7,12 +7,17 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
+- voir l'affichage du champ geometry stocké dans un tuple
+  - intégrer le bbox dans cette géométrie ?, l'afficher à la place de la géométrie ?
+  
+- implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
-- implémenter la sélection spatiale et la jointure spatiale sur des rectangles et des points.
-- réfléchir à un un bouquets de serveurs OGC API Features
+- implémenter CQL ? partiellement ?
+  - https://portal.ogc.org/files/96288#cql-bnf
+- réfléchir à un un bouquets de services OGC API Features
   - ptDAccès = Dataset | Query
-  - collection = Section   <<<--- Remplacer le terme Section par Collection (en cours)
-  - item = Tuple           <<<--- Remplacer le terme Tuple par Item (en cours)
+  - collection
+  - item
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - revoir la gestion des rectangles
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
@@ -24,6 +29,7 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+21/8/2025:
 20/8/2025:
   - réflexions du BBox, création bbox.php
   - intégration dans geojson.inc.php du bbox sous la forme d'un BBox

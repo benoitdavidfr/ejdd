@@ -15,14 +15,77 @@ class U {
   const G = 1024 * self::M;
 };
 
-/** Fonctions sur les positions définies comme une liste de 2 nombres. */
+/** Fonctions sur les positions (TPos) définies comme une liste de 2 nombres. */
 class Pos {
+  /** Vérifie que le paramètre est un TPos.
+   * @param TPos $pos
+   */
+  static function is(mixed $pos): bool {
+    if (!is_array($pos))
+      return false;
+    foreach([0,1] as $i) {
+      if (!isset($pos[$i]))
+        return false;
+      if (!is_float($pos[$i]) && !is_int($pos[$i]))
+        return false;
+    }
+    return true;
+  }
+  
   /** distance entre 2 positions.
    * @param TPos $pos1
    * @param TPos $pos2
    */
   static function dist(array $pos1, array $pos2): float {
     return abs($pos2[0]-$pos1[0]) + abs($pos2[1]-$pos1[1]);
+  }
+};
+
+/** Fonction sur les TLPos, définies comme liste de TPos. */
+class LPos {
+  /** Vérifie que le paramètre est un TLPos.
+   * @param TLPos $geom
+   */
+  static function is(mixed $geom): bool {
+    if (!is_array($geom))
+      return false;
+    foreach ($geom as $pos) {
+      if (!Pos::is($pos))
+        return false;
+    }
+    return true;
+  }
+};
+
+/** Fonction sur les TLLPos, définies comme liste de TLPos. */
+class LLPos {
+  /** Vérifie que le paramètre est un TLLPos.
+   * @param TLLPos $geom
+   */
+  static function is(mixed $geom): bool {
+    if (!is_array($geom))
+      return false;
+    foreach ($geom as $lpos) {
+      if (!LPos::is($lpos))
+        return false;
+    }
+    return true;
+  }
+};
+
+/** Fonction sur les TLLLPos, définies comme liste de TLLPos. */
+class LLLPos {
+  /** Vérifie que le paramètre est un TLLLPos.
+   * @param TLLLPos $geom
+   */
+  static function is(mixed $geom): bool {
+    if (!is_array($geom))
+      return false;
+    foreach ($geom as $lpos) {
+      if (!LLPos::is($lpos))
+        return false;
+    }
+    return true;
   }
 };
 
@@ -63,16 +126,34 @@ abstract class Geometry {
 
 /** Point GeoJSON ; coordinates est un TPos. */
 class Point extends Geometry {
+  function __construct(array $geom) {
+    if (!Pos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un Point doit TPos");
+    parent::__construct($geom);
+  }
+
   function bbox(): \bbox\BBox { return \bbox\BBox::fromPos($this->coordinates); }
 };
 
 /** MultiPoint GeoJSON ; coordinates est un TLPos. */
 class MultiPoint extends Geometry {
+  function __construct(array $geom) {
+    if (!LPos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un MultiPoint doit être TLPos");
+    parent::__construct($geom);
+  }
+
   function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates); }
 };
 
 /** Linestring GeoJSON ; coordinates est un TLPos. */
 class LineString extends Geometry {
+  function __construct(array $geom) {
+    if (!LPos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un LineString doit être TLPos");
+    parent::__construct($geom);
+  }
+
   function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates); }
   
   function reso(): float {
@@ -94,11 +175,23 @@ class LineString extends Geometry {
 
 /** MultiLineString GeoJSON ; coordinates est un TLLPos. */
 class MultiLineString extends Geometry {
+  function __construct(array $geom) {
+    if (!LLPos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un MultiLineString doit être TLLPos");
+    parent::__construct($geom);
+  }
+
   function bbox(): \bbox\BBox { return \bbox\BBox::fromLLPos($this->coordinates); }
 };
 
 /** Polygon GeoJSON ; coordinates est un TLLPos. */
 class Polygon extends Geometry {
+  function __construct(array $geom) {
+    if (!LLPos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un Polygon doit être TLLPos");
+    parent::__construct($geom);
+  }
+
   /** Calcule la bbox sur l'extérieur du polygone, cad le ring 0. */
   function bbox(): \bbox\BBox { return \bbox\BBox::fromLPos($this->coordinates[0]); }
   
@@ -111,6 +204,12 @@ class Polygon extends Geometry {
 
 /** MultiPolygon GeoJSON ; coordinates est un TLLLPos. */
 class MultiPolygon extends Geometry {
+  function __construct(array $geom) {
+    if (!LLLPos::is($geom['coordinates']))
+      throw new \Exception("Le type des coordonnées d'un MultiPolygon doit être TLLLPos");
+    parent::__construct($geom);
+  }
+
   function bbox(): \bbox\BBox {
     // Fabrique la liste des rings extérieurs des polygones en prenant dans chaque polygone son extérieur 
     $lExtRings = array_map(function(array $llpos) { return $llpos[0]; }, $this->coordinates);
@@ -129,42 +228,57 @@ class MultiPolygon extends Geometry {
 class Feature {
   /** ?int|string $id - Eventuellement un içdentifiant du Feature. */
   readonly mixed $id;
-  /** @var array<mixed> $properties  - les properties GeoJSON */
-  readonly array $properties;
+  /** @var ?array<mixed> $properties  - les properties GeoJSON */
+  readonly ?array $properties;
   /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox. */
   readonly ?\bbox\BBox $bbox;
   /* La géométrie GeoJSON, éventuellement absente */
   readonly ?Geometry $geometry;
   
   /** @param TGeoJsonFeature $feature
-   * @param ?int|string $id */
+   * @param ?(int|string) $id */
   function __construct(array $feature, mixed $id=null) {
     $this->id = $id;
     $this->properties = $feature['properties'] ?? null;
     $this->bbox = ($bbox = $feature['bbox'] ?? null) ? \bbox\BBox::from4Coords($bbox) : null;
-    $this->geometry = $feature['geometry'] ? Geometry::create($feature['geometry']) : null;
+    $this->geometry = isset($feature['geometry']) ? Geometry::create($feature['geometry']) : null;
   }
   
   /** @return TGeoJsonFeature */
   function asArray(): array {
-    return [
-      'type'=> 'Feature',
-      'properties'=> $this->properties,
-      'geometry'=> $this->geometry->asArray(),
-    ];
+    return array_merge(
+      ['type'=> 'Feature'],
+      $this->properties ? ['properties'=> $this->properties] : [],
+      $this->geometry ? ['geometry'=> $this->geometry->asArray()] : []
+    );
   }
   
   /** Retourne le BBox et s'il n'est pas stocké alors le calcule. Retourne null si aucune géométrie n'est définie. */
-  function bbox(): \bbox\BBox { return $this->bbox ?? $this->geometry->bbox(); }
+  function bbox(): ?\bbox\BBox { return $this->bbox ?? ($this->geometry ? $this->geometry->bbox() : null); }
+  
+  /** Retourne une représentation string de la géométrie. */
+  static function geomToString(?\bbox\BBox $bbox, ?Geometry $geom): string {
+    if (!$geom)
+      return 'NONE';
+    $t = match($geom->type) {
+      'Point'=> 'Pt',
+      'MultiPoint'=> 'MPt',
+      'LineString'=> 'Ls',
+      'MultiLineString'=> 'MLs',
+      'Polygon'=> 'Pol',
+      'MultiPolygon'=> 'MPol',
+      default => '???',
+    };
+    return "{{$t}: $bbox}";
+  }
   
   /** Génère un affichage du Feature en éludant les coordonnées de la géométrie. */
   function __toString(): string {
-    $geom = $this->geometry->asArray(); unset($geom['coordinates']);
-    return '{type:"Feature"'
-      .(!is_null($this->id) ? ', id:'.json_encode($this->id) : '')
-      .', properties:'.json_encode($this->properties, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)
-      .', bbox:'.$this->bbox()->__toString()
-      .', geometry:{type:"'.$geom['type'].',"coordinates":...}'
+    //var_dump($this);
+    return
+       (!is_null($this->id) ? json_encode($this->id).'=> ' : '')
+      .'{properties:'.json_encode($this->properties, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).', '
+      .'geom:'.self::geomToString($this->bbox(), $this->geometry)
       .'}';
   }
 };
@@ -269,6 +383,45 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   }
 }
 
+elseif (0) { // @phpstan-ignore elseif.alwaysTrue // Test création et affichage Feature
+  echo "<h2>Test création et affichage Feature</h2>\n";
+  foreach ([
+    "minimal"=> ['type'=>'Feature'],
+    "uniq. prop."=> ['type'=>'Feature', 'properties'=> ['p'=>'v']],
+    "geom Pt"=> ['type'=>'Feature', 'properties'=> ['p'=>'v'], 'geometry'=> ['type'=> 'Point', 'coordinates'=> [12.23, 56.78]]],
+    "geom MPt"=> [
+      'type'=>'Feature',
+      'properties'=> ['p'=>'v'],
+      'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [[12.23, 56.78],[42.23, 56.78]]]
+    ],
+    "erroné sur type coordonnées"=> [
+      'type'=>'Feature',
+      'properties'=> ['p'=>'v'],
+      'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [12.23, 56.78]]
+    ],
+  ] as $title => $feature) {
+    echo "<h3>$title</h3>\n";
+    try {
+      $feature = new Feature($feature);
+      echo "feature: $feature<br>\n";
+    }
+    catch (\Exception $e) {
+      echo "Erreur sur le feature: "; print_r($feature); 
+      echo "Exception: ",$e->getMessage(),"<br>\n";
+    }
+  }
+  
+  echo "<h3>Test avec clé string</h3>\n";
+  $feature = ['type'=>'Feature', 'properties'=> ['p'=>'v']];
+  $feature = new Feature($feature, 'id56');
+  echo "feature: $feature<br>\n";
+
+  echo "<h3>Test avec clé int</h3>\n";
+  $feature = ['type'=>'Feature', 'properties'=> ['p'=>'v']];
+  $feature = new Feature($feature, 56);
+  echo "feature: $feature<br>\n";
+}
+
 elseif (1) {
   echo "<h2>Lecture et affichage du fichier aecogpe2025/region.geojson</h2>\n";
   ini_set('memory_limit', '10G');
@@ -278,6 +431,6 @@ elseif (1) {
     //$feature['geometry']['coordinates'] = [];
     //echo '$feature='; print_r($feature);
     $feature = new Feature($feature, $noFeature);
-    echo "feature=$feature<br>\n";
+    echo "feature: $feature<br>\n";
   }
 }

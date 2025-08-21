@@ -31,11 +31,11 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   $dsName = $matches[1];
   $cName = $matches[2];
   if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
-    echo "<pre>bbox="; print_r($bbox); //die();
+    //echo "<pre>bbox="; print_r($bbox); //die();
     $bbox = explode(',', $bbox);
-    echo "<pre>bbox="; print_r($bbox); //die();
+    //echo "<pre>bbox="; print_r($bbox); //die();
     $bbox =  \bbox\BBox::from4Coords($bbox);
-    echo "<pre>bbox="; print_r($bbox); //die();
+    //echo "<pre>bbox="; print_r($bbox); //die();
   }
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
 
@@ -51,7 +51,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   foreach ($dataset->getItems($cName, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
     $tuple = is_array($item) ? $item : ['value'=> $item];
     if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si le tuple comporte une géométrie et bbox est défini
-      if ($gbox = $geometry['bbox']) { // Si la bbox de la géométrie est définie
+      if ($gbox = $geometry['bbox'] ?? null) { // Si la bbox de la géométrie est définie
         $gbox = \bbox\BBox::from4Coords($gbox); // je la convertit en BBox
       }
       else { // Sinon je la calcule à partir de la géométrie
