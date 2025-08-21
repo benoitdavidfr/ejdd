@@ -226,6 +226,15 @@ class MultiPolygon extends Geometry {
 
 /** Feature GeoJSON. */
 class Feature {
+  /** libellé court des types de géométrie pour affichage. */
+  const SHORT_TYPES = [
+    'Point' => 'SPt',
+    'MultiPoint'=> 'MPt',
+    'LineString'=> 'SLs',
+    'MultiLineString'=> 'MLs',
+    'Polygon'=> 'SPol',
+    'MultiPolygon'=> 'MPol',
+  ];
   /** ?int|string $id - Eventuellement un içdentifiant du Feature. */
   readonly mixed $id;
   /** @var ?array<mixed> $properties  - les properties GeoJSON */
@@ -260,16 +269,8 @@ class Feature {
   static function geomToString(?\bbox\BBox $bbox, ?Geometry $geom): string {
     if (!$geom)
       return 'NONE';
-    $t = match($geom->type) {
-      'Point'=> 'Pt',
-      'MultiPoint'=> 'MPt',
-      'LineString'=> 'Ls',
-      'MultiLineString'=> 'MLs',
-      'Polygon'=> 'Pol',
-      'MultiPolygon'=> 'MPol',
-      default => '???',
-    };
-    return "{{$t}: $bbox}";
+    $shortType = self::SHORT_TYPES[$geom->type] ?? null;
+    return "{{$shortType}: $bbox}";
   }
   
   /** Génère un affichage du Feature en éludant les coordonnées de la géométrie. */
@@ -383,7 +384,8 @@ elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   }
 }
 
-elseif (0) { // @phpstan-ignore elseif.alwaysTrue // Test création et affichage Feature
+// Test création et affichage Feature
+elseif (0) { // @phpstan-ignore elseif.alwaysFalse
   echo "<h2>Test création et affichage Feature</h2>\n";
   foreach ([
     "minimal"=> ['type'=>'Feature'],

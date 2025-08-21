@@ -1,15 +1,12 @@
 <?php
 /** Fichier racine de dataset.
  * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte la documentation générale de l'application
- * ainsi que le code initial de l'application.
+ * ainsi que le code de bootstrap de l'application.
  */
 
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- voir l'affichage du champ geometry stocké dans un tuple
-  - intégrer le bbox dans cette géométrie ?, l'afficher à la place de la géométrie ?
-  
 - implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
 - implémenter CQL ? partiellement ?
@@ -19,7 +16,6 @@ define('A_FAIRE', [
   - collection
   - item
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
-- revoir la gestion des rectangles
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
@@ -30,8 +26,14 @@ EOT
 define('JOURNAL', [
 <<<'EOT'
 21/8/2025:
+  - amélioration et tests de la création et l'affichage d'un Feature
+  - modif de AeCogPe pour copier le bbox dans la géométrie
+  - amélioration de l'affichage du champ geometry stocké dans un tuple de Collection, test ok sur AeCogPe
+    - son déploiement nécessite
+      - 1) de s'assurer que le GeoJSON source contient un bbox
+      - 2) de corriger le code Php de lecture du GeoJSON
 20/8/2025:
-  - réflexions du BBox, création bbox.php
+  - création bbox.php pour gérer les BBox et effectuer dessus des opérations et tests
   - intégration dans geojson.inc.php du bbox sous la forme d'un BBox
   - migration de geojson.php pour utiliser BBox et plus gegeom, ainsi le code n'utilise plus gegeom
   - ajout d'un affichage d'un Feature

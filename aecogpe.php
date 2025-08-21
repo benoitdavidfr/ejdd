@@ -470,14 +470,28 @@ class AeCogPe extends Dataset {
     parent::__construct($name, self::TITLE, self::DESCRIPTION, self::SCHEMA);
   }
   
-  /* L'accès aux Items du JdD.
-   * @return array<mixed>
+  /* L'accès aux Items du JdD par un générateur.
+   * @return Generator
   */
   function getItems(string $cname, mixed $filtre=null): Generator {
     $fileOfFC = new \geojson\FileOfFC(self::GEOJSON_DIR."/$cname.geojson");
     foreach ($fileOfFC->readFeatures() as $no => $feature) {
-      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
-      yield $no => $tuple;
+      $tuple = array_change_key_case($feature['properties']);
+      $id = $no; // par défaut
+      if (isset($tuple['id'])) {
+        $id = $tuple['id'];
+        unset($tuple['id']);
+      }
+      // Si la bbbox est présente alors je la stoke dans la géométrie
+      $geometry = $feature['geometry'] ?? [];
+      if ($bbox = $feature['bbox'] ?? null) {
+        $geometry = ['type'=> $geometry['type'], 'bbox'=> $bbox, 'coordinates'=> $geometry['coordinates']];
+      }
+      // Si la géométrie est renseignée alors je la stocke dans le n-uplet
+      if ($geometry) {
+        $tuple['geometry'] = $geometry;
+      }
+      yield $id => $tuple;
     }
     return null;
   }

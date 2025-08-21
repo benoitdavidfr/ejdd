@@ -353,8 +353,18 @@ abstract class Collection {
       foreach ($tuple as $k => $v) {
         if ($v === null)
           $v = '';
+        elseif ($k == 'geometry') { // affichage particulier d'une géométrie
+          $bbox = null;
+          if (isset($v['bbox'])) {
+            $bbox = \bbox\BBox::from4Coords($v['bbox']);
+          }
+          $geom = \geojson\Geometry::create($v);
+          if (!$bbox)
+            $bbox = $geom->bbox();
+          $v = '<pre>'.\geojson\Feature::geomToString($bbox, $geom).'</pre>';
+        }
         elseif (is_array($v))
-          $v = json_encode($v);
+          $v = '<pre>'.json_encode($v).'</pre>';
         if (strlen($v) > 60)
           $v = substr($v, 0, 57).'...';
         echo "<td>$v</td>";
