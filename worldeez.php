@@ -38,7 +38,7 @@ class WorldEez extends Dataset {
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature)  {
       if ($no < $skip)
         continue;
-      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
+      $tuple = array_merge(array_change_key_case($feature->properties), ['geometry'=> $feature->geometry->asArray()]);
       yield $no => $tuple;
     }
   }

@@ -47,7 +47,12 @@ class GeoDataset extends Dataset {
     foreach (Feature::fromFile(strtolower($this->dsName."/$cName.geojson")) as $no => $feature)  {
       if ($no < $skip)
         continue;
-      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $feature['geometry']]);
+      // Je tranfère le bbox du Feature dans la géométrie pour l'intégration dans le n-uplet
+      $feature = $feature->asArray();
+      $geometry = $feature['geometry'];
+      if (isset($feature['bbox']))
+        $geometry = ['type'=> $geometry['type'], 'bbox'=> $feature['bbox'], 'coordinates'=> $geometry['coordinates']];
+      $tuple = array_merge(array_change_key_case($feature['properties']), ['geometry'=> $geometry]);
       yield $no => $tuple;
     }
   }
