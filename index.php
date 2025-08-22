@@ -7,10 +7,21 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- revoir l'usage des namespace
-  - mettre Dataset et ses sous-classes JdD dans un namespace Dataset
-  - 1 ns Collection avec les Collection et leur Schéma
-  - 1 ns Algebra avec les opérateurs et le parser
+- branch joinSuper
+  - faire évoluer l'opération de jointure pour qu'elle prenne la forme (Section, Section, {predicate})
+  - où Predicat peut être
+    {predicate} ::= {name} {condOp} {constant}
+                  | {name} {condOp} {name}
+                  | '(' {predicate} ')' {boolOp} '(' {predicate} ')'
+    {constant} ::= {float} | {integer} | {string} | {rect} | {pos}
+    {boolOp} ::= 'and' | 'or'
+  - {name} est un nom d'attribut, ss modif s'il n'y a pas de confit, précédé de s1_ ou s2_ en cas de conflit
+  - modifier le ch de nom d'attribut dans la jointure -> s1_xxx & s2_yyy, uniquement en cas de conflit
+  - faut-il changer le contenu de tuple
+    - j'ai besoin de détecter les géométries autrement que par leur nom
+    - je pourrais stoker un objet GeomTuple un peu différent de Geometry, avec bbox
+    - et convenir que le tuple esr un pur array recursif + GeomTuple
+- voir si je peux monter le level de PhpStan
 - dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
@@ -22,6 +33,7 @@ define('A_FAIRE', [
   - item
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
+  - voir pourquoi c'est lent, ca met en cause la méthode
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
 EOT
@@ -71,6 +83,12 @@ define('JOURNAL', [
   - adaptation pour fonctionner avec ../dexp
 11/8/2025:
   - reprise du code, amélioration de la doc
+EOT
+]
+);
+/** Journal des modifications du code avant août 2025. */
+define('JOURNAL_AVANT_AOUT2025', [
+<<<'EOT'
 16/7/2025:
   - ajout d'un analyseur syntaxique sur expressions de création de dataset
   - autonomisation de l'analyseur
@@ -142,6 +160,12 @@ geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featur
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
     git commit -am "{commentaire}"
+  Pour créer une branche et y basculer:
+    git checkout -b hotfix
+  Pour la merger:
+    git checkout main # bascule sur main
+    git merge hotfix  # fusion de la branche avec main
+  
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
 
@@ -256,11 +280,11 @@ set_time_limit(5*60);
  * Mise en oeuvre:
  * ---------------
  * ### Espaces de noms
- *  - Dataset est l'espace des classes représentant un Jeu de Données et de la classe Dataset
- *  - Algebra est l'espace des classes définissant l'algèbre de Collection, y.c. les classes définissant le parser
- *  - GeoJSON est l'espace des primitives géométriques GeoJSON
- *  - BBox est l'espace de la classe BBox
- *  - Pos est l'espace des classes sur les positions et leurs listes
+ *  - Dataset: classe Dataset + classes représentant un Jeu de Données
+ *  - Algebra: classes définissant l'algèbre de Collection, y.c. les classes définissant le parser
+ *  - GeoJSON: primitives géométriques GeoJSON
+ *  - BBox: classe BBox
+ *  - Pos: classes sur les positions et leurs listes
  *
  * ### Fichiers Php
  *  - index.php fournit l'IHM générale de l'appli et contient cette doc
