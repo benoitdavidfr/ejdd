@@ -45,6 +45,8 @@ define('JOURNAL', [
 22/8/2025:
   - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
   - ajout d'une méthode Feature::toTuple() et utilisation
+  - début branche joinSuper
+    - ajout partiel PredicateParser
 21/8/2025:
   - amélioration et tests de la création et l'affichage d'un Feature
   - modif de AeCogPe pour copier le bbox dans la géométrie
