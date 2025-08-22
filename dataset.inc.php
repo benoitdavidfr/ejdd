@@ -101,13 +101,14 @@ abstract class Dataset {
     //echo "dsname=$dsName\n";
     if (array_key_exists($dsName, self::REGISTRE)) {
       // Si le JdD appartient à une catégorie alors l classe est cette catégorie, sinon la classe est le JdD
-      $class = self::REGISTRE[$dsName] ?? $dsName;
+      $class = (self::REGISTRE[$dsName] ?? $dsName);
       //echo 'getcwd()=',getcwd(),"<br>\n";
       //echo __DIR__,"<br>\n";
       if (!is_file(__DIR__.strtolower("/$class.php")))
         throw new \Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
       require_once __DIR__.strtolower("/$class.php");
-      return new $class($dsName); // @phpstan-ignore-line
+      $class = '\\Dataset\\'.$class;
+      return new $class($dsName);
     }
     /*elseif (preg_match('!^([^(]+)\(!', $dsName, $matches)) {
       switch ($matches[1]) {
