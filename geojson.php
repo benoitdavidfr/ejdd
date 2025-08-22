@@ -1,11 +1,14 @@
 <?php
 /** Génère un flux GeoJSON pour une collection d'un JdD. */
+namespace Algebra;
+
 require_once 'dataset.inc.php';
 require_once 'bbox.php';
 
+use Dataset\Dataset;
+use GeoJSON\Geometry;
 use BBox\BBox;
 use BBox\NONE;
-use GeoJSON\Geometry;
 
 ini_set('memory_limit', '10G');
 //echo "<pre>"; print_r($_SERVER);

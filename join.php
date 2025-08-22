@@ -2,6 +2,10 @@
 /** Immlémentation d'une jointure entre 2 collections de JdD générant une nouvelle collection de requête.
  * @package Algebra
  */
+namespace Algebra;
+
+use Dataset\Dataset;
+
 ini_set('memory_limit', '10G');
 
 define('A_FAIRE_JOIN', [
@@ -19,9 +23,9 @@ require_once 'dataset.inc.php';
 class Join extends Collection {
   function __construct(readonly string $type, readonly Collection $coll1, readonly string $field1, readonly Collection $coll2, readonly string $field2) {
     if (in_array($coll1->kind, ['dictOfValues','listOfValues']))
-      throw new Exception("Erreur, join impossible avec dictOfValues|listOfValues");
+      throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
-      throw new Exception("Erreur, join impossible avec dictOfValues|listOfValues");
+      throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
   }
 
@@ -72,8 +76,9 @@ class Join extends Collection {
   
   /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(array $filters=[]): Generator {
+  function getItems(array $filters=[]): \Generator {
     // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
@@ -355,7 +360,7 @@ class JoinTest {
       case 'query': { // query transmises par l'appel initial 
         $query = self::EXAMPLES[$_GET['title']];
         if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $query, $matches))
-          throw new Exception("Erreur de décodage du collectionId=$_GET[collection]");
+          throw new \Exception("Erreur de décodage du collectionId=$_GET[collection]");
         $type = $matches[1];
         $coll1 = $matches[2];
         $field1 = $matches[3];
@@ -368,7 +373,7 @@ class JoinTest {
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
         //echo '<pre>$_GET='; print_r($_GET); echo "</pre>\n";
         if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $_GET['collection'], $matches))
-          throw new Exception("Erreur de décodage ducollId=$_GET[collection]");
+          throw new \Exception("Erreur de décodage ducollId=$_GET[collection]");
         //echo '<pre>$matches='; print_r($matches); echo "</pre>\n";
         $type = $matches[1];
         $coll1 = $matches[2];
@@ -383,10 +388,10 @@ class JoinTest {
           $join->displayItem($_GET['key']);
         }
         else
-          throw new Exception("ni skip ni key");
+          throw new \Exception("ni skip ni key");
         break;
       }
-      default: throw new Exception("Action '$_GET[action]' non définie");
+      default: throw new \Exception("Action '$_GET[action]' non définie");
     }
   }
 };

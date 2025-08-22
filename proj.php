@@ -2,6 +2,10 @@
 /** Implémentation de l'opération de projection qui est une Section.
  * @package Algebra
  */
+namespace Algebra;
+
+use Dataset\Dataset;
+
 require_once 'dataset.inc.php';
 require_once 'join.php';
 
@@ -38,13 +42,15 @@ class Proj extends Collection {
       if (isset($tuple[$from]))
         $tuple2[$to] = $tuple[$from];
       else
-        throw new Exception("$from non défini pour $key");
+        throw new \Exception("$from non défini pour $key");
     }
     return $tuple2;
   }
   
-  /** @param array<string,mixed> $filters */
-  function getItems(array $filters = []): Generator {
+  /** @param array<string,mixed> $filters
+   * @return \Generator<int|string,array<mixed>>
+   */
+  function getItems(array $filters = []): \Generator {
     foreach ($this->coll->getItems() as $key => $tuple) {
       yield $key => $this->projItem($key, $tuple);
     }
@@ -108,10 +114,10 @@ class ProjTest {
         ];
         $proj = $projs[$_GET['collection']] ?? null;
         $proj->displayItem($_GET['key']);
-        //throw new Exception("Action $_GET[action] non prévue");
+        //throw new \Exception("Action $_GET[action] non prévue");
         break;
       }
-      default: throw new Exception("Action $_GET[action] non prévue");
+      default: throw new \Exception("Action $_GET[action] non prévue");
     }
   }
 };

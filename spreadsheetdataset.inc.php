@@ -1,5 +1,7 @@
 <?php
 /** Jeu de données générique géré dans un fichier ods. */
+namespace Dataset;
+
 require_once 'dataset.inc.php';
 
 /** Feuille de documentation d'un fichier ODS. */
@@ -139,7 +141,7 @@ abstract class SpreadSheetDataset extends Dataset {
         case '-': break;
         case '': break 2;
         default: {
-          throw new Exception("instruction $line[A] inconnue");
+          throw new \Exception("instruction $line[A] inconnue");
         }
       }
     }
@@ -180,9 +182,9 @@ abstract class SpreadSheetDataset extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($this->filePath);
@@ -202,7 +204,7 @@ abstract class SpreadSheetDataset extends Dataset {
         $key = $pName;
     }
     if (!$key)
-      throw new Exception("Pas de clé dans $cName");
+      throw new \Exception("Pas de clé dans $cName");
     // je prends nes noms de col. dans la première ligne
     $colNames = [];
     foreach ($dataArray[1] as $colName) {

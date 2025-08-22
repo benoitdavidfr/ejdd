@@ -20,6 +20,10 @@
  *
  * @package Dataset
  */
+namespace Dataset;
+
+use JsonSchema\Validator;
+
 require_once 'dataset.inc.php';
 require_once 'nomscnig.php';
 
@@ -41,9 +45,9 @@ class DeptReg extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach ($this->data[$cName] as $key => $item) {
       if ($skip-- > 0)
@@ -955,7 +959,7 @@ EOT
         $schema = json_decode(file_get_contents(DeptReg::JSON_FILE_NAME), true)['$schema'];
         
         // Validate
-        $validator = new JsonSchema\Validator;
+        $validator = new Validator;
         $validator->validate($data, $schema);
 
         if ($validator->isValid()) {

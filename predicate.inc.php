@@ -2,6 +2,10 @@
 /** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec DsParser.
  * @package Algebra
  */
+namespace Algebra;
+
+use Dataset\Dataset;
+
 require_once 'parser.php';
 
 /** Une constante définie par son type et sa valeur. */
@@ -49,7 +53,7 @@ EOT
     if ($path)
       $path[] = "token($tokenName)";
     if (!($pattern = self::TOKENS[$tokenName] ?? null))
-      throw new Exception("Erreur dans token, tokenName=$tokenName inexistant");
+      throw new \Exception("Erreur dans token, tokenName=$tokenName inexistant");
     $matches = [];
     if (DsParser::pmatch($pattern, $text, $matches)) {
       if ($path)
@@ -123,7 +127,7 @@ class Predicate {
 
   /*static function fromString(string $string): self {
     if (!preg_match('!^([^ ]+) ([^ ]+) "([^"]+)"$!', $string, $matches))
-      throw new Exception("Chaine \"$string\" non reconuue");
+      throw new \Exception("Chaine \"$string\" non reconuue");
     return new Predicate($matches[1], $matches[2], new Constant('string', $matches[3]));
   }*/
   
@@ -131,7 +135,7 @@ class Predicate {
     if ($predicate = PredicateParser::start($text))
       return $predicate;
     else
-      throw new Exception("Texte \"$text\" non reconuu");
+      throw new \Exception("Texte \"$text\" non reconuu");
   }
 
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
@@ -142,12 +146,12 @@ class Predicate {
   */
   function eval(array $tuple): bool {
     if (($val = $tuple[$this->field] ?? null) === null)
-      throw new Exception("field $this->field absente");
+      throw new \Exception("field $this->field absente");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
     $result = match($this->op) {
       '=' => $val == $this->constant->value(),
       'match' => preg_match($this->constant->value(), $val),
-      default => throw new Exception("Opération $this->op inconnue"),
+      default => throw new \Exception("Opération $this->op inconnue"),
     };
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
@@ -175,7 +179,7 @@ class Predicate {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
-require_once 'dataset.inc.php';
+require_once 'collection.inc.php';
 
 /** Test de la classe Predicate. */
 class PredicateTest {

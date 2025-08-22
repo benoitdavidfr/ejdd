@@ -2,6 +2,7 @@
 /** JdD des cartes.
  * @package Dataset
  */
+namespace Dataset;
 
 require_once 'dataset.inc.php';
 require_once 'vendor/autoload.php';
@@ -36,9 +37,9 @@ class MapDataset extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach ($this->data[$cName] as $key => $tuple) {
       if ($skip-- > 0)
@@ -76,7 +77,7 @@ abstract class Layer {
       'L.TileLayer' => new L_TileLayer($lyrId, $title, $params),
       'L.UGeoJSONLayer' => new L_UGeoJSONLayer($lyrId, $title, $params),
       'L.geoJSON' => new L_geoJSON($lyrId, $title, $params),
-      default => throw new Exception("Cas $kind non prévu"),
+      default => throw new \Exception("Cas $kind non prévu"),
     };
     $layer->checkIntegrity();
     return $layer;
@@ -145,13 +146,13 @@ class L_UGeoJSONLayer extends Layer {
     // Le paramètre endpoint doit correspondre à un JdD et une collection de ce JdD
     // ex:       endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
     if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items$!', $this->params['endpoint'], $matches)) {
-      throw new Exception("params[endpoint]=".$this->params['endpoint']." don't match");
+      throw new \Exception("params[endpoint]=".$this->params['endpoint']." don't match");
     }
     $dsName = $matches[1];
     $cName = $matches[2];
     $ds = Dataset::get($dsName);
     if (!array_key_exists($cName, $ds->collections))
-      throw new Exception("Erreur, la collection $cName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
+      throw new \Exception("Erreur, la collection $cName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
   }
   
   function toJS(): string {
@@ -320,7 +321,7 @@ class Map {
   function drawLayers(string $pattern, array $layerNames, string $jsCode): string {
     foreach ($layerNames as $layerName) {
       if (!($layer = Layer::$all[$layerName] ?? null))
-        throw new Exception("Erreur baseLayer '$layerName' non définie");
+        throw new \Exception("Erreur baseLayer '$layerName' non définie");
       $jsCode = str_replace(
         $pattern,
         $layer->toJS().$pattern,
@@ -349,7 +350,7 @@ class Map {
     // affichage par défaut de la baseLayer
     $defaultBaseLayer = $this->def['defaultBaseLayer'];
     if (!(Layer::$all[$defaultBaseLayer] ?? null))
-      throw new Exception("Erreur defaultBaseLayer '$defaultBaseLayer' non définie");
+      throw new \Exception("Erreur defaultBaseLayer '$defaultBaseLayer' non définie");
     $jsCode = str_replace('{defaultBaseLayer}', $defaultBaseLayer, $jsCode);
     
     // la déf. des overlays
@@ -358,7 +359,7 @@ class Map {
     // les affichage par défaut des overlays
     foreach ($this->def['defaultOverlays'] as $defaultOverlay) {
       if (!(Layer::$all[$defaultOverlay] ?? null))
-        throw new Exception("Erreur defaultOverlay '$defaultOverlay' non définie");
+        throw new \Exception("Erreur defaultOverlay '$defaultOverlay' non définie");
       $jsCode = str_replace(
         "map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
         "map.addLayer(overlays[\"$defaultOverlay\"]);\n"."map.addLayer(overlays[\"{defaultOverlay}\"]);\n",

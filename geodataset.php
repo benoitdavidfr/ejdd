@@ -5,6 +5,8 @@
  *
  * @package Dataset
  */
+namespace Dataset;
+
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
@@ -36,9 +38,9 @@ class GeoDataset extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des items
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     //print_r($filters);
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
@@ -57,8 +59,6 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur en
 
 /** Construit un GeoDataset. */
 class GeoDatasetBuild {
-  const DS_CLASS = 'GeoDataset';
-  
   /** Produit les fichier GeoJSON à partir des fichiers SHP de la livraison stockée dans SHP_DIR */
   static function buildGeoJson(string $shpPath, string $geojsDir, int $coordinate_precision): void {
     $shpdir = dir($shpPath);
@@ -96,10 +96,9 @@ class GeoDatasetBuild {
   }
   
   static function main(): void {
-    $dsClass = self::DS_CLASS;
     switch ($_GET['action'] ?? null) {
       case null: {
-        $dataset = new $dsClass($_GET['dataset']);
+        $dataset = new GeoDataset($_GET['dataset']);
         echo "COORDINATE_PRECISION=",$dataset->params['COORDINATE_PRECISION'],"\n";
         printf(" soit au %s: %.3f mm<br>\n",
               $dataset->params['MAP_SCALE_ALPHA'],
@@ -114,7 +113,7 @@ class GeoDatasetBuild {
         break;
       }
       case 'buildGeoJson': {
-        $dataset = new $dsClass($_GET['dataset']);
+        $dataset = new GeoDataset($_GET['dataset']);
         self::buildGeoJson(
           $dataset->params['SHP_DIR'],
           strtolower($_GET['dataset']), 

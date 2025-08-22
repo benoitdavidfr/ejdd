@@ -2,6 +2,8 @@
 /** Sélection de n-uplets d'une collection sur un prédicat.
  * @package Algebra
  */
+namespace Algebra;
+
 require_once 'dataset.inc.php';
 
 /** Opérateur de sélection des n-uplets sur un prédicat fournissant une collection.
@@ -24,10 +26,11 @@ class Select extends Collection {
   
   /** L'accès aux items du Select par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(array $filters=[]): Generator {
+  function getItems(array $filters=[]): \Generator {
     if (isset($filters['predicate']))
-      throw new Exception("Erreur, Select::getTuples() n'accepte pas de filtre ayant un prédicat");
+      throw new \Exception("Erreur, Select::getTuples() n'accepte pas de filtre ayant un prédicat");
     if (in_array('predicate', $this->coll->implementedFilters()) && in_array('skip', $this->coll->implementedFilters())) {
       $filters = [
         'skip'=> $filters['skip'] ?? 0,

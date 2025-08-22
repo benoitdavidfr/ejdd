@@ -2,6 +2,8 @@
 /** Jeu de données des noms des CT définis par le CNIG.
  * @package Dataset
  */
+namespace Dataset;
+
 require_once 'spreadsheetdataset.inc.php';
 
 /** JdD  des noms des CT définis par le CNIG (NomsCtCnigC) stockées dans un fichier ODS. */

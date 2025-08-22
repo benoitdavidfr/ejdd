@@ -2,7 +2,7 @@
 /** Jeu de données WorldEez.
  * @package Dataset
  */
-ini_set('memory_limit', '10G');
+namespace Dataset;
 
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
@@ -31,9 +31,9 @@ class WorldEez extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cname, array $filters=[]): Generator {
+  function getItems(string $cname, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature)  {
       if ($no < $skip)
@@ -47,6 +47,8 @@ class WorldEez extends Dataset {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
+
+ini_set('memory_limit', '10G');
 
 /** Constructeur de WorldEez. */
 class WorldEezBuild {

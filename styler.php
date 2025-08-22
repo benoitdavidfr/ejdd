@@ -5,10 +5,14 @@
  *
  * @package Dataset
  */
+namespace Dataset;
+
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 
+use Algebra\RecArray;
 use Symfony\Component\Yaml\Yaml;
+use JsonSchema\Validator;
 
 /** Catégorie de JdD Styler permettant de styler des features. */
 class Styler extends Dataset {
@@ -78,9 +82,9 @@ class Styler extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $collection, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     $zoom = $filters['zoom'] ?? 6;    
     foreach (array_reverse($this->styleSheet['themes'][$collection]['datasets']) as $dsName => $dataset) {
@@ -125,7 +129,7 @@ class StylerBuild {
         $schema = Yaml::parseFile(strToLower('styler.yaml'));
         
         // Validation du schéma des feuilles de styles par rapport au méta-schéma JSON Schema
-        $validator = new JsonSchema\Validator;
+        $validator = new Validator;
         $schema2 = RecArray::toStdObject($schema);
         $validator->validate($schema2, $schema['$schema']);
         if ($validator->isValid()) {
@@ -141,7 +145,7 @@ class StylerBuild {
         
         // Validation des MD du jeu de données
         $styleSheet = Yaml::parseFile(strToLower("$_GET[dataset].yaml"));
-        $validator = new JsonSchema\Validator;
+        $validator = new Validator;
         $data = RecArray::toStdObject($styleSheet);
         $validator->validate($data, $schema);
         if ($validator->isValid()) {

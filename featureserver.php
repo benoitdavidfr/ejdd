@@ -5,6 +5,7 @@
  *
  * @package Dataset
  */
+namespace Dataset;
 
 require_once 'dataset.inc.php';
 
@@ -17,7 +18,7 @@ class Cache {
     else {
       $string = file_get_contents($url);
       if ($string === false)
-        throw new Exception("Ouverture $url impossible");
+        throw new \Exception("Ouverture $url impossible");
       file_put_contents($filePath, $string);
       return $string;
     }
@@ -27,7 +28,7 @@ class Cache {
 /** Manipulation des Capabilities d'un serveur WFS */
 class WfsCap {
   /** Capacités dans lesquelles les espaces de noms sont supprimés. */
-  readonly SimpleXMLElement $elt;
+  readonly \SimpleXMLElement $elt;
   
   /** Retourne le string correspondant aux capabilities */
   static function getCapabilities(string $name): string {
@@ -120,9 +121,9 @@ class FeatureServer extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     $start = $filters['skip'] ?? 0;
     while (true) {
       $url = self::REGISTRE[$this->name]['url']
@@ -134,7 +135,7 @@ class FeatureServer extends Dataset {
         $url
       );
       if ($fcoll == false)
-        throw new Exception("Erreur sur $url");
+        throw new \Exception("Erreur sur $url");
       $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
       $tuple = array_merge(
         $fcoll['features'][0]['properties'],

@@ -2,6 +2,7 @@
 /** Définit une classe implémentant un JdD trivial.
  * @package Dataset
  */
+namespace Dataset;
 
 require_once 'dataset.inc.php';
 
@@ -195,9 +196,9 @@ class DatasetEg extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $collection, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach (self::DATA[$collection]['data'] as $key => $item) {
       if ($skip-- > 0)

@@ -2,6 +2,8 @@
 /** inseecog.php.
  * @package Dataset
  */
+namespace Dataset;
+
 require_once 'vendor/autoload.php';
 require_once 'dataset.inc.php';
 
@@ -28,9 +30,9 @@ class InseeCog extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $collection, array $filters=[]): Generator {
+  function getItems(string $collection, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     $predicate = $filters['predicate'] ?? null;
     $file = fopen(__DIR__.'/'.strToLower($this->name)."/$collection.csv", 'r');

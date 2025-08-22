@@ -2,8 +2,11 @@
 /** Définition et utilisation du JdD AeCongPe.
  * @package Dataset
  */
+namespace Dataset;
+
 require_once 'dataset.inc.php';
 require_once 'geojson.inc.php';
+
 use GeoJSON\Feature;
 
 /** Description du JdD AeCogPe. */
@@ -491,14 +494,14 @@ class AeCogPe extends Dataset {
   }
   
   /* L'accès aux Items du JdD par un générateur.
-   * @return Generator<int|string, array<mixed>>
+   * @return \Generator<int|string, array<mixed>>
   */
-  function getItems(string $cname, mixed $filtre=null): Generator {
+  function getItems(string $cname, mixed $filtre=null): \Generator {
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature) {
       $feature = $feature->asArray();
       $tuple = array_change_key_case($feature['properties']);
       if (!isset($tuple['id']))
-        throw new Exception("Champ 'id' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
+        throw new \Exception("Champ 'id' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
       $id = $tuple['id'];
       unset($tuple['id']);
       // Si la bbbox est présente alors je la stoke dans la géométrie

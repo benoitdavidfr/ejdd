@@ -4,6 +4,10 @@
  *
  * @package Algebra
  */
+namespace Algebra;
+
+use Dataset\Dataset;
+
 /* Actions à réaliser. */
 define('A_FAIRE_PARSER', [
 <<<'EOT'
@@ -123,7 +127,7 @@ EOT
       return false;
     }
     else
-      throw new Exception("Erreur de preg_match sur pattern $pattern");
+      throw new \Exception("Erreur de preg_match sur pattern $pattern");
   }
   
   /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null.
@@ -134,7 +138,7 @@ EOT
     if ($path)
       $path[] = "token($tokenName)";
     if (!($pattern = self::TOKENS[$tokenName] ?? null))
-      throw new Exception("Erreur dans token, tokenName=$tokenName inexistant");
+      throw new \Exception("Erreur dans token, tokenName=$tokenName inexistant");
     $matches = [];
     if (self::pmatch($pattern, $text, $matches)) {
       if ($path)
@@ -173,7 +177,7 @@ EOT
     }
     self::addTrace($path, "Echec {program}#2", $text0);
     
-    //throw new Exception("Erreur sur program($text0), reste \"$text\"");
+    //throw new \Exception("Erreur sur program($text0), reste \"$text\"");
     self::addTrace($path, "Echec {program}", $text0);
     return null;
   }
@@ -187,7 +191,7 @@ EOT
       try {
         $dataset = Dataset::get($name);
       }
-      catch (Exception $e) {
+      catch (\Exception $e) {
         self::addTrace($path, "Echec {expDataset}", $text0);
         return null;
       }
@@ -410,7 +414,7 @@ class DsParserTest {
         $collection->displayItem($_GET['key']);
         break;
       }
-      default: throw new Exception("Action $_GET[action] inconnue");
+      default: throw new \Exception("Action $_GET[action] inconnue");
     }
   }
 };

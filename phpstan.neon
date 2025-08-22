@@ -45,6 +45,7 @@ parameters:
   paths:
     - index.php
     - dataset.inc.php
+    - collection.inc.php
     - geojson.inc.php
     - predicate.inc.php
     - geojson.php

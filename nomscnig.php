@@ -4,6 +4,11 @@
  *
  * @package Dataset
  */
+namespace Dataset;
+
+use Algebra\RecArray;
+use JsonSchema\Validator;
+
 require_once 'dataset.inc.php';
 
 /** JdD des Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG (NomsCnig). */
@@ -24,9 +29,9 @@ class NomsCnig extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return Generator
+   * @return \Generator<int|string,array<mixed>>
    */
-  function getItems(string $cName, array $filters=[]): Generator {
+  function getItems(string $cName, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach ($this->data[$cName] as $key => $tuple) {
       if ($skip-- > 0)
@@ -880,7 +885,7 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
 
         { // Test conformité du schéma du JdD par rapport schéma des schéma */
           // Validate
-          $validator = new JsonSchema\Validator;
+          $validator = new Validator;
           $data = RecArray::toStdObject($dataset['$schema']);
           $validator->validate($data, $dataset['$schema']['$schema']);
 
@@ -895,7 +900,7 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
         }
         
         { // Test conformité du JdD par rapport à son schéma 
-          $validator = new JsonSchema\Validator;
+          $validator = new Validator;
           $data = RecArray::toStdObject($dataset);
           $validator->validate($data, $dataset['$schema']);
 

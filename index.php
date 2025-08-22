@@ -7,6 +7,10 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
+- revoir l'usage des namespace
+  - mettre Dataset et ses sous-classes JdD dans un namespace Dataset
+  - 1 ns Collection avec les Collection et leur Schéma
+  - 1 ns Algebra avec les opérateurs et le parser
 - dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
@@ -26,6 +30,8 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+22/8/2025:
+  - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
 21/8/2025:
   - amélioration et tests de la création et l'affichage d'un Feature
   - modif de AeCogPe pour copier le bbox dans la géométrie
@@ -125,7 +131,8 @@ Lignes de commandes
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f index.php,geojson.php,dataset.inc.php,geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,\
+    ../phpDocumentor.phar -f index.php,geojson.php,dataset.inc.php,collection.inc.php,\
+geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,\
 join.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
@@ -142,6 +149,9 @@ EOT
 );
 
 require_once 'dataset.inc.php';
+
+use Dataset\Dataset;
+use Algebra\CollectionOfDs;
 
 ini_set('memory_limit', '10G');
 set_time_limit(5*60);
@@ -241,9 +251,20 @@ set_time_limit(5*60);
  *  - ces cartes peuvent être affichées avec Leaflet
  *  - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
  *    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
- * ### mise_en_oeuvre:
+ *
+ * Mise en oeuvre:
+ * ---------------
+ * ### Espaces de noms
+ *  - Dataset est l'espace des classes représentant un Jeu de Données et de la classe Dataset
+ *  - Algebra est l'espace des classes définissant l'algèbre de Collection, y.c. les classes définissant le parser
+ *  - GeoJSON est l'espace des primitives géométriques GeoJSON
+ *  - BBox est l'espace de la classe BBox
+ *  - Pos est l'espace des classes sur les positions et leurs listes
+ *
+ * ### Fichiers Php
  *  - index.php fournit l'IHM générale de l'appli et contient cette doc
- *  - dataset.inc.php définit les classes Dataset, Collection, CollectionOfDs et qqs autres classes
+ *  - dataset.inc.php définit la classe Dataset
+ *  - collection.inc.php définit les classes Collection, CollectionOfDs et qqs autres classes
  *  - predicate.inc.php définit la classe Predicate qui permet de définir un critère de sélection sur un n-uplet
  *  - join.php implémente une jointure entre Collections
  *  - proj.php implémente une projection sur une Collection
