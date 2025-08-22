@@ -155,7 +155,11 @@ class MultiPolygon extends Geometry {
   }
 };
 
-/** Feature GeoJSON. */
+/** Feature GeoJSON.
+ * Attention selon la RFC 7946, dans un Feature en JSON, les champs type, properties et geometry sont obligatoires,
+ * alors que les champs id et bbox sont facultatifs.
+ * Si les propriétés ou la géométrie est absente, le champ correspondant contient null. 
+ */
 class Feature {
   /** libellé court des types de géométrie pour affichage. */
   const SHORT_TYPES = [
@@ -166,13 +170,13 @@ class Feature {
     'Polygon'=> 'SPol',
     'MultiPolygon'=> 'MPol',
   ];
-  /** ?int|string $id - Eventuellement un içdentifiant du Feature. */
+  /** ?int|string $id - Eventuellement un identifiant du Feature, sinon null. */
   readonly mixed $id;
   /** @var ?array<mixed> $properties  - les properties GeoJSON */
   readonly ?array $properties;
-  /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox. */
+  /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox, sinon null. */
   readonly ?BBox $bbox;
-  /* La géométrie GeoJSON, éventuellement absente */
+  /* La géométrie GeoJSON, éventuellement nulle */
   readonly ?Geometry $geometry;
   
   /** Fabrique un Feature à partir de sa représentation GeoJSON décodée.
@@ -191,6 +195,7 @@ class Feature {
       ['type'=> 'Feature'],
       !is_null($this->id) ? ['id'=> $this->id] : [],
       ['properties'=> $this->properties],
+      !is_null($this->bbox) ? ['bbox'=> $this->bbox->as4Coordinates()] : [],
       ['geometry'=> $this->geometry ? $this->geometry->asArray() : null]
     );
   }
@@ -248,6 +253,26 @@ class Feature {
       yield $noFeature++ => new self($feature);
     }
     //echo "maxlen=$maxlen</p>\n"; // maxlen=75_343_092
+  }
+  
+  /** Transforme un Feature en tuple à retourner par Dataset::getItems().
+   * Ce tuple est un pure Array récursif, cad composé uniq. d'array et d'int|float|string. Il reprend les champs de properties
+   * plus un champ geometry qui contient type et coordinates plus le champ bbox de Feature s'il existe.
+   * De plus les noms des champs de properties sont convertis en minuscules.
+   * Enfin, l'option 'delPropertyId' permet de supprimer la propriété 'id'.
+   * @param array{delFieldId?: bool} $options
+   * @return array<string,mixed> */
+  function toTuple(array $options=[]): array {
+    // Je tranfère le bbox du Feature dans la géométrie pour l'intégration dans le n-uplet
+    $feature = $this->asArray();
+    $properties = array_change_key_case($feature['properties']);
+    if ($options['delPropertyId'] ?? false)
+      unset($properties['id']);
+    //echo '<pre>'; print_r($properties);
+    $geometry = $feature['geometry'];
+    if (isset($feature['bbox']))
+      $geometry = ['type'=> $geometry['type'], 'bbox'=> $feature['bbox'], 'coordinates'=> $geometry['coordinates']];
+    return array_merge($properties, ['geometry'=> $geometry]);
   }
 };
 

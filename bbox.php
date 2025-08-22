@@ -150,6 +150,10 @@ class BBox {
     ]);
   }
   
+  /** Génère un array de 4 coordonnées utilisé en GeoJSON.
+   * @return array{0: float, 1:float, 2:float, 3:float} */
+  function as4Coordinates(): array { return [$this->sw->x, $this->sw->y, $this->ne->x, $this->ne->y]; }
+  
   /** Fabrique une BBox à partir d'une Pos.
    * @param TPos $pos
    */

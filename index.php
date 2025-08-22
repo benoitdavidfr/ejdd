@@ -32,6 +32,7 @@ define('JOURNAL', [
 <<<'EOT'
 22/8/2025:
   - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
+  - ajout d'une méthode Feature::toTuple() et utilisation
 21/8/2025:
   - amélioration et tests de la création et l'affichage d'un Feature
   - modif de AeCogPe pour copier le bbox dans la géométrie
@@ -300,8 +301,6 @@ set_time_limit(5*60);
  *   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
  * - FeatureServer:
  *   - wfs-fr-ign-gpf
- *    
- * Outre cette doc, ce script contient l'IHM d'utilisation des JdD.
  */
 class Application {
   /** Code initial de l'application. */

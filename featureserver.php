@@ -115,7 +115,7 @@ class FeatureServer extends Dataset {
    */
   function implementedFilters(): array { return ['skip']; }
   
-  /** L'accès aux items d'une collection du JdD par un Generator.
+  /** L'accès aux items d'une collection du JdD par un Generator. A REVOIR pour descendre le bbox dans la geometry !!!
    * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:

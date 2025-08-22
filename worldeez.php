@@ -31,15 +31,14 @@ class WorldEez extends Dataset {
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
-   * @return \Generator<int|string,array<mixed>>
+   * @return \Generator<int|string,array<string,mixed>>
    */
   function getItems(string $cname, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature)  {
       if ($no < $skip)
         continue;
-      $tuple = array_merge(array_change_key_case($feature->properties), ['geometry'=> $feature->geometry->asArray()]);
-      yield $no => $tuple;
+      yield $no => $feature->toTuple();
     }
   }
 };

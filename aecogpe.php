@@ -498,7 +498,8 @@ class AeCogPe extends Dataset {
   */
   function getItems(string $cname, mixed $filtre=null): \Generator {
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature) {
-      $feature = $feature->asArray();
+      
+      /*$feature = $feature->asArray();
       $tuple = array_change_key_case($feature['properties']);
       if (!isset($tuple['id']))
         throw new \Exception("Champ 'id' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
@@ -512,8 +513,12 @@ class AeCogPe extends Dataset {
       // Si la géométrie est renseignée alors je la stocke dans le n-uplet
       if ($geometry) {
         $tuple['geometry'] = $geometry;
-      }
-      yield $id => $tuple;
+      }*/
+      
+      //echo '<pre>$feature retourné par fromFile()= '; print_r($feature);
+      if (!($id = $feature->properties['ID']))
+        throw new \Exception("Champ 'ID' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
+      yield $id => $feature->toTuple(['delPropertyId'=> true]);
     }
     return null;
   }
