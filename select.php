@@ -44,7 +44,7 @@ class Select extends Collection {
     // Implémentation naïve du select
     $skip = $filters['skip'] ?? 0;
     foreach ($this->coll->getItems() as $key => $tuple) {
-      $tuple['key'] = $key; // permet d'utiliser key dans le prédicat 
+      //$tuple['key'] = $key; // permet d'utiliser key dans le prédicat 
       if ($this->predicate->eval($tuple)) {
         if ($skip-- <= 0)
           yield $key => $tuple;
@@ -74,7 +74,10 @@ class CollDyn extends Collection {
   function implementedFilters(): array { return []; }
   
   function getItems(array $filters=[]): \Generator {
-    foreach ($this->tuples as $key => $tuple) yield $key => $tuple;
+    foreach ($this->tuples as $key => $tuple) {
+      //echo "<pre>Dans CollDyn::getItems: ",print_r([$key => $tuple]); echo "</pre>\n";
+      yield $key => $tuple;
+    }
   }
     
   function getOneItemByKey(int|string $key): array|string|null { return $this->tuples[$key] ?? null; }
@@ -85,14 +88,28 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de cons
 
 /** Test de Select. */
 class SelectTest {
-  const COLL_DYN_TUPLES = [
+  const SIMPLECOLLDYN_TUPLES = [
     'key1'=> ['stringField'=> 'stringValue', 'float'=> 5.0, 'int'=> 25],
     'key2'=> ['stringField'=> 'stringValue2', 'float'=> 3.14, 'int'=> 0],
     'key3'=> ['stringField'=> 'stringValue2', 'float'=> 0, 'int'=> 0],
   ];
-  /** @return array<mixed> */
+  
+  /** @return TGJSimpleGeometry */
+  static function square(int $min, int $max): array {
+    return ['type'=> 'LineString', 'coordinates'=> [[$min,$min],[$max,$max]]];
+  }
+  
+  /** @return array<string,array<string,mixed>> */
+  static function spatialCollDynTuples(): array {
+    return [
+      'key1'=> ['stringField'=> 'square(0,10)', 'float'=> 5.0, 'int'=> 25, 'geom'=> self::square(0,10)],
+    ];
+  }
+
+  /** @return array<string,array{'collection': Collection, 'predicate': Predicate}> */
   static function examples(): array {
     return [
+      /*
       "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une collection acceptant predicate)" => [
         'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
         'predicate'=> new PredicateConstant('NCC', new CondOp('match'), new Constant('string', '!FRANCE!')),
@@ -101,44 +118,69 @@ class SelectTest {
         'collection'=> CollectionOfDs::get('DeptReg.régions'),
         'predicate'=> new PredicateConstant('nom', new CondOp('match'), new Constant('string', '!France!')),
       ],
-      "collDyn" => [
-        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+      "SimpleCollDyn" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> new PredicateConstant('stringField', new CondOp('='), new Constant('string', 'stringValue')),
       ],
-      "collDyn2" => [
-        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+      "SimpleCollDyn2" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> new PredicateConstant('stringField', new CondOp('<>'), new Constant('string', 'stringValue')),
       ],
-      "collDyn3" => [
-        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+      "SimpleCollDyn3" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> new PredicateConstant('float', new CondOp('<'), new Constant('int', 4)),
       ],
-      "collDyn4" => [
-        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+      "SimpleCollDyn4" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> Predicate::fromText('float < 4'),
       ],
-      "collDyn4" => [
-        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+      "SimpleCollDyn5" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
+      ],
+      "SimpleCollDyn6" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+        'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
+      ],
+      "SimpleCollDyn7" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+        'predicate'=> Predicate::fromText('(2 < float) and (float < 4)'),
+      ],
+      "SpatialCollDyn" => [
+        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+        'predicate'=> Predicate::fromText('float > 2'),
+      ],
+      */
+      "SpatialCollDyn2" => [
+        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+        'predicate'=> Predicate::fromText('geom intersects '.json_encode(self::square(5, 20))),
+      ],
+      "Départements X [1@46,3@47]"=> [
+        'collection'=> CollectionOfDs::get('AeCogPe.departement'),
+        'predicate'=> Predicate::fromText('geometry intersects '
+          .json_encode(['type'=>'LineString', 'coordinates'=> [[1,46],[3,47]]])),
       ],
     ];
   }
   
   static function main(): void {
-    //$title = "InseeCog.v_region_2025.NCC match '!FRANCE!'";
-    //$title = "DeptReg.régions.nom match '!France'";
-    foreach (self::examples() as $title => $example) {
-      echo "<h2>$title</h2><pre>\n";
-      //$example = self::examples()[$title];
-      echo 'implementedFilters= [',implode(', ', $example['collection']->implementedFilters()),"]\n";
-      echo '$predicate='; print_r($example['predicate']);
-      echo '$predicate = "',$example['predicate']->id(),"\"\n";
-      $select = new Select($example['predicate'], $example['collection']);
-      echo "result:\n";
-      foreach ($select->getItems() as $key => $tuple) {
-        echo "&nbsp;&nbsp;$key: ",json_encode($tuple, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),"\n";
+    try {
+      foreach (self::examples() as $title => $example) {
+        echo "<h2>$title</h2><pre>\n";
+        //$example = self::examples()[$title];
+        echo 'implementedFilters= [',implode(', ', $example['collection']->implementedFilters()),"]\n";
+        echo '$predicate='; print_r($example['predicate']);
+        echo '$predicate = "',$example['predicate']->id(),"\"\n";
+        $select = new Select($example['predicate'], $example['collection']);
+        echo "result:\n";
+        foreach ($select->getItems() as $key => $tuple) {
+          echo "&nbsp;&nbsp;$key: ",json_encode($tuple, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),"\n";
+        }
+        echo "</pre>\n";
       }
-      echo "</pre>\n";
+    }
+    catch (\Exception $e) {
+      echo "Exception: ",$e->getMessage(),"<br>\n";
     }
   }
 };

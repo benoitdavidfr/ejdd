@@ -21,7 +21,6 @@ define('A_FAIRE', [
     - j'ai besoin de détecter les géométries autrement que par leur nom
     - je pourrais stoker un objet GeomTuple un peu différent de Geometry, avec bbox
     - et convenir que le tuple esr un pur array recursif + GeomTuple
-- voir si je peux monter le level de PhpStan
 - dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
@@ -43,7 +42,7 @@ EOT
 define('JOURNAL', [
 <<<'EOT'
 23/8/2025:
-  - dev de PredicateParser et tests
+  - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
 22/8/2025:
   - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
   - ajout d'une méthode Feature::toTuple() et utilisation

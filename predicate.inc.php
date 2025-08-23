@@ -5,27 +5,32 @@
 namespace Algebra;
 
 use Dataset\Dataset;
+use GeoJSON\GeoJSON;
+use GeoJSON\Geometry;
+use BBox\BBox;
+use BBox\NONE;
 
 require_once 'parser.php';
 
 /** Une constante définie par son type et sa valeur. */
 class Constant {
-  /** @param ('string'|'int'|'float') $type */
+  /** @param ('string'|'int'|'float'|'bboxInJSON') $type */
   function __construct(readonly string $type, readonly string $value) {}
   
   /** Génère le texte à partir duquel la constante peut être reconstruit. */
   function id(): string {
     return match ($this->type) {
-      'float', 'int' => $this->value,
+      'float', 'int', 'bboxInJSON' => $this->value,
       'string' => '"'.str_replace('"', '\"', $this->value).'"',
     };
   }
 
-  function value(): string|int|float {
+  function value(): string|int|float|BBox {
     return match ($this->type) {
       'string' => $this->value,
       'int'=> intval($this->value),
       'float'=> floatval($this->value),
+      'bboxInJSON'=> BBox::from4Coords(json_decode($this->value, true)),
     };
   }
 };
@@ -53,8 +58,8 @@ class CondOp {
   }
   
   /** interprétation de l'opérateur (=|<>|<|<=|>|>=|match).
-   * @param int|float|string $left
-   * @param int|float|string $right */
+   * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $left
+   * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $right */
   function eval(mixed $left, mixed $right): bool {
     switch ($this->condOp) {
       case '=': $result = ($left == $right); break;
@@ -87,6 +92,21 @@ class CondOp {
         if (!is_string($left) || !is_string($right))
           throw new \Exception("match prend en paramètres des chaines de caractères");
         $result = self::preg_match($right, $left);
+        break;
+      }
+      case 'intersects': {
+        if (is_array($left)) {
+          $left = ($left['bbox'] ?? null) ? BBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
+        }
+        if (is_array($right)) {
+          $right = $right['bbox'] ?? Geometry::create($right)->bbox();
+        }
+        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) {
+          echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
+          throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
+        }
+        $result = ($left->inters($right) <> \BBox\NONE);
+        //echo "$left intersects $right -> ",$result?'vrai':'faux',"<br>\n";
         break;
       }
       default: throw new \Exception("Opération $this->condOp inconnue");
@@ -227,15 +247,17 @@ class PredicateParser {
     '{float}'=> '[0-9]+\.[0-9]+',
     '{integer}'=> '[0-9]+',
     '{string}'=> '("[^"]*"|\'[^\']*\')',
-    '{condOp}'=> '(=|<>|<|<=|>|>=|match)',
+    '{condOp}'=> '(=|<>|<|<=|>|>=|match|includes|intersects)',
     '{boolOp}'=> '(and|or)',
   ];
   const BNF = [
     <<<'EOT'
 {predicate} ::= {name} {condOp} {constant}
+              | {constant} {condOp} {name}
               | {name} {condOp} {name}
               | '(' {predicate} ')' {boolOp} '(' {predicate} ')'
-{constant} ::= {float} | {integer} | {string} | {rect} | {pos}
+{constant} ::= {float} | {integer} | {string} | {geojson} | {rect} | {pos}
+{geojson} ::= une chaine GeoJSON conforme au RFC
 {rect} ::= '[' {pos} ',' {pos}' ']'
 {pos} ::= {number} '@' {number}
 {number} ::= {float} | {integer}
@@ -282,11 +304,23 @@ EOT
       && ($condOp = self::condOp($path, $text))
         && ($constant = self::constant($path, $text))
     ) {
-      DsParser::addTrace($path, "succès {predicate}#0", $text);
+      DsParser::addTrace($path, "succès", $text);
       $text0 = $text;
       return new PredicateConstant($field, $condOp, $constant);
     }
-    DsParser::addTrace($path, "échec {predicate}#0", $text0);
+    DsParser::addTrace($path, "échec {predicate} ::= {name} {condOp} {constant}", $text0);
+    
+    // {predicate} ::= {constant} {condOp} {name}
+    $text = $text0;
+    if (($constant = self::constant($path, $text))
+      && ($condOp = self::condOp($path, $text))
+        && ($field = DsParser::token($path, '{name}', $text))
+    ) {
+      DsParser::addTrace($path, "succès", $text);
+      $text0 = $text;
+      return new PredicateConstant($field, $condOp, $constant);
+    }
+    DsParser::addTrace($path, "échec {predicate} ::= {constant} {condOp} {name}", $text0);
     
     // {predicate} ::= {name} {condOp} {name}
     $text = $text0;
@@ -298,7 +332,7 @@ EOT
       $text0 = $text;
       return new PredicateField($field1, $condOp, $field2);
     }
-    DsParser::addTrace($path, "échec {predicate}#1", $text0);
+    DsParser::addTrace($path, "échec {predicate} ::= {name} {condOp} {name}", $text0);
     
     // {predicate} ::= '(' {predicate} ')' {boolOp} '(' {predicate} ')'
     $text = $text0;
@@ -314,9 +348,9 @@ EOT
       $text0 = $text;
       return new PredicateBool($lpred, $boolOp, $rpred);
     }
-    DsParser::addTrace($path, "échec {predicate}#2", $text0);
+    DsParser::addTrace($path, "échec {predicate} ::= '(' {predicate} ')' {boolOp} '(' {predicate} ')'", $text0);
     
-    DsParser::addTrace($path, "échec", $text0);
+    DsParser::addTrace($path, "échec {predicate}", $text0);
     return null;
   }
   
@@ -332,12 +366,22 @@ EOT
 
     if ($value = self::token($path, '{integer}', $text)) {
       DsParser::addTrace($path, "succès {integer}", $text);
+      //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
       return new Constant('int', $value);
     }
 
     if ($value = self::token($path, '{string}', $text)) {
       DsParser::addTrace($path, "succès {string}", $text);
       return new Constant('string', substr($value, 1, -1));
+    }
+
+    if ((substr($text, 0, 1) == '{')
+      && ($json = GeoJSON::parse($text)))
+    {
+      DsParser::addTrace($path, "succès {geojson}", $text);
+      $geojson = json_decode($json, true);
+      $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
+      return new Constant('bboxInJSON', json_encode($bbox));
     }
 
     DsParser::addTrace($path, "échec", $text);

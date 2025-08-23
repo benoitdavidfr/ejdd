@@ -297,6 +297,59 @@ class FeatureCollection {
   }
 };
 
+/** Classe hébergeant une fonction utile. */
+class GeoJSON {
+  /** Recoit un texte commençant par une '{' et retourne le JSON non décodé en consommant le texte utilisé en entrée/sortie.
+   * Vérifie que le texte JSON peut bien être décodé, sinon lance une exception.
+   * S'il n'y a pas assez d'accolades fermantes alors lance une exception.
+   */
+  static function parse(string &$text): string {
+    $nbAccoladesOuvertes = 0;
+    for ($i=0; $i<strlen($text); $i++) {
+      $c = substr($text, $i, 1);
+      if ($c == '{')
+        $nbAccoladesOuvertes++;
+      elseif ($c == '}') {
+        $nbAccoladesOuvertes--;
+        if ($nbAccoladesOuvertes <= 0) {
+          $parsed = substr($text, 0, $i+1);
+          $text = substr($text, $i+1);
+          try {
+            $decoded = json_decode($parsed, true, 512, JSON_THROW_ON_ERROR);
+          }
+          catch (\Exception $e) {
+            throw new \Exception("Dans GeoJSON::parse(), json_decode génère \"".$e->getMessage().'"');
+          }
+          return $parsed;
+          //return ['result'=> $parsed];
+        }
+      }
+    }
+    throw new \Exception("Pas assez d'accolades fermantes dans: $text");
+  }
+  
+  static function test(): void {
+    $EXAMPLES = [
+      "Texte ok"=> '{"type":"LineString","coordinates":[[5,5],[20,20]]}zzz',
+      "Pas assez d'accolades fermantes"=> '{"type":"LineString"zzz',
+      "JSON incorrect1"=> '{"type":"Line}zzz',
+      "JSON incorrect2"=> '{"type":"Line", \'c\'}zzz',
+    ];
+    foreach ($EXAMPLES as $title => $text) {
+      try {
+        echo "<h3>$title</h3>\n";
+        $parse = self::parse($text);
+        echo "parse: '$parse', texteRestant: '$text'<br>\n";
+      }
+      catch (\Exception $e) {
+        echo "Exception: ",$e->getMessage(),"<br>\n";
+      }
+    }
+
+    die("Tué ligne ".__LINE__." de ".__FILE__);
+  }
+};
+//GeoJSON::test();
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
