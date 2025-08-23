@@ -9,12 +9,6 @@ define('A_FAIRE', [
 <<<'EOT'
 - branch joinSuper
   - faire évoluer l'opération de jointure pour qu'elle prenne la forme (Section, Section, {predicate})
-  - où Predicat peut être
-    {predicate} ::= {name} {condOp} {constant}
-                  | {name} {condOp} {name}
-                  | '(' {predicate} ')' {boolOp} '(' {predicate} ')'
-    {constant} ::= {float} | {integer} | {string} | {rect} | {pos}
-    {boolOp} ::= 'and' | 'or'
   - {name} est un nom d'attribut, ss modif s'il n'y a pas de confit, précédé de s1_ ou s2_ en cas de conflit
   - modifier le ch de nom d'attribut dans la jointure -> s1_xxx & s2_yyy, uniquement en cas de conflit
   - faut-il changer le contenu de tuple
@@ -43,11 +37,14 @@ define('JOURNAL', [
 <<<'EOT'
 23/8/2025:
   - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
+  - parsing du GeoJSON, des BBox et des positions dans Predicate
+  - calcul test d'intersection et d'inclusion spatiales
+  - j'utilise is_array() pour identifier les champs de géométrie
 22/8/2025:
   - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
   - ajout d'une méthode Feature::toTuple() et utilisation
   - début branche joinSuper
-    - ajout partiel PredicateParser
+    - ajout partiel dans PredicateParser
 21/8/2025:
   - amélioration et tests de la création et l'affichage d'un Feature
   - modif de AeCogPe pour copier le bbox dans la géométrie

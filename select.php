@@ -134,6 +134,10 @@ class SelectTest {
         'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> Predicate::fromText('float < 4'),
       ],
+      "SimpleCollDyn4bis" => [
+        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+        'predicate'=> Predicate::fromText('4 > float'),
+      ],
       "SimpleCollDyn5" => [
         'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
         'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
@@ -151,14 +155,26 @@ class SelectTest {
         'predicate'=> Predicate::fromText('float > 2'),
       ],
       */
-      "SpatialCollDyn2" => [
+      "SpatialCollDyn2 with json_encode" => [
         'collection'=> new CollDyn(self::spatialCollDynTuples()),
         'predicate'=> Predicate::fromText('geom intersects '.json_encode(self::square(5, 20))),
       ],
-      "Départements X [1@46,3@47]"=> [
+      "SpatialCollDyn2 with bbox" => [
+        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+        'predicate'=> Predicate::fromText('geom intersects [5,5,20,20]'),
+      ],
+      "Départements intersects [1@46,3@47] with json_encode"=> [
         'collection'=> CollectionOfDs::get('AeCogPe.departement'),
         'predicate'=> Predicate::fromText('geometry intersects '
           .json_encode(['type'=>'LineString', 'coordinates'=> [[1,46],[3,47]]])),
+      ],
+      "Départements intersects [1@46,3@47] with bbox"=> [
+        'collection'=> CollectionOfDs::get('AeCogPe.departement'),
+        'predicate'=> Predicate::fromText('geometry intersects [1,46,3,47]'),
+      ],
+      "Départements includes [1,46] with point"=> [
+        'collection'=> CollectionOfDs::get('AeCogPe.departement'),
+        'predicate'=> Predicate::fromText('geometry includes [1.1,46]'),
       ],
     ];
   }

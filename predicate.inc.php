@@ -12,7 +12,9 @@ use BBox\NONE;
 
 require_once 'parser.php';
 
-/** Une constante définie par son type et sa valeur. */
+/** Une constante définie par son type et sa valeur stockée comme string.
+ * Le format pour bboxInJSON est une liste de 4 coordonnées (xmin,ymin,xmax,ymax) codée en JSON.
+ */
 class Constant {
   /** @param ('string'|'int'|'float'|'bboxInJSON') $type */
   function __construct(readonly string $type, readonly string $value) {}
@@ -25,6 +27,7 @@ class Constant {
     };
   }
 
+  /** Conversion dans une valeur fonction du type. */
   function value(): string|int|float|BBox {
     return match ($this->type) {
       'string' => $this->value,
@@ -35,11 +38,11 @@ class Constant {
   }
 };
 
-/** CondOp est un test bouléen entre 2 valeurs non bouléennes qui retourne un bouléen. */
-class CondOp {
-  function __construct(readonly string $condOp) {}
+/** Comparateur entre 2 valeurs non bouléennes retournant un bouléen défini par une string. */
+class Comparator {
+  function __construct(readonly string $compOp) {}
   
-  function id(): string {return $this->condOp; }
+  function id(): string {return $this->compOp; }
   
   /** preg_match() modifié pour retourner un bool et lancer une exception en cas d'erreur. */
   static function preg_match(string $pattern, string $value): bool {
@@ -61,7 +64,7 @@ class CondOp {
    * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $left
    * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $right */
   function eval(mixed $left, mixed $right): bool {
-    switch ($this->condOp) {
+    switch ($this->compOp) {
       case '=': $result = ($left == $right); break;
       case '<>': $result = ($left <> $right); break;
       case '<': {
@@ -94,14 +97,34 @@ class CondOp {
         $result = self::preg_match($right, $left);
         break;
       }
-      case 'intersects': {
-        if (is_array($left)) {
+      case 'includes': {
+        // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
+        // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
+        if (is_array($left)) { // cas d'un GeoJSON décodé
           $left = ($left['bbox'] ?? null) ? BBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
         }
-        if (is_array($right)) {
-          $right = $right['bbox'] ?? Geometry::create($right)->bbox();
+        if (is_array($right)) { // cas d'un GeoJSON décodé
+          $right = ($right['bbox'] ?? null) ? BBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
         }
-        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) {
+        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) { // Si un des 2 params n'est pas un BBox
+          echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
+          throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
+        }
+        $compOp = $this->compOp;
+        $result = $left->includes($right);
+        //echo "$left includes $right -> ",$result?'vrai':'faux',"<br>\n";
+        break;
+      }
+      case 'intersects': {
+        // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
+        // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
+        if (is_array($left)) { // cas d'un GeoJSON décodé
+          $left = ($left['bbox'] ?? null) ? BBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
+        }
+        if (is_array($right)) { // cas d'un GeoJSON décodé
+          $right = ($right['bbox'] ?? null) ? BBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
+        }
+        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) { // Si un des 2 params n'est pas un BBox
           echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
           throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
         }
@@ -109,19 +132,21 @@ class CondOp {
         //echo "$left intersects $right -> ",$result?'vrai':'faux',"<br>\n";
         break;
       }
-      default: throw new \Exception("Opération $this->condOp inconnue");
+      default: throw new \Exception("Opération $this->compOp inconnue");
     };
     return $result;
   }
 };
 
-/** Un Predicate est une expression bouléenne évaluable sur 1 n-uplet pour Select ou 2 n-uplets pour Join.
+/** Un Predicate est une expression bouléenne évaluable sur 1 n-uplet.
  * Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
- * Chaque sous classe doit être capable de s'évaluer sur 1 ou 2 n-uplets.
+ * L'expression est représentée une imbrication d'objets des différentes classes.
+ * Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.
  */
 abstract class Predicate {
-  /** Fabrique un prédicat à partir de sa représentation en texte.
-   * Retourne null pour un texte vide
+  /** Fabrique un prédicat à partir de sa représentation textuelle en utilisant le parser.
+   * Retourne null pour un texte vide.
+   * En cas d'erreur de syntaxe génère une exception après avoir affiché la trace de l'analyse.
    */
   static function fromText(string $text): ?self {
     if (!$text)
@@ -135,7 +160,7 @@ abstract class Predicate {
   }
 
   /** Fabrique un formulaire de saisie d'un prédicat sous forme de chaine de caractères
-   * @param list<string> $getKeys - Les clés _GET à transmettre
+   * @param list<string> $getKeys - Les clés _GET que le formulaire doit transmettre
    */
   static function form(array $getKeys = ['action','dataset','collection']): string {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
@@ -154,22 +179,29 @@ abstract class Predicate {
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
   abstract function id(): string;
   
-  /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
+  /** Evalue le prédicat sur 1 n-uplet correspondant évent. au merge des n-uplets.
    * @param array<string,mixed>  $tuples
    */
   abstract function eval(array $tuples): bool;
 };
 
-/** Prédicat {name} {condOp} {constant} */
+/** Prédicat de comparaison d'un champ du n-uplet avec une constante, prédicat {name} {comparator} {constant}.
+ * Le champ utilisé doit être défini dans le n-uplet, sinon une exception est lancée. */
 class PredicateConstant extends Predicate {
-  /** @param string $field - nom du champ
-   * @param CondOp $condOp - définition de l'opération
+  /** @param bool $inv - si true alors les 2 valeurs doivent être inversées
+   * @param string $field - nom du champ
+   * @param Comparator $comp - définition de l'opération de comparaison
    * @param Constant $constant - la constante */
-  function __construct(readonly string $field, readonly CondOp $condOp, readonly Constant $constant) {}
+  function __construct(readonly bool $inv, readonly string $field, readonly Comparator $comp, readonly Constant $constant) {}
 
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->field.' '.$this->condOp->id().' '.$this->constant->id(); }
+  function id(): string {
+    return $this->inv ?
+      $this->constant->id().' '.$this->comp->id().' '.$this->field
+        : $this->field.' '.$this->comp->id().' '.$this->constant->id();
+  }
   
+  /** Evaluation du prédicat sur 1 n-uplet. */
   function eval(array $tuples): bool {
     //echo '<pre>';
     //echo '$this='; print_r($this);
@@ -177,23 +209,25 @@ class PredicateConstant extends Predicate {
     if (($val = $tuples[$this->field] ?? null) === null)
       throw new \Exception("field $this->field absent");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = $this->condOp->eval($val, $this->constant->value());
+    $result = $this->inv ? $this->comp->eval($this->constant->value(), $val) : $this->comp->eval($val, $this->constant->value());
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
 };
 
-/** Prédicat {name} {condOp} {name} */
+/** Prédicat de comparaison de 2 champs entre eux. Prédicat {name} {comparator} {name}.
+ * Les champs utilisés doivent être définisdans le n-uplet, sinon une exception est lancée.
+ */
 class PredicateField extends Predicate {
-  /** @param string $field1 - champ1
-   * @param CondOp $condOp - définition de l'opération
-   * @param string $field2 - champ2 */
-  function __construct(readonly string $field1, readonly CondOp $condOp, readonly string $field2) {}
+  /** @param string $field1 - champ1 - nom du champ1
+   * @param Comparator $comparator - définition de l'opération de comparaison
+   * @param string $field2 - champ2 - nom du champ2 */
+  function __construct(readonly string $field1, readonly Comparator $comparator, readonly string $field2) {}
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->field1.' '.$this->condOp->id().' '.$this->field2; }
+  function id(): string { return $this->field1.' '.$this->comparator->id().' '.$this->field2; }
 
-  /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
+  /** Evalue le prédicat sur 1 n-uplet correspondant évent. au merge des n-uplets.
    * @param array<string,mixed>  $tuples
   */
   function eval(array $tuples): bool {
@@ -205,68 +239,63 @@ class PredicateField extends Predicate {
     if (($val2 = $tuples[$this->field2] ?? null) === null)
       throw new \Exception("field2 $this->field2 absent");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = $this->condOp->eval($val1, $val2);
+    $result = $this->comparator->eval($val1, $val2);
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
 };
 
-/** {predicate} ::= '(' {predicate} ')' {boolOp} '(' {predicate} ')' */
-class PredicateBool extends Predicate {
+/** Conjounction ou disjontion entre 2 prédicats. {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')' */
+class PredicateJunction extends Predicate {
   /** @param Predicate $leftPredicate - prédicat gauche
-   * @param string $boolOp - définition de l'opération bouléenne
+   * @param ('and'|'or') $junction - définition de l'opération de jonction
    * @param Predicate $rightPredicate - prédicat droit */
-  function __construct(readonly Predicate $leftPredicate, readonly string $boolOp, readonly Predicate $rightPredicate) {}
+  function __construct(readonly Predicate $leftPredicate, readonly string $junction, readonly Predicate $rightPredicate) {}
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return '('.$this->leftPredicate->id().') '.$this->boolOp.' ('.$this->rightPredicate->id().')'; }
+  function id(): string { return '('.$this->leftPredicate->id().') '.$this->junction.' ('.$this->rightPredicate->id().')'; }
 
   /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
    * @param array<string,mixed>  $tuples
   */
   function eval(array $tuples): bool {
-    switch ($this->boolOp) {
-      case 'and': {
-        if (!$this->leftPredicate->eval($tuples))
-          return false;
-        return $this->rightPredicate->eval($tuples);
-      }
-      case 'or': {
-        if ($this->leftPredicate->eval($tuples))
-          return true;
-        return $this->rightPredicate->eval($tuples);
-      }
-      default: throw new \Exception("boolop '$this->boolOp' inconnu");
-    }
+    return match ($this->junction) {
+      'and'=> $this->leftPredicate->eval($tuples) && $this->rightPredicate->eval($tuples),
+      'or' => $this->leftPredicate->eval($tuples) || $this->rightPredicate->eval($tuples),
+      default => throw new \Exception("junction '$this->junction' inconnu"),
+    };
   }
 };
 
-/** Le parser des prédicats, fonctionne en harmonie avec le parser DsParser. */
+/** Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser DsParser. */
 class PredicateParser {
+  /** Les tokens ajoutés. */
   const TOKENS = [
     '{float}'=> '[0-9]+\.[0-9]+',
     '{integer}'=> '[0-9]+',
     '{string}'=> '("[^"]*"|\'[^\']*\')',
-    '{condOp}'=> '(=|<>|<|<=|>|>=|match|includes|intersects)',
-    '{boolOp}'=> '(and|or)',
+    '{comparator}'=> '(=|<>|<|<=|>|>=|match|includes|intersects)',
+    '{junction}'=> '(and|or)',
   ];
+  /** La BNF utilisée dans un souci de documentation. */
   const BNF = [
     <<<'EOT'
-{predicate} ::= {name} {condOp} {constant}
-              | {constant} {condOp} {name}
-              | {name} {condOp} {name}
-              | '(' {predicate} ')' {boolOp} '(' {predicate} ')'
-{constant} ::= {float} | {integer} | {string} | {geojson} | {rect} | {pos}
-{geojson} ::= une chaine GeoJSON conforme au RFC
-{rect} ::= '[' {pos} ',' {pos}' ']'
-{pos} ::= {number} '@' {number}
+{predicate} ::= {name} {comparator} {constant}
+              | {constant} {comparator} {name}
+              | {name} {comparator} {name}
+              | '(' {predicate} ')' {junction} '(' {predicate} ')'
+{constant} ::=  {float}
+              | {integer}
+              | {string}
+              | {geojson}         // une string GeoJSON conforme au RFC représentant une primitive géométrique simple
+              | '[' {number} ',' {number}' ',' {number}' ',' {number}' ']'     // bbox
+              | '[' {number} ',' {number}' ']'                                 // point
 {number} ::= {float} | {integer}
 EOT
   ];
   
   /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null et laisse le texte intact.
-   * @param list<string> $path - chemin des appels
-   */
+   * @param list<string> $path - chemin des appels pour la trace */
   static function token(array $path, string $tokenName, string &$text): ?string {
     $text0 = $text;
     if ($path)
@@ -286,7 +315,7 @@ EOT
     }
   }
   
-  /** Cherche un matcher un {predicate}, si succès et que le texte est complètement consommé alors retourne le Predicate.
+  /** Cherche à matcher un {predicate}, si succès et que le texte est complètement consommé alors retourne le Predicate.
    * Sinon retourne null. */
   static function start(string $text): ?Predicate {
     $predicate = self::predicate([], $text);
@@ -298,102 +327,168 @@ EOT
    * @param list<string> $path - chemin des appels */
   static function predicate(array $path, string &$text0): ?Predicate {
     $path[] = 'predicate';
-    // {predicate} ::= {name} {condOp} {constant}
-    $text = $text0;
-    if (($field = DsParser::token($path, '{name}', $text))
-      && ($condOp = self::condOp($path, $text))
-        && ($constant = self::constant($path, $text))
-    ) {
-      DsParser::addTrace($path, "succès", $text);
-      $text0 = $text;
-      return new PredicateConstant($field, $condOp, $constant);
+    { // {predicate} ::= {name} {comparator} {constant}
+      $text = $text0;
+      if (($field = DsParser::token($path, '{name}', $text))
+        && ($comparator = self::comparator($path, $text))
+          && ($constant = self::constant($path, $text))
+      ) {
+        DsParser::addTrace($path, "succès", $text);
+        $text0 = $text;
+        return new PredicateConstant(false, $field, $comparator, $constant);
+      }
+      DsParser::addTrace($path, "échec {predicate} ::= {name} {comparator} {constant}", $text0);
     }
-    DsParser::addTrace($path, "échec {predicate} ::= {name} {condOp} {constant}", $text0);
     
-    // {predicate} ::= {constant} {condOp} {name}
-    $text = $text0;
-    if (($constant = self::constant($path, $text))
-      && ($condOp = self::condOp($path, $text))
-        && ($field = DsParser::token($path, '{name}', $text))
-    ) {
-      DsParser::addTrace($path, "succès", $text);
-      $text0 = $text;
-      return new PredicateConstant($field, $condOp, $constant);
+    { // {predicate} ::= {constant} {comparator} {name}
+      $text = $text0;
+      if (($constant = self::constant($path, $text))
+        && ($comparator = self::comparator($path, $text))
+          && ($field = DsParser::token($path, '{name}', $text))
+      ) {
+        DsParser::addTrace($path, "succès", $text);
+        $text0 = $text;
+        return new PredicateConstant(true, $field, $comparator, $constant);
+      }
+      DsParser::addTrace($path, "échec {predicate} ::= {constant} {comparator} {name}", $text0);
     }
-    DsParser::addTrace($path, "échec {predicate} ::= {constant} {condOp} {name}", $text0);
     
-    // {predicate} ::= {name} {condOp} {name}
-    $text = $text0;
-    if (($field1 = DsParser::token($path, '{name}', $text))
-      && ($condOp = self::condOp($path, $text))
-        && ($field2 = DsParser::token($path, '{name}', $text))
-    ) {
-      DsParser::addTrace($path, "succès", $text0);
-      $text0 = $text;
-      return new PredicateField($field1, $condOp, $field2);
+    { // {predicate} ::= {name} {comparator} {name}
+      $text = $text0;
+      if (($field1 = DsParser::token($path, '{name}', $text))
+        && ($comparator = self::comparator($path, $text))
+          && ($field2 = DsParser::token($path, '{name}', $text))
+      ) {
+        DsParser::addTrace($path, "succès", $text0);
+        $text0 = $text;
+        return new PredicateField($field1, $comparator, $field2);
+      }
+      DsParser::addTrace($path, "échec {predicate} ::= {name} {comparator} {name}", $text0);
     }
-    DsParser::addTrace($path, "échec {predicate} ::= {name} {condOp} {name}", $text0);
     
-    // {predicate} ::= '(' {predicate} ')' {boolOp} '(' {predicate} ')'
-    $text = $text0;
-    if (DsParser::pmatch('^\(', $text)
-      && ($lpred = self::predicate($path, $text))
-        && DsParser::pmatch('^\)', $text)
-          && ($boolOp = self::token($path, '{boolOp}', $text))
-            && DsParser::pmatch('^\(', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
-              && ($rpred = self::predicate($path, $text))
-                && DsParser::pmatch('^\)', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
-    ) {
-      DsParser::addTrace($path, "succès", $text0);
-      $text0 = $text;
-      return new PredicateBool($lpred, $boolOp, $rpred);
+    { // {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'
+      $text = $text0;
+      if (DsParser::pmatch('\(', $text)
+        && ($lpred = self::predicate($path, $text))
+          && DsParser::pmatch('\)', $text)
+            && ($junction = self::token($path, '{junction}', $text))
+              && DsParser::pmatch('\(', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+                && ($rpred = self::predicate($path, $text))
+                  && DsParser::pmatch('\)', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+      ) {
+        DsParser::addTrace($path, "succès", $text0);
+        $text0 = $text;
+        return new PredicateJunction($lpred, $junction, $rpred);
+      }
+      DsParser::addTrace($path, "échec {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'", $text0);
     }
-    DsParser::addTrace($path, "échec {predicate} ::= '(' {predicate} ')' {boolOp} '(' {predicate} ')'", $text0);
     
     DsParser::addTrace($path, "échec {predicate}", $text0);
     return null;
   }
   
   /** @param list<string> $path - chemin des appels */
-  static function constant(array $path, string &$text): ?Constant {
+  static function constant(array $path, string &$text0): ?Constant {
     $path[] = 'constant';
-    // {constant} ::= {float} | {integer} | {string}
-
-    if ($value = self::token($path, '{float}', $text)) {
-      DsParser::addTrace($path, "succès {float}", $text);
-      return new Constant('float', $value);
+    { // {constant} ::= {float}
+      if ($value = self::token($path, '{float}', $text0)) {
+        DsParser::addTrace($path, "succès {float}", $text0);
+        return new Constant('float', $value);
+      }
+    }
+    
+    { // {constant} ::= {integer}
+      if ($value = self::token($path, '{integer}', $text0)) {
+        DsParser::addTrace($path, "succès {integer}", $text0);
+        //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
+        return new Constant('int', $value);
+      }
     }
 
-    if ($value = self::token($path, '{integer}', $text)) {
-      DsParser::addTrace($path, "succès {integer}", $text);
-      //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
-      return new Constant('int', $value);
+    { // {constant} ::= {string}
+      if ($value = self::token($path, '{string}', $text0)) {
+        DsParser::addTrace($path, "succès {string}", $text0);
+        return new Constant('string', substr($value, 1, -1));
+      }
     }
-
-    if ($value = self::token($path, '{string}', $text)) {
-      DsParser::addTrace($path, "succès {string}", $text);
-      return new Constant('string', substr($value, 1, -1));
+    
+    { // {constant} ::= {geojson}
+      if ((substr($text0, 0, 1) == '{')
+        && ($json = GeoJSON::parse($text0)))
+      {
+        DsParser::addTrace($path, "succès {geojson}", $text0);
+        $geojson = json_decode($json, true);
+        $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
+        return new Constant('bboxInJSON', json_encode($bbox));
+      }
     }
-
-    if ((substr($text, 0, 1) == '{')
-      && ($json = GeoJSON::parse($text)))
-    {
-      DsParser::addTrace($path, "succès {geojson}", $text);
-      $geojson = json_decode($json, true);
-      $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
-      return new Constant('bboxInJSON', json_encode($bbox));
+    
+    { // {constant} ::= '[' {number} ',' {number}' ',' {number}' ',' {number}' ']'     // bbox
+      $text = $text0;
+      $numbers = [];
+      if (DsParser::pmatch('\[', $text)
+        && !is_null($numbers[0] = self::number($path, $text))
+          && DsParser::pmatch(',', $text)
+            && !is_null($numbers[1] = self::number($path, $text))
+              && DsParser::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+                && !is_null($numbers[2] = self::number($path, $text))
+                  && DsParser::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+                    && !is_null($numbers[3] = self::number($path, $text))
+                      && DsParser::pmatch('\]', $text))
+      {
+        DsParser::addTrace($path, "succès {bbox}", $text);
+        $text0 = $text;
+        return new Constant('bboxInJSON', json_encode($numbers));
+      }
+    }
+    
+    { // {constant} ::= '[' {number} ',' {number}' ']'                                 // point
+      $text = $text0;
+      $numbers = [];
+      if (DsParser::pmatch('\[', $text)
+        && !is_null($numbers[0] = self::number($path, $text))
+          && DsParser::pmatch(',', $text)
+            && !is_null($numbers[1] = self::number($path, $text))
+              && DsParser::pmatch('\]', $text))
+      {
+        DsParser::addTrace($path, "succès {point}", $text);
+        $text0 = $text;
+        // Un point est un BBox ayant ses 2 coins identiques
+        return new Constant('bboxInJSON', json_encode([$numbers[0], $numbers[1], $numbers[0], $numbers[1]]));
+      }
+    }
+    
+    DsParser::addTrace($path, "échec", $text);
+    return null;
+  }
+  
+  /** {comparator} n'est pas un nonterminal mais correspond à la classe Comparator, d'où ce traitement.
+   * @param list<string> $path - chemin des appels */
+  static function comparator(array $path, string &$text): ?Comparator {
+    $path[] = 'comparator';
+    if ($value = self::token($path, '{comparator}', $text)) {
+      DsParser::addTrace($path, "succès {comparator}", $text);
+      return new Comparator($value);
     }
 
     DsParser::addTrace($path, "échec", $text);
     return null;
   }
-  
+
   /** @param list<string> $path - chemin des appels */
-  static function condOp(array $path, string &$text): ?CondOp {
-    $path[] = 'condOp';
-    if ($value = self::token($path, '{condOp}', $text)) {
-      DsParser::addTrace($path, "succès {condOp}", $text);
-      return new CondOp($value);
+  static function number(array $path, string &$text): int|float|null {
+    $path[] = 'number';
+    
+    // {number} ::= {float}
+    if (!is_null($number = self::token($path, '{float}', $text))) {
+      DsParser::addTrace($path, "succès {float}", $text);
+      return floatval($number);
+    }
+
+    // {number} ::= {integer}
+    if (!is_null($number = self::token($path, '{integer}', $text))) {
+      DsParser::addTrace($path, "succès {integer}", $text);
+      return intval($number);
     }
 
     DsParser::addTrace($path, "échec", $text);
