@@ -42,6 +42,8 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+23/8/2025:
+  - dev de PredicateParser et tests
 22/8/2025:
   - répartition de tous les fichiers Php dans les espaces de noms décrits dans la doc sauf index.php
   - ajout d'une méthode Feature::toTuple() et utilisation

@@ -10,15 +10,8 @@ require_once 'parser.php';
 
 /** Une constante définie par son type et sa valeur. */
 class Constant {
-  /** @var ('string'|'int'|'float') $type */
-  readonly string $type;
-  readonly string $value;
-  
   /** @param ('string'|'int'|'float') $type */
-  function __construct(string $type, string $value) {
-    $this->type = $type;
-    $this->value = ($type == 'string') ? substr($value, 1, -1) : $value;
-  }
+  function __construct(readonly string $type, readonly string $value) {}
   
   /** Génère le texte à partir duquel la constante peut être reconstruit. */
   function id(): string {
@@ -37,38 +30,11 @@ class Constant {
   }
 };
 
-/** Un Predicate est une expression bouléenne évaluable sur 1 n-uplet pour Select ou 2 n-uplets pour Join.
- * Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
- * Chaque sous classe doit être capable de s'évaluer sur 1 ou 2 n-uplets.
- */
-abstract class Predicate {
-  static function fromText(string $text): self {
-    if ($predicate = PredicateParser::start($text))
-      return $predicate;
-    else {
-      DsParser::displayTrace();
-      throw new \Exception("Texte \"$text\" non reconuu");
-    }
-  }
+/** CondOp est un test bouléen entre 2 valeurs non bouléennes qui retourne un bouléen. */
+class CondOp {
+  function __construct(readonly string $condOp) {}
   
-  /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  abstract function id(): string;
-  
-  /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
-   * @param array<string,mixed>  $tuples
-   */
-  abstract function eval(array $tuples): bool;
-};
-
-/** Prédicat {name} {condOp} {constant} */
-class PredicateConstant extends Predicate {
-  /** @param string $field - nom du champ
-   * @param ('='|'match') $op - définition de l'opération
-   * @param Constant $constant - la constante */
-  function __construct(readonly string $field, readonly string $op, readonly Constant $constant) {}
-
-  /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->field.' '.$this->op.' '.$this->constant->id(); }
+  function id(): string {return $this->condOp; }
   
   /** preg_match() modifié pour retourner un bool et lancer une exception en cas d'erreur. */
   static function preg_match(string $pattern, string $value): bool {
@@ -83,29 +49,73 @@ class PredicateConstant extends Predicate {
       return false;
     }
     else
-      throw new Exception("Erreur preg_match sur pattern='$pattern'");
+      throw new \Exception("Erreur preg_match sur pattern='$pattern'");
   }
-  /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
-   * @param array<string,mixed> $tuples
-  */
-  function eval(array $tuples): bool {
-    //echo '<pre>';
-    //echo '$this='; print_r($this);
-    //echo '$tuples='; print_r($tuples);
-    if (($val = $tuples[$this->field] ?? null) === null)
-      throw new \Exception("field $this->field absent");
-    //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = match($this->op) {
-      '=' => $val == $this->constant->value(),
-      'match' => self::preg_match($this->constant->value(), $val),
-      default => throw new \Exception("Opération $this->op inconnue"),
+  
+  /** interprétation de l'opérateur (=|<>|<|<=|>|>=|match).
+   * @param int|float|string $left
+   * @param int|float|string $right */
+  function eval(mixed $left, mixed $right): bool {
+    switch ($this->condOp) {
+      case '=': $result = ($left == $right); break;
+      case '<>': $result = ($left <> $right); break;
+      case '<': {
+        if (!(is_int($left) || is_float($left)) || !(is_int($right) || is_float($right)))
+          throw new \Exception("< prend en paramètres des entiers ou des flottants");
+        $result = ($left < $right);
+        break;
+      }
+      case '<=': {
+        if (!(is_int($left) || is_float($left)) || !(is_int($right) || is_float($right)))
+          throw new \Exception("<= prend en paramètres des entiers ou des flottants");
+        $result = ($left <= $right);
+        break;
+      }
+      case '>': {
+        if (!(is_int($left) || is_float($left)) || !(is_int($right) || is_float($right)))
+          throw new \Exception("> prend en paramètres des entiers ou des flottants");
+        $result = ($left > $right);
+        break;
+      }
+      case '>=': {
+        if (!(is_int($left) || is_float($left)) || !(is_int($right) || is_float($right)))
+          throw new \Exception("<= prend en paramètres des entiers ou des flottants");
+        $result = ($left >= $right);
+        break;
+      }
+      case 'match': {
+        if (!is_string($left) || !is_string($right))
+          throw new \Exception("match prend en paramètres des chaines de caractères");
+        $result = self::preg_match($right, $left);
+        break;
+      }
+      default: throw new \Exception("Opération $this->condOp inconnue");
     };
-    //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
+};
 
-  /* Fabrique un formulaire de saisie
-   * @param list<string> $getKeys Les clés _GET à transmettre
+/** Un Predicate est une expression bouléenne évaluable sur 1 n-uplet pour Select ou 2 n-uplets pour Join.
+ * Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
+ * Chaque sous classe doit être capable de s'évaluer sur 1 ou 2 n-uplets.
+ */
+abstract class Predicate {
+  /** Fabrique un prédicat à partir de sa représentation en texte.
+   * Retourne null pour un texte vide
+   */
+  static function fromText(string $text): ?self {
+    if (!$text)
+      return null;
+    elseif ($predicate = PredicateParser::start($text))
+      return $predicate;
+    else {
+      DsParser::displayTrace();
+      throw new \Exception("Texte \"$text\" non reconnu par le parser");
+    }
+  }
+
+  /** Fabrique un formulaire de saisie d'un prédicat sous forme de chaine de caractères
+   * @param list<string> $getKeys - Les clés _GET à transmettre
    */
   static function form(array $getKeys = ['action','dataset','collection']): string {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
@@ -120,23 +130,64 @@ class PredicateConstant extends Predicate {
     $form .= "</form></table>\n";
     return $form;
   }
+  
+  /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
+  abstract function id(): string;
+  
+  /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
+   * @param array<string,mixed>  $tuples
+   */
+  abstract function eval(array $tuples): bool;
+};
+
+/** Prédicat {name} {condOp} {constant} */
+class PredicateConstant extends Predicate {
+  /** @param string $field - nom du champ
+   * @param CondOp $condOp - définition de l'opération
+   * @param Constant $constant - la constante */
+  function __construct(readonly string $field, readonly CondOp $condOp, readonly Constant $constant) {}
+
+  /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
+  function id(): string { return $this->field.' '.$this->condOp->id().' '.$this->constant->id(); }
+  
+  function eval(array $tuples): bool {
+    //echo '<pre>';
+    //echo '$this='; print_r($this);
+    //echo '$tuples='; print_r($tuples);
+    if (($val = $tuples[$this->field] ?? null) === null)
+      throw new \Exception("field $this->field absent");
+    //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
+    $result = $this->condOp->eval($val, $this->constant->value());
+    //echo "result=",$result ? 'vrai':'faux',"<br>\n";
+    return $result;
+  }
 };
 
 /** Prédicat {name} {condOp} {name} */
 class PredicateField extends Predicate {
   /** @param string $field1 - champ1
-   * @param ('='|'match') $op - définition de l'opération
+   * @param CondOp $condOp - définition de l'opération
    * @param string $field2 - champ2 */
-  function __construct(readonly string $field1, readonly string $op, readonly string $field2) {}
+  function __construct(readonly string $field1, readonly CondOp $condOp, readonly string $field2) {}
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->field1.' '.$this->op.' '.$this->field2; }
+  function id(): string { return $this->field1.' '.$this->condOp->id().' '.$this->field2; }
 
   /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
    * @param array<string,mixed>  $tuples
   */
   function eval(array $tuples): bool {
-    throw new \Exception("A coder");
+    //echo '<pre>';
+    //echo '$this='; print_r($this);
+    //echo '$tuples='; print_r($tuples);
+    if (($val1 = $tuples[$this->field1] ?? null) === null)
+      throw new \Exception("field1 $this->field1 absent");
+    if (($val2 = $tuples[$this->field2] ?? null) === null)
+      throw new \Exception("field2 $this->field2 absent");
+    //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
+    $result = $this->condOp->eval($val1, $val2);
+    //echo "result=",$result ? 'vrai':'faux',"<br>\n";
+    return $result;
   }
 };
 
@@ -148,13 +199,25 @@ class PredicateBool extends Predicate {
   function __construct(readonly Predicate $leftPredicate, readonly string $boolOp, readonly Predicate $rightPredicate) {}
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return '('.$this->leftPredicate->id().') '.$this->boolOp.' ('.$this->leftPredicate->id().')'; }
+  function id(): string { return '('.$this->leftPredicate->id().') '.$this->boolOp.' ('.$this->rightPredicate->id().')'; }
 
   /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
    * @param array<string,mixed>  $tuples
   */
   function eval(array $tuples): bool {
-    throw new \Exception("A coder");
+    switch ($this->boolOp) {
+      case 'and': {
+        if (!$this->leftPredicate->eval($tuples))
+          return false;
+        return $this->rightPredicate->eval($tuples);
+      }
+      case 'or': {
+        if ($this->leftPredicate->eval($tuples))
+          return true;
+        return $this->rightPredicate->eval($tuples);
+      }
+      default: throw new \Exception("boolop '$this->boolOp' inconnu");
+    }
   }
 };
 
@@ -179,7 +242,7 @@ class PredicateParser {
 EOT
   ];
   
-  /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null.
+  /** Si le token matches alors retourne le lexème et consomme le texte en entrée, sinon retourne null et laisse le texte intact.
    * @param list<string> $path - chemin des appels
    */
   static function token(array $path, string $tokenName, string &$text): ?string {
@@ -200,19 +263,23 @@ EOT
       return null;
     }
   }
-
+  
+  /** Cherche un matcher un {predicate}, si succès et que le texte est complètement consommé alors retourne le Predicate.
+   * Sinon retourne null. */
   static function start(string $text): ?Predicate {
     $predicate = self::predicate([], $text);
     return $text ? null : $predicate;
   }
   
-  /** @param list<string> $path - chemin des appels */
+  /** Cherche à matcher un {predicate}, si succès alors retourne un objet Predicate et consomme le texte en entrée.
+   * sinon retourne null et laisse le texte en entrée intact.
+   * @param list<string> $path - chemin des appels */
   static function predicate(array $path, string &$text0): ?Predicate {
     $path[] = 'predicate';
     // {predicate} ::= {name} {condOp} {constant}
     $text = $text0;
     if (($field = DsParser::token($path, '{name}', $text))
-      && ($condOp = self::token($path, '{condOp}', $text))
+      && ($condOp = self::condOp($path, $text))
         && ($constant = self::constant($path, $text))
     ) {
       DsParser::addTrace($path, "succès {predicate}#0", $text);
@@ -224,7 +291,7 @@ EOT
     // {predicate} ::= {name} {condOp} {name}
     $text = $text0;
     if (($field1 = DsParser::token($path, '{name}', $text))
-      && ($condOp = self::token($path, '{condOp}', $text))
+      && ($condOp = self::condOp($path, $text))
         && ($field2 = DsParser::token($path, '{name}', $text))
     ) {
       DsParser::addTrace($path, "succès", $text0);
@@ -270,7 +337,19 @@ EOT
 
     if ($value = self::token($path, '{string}', $text)) {
       DsParser::addTrace($path, "succès {string}", $text);
-      return new Constant('string', $value);
+      return new Constant('string', substr($value, 1, -1));
+    }
+
+    DsParser::addTrace($path, "échec", $text);
+    return null;
+  }
+  
+  /** @param list<string> $path - chemin des appels */
+  static function condOp(array $path, string &$text): ?CondOp {
+    $path[] = 'condOp';
+    if ($value = self::token($path, '{condOp}', $text)) {
+      DsParser::addTrace($path, "succès {condOp}", $text);
+      return new CondOp($value);
     }
 
     DsParser::addTrace($path, "échec", $text);
@@ -339,7 +418,9 @@ class PredicateTest {
         
         echo "<p><table border=1>\n";
         $no = 0;
-        $filters = ['predicate'=> Predicate::fromText($_GET['predicate'])];
+        $predicate = Predicate::fromText($_GET['predicate']);
+        //echo '<pre>$predicate = '; print_r($predicate); echo "</pre>\n";
+        $filters = ['predicate'=> $predicate];
         foreach(CollectionOfDs::get("$_GET[dataset].$_GET[collection]")->getItems($filters) as $key => $tuple) {
           //echo "<pre>key=$key, tuple="; print_r($tuple); echo "</pre>\n";
           //echo json_encode($tuple),"<br>\n";

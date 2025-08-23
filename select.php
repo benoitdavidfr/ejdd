@@ -61,22 +61,65 @@ class Select extends Collection {
   }
 };
 
+/** Collection dynamique utile pour des tests. */
+class CollDyn extends Collection {
+  /** @var array<string,array<string,string|int|float>> $tuples */
+  readonly array $tuples;
+  /** @param array<string,array<string,string|int|float>> $tuples */
+  function __construct(array $tuples) { $this->tuples = $tuples; }
+  
+  function id(): string { return 'CollDyn()'.json_encode($this->tuples).')'; }
+  
+  /** @return list<string> */
+  function implementedFilters(): array { return []; }
+  
+  function getItems(array $filters=[]): \Generator {
+    foreach ($this->tuples as $key => $tuple) yield $key => $tuple;
+  }
+    
+  function getOneItemByKey(int|string $key): array|string|null { return $this->tuples[$key] ?? null; }
+};
+
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
-
 /** Test de Select. */
 class SelectTest {
+  const COLL_DYN_TUPLES = [
+    'key1'=> ['stringField'=> 'stringValue', 'float'=> 5.0, 'int'=> 25],
+    'key2'=> ['stringField'=> 'stringValue2', 'float'=> 3.14, 'int'=> 0],
+    'key3'=> ['stringField'=> 'stringValue2', 'float'=> 0, 'int'=> 0],
+  ];
   /** @return array<mixed> */
   static function examples(): array {
     return [
       "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une collection acceptant predicate)" => [
         'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
-        'predicate'=> new Predicate('NCC', 'match', new Constant('string', '!FRANCE!')),
+        'predicate'=> new PredicateConstant('NCC', new CondOp('match'), new Constant('string', '!FRANCE!')),
       ],
       "DeptReg.régions.nom match '!France!' (cas d'une collection n'acceptant pas predicate)" => [
         'collection'=> CollectionOfDs::get('DeptReg.régions'),
-        'predicate'=> new Predicate('nom', 'match', new Constant('string', '!France!')),
+        'predicate'=> new PredicateConstant('nom', new CondOp('match'), new Constant('string', '!France!')),
+      ],
+      "collDyn" => [
+        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+        'predicate'=> new PredicateConstant('stringField', new CondOp('='), new Constant('string', 'stringValue')),
+      ],
+      "collDyn2" => [
+        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+        'predicate'=> new PredicateConstant('stringField', new CondOp('<>'), new Constant('string', 'stringValue')),
+      ],
+      "collDyn3" => [
+        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+        'predicate'=> new PredicateConstant('float', new CondOp('<'), new Constant('int', 4)),
+      ],
+      "collDyn4" => [
+        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+        'predicate'=> Predicate::fromText('float < 4'),
+      ],
+      "collDyn4" => [
+        'collection'=> new CollDyn(self::COLL_DYN_TUPLES),
+        'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
       ],
     ];
   }
@@ -85,14 +128,15 @@ class SelectTest {
     //$title = "InseeCog.v_region_2025.NCC match '!FRANCE!'";
     //$title = "DeptReg.régions.nom match '!France'";
     foreach (self::examples() as $title => $example) {
-      echo "<h2>$title</h2>\n";
+      echo "<h2>$title</h2><pre>\n";
       //$example = self::examples()[$title];
-      $collection = $example['collection'];
-      echo '<pre>implementedFilters='; print_r($collection->implementedFilters());
-      $predicate = $example['predicate'];
-      $select = new Select($predicate, $collection);
+      echo 'implementedFilters= [',implode(', ', $example['collection']->implementedFilters()),"]\n";
+      echo '$predicate='; print_r($example['predicate']);
+      echo '$predicate = "',$example['predicate']->id(),"\"\n";
+      $select = new Select($example['predicate'], $example['collection']);
+      echo "result:\n";
       foreach ($select->getItems() as $key => $tuple) {
-        print_r([$key => $tuple]);
+        echo "&nbsp;&nbsp;$key: ",json_encode($tuple, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),"\n";
       }
       echo "</pre>\n";
     }

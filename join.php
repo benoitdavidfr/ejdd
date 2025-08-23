@@ -16,7 +16,7 @@ EOT
 
 require_once 'dataset.inc.php';
 
-/** Jointure entre 2 collections.
+/** Jointure entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
  * La clé d'une jointure est la concaténation des clés des collections d'origine;
  * cela permet un accès plus efficace au items par clé.
  */
