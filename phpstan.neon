@@ -47,6 +47,8 @@ parameters:
     - dataset.inc.php
     - collection.inc.php
     - geojson.inc.php
+    - bbox.php
+    - pos.inc.php
     - predicate.inc.php
     - geojson.php
     - map.php
@@ -54,23 +56,20 @@ parameters:
     - proj.php
     - select.php
     - parser.php
-    - dataseteg.php
-    - inseecog.php
-    - deptreg.php
-    - nomscnig.php
-    - spreadsheetdataset.inc.php
-    - nomsctcnigc.php
-    - pays.php
-    - mapdataset.php
-    - aecogpe.php
-    - worldeez.php
-    - geodataset.php
-    - styler.php
+    - datasets/dataseteg.php
+    - datasets/inseecog.php
+    - datasets/deptreg.php
+    - datasets/nomscnig.php
+    - datasets/spreadsheetdataset.inc.php
+    - datasets/nomsctcnigc.php
+    - datasets/pays.php
+    - datasets/mapdataset.php
+    - datasets/aecogpe.php
+    - datasets/worldeez.php
+    - datasets/geodataset.php
+    - datasets/styler.php
+    - datasets/featureserver.php
     - zoomleveL.php
-    - featureserver.php
-    - geojson.inc.php
-    - bbox.php
-    - pos.inc.php
     #- lib/coordsys.inc.php
     #- lib/gebox.inc.php
     #- lib/gegeom.inc.php

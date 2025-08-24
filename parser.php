@@ -50,17 +50,20 @@ class Program {
   }
 };
 
-/** Le parser, appelé par program(), retourne un Program, une Collection ou null en cas d'erreur.
+/** Le parser, appelé par start(), retourne un Program, une Collection ou null en cas d'erreur.
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
  * Le parsing d'un {predicate} est délégué à la classe PredicateParser
  *
- * Du point de vue implémentation, la classe est statique et regroupe des fonctions:
+ * Du point de vue implémentation, la classe est statique et regroupe les fonctions:
  *  - addTrace() et displayTrace() gèrent la trace
  *  - pmatch() est un preg_match() amélioré
  *  - token() teste si le texte commence par un token donné
- *  - une fonction par nonterminal qui retourne l'élément analysé en cas de succès et faux en cas d'échec
+ *  - start() est la fonction d'appel du parser avec le texte d'une requête
+ *  - une fonction par nonterminal qui
+ *    - retourne l'élément analysé en cas de succès et faux en cas d'échec
+ *    - consomme le texte correspondant à l'élément en cas de succès mais n'y touche pas en cas d'échec.
  */
 class DsParser {
   const TOKENS = [
@@ -152,15 +155,25 @@ EOT
     }
   }
   
-  static function program(string &$text0): Program|Collection|null {
+  /** Point officiel d'appel du parser qui est indépendant des noms des nonterminaux.
+   * Retourne un programme ou une collection en cas de succès, null en cas d'échec.
+   * Retourne null si le texte n'est pas entièrement consommé.
+   */
+  static function start(string $text): Program|Collection|null {
     self::$trace = [];
-    $path = ['program'];
+    return (($program = self::program([], $text)) && !$text) ? $program : null;
+  }
+  
+  /** @param list<string> $path - chemin des appels */
+  static function program(array $path, string &$text0): Program|Collection|null {
+    $path[] = ['program'];
+    
     // {program}#0 : 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
     $text = $text0;
     if (self::pmatch('display\(', $text)
-    && ($expCollection = self::expCollection($path, $text))
-    && (self::pmatch('^\)', $text))
-    && ($text == '')) {
+      && ($expCollection = self::expCollection($path, $text))
+        && self::pmatch('^\)', $text))
+    {
       self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
       return new Program('display', $expCollection);
@@ -169,8 +182,8 @@ EOT
     
     // {program}#2 : {expCollection}
     $text = $text0;
-    if (($expCollection = self::expCollection($path, $text))
-    && ($text == '')) {
+    if (($expCollection = self::expCollection($path, $text)))
+    {
       self::addTrace($path, "succès", "$text0 -> $text");
       $text0 = $text;
       return $expCollection;
@@ -387,7 +400,7 @@ class DsParserTest {
       case 'show': { // affiche le requête compilée 
         $exp = self::EXAMPLES[$_GET['title']];
         echo "<pre>exp = $exp</pre>\n";
-        echo '<pre>result='; print_r(DsParser::program($exp));
+        echo '<pre>result='; print_r(DsParser::start($exp));
         echo "trace=\n";
         DsParser::displayTrace();
         break;
@@ -395,7 +408,7 @@ class DsParserTest {
       case 'exec': { // exécute la requête 
         $input = self::EXAMPLES[$_GET['title']];
         echo "<pre>input = $input</pre>\n";
-        if (!($program = DsParser::program($input))) {
+        if (!($program = DsParser::start($input))) {
           DsParser::displayTrace();
           die();
         }
@@ -407,7 +420,7 @@ class DsParserTest {
       }
       case 'display': { // traite une demande d'affichage d'un n-uplet générée par un display du résultat 
         echo '<pre>'; print_r($_GET); echo "</pre>\n";
-        if (!($collection = DsParser::program($_GET['collection']))) {
+        if (!($collection = DsParser::start($_GET['collection']))) {
           DsParser::displayTrace();
           die();
         }

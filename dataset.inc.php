@@ -104,9 +104,9 @@ abstract class Dataset {
       $class = (self::REGISTRE[$dsName] ?? $dsName);
       //echo 'getcwd()=',getcwd(),"<br>\n";
       //echo __DIR__,"<br>\n";
-      if (!is_file(__DIR__.strtolower("/$class.php")))
-        throw new \Exception("Erreur fichier '".strtolower("$class.php")."' inexistant");
-      require_once __DIR__.strtolower("/$class.php");
+      if (!is_file(__DIR__.strtolower("/datasets/$class.php")))
+        throw new \Exception("Erreur fichier '".strtolower("datasets$class.php")."' inexistant");
+      require_once __DIR__.strtolower("/datasets/$class.php");
       $class = '\\Dataset\\'.$class;
       return new $class($dsName);
     }

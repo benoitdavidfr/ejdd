@@ -7,23 +7,30 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
+- point d'accès officiel du parser ?
+  - aujourd'hui DsParser::program(string &$text0): Program|Collection|null
+  - -> Collection::query(string $text): Program|Collection|null
+- prévoir un mécanisme de stockage des vues
+  - documenter la vue
+    - de la vue elle même, pourquoi elle a até conçue, ...
+    - des données utilisées
+    - une vue peut être utilisée dans un autre vue
+- dataset comme client API Features
+  - proposer une mécanisme de recopie en local d'un JdD ou d'une partie
 - branch joinSuper
   - faire évoluer l'opération de jointure pour qu'elle prenne la forme (Section, Section, {predicate})
   - {name} est un nom d'attribut, ss modif s'il n'y a pas de confit, précédé de s1_ ou s2_ en cas de conflit
   - modifier le ch de nom d'attribut dans la jointure -> s1_xxx & s2_yyy, uniquement en cas de conflit
-  - faut-il changer le contenu de tuple
-    - j'ai besoin de détecter les géométries autrement que par leur nom
-    - je pourrais stoker un objet GeomTuple un peu différent de Geometry, avec bbox
-    - et convenir que le tuple esr un pur array recursif + GeomTuple
 - dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
-- implémenter la sélection spatiale et la jointure spatiale sur des BBox et des points.
+- implémenter la jointure spatiale sur des BBox et des points.
 - réfléchir aux index et à un optimiseur
 - implémenter CQL ? partiellement ?
   - https://portal.ogc.org/files/96288#cql-bnf
 - réfléchir à un un bouquets de services OGC API Features
   - ptDAccès = Dataset | Query
-  - collection
-  - item
+    - collection
+    - item
+- catalogage des données ?
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
   - voir pourquoi c'est lent, ca met en cause la méthode
@@ -35,6 +42,9 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+24/8/2025:
+  - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
+  - ajout d'un pt d'entrée start() au parser et d'un point "officiel" Collection::query()
 23/8/2025:
   - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
   - parsing du GeoJSON, des BBox et des positions dans Predicate
@@ -194,8 +204,8 @@ set_time_limit(5*60);
  *    - cartographier les JdD en mode web
  *    - faire facilement des traitements ensemblistes comme des jointures et des projections
  *
- * Techno (JSON/Yaml/ODS/Php):
- * ---------------------------
+ * Techno utilisées (JSON/Yaml/ODS/Php):
+ * -------------------------------------
  *   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
  *     - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
  *     - standard
@@ -216,88 +226,99 @@ set_time_limit(5*60);
  *     - c'est difficilement éditable
  *     - c'est moins performant que JSON
  *
- * Solution:
+ * Solution.
  * ---------
  * ### Généralités:
- *  - un JdD est identifié par un **nom court**, comme DeptReg
- *  - en outre un JdD agrège des **collections de données** et contient des **MD**
- *  - un JdD doit a minima définir les 3 MD suivantes
- *    - title -> titre du JdD, pas plus long qu'une ligne
- *    - description -> texte de présentation du JdD aussi longue qu'utile, il faudrait la mettre en Markdown
- *    - $schema -> schéma JSON des collections de données
- *  - les données d'un JdD sont organisées en collections
- *    - chacune est logiquement un itérable d'items, si possible homogènes mais pas forcément
+ *  - un **JdD** agrège des **collections**, est documenté par des **MD** et identifié par un **nom court**, comme DeptReg
+ *  - chaque **collection** est logiquement un **itérable d'items**, a priori homogènes mais pas forcément
  *    - la référence d'une collection est la notion de table de n-uplets, ou de collection d'OGC API Features
- *    - une collection peut ne pas tenir en mémoire Php, par contre un élément doit pouvoir y tenir
- *  - la notion de schéma JSON des collections est un peu virtuelle
- *    - car les données des collections ne sont pas forcément stockées selon ce schéma
- *    - mais elles doivent par contre être disponibles en Php dans ce schéma
- *      - en considérant qu'un Generator est un dictionnaire (object JSON) ou une liste (array JSON) en fonction de la clé
- *    - je défini une **catégorie de JdD** correspondant au comportement du JdD et finalemnt à un code Php de manipulation
- *      - cette notion de catégorie permet de mutualiser le code Php entre différents jeux ayant le même comportement 
- *    - une catégorie de JdD peut exiger des MD complémentaires ou différentes
- *      - je distingue
- *        - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
- *        - de l'initialisation du JdD qui importe le JdD dans le système à partir d'une représentation externe
- * ### structurationEnPhp:
+ *    - un item doit pouvoir tenir en mémoire Php alors qu'une collection peut ne pas y tenir
+ *  - un JdD doit a minima définir les **3 MD suivantes**
+ *    - title -> titre du JdD sur une ligne
+ *    - description -> texte de présentation du JdD aussi longue qu'utile (il faudrait la mettre en Markdown)
+ *    - $schema -> schéma JSON listant les collections et décrivant la structure et la sémantique de chacune
+ *  - le **schéma JSON** d'une collection définit son exposition en Php (en non son stockage)
+ *    - en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
+ *      est sigifiante ou n'est qu'un numéro d'ordre
+ *  - la **catégorie d'un JdD** définit le comportement du JdD et finalement le code Php de sa manipulation,
+ *    elle permet de mutualiser le code Php entre différents jeux ayant le même comportement 
+ *  - je distingue
+ *    - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
+ *    - de sa construction (Build) qui importe le JdD dans le système à partir d'une représentation externe
+ *
+ * ### Structuration en Php:
  *  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
- *  - cette classe Php hérite de la classe abstraite Dataset
- *    - qui en outre stocke le registre des JdD associant à chaque JdD sa catégorie
- *  - un Dataset est composé d'objets CollectionOfDs qui hérite de la classe Collection
- *    - la classe Collection représente un itérable d'items qui peut
- *      - soit appartenir à un JdD,
- *      - soit être généré dynamiquement par une opération ensembliste (join, projection, ...)
  *  - une catégorie de JdD correspond à
  *    - une classe Php héritant de Dataset et portant le nom de la catégorie
  *    - un fichier Php qui
- *      - porte comme comme nom le nom de la classe en minuscules et suivi de '.php' et
+ *      - porte comme comme nom celui de la classe en minuscules et suivi de '.php' et
  *      - possède 2 parties
  *        - le début du fichier inclus par un require_once définit la classe Php de la catégorie
  *          - et est utilisée pour l'instantiation du JdD
- *        - la fin du fichier correspond à une application d'initialisation du JdD
+ *        - la fin du fichier correspond à une application de construction du JdD
  *          - qui est exécutée en exécutant le fichier Php
  *          - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
  *          - qui définit une méthode statique main() qui est appelée à la fin du fichier
- *       - les MD d'un JdD respectent la forme du schéma JSON et doivent être conformes à un méta-schéma des JdD
- * ### utilisationEnPhp:
- *  - j'instantie un JdD par "Dataset::get({nomDS}) -> Dataset"
- *  - je récupère ses MD par $ds->title, $ds->description et $ds->schema
- *  - je récupère les données par $ds->getItems({collection}, {filtre})
+ *  - la classe Collection représente un itérable d'items qui peut
+ *      - soit appartenir à un JdD (CollectionOfDs),
+ *      - soit être générée dynamiquement par une opération ensembliste (join, projection, ...)
+ *  - les MD d'un JdD respectent la forme du schéma JSON et doivent être conformes à un méta-schéma des JdD
+ *
+ * ### Utilisation en Php:
+ *  - un JdD est instantié par "Dataset::get({nomDS}) -> Dataset"
+ *  - ses MD sont récupérées par $ds->title, $ds->description et $ds->schema
+ *  - le schéma permet de connaître la liste des Collections du JdD
+ *  - les données sont récupèrées par $ds->getItems({collection}, {filtre})
  *    - qui retourne un Generator sur les items de la collection satisfaisant le filtre
  *    - avec différents filtres
  *      - prédicat sur les items
- *      - intersection avec un rectangle
+ *      - intersection avec un bbox
  *      - niveau de zoom
  *      - nbre d'items à sauter en début de liste (skip)
- *  - des requêtes peuvent être effectuées au moyen d'un langage, défini par une BNF, permettant notamment
- *    des opérateurs algébriques comme jointure, projection, ...
- * ### carte:
+ *  - un langage, défini par une BNF, permet de réaliser des requêtes sur les collections, fondées sur des opérateurs
+ *    algébriques comme jointure, projection, ...
+ *  - une requête peut être exécutée par Collection::query() -> ?Collection|Program
+ *  - une collection peut être affichée pour obtenir ses MD avant d'être activée pour obtenir son contenu
+ *
+ * ### Carte:
  *  - un JdD MapDataset contient la définition de cartes
- *  - ces cartes peuvent être affichées avec Leaflet
+ *  - ces cartes peuvent être affichées par Leaflet
  *  - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
  *    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
+ *
+ * Perspectives
+ * ------------
+ * ### Interopérabilité 
+ *  - le modèle de cette solution est très proche
+ *    de celui d'[API Features de l'OGC](https://github.com/opengeospatial/ogcapi-features).
+ *  - il est donc envisagé d'exposer notamment les JdD comme point d'accès API Features
+ *  - de plus, cette solution pourrait être un client Php de services API Features, un point d'accès API Features serait vu
+ *    comme un Dataset
+ *  - un mécanisme de copie/synchronisation pourrait être mis en place
+ *  - des premiers tests sont effectuées sur le serveur WFS de la GPF mais sans résultats probants
  *
  * Mise en oeuvre:
  * ---------------
  * ### Espaces de noms
- *  - Dataset: classe Dataset + classes représentant un Jeu de Données
- *  - Algebra: classes définissant l'algèbre de Collection, y.c. les classes définissant le parser
+ *  - Dataset: classe Dataset + classes représentant un Jeu de Données + classes de leur construction
+ *  - Algebra: classes définissant l'algèbre des Collections, y.c. les classes définissant le parser du langage
  *  - GeoJSON: primitives géométriques GeoJSON
- *  - BBox: classe BBox
- *  - Pos: classes sur les positions et leurs listes
+ *  - BBox: classe BBox définissant un rectangle englobant et les opérations d'intersection et d'union
+ *  - Pos: classes sur les positions et ses listes
  *
  * ### Fichiers Php
  *  - index.php fournit l'IHM générale de l'appli et contient cette doc
  *  - dataset.inc.php définit la classe Dataset
  *  - collection.inc.php définit les classes Collection, CollectionOfDs et qqs autres classes
- *  - predicate.inc.php définit la classe Predicate qui permet de définir un critère de sélection sur un n-uplet
  *  - join.php implémente une jointure entre Collections
  *  - proj.php implémente une projection sur une Collection
+ *  - select.php implémente une sélection sur une Collection
+ *  - predicate.inc.php définit la classe Predicate qui définit un prédicat sur n-uplet utilisé dans la sélection et la jointure
  *  - geojson.php expose en GeoJSON les Collections des JdD
  *  - un fichier Php par catégorie de jeux de données et par JdD sans catégorie
- *  - geojson.inc.php définit des classes correspondant aux primitives GeoJSON
+ *  - geojson.inc.php définit les classes correspondant aux primitives GeoJSON
  *  - spreadsheetdataset.inc.php définit un JdD générique fondé sur un fichier ODS utilisé par NomsCtCnigC et Pays,
- *    devrait être transformé en catégorie
+ *    il devrait être transformé en catégorie
  *  - zoomlevel.php permet de calculer les échelles correspondant aux niveaux de zoom Leaflet
  *  - map.php, script périmé générant une carte Leaflet, repris dans mapdataset.php
  *  - setop.php, tests d'opérations ensemblistes
@@ -324,7 +345,7 @@ set_time_limit(5*60);
  * - Styler:
  *   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
  * - FeatureServer:
- *   - wfs-fr-ign-gpf
+ *   - wfs-fr-ign-gpf (non opérationnel)
  */
 class Application {
   /** Code initial de l'application. */
