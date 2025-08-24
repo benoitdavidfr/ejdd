@@ -7,9 +7,6 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- point d'accès officiel du parser ?
-  - aujourd'hui DsParser::program(string &$text0): Program|Collection|null
-  - -> Collection::query(string $text): Program|Collection|null
 - prévoir un mécanisme de stockage des vues
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
@@ -45,6 +42,10 @@ define('JOURNAL', [
 24/8/2025:
   - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
   - ajout d'un pt d'entrée start() au parser et d'un point "officiel" Collection::query()
+  - merge de joinSuper même si l'objectif n'est pas atteint car 
+    - je suis à une étape intermédiaire significative et censée fonctionner
+    - les 2 évolutions précédentes n'ont rien à voir avec l'objectif de cette branche
+  - création d'une nlle branche joinPredicate dont l'objectif est de développer un join fondé sur un prédicat
 23/8/2025:
   - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
   - parsing du GeoJSON, des BBox et des positions dans Predicate
