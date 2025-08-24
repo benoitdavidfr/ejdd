@@ -1,0 +1,307 @@
+title: Natural Earth, 1:10m, cultural themes
+description: |-
+  Natural Earth is a public domain map dataset available at 1:10m, 1:50m, and 1:110 million scales. Featuring tightly integrated vector and raster data, with Natural Earth you can make a variety of visually pleasing, well-crafted maps with cartography or GIS software. (https://www.naturalearthdata.com/)
+
+  La signification des différentes couches et de leurs attributs n'est pas simple.
+listOfFiles:
+  countries:
+    - ne_10m_admin_0_sovereignty.geojson
+    - ne_10m_admin_0_countries.geojson
+    - ne_10m_admin_0_countries_lakes.geojson
+    - ne_10m_admin_0_countries_bdg.geojson
+    - ne_10m_admin_0_countries_bra.geojson
+    - ne_10m_admin_0_countries_chn.geojson
+    - ne_10m_admin_0_countries_deu.geojson
+    - ne_10m_admin_0_countries_egy.geojson
+    - ne_10m_admin_0_countries_esp.geojson
+    - ne_10m_admin_0_countries_fra.geojson
+    - ne_10m_admin_0_countries_grc.geojson
+    - ne_10m_admin_0_countries_gbr.geojson
+    - ne_10m_admin_0_countries_idn.geojson
+    - ne_10m_admin_0_countries_iso.geojson
+    - ne_10m_admin_0_countries_ind.geojson
+    - ne_10m_admin_0_countries_isr.geojson
+    - ne_10m_admin_0_countries_ita.geojson
+    - ne_10m_admin_0_countries_jpn.geojson
+    - ne_10m_admin_0_countries_mar.geojson
+    - ne_10m_admin_0_countries_nld.geojson
+    - ne_10m_admin_0_countries_kor.geojson
+    - ne_10m_admin_0_countries_arg.geojson
+    - ne_10m_admin_0_countries_pak.geojson
+    - ne_10m_admin_0_countries_prt.geojson
+    - ne_10m_admin_0_countries_pse.geojson
+    - ne_10m_admin_0_countries_rus.geojson
+    - ne_10m_admin_0_countries_sau.geojson
+    - ne_10m_admin_0_countries_swe.geojson
+    - ne_10m_admin_0_countries_tlc.geojson
+    - ne_10m_admin_0_countries_tur.geojson
+    - ne_10m_admin_0_countries_twn.geojson
+    - ne_10m_admin_0_countries_ukr.geojson
+    - ne_10m_admin_0_countries_usa.geojson
+    - ne_10m_admin_0_countries_vnm.geojson
+    - ne_10m_admin_0_countries_nep.geojson
+    - ne_10m_admin_0_countries_pol.geojson
+    - ne_10m_admin_0_pacific_groupings.geojson
+  counties:
+    - ne_10m_admin_2_counties.geojson
+    - ne_10m_admin_2_counties_lakes.geojson
+    - ne_10m_admin_2_counties_lines.geojson
+    - ne_10m_admin_2_counties_scale_rank.geojson
+    - ne_10m_admin_2_counties_scale_rank_minor_islands.geojson
+    - ne_10m_admin_2_counties_to_match.geojson
+  admin_0:
+    - ne_10m_admin_0_names.geojson
+    - ne_10m_admin_0_boundary_lines_land.geojson
+    - ne_10m_admin_0_map_units.geojson
+    - ne_10m_admin_0_boundary_lines_map_units.geojson
+    - ne_10m_admin_0_map_subunits.geojson
+    - ne_10m_admin_0_antarctic_claim_limit_lines.geojson
+    - ne_10m_admin_0_disputed_areas.geojson
+    - ne_10m_admin_0_antarctic_claims.geojson
+    - ne_10m_admin_0_disputed_areas_scale_rank_minor_islands.geojson
+    - ne_10m_admin_0_boundary_lines_disputed_areas.geojson
+    - ne_10m_admin_0_label_points.geojson
+    - ne_10m_admin_0_boundary_lines_maritime_indicator.geojson
+    - ne_10m_admin_0_boundary_lines_maritime_indicator_chn.geojson
+    - ne_10m_admin_0_scale_rank.geojson
+    - ne_10m_admin_0_scale_rank_minor_islands.geojson
+    - ne_10m_admin_0_seams.geojson
+  admin_1+2:
+    - ne_10m_admin_1_label_points.geojson
+    - ne_10m_admin_1_label_points_details.geojson
+    - ne_10m_admin_1_seams.geojson
+    - ne_10m_admin_1_states_provinces.geojson
+    - ne_10m_admin_1_states_provinces_lakes.geojson
+    - ne_10m_admin_1_states_provinces_lines.geojson
+    - ne_10m_admin_1_states_provinces_scale_rank.geojson
+    - ne_10m_admin_1_states_provinces_scale_rank_minor_islands.geojson
+    - ne_10m_admin_2_label_points.geojson
+    - ne_10m_admin_2_label_points_details.geojson
+  misc:
+    - ne_10m_roads.geojson
+    - ne_10m_roads_north_america.geojson
+    - ne_10m_railroads.geojson
+    - ne_10m_railroads_north_america.geojson
+    - ne_10m_airports.geojson
+    - ne_10m_ports.geojson
+    - ne_10m_populated_places.geojson
+    - ne_10m_populated_places_simple.geojson
+    - ne_10m_urban_areas.geojson
+    - ne_10m_urban_areas_landscan.geojson
+    - ne_10m_parks_and_protected_lands_area.geojson
+    - ne_10m_parks_and_protected_lands_line.geojson
+    - ne_10m_parks_and_protected_lands_point.geojson
+    - ne_10m_parks_and_protected_lands_scale_rank.geojson
+    - ne_10m_time_zones.geojson
+params:
+  COORDINATE_PRECISION: 3
+  MAP_SCALE_DEN: 10_000_000
+  MAP_SCALE_ALPHA: '1:10m'
+  SHP_DIR: '../data/naturalearth/10m_cultural/10m_cultural/'
+$schema:
+  $schema: 'http://json-schema.org/draft-07/schema#'
+  title: Schéma de NaturalEarth110mCultural
+  description: NaturalEarth50mCultural
+  type: object
+  required:
+    - title
+    - description
+    - $schema
+    - region
+  additionalProperties: false
+  properties:
+    title:
+      description: Titre du jeu de données
+      type: string
+    description:
+      description: Commentaire sur le jeu de données
+      type: string
+    $schema:
+      description: Schéma JSON du jeu de données
+      type: object
+    ne_10m_admin_0_boundary_lines_land:
+      title: ne_10m Country boundaries on land and offshore
+      description: |
+        Natural Earth shows de facto boundaries by default according to who controls the territory, versus de jure. Adjusted to taste which boundaries are shown, hidden, and how they are rendered using the fclass_* properties paired with the POV worldview polygons above.'
+      type: array
+      items:
+        type: object
+        propertiesForGeoJSON: [featurecla]
+    ne_10m_admin_0_countries:
+      title: ne_10m Admin 0 – Countries
+      description: |-
+        There are 258 countries in the world. Greenland as separate from Denmark.
+        Most users will want this file instead of sovereign states, though some users will want map units instead when needing to distinguish overseas regions of France.
+        Natural Earth shows de facto boundaries by default according to who controls the territory, versus de jure.
+      type: array
+      items:
+        type: object
+        required:
+          - id
+          - nom_m
+          - nom
+          - insee_reg
+          - geometry
+        propertiesForGeoJSON:
+          - featurecla
+          - sovereignt
+          - sov_a3
+          - type
+          - admin
+          - adm0_a3
+          - geounit
+          - gu_a3
+          - subunit
+          - su_a3
+          - name
+          - name_long
+          - name_fr
+          - abbrev
+          - formal_en
+          - note_adm0
+          - note_brk
+          - name_alt
+          - pop_est
+          - pop_year
+          - gdp_md
+          - gdp_year
+          - economy
+          - income_grp
+          - iso_a2
+          - iso_a3
+          - adm0_iso
+          - continent
+          - region_un
+          - subregion
+          - name_fr
+        additionalProperties: true
+        properties: {}
+    ne_10m_admin_0_countries_fra:
+      title: ne_10m Admin 0 – Countries FRA
+      description: '???'
+      type: array
+      items:
+        type: object
+        required:
+          - id
+          - nom_m
+          - nom
+          - insee_reg
+          - geometry
+        propertiesForGeoJSON:
+          - featurecla
+          - sovereignt
+          - sov_a3
+          - type
+          - admin
+          - adm0_a3
+          - geounit
+          - gu_a3
+          - subunit
+          - su_a3
+          - name
+          - name_long
+          - name_fr
+          - abbrev
+          - formal_en
+          - note_adm0
+          - note_brk
+          - name_alt
+          - pop_est
+          - pop_year
+          - gdp_md
+          - gdp_year
+          - economy
+          - income_grp
+          - iso_a2
+          - iso_a3
+          - adm0_iso
+          - continent
+          - region_un
+          - subregion
+          - name_fr
+        additionalProperties: true
+        properties: {}
+    ne_10m_admin_0_map_units:
+      title: ne_10m Admin 0 – map_units
+      description: |
+        Les unités cartographiques correspondent à une décomposition des countries. Par exemple, pour la France, les DROM sont dissociés de la métropole.
+      type: array
+      items:
+        type: object
+        propertiesForGeoJSON:
+          - featurecla
+          - sovereignt
+          - sov_a3
+          - type
+          - admin
+          - adm0_a3
+          - geounit
+          - gu_a3
+          - subunit
+          - su_a3
+          - name
+          - name_long
+          - name_fr
+          - abbrev
+          - formal_en
+          - note_adm0
+          - note_brk
+          - name_alt
+          - pop_est
+          - pop_year
+          - gdp_md
+          - gdp_year
+          - economy
+          - income_grp
+          - iso_a2
+          - iso_a3
+          - adm0_iso
+          - continent
+          - region_un
+          - subregion
+          - name_fr
+        additionalProperties: true
+        properties: {  }
+    ne_10m_admin_0_map_subunits:
+      title: ne_10m Admin 0 – map_subunits
+      description: |
+        les sous-unités corespondent à une décomposition des unités. Par exemple pour la France la Corse est dissociée de l'hexagone.'
+      type: array
+      items:
+        type: object
+        propertiesForGeoJSON:
+          - featurecla
+          - sovereignt
+          - sov_a3
+          - type
+          - admin
+          - adm0_a3
+          - geounit
+          - gu_a3
+          - subunit
+          - su_a3
+          - name
+          - name_long
+          - name_fr
+          - abbrev
+          - formal_en
+          - note_adm0
+          - note_brk
+          - name_alt
+          - pop_est
+          - pop_year
+          - gdp_md
+          - gdp_year
+          - economy
+          - income_grp
+          - iso_a2
+          - iso_a3
+          - adm0_iso
+          - continent
+          - region_un
+          - subregion
+          - name_fr
+        additionalProperties: true
+        properties: {  }
+eof:

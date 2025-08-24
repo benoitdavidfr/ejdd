@@ -1,0 +1,461 @@
+title: Jeu de données de définition de cartes
+description: |
+  L'objectif de ce JdD est de définir des cartes affichables en Leaflet sans avoir à éditer le code JS correspondant.
+  Ainsi la définition des cartes est stockée dans ce fichier Yaml.
+  Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
+  chacune définie dans la section layer notamment par un type et des paramètres.
+  Les cartes peuvent être dessinées à partir de l'IHM définie dans le script mapdataset.php.
+  Les noms de couche dans la définition des cartes doivent exister dans la section layer.
+$schema:
+  $schema: 'http://json-schema.org/draft-07/schema#'
+  title: Schéma du jeu de données de description des cartes
+  description: Ce jeu contient la description de cartes.
+  definitions:
+    layerList:
+      description: liste de noms de couches
+      type: array
+      items:
+        description: nom court de couche, clé dans layers
+        type: string
+    style:
+      description: le style de dessin d'un objet GeoJSON
+      type: object
+      additionalProperties: false
+      properties:
+        color:
+          description: couleur
+          type: string
+        weight:
+          description: épaisseur du trait
+          type: number
+        opacity:
+          description: opcaité entre 0 (transparent) et 1 (opaque)
+          type: number
+          minimum: 0
+          maximum: 1
+    GeoJSONPoint:
+      description: GeoJSON Point
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { enum: [ Point ] }
+        coordinates: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONLineString:
+      description: GeoJSON LineString
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { enum: [ LineString ] }
+        coordinates:
+          type: array
+          minItems: 2
+          items: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONPolygon:
+      description: GeoJSON Polygon
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { enum: [ Polygon ] }
+        coordinates:
+          type: array
+          items:
+            type: array
+            minItems: 4
+            items: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONMultiPoint:
+      description: GeoJSON MultiPoint:
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { enum: [ MultiPoint ] }
+        coordinates:
+          type: array
+          items: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONMultiLineString:
+      description: GeoJSON MultiLineString
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { type: string, enum: [ MultiLineString ] }
+        coordinates:
+          type: array
+          items:
+            type: array
+            minItems: 2
+            items: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONMultiPolygon:
+      description: GeoJSON MultiPolygon
+      type: object
+      required: [ type, coordinates ]
+      properties:
+        type: { enum: [ MultiPolygon ] }
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: array
+              minItems: 4
+              items: { type: array, minItems: 2, items: { type: number } }
+        bbox: { type: array, minItems: 4, items: { type: number } }
+    GeoJSONGeometry:
+      description: GeoJSON Geometry
+      oneOf:
+        - type: 'null'
+        - $ref: '#/definitions/GeoJSONPoint'
+        - $ref: '#/definitions/GeoJSONLineString'
+        - $ref: '#/definitions/GeoJSONPolygon'
+        - $ref: '#/definitions/GeoJSONMultiPoint'
+        - $ref: '#/definitions/GeoJSONMultiLineString'
+        - $ref: '#/definitions/GeoJSONMultiPolygon'
+    
+  type: object
+  required:
+    - title
+    - description
+    - $schema
+    - maps
+    - layers
+  additionalProperties: false
+  properties:
+    title:
+      description: 'Titre du jeu de données'
+      type: string
+    description:
+      description: 'Description du jeu de données'
+      type: string
+    $schema:
+      description: 'Schéma JSON du jeu de données'
+      type: object
+    maps:
+      title: Description des cartes
+      description: Chaque n-uplet décrit une carte. Les n-uplets ont pour clé le nom court de la carte.
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '^[-A-Za-z0-9_]+$':
+          type: object
+          required:
+            - title
+            - vars
+            - baseLayers
+            - defaultBaseLayer
+            - overlays
+            - defaultOverlays
+          additionalProperties: false
+          properties:
+            title:
+              description: titre de la carte
+              type: string
+            vars:
+              description: variables JavaScript utilisées dans les url des couches, indexées sur le nom de la variable
+              type: object
+              additionalProperties: false
+              patternProperties:
+                '^[A-Za-z0-9]+$':
+                  description: valeur prise par la variable
+                  type: string
+            baseLayers:
+              description: liste de couches de base définies par leur nom court
+              $ref: '#/definitions/layerList'
+            defaultBaseLayer:
+              description: couche de base affichée par défaut définie par leur nom court
+              type: string
+            overlays:
+              description: liste de couches supplémentaires définies par leur nom court
+              $ref: '#/definitions/layerList'
+            defaultOverlays:
+              description: liste de couches supplémentaires affichées par défaut définies par leur nom court
+              $ref: '#/definitions/layerList'
+    layers:
+      title: Liste des couches
+      description: Liste des couches indexées par leur nom court
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '^[-A-Za-zéè0-9_/]+$':
+          description: définition de la couche
+          type: object
+          properties:
+            title:
+              description: Titre de la couche
+              type: string
+          additionalProperties: false
+          patternProperties:
+            '^L.TileLayer$':
+              description: couche de type TileLayer avec ses paramètres
+              type: array
+              items:
+                oneOf:
+                  - description: 1er paramètre est l'URL comme string
+                    type: string
+                  - description: 2nd paramètre est un object d'options
+                    type: object
+                    additionalProperties: false
+                    properties:
+                      attribution:
+                        description: la chaine à afficher pour attribuer la couche
+                        type: string
+                      format:
+                        type: string
+                      minZoom:
+                        type: integer
+                      maxZoom:
+                        type: integer
+                      detectRetina:
+                        type: boolean
+            '^L.UGeoJSONLayer$':
+              description: couche de type L.UGeoJSONLayer avec ses paramètres
+              type: object
+              additionalProperties: false
+              properties:
+                endpoint:
+                  description: URL de la couche, doit correspondre à un JdD et une section de ce JdD
+                  type: string
+                minZoom:
+                  description: niveau minimum de zoom
+                  type: integer
+                maxZoom:
+                  description: niveau maximum de zoom
+                  type: integer
+                usebbox:
+                  description: utilisation du paramètre bbox lors des appels
+                  type: boolean
+                onEachFeature:
+                  description: nom de la fonction d'affichage
+                  type: string
+                style:
+                  description: style associé, soit un objet style, soit une fonction
+                  oneOf:
+                    - description: le style défini par une fonction JavaScript renvoyant un objet style
+                      type: string
+                    - description: le style défini comme un objet style
+                      $ref: '#/definitions/style'
+            '^L.geoJSON$':
+              description: couche de type L.geoJSON avec ses paramètres
+              type: array
+              items:
+                oneOf:
+                  - description: 1er paramètre est la géométrie GeoJSON
+                    $ref: '#/definitions/GeoJSONGeometry'
+                  - type: object
+                    required: [style]
+                    additionalProperties: false
+                    properties:
+                      style:
+                        $ref: '#/definitions/style'
+
+maps:
+  default:
+    title: Carte par défaut avec des limites administratives françaises et mondiales
+    vars:
+      gjsurl: 'http://localhost/dataset/geojson.php/'
+      userverdir: 'http://localhost/gexplor/visu/'
+    baseLayers:
+      - OSM
+      - FondBlanc
+    defaultBaseLayer: OSM
+    overlays:
+      - WorldEEZ/EEZv11
+      - NE110m/coastline
+      - NE110m/wgs84_bounding_box
+      - NE110m/boundary_lines_land
+      - NE110m/countries
+      - NE50m/coastline
+      - NE50m/map_units
+      - NE10m/coastline
+      - Région
+      - Département
+      - EPCI
+      - Commune
+      - antimeridien
+      - debug
+    defaultOverlays:
+      - antimeridien
+  styledNaturalErth:
+    title: Carte NaturalEarth stylée
+    vars:
+      gjsurl: 'http://localhost/dataset/geojson.php/'
+      userverdir: 'http://localhost/gexplor/visu/'
+    baseLayers:
+      - OSM
+      - FondBlanc
+    defaultBaseLayer: OSM
+    overlays:
+      - NECoastlinesAndBoundaries
+      - NEMappingUnits
+      - NEMappingSubUnits
+      - antimeridien
+      - debug
+    defaultOverlays:
+      - NECoastlinesAndBoundaries
+      - antimeridien
+  test:
+    title: Carte de test
+    vars:
+      gjsurl: 'http://localhost/dataset/geojson.php/'
+      userverdir: 'http://localhost/gexplor/visu/'
+    baseLayers:
+      - OSM
+    defaultBaseLayer: OSM
+    overlays:
+      - Région
+      - antimeridien
+    defaultOverlays:
+      - antimeridien
+layers:
+  OSM:
+    title: OSM
+    L.TileLayer:
+      - 'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+      - attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank'>les contributeurs d’OpenStreetMap</a>"
+  FondBlanc:
+    title: 'Fond blanc'
+    L.TileLayer:
+      - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
+      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+  WorldEEZ/EEZv11:
+    title: ZEE v11
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}WorldEez/collections/eez_v11/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE110m/coastline:
+    title: Littoral océanique, incluant les principales îles (NE110m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE110m/wgs84_bounding_box:
+    title: Graticule wgs84_bounding_box (NE110m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_wgs84_bounding_box/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE110m/boundary_lines_land:
+    title: 'Limites administratives sur Terre (NE110m)'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mCultural/collections/ne_110m_admin_0_boundary_lines_land/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE110m/countries:
+    title: 'Pays (Countries) (NE110m)'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE110mCultural/collections/ne_110m_admin_0_countries/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE50m/coastline:
+    title: Littoral océanique, incluant les principales îles (NE50m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE50mPhysical/collections/ne_50m_coastline/items'
+      minZoom: 7
+      maxZoom: 9
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE50m/map_units:
+    title: 'Unités cartographiques (NE50m)'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE50mCultural/collections/ne_50m_admin_0_map_units/items'
+      minZoom: 5
+      maxZoom: 12
+      usebbox: true
+      onEachFeature: onEachFeature
+  NE10m/coastline:
+    title: Littoral océanique (NE10m)
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NE10mPhysical/collections/ne_10m_coastline/items'
+      minZoom: 9
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+  NECoastlinesAndBoundaries:
+    title: Couche NaturalEarth côtes et limites de pays stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/coastlinesAndBoundaries/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingUnits:
+    title: Couche NaturalEarth unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingSubUnits:
+    title: Couche NaturalEarth sous-unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingSubUnits/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  Région:
+    title: 'Région de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/region/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  Département:
+    title: 'Département de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/departement/items'
+      minZoom: 7
+      maxZoom: 8
+      usebbox: true
+      onEachFeature: onEachFeature
+  EPCI:
+    title: 'EPCI de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/epci/items'
+      minZoom: 8
+      maxZoom: 10
+      usebbox: true
+      onEachFeature: onEachFeature
+  Commune:
+    title: 'Commune de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/commune/items'
+      minZoom: 10
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+  antimeridien:
+    title: antimeridien
+    L.geoJSON:
+      - type: MultiPolygon
+        coordinates:
+          - [[[ 180.0,-90.0],[ 180.1,-90.0],[ 180.1,90.0],[ 180.0,90.0],[ 180.0,-90.0]]]
+          - [[[-180.0,-90.0],[-180.1,-90.0],[-180.1,90.0],[-180.0,90.0],[-180.0,-90.0]]]
+      - style:
+          color: red
+          weight: 2
+          opacity: 0.65
+  debug:
+    title: debug
+    L.TileLayer:
+      - '{userverdir}utilityserver.php/debug/{z}/{x}/{y}.png'
+      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+eof:

@@ -1,0 +1,94 @@
+title: Natural Earth, 1:10m, Physical themes
+description: |-
+  Natural Earth is a public domain map dataset available at 1:10m, 1:50m, and 1:110 million scales. Featuring tightly integrated vector and raster data, with Natural Earth you can make a variety of visually pleasing, well-crafted maps with cartography or GIS software. (https://www.naturalearthdata.com/)
+
+  La signification des différentes couches et de leurs attributs n'est pas simple.
+listOfFiles:
+  - ne_10m_coastline.geojson
+  - ne_10m_land.geojson
+  - ne_10m_ocean.geojson
+  - ne_10m_lakes.geojson
+  - ne_10m_rivers_lake_centerlines.geojson
+  - ne_10m_lakes_historic.geojson
+  - ne_10m_lakes_europe.geojson
+  - ne_10m_lakes_australia.geojson
+  - ne_10m_rivers_australia.geojson
+  - ne_10m_rivers_europe.geojson
+  - ne_10m_rivers_lake_centerlines_scale_rank.geojson
+  - ne_10m_lakes_north_america.geojson
+  - ne_10m_rivers_north_america.geojson
+
+  - ne_10m_minor_islands_coastline.geojson
+  - ne_10m_minor_islands.geojson
+  - ne_10m_minor_islands_label_points.geojson
+
+  - ne_10m_antarctic_ice_shelves_lines.geojson
+  - ne_10m_geography_regions_elevation_points.geojson
+  - ne_10m_land_ocean_label_points.geojson
+  - ne_10m_antarctic_ice_shelves_polys.geojson
+  - ne_10m_geography_regions_points.geojson
+  - ne_10m_land_ocean_seams.geojson
+  - ne_10m_geography_regions_polys.geojson
+  - ne_10m_land_scale_rank.geojson
+  - ne_10m_glaciated_areas.geojson
+
+  - ne_10m_bathymetry_l_0.geojson
+  - ne_10m_bathymetry_k_200.geojson
+  - ne_10m_bathymetry_j_1000.geojson
+  - ne_10m_bathymetry_i_2000.geojson
+  - ne_10m_bathymetry_h_3000.geojson
+  - ne_10m_bathymetry_g_4000.geojson
+  - ne_10m_bathymetry_f_5000.geojson
+  - ne_10m_bathymetry_e_6000.geojson
+  - ne_10m_bathymetry_d_7000.geojson
+  - ne_10m_bathymetry_c_8000.geojson
+  - ne_10m_bathymetry_b_9000.geojson
+  - ne_10m_bathymetry_a_10000.geojson
+
+  - ne_10m_graticules_1.geojson
+  - ne_10m_graticules_5.geojson
+  - ne_10m_graticules_10.geojson
+  - ne_10m_graticules_15.geojson
+  - ne_10m_graticules_20.geojson
+  - ne_10m_graticules_30.geojson
+
+  - ne_10m_ocean_scale_rank.geojson
+  - ne_10m_playas.geojson
+  - ne_10m_reefs.geojson
+  - ne_10m_geographic_lines.geojson
+  - ne_10m_lakes_pluvial.geojson
+  - ne_10m_wgs84_bounding_box.geojson
+  - ne_10m_geography_marine_polys.geojson
+params:
+  COORDINATE_PRECISION: 3
+  MAP_SCALE_DEN: 10_000_000
+  MAP_SCALE_ALPHA: '1:10m'
+  SHP_DIR: '../data/naturalearth/10m_physical/'
+$schema:
+  $schema: 'http://json-schema.org/draft-07/schema#'
+  title: Schéma de NaturalEarth10mPhysical
+  description: NaturalEarth10mPhysical
+  type: object
+  required:
+    - title
+    - description
+    - $schema
+  additionalProperties: false
+  properties:
+    title:
+      description: Titre du jeu de données
+      type: string
+    description:
+      description: Commentaire sur le jeu de données
+      type: string
+    $schema:
+      description: Schéma JSON du jeu de données
+      type: object
+    ne_10m_coastline:
+      title: Ocean coastline, including major islands. Coastline is matched to land and water polygons
+      description: ""
+      type: array
+      items:
+        type: object
+        propertiesForGeoJSON: ['featurecla']
+eof:
