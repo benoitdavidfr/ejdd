@@ -6,8 +6,6 @@
  */
 namespace Algebra;
 
-use Dataset\Dataset;
-
 /* Actions à réaliser. */
 define('A_FAIRE_PARSER', [
 <<<'EOT'
@@ -32,9 +30,11 @@ EOT
 
 require_once 'dataset.inc.php';
 require_once 'proj.php';
-require_once 'join.php';
+require_once 'joinf.php';
 require_once 'predicate.inc.php';
 require_once 'select.php';
+
+use Dataset\Dataset;
 
 /** Classe utilisée pour exécuter display ou draw */
 class Program {
@@ -248,7 +248,7 @@ EOT
     ) {
       self::addTrace($path, "Succès expCollection#1", $text0);
       $text0 = $text;
-      return new Join($joinName, $expCollection1, $field1, $expCollection2, $field2);
+      return new JoinF($joinName, $expCollection1, $field1, $expCollection2, $field2);
     }
     self::addTrace($path, "Echec expCollection#1", $text0);
     

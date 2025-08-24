@@ -7,7 +7,7 @@ namespace Algebra;
 use Dataset\Dataset;
 
 require_once 'dataset.inc.php';
-require_once 'join.php';
+require_once 'joinf.php';
 
 /** L'opérateur de projection qui applique à une Section une sélection et un renommage de ses champs et fournit une Section. */
 class Proj extends Collection {
@@ -88,7 +88,7 @@ class ProjTest {
       }
       case 'projDeJoin': {
         // proj(inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM),s1.REG/reg,s1.LIBELLE/lib,s2.LIBELLE/préf)
-        $join = new Join('inner-join',
+        $join = new JoinF('inner-join',
           CollectionOfDs::get('InseeCog.v_region_2025'), 'CHEFLIEU',
           CollectionOfDs::get('InseeCog.v_commune_2025'), 'COM');
         //echo '<pre>$join='; print_r($join); echo "</pre>\n";
@@ -107,7 +107,7 @@ class ProjTest {
             .'inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM),'
             .'s1.REG/reg,s1.LIBELLE/lib,s2.LIBELLE/préf)'
             => new Proj(
-              new Join('inner-join',
+              new JoinF('inner-join',
                 CollectionOfDs::get('InseeCog.v_region_2025'), 'CHEFLIEU',
                 CollectionOfDs::get('InseeCog.v_commune_2025'), 'COM'),
               ['s1.REG'=>'reg', 's1.LIBELLE'=>'lib', 's2.LIBELLE'=>'préf']),

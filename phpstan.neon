@@ -46,13 +46,15 @@ parameters:
     - index.php
     - dataset.inc.php
     - collection.inc.php
+    - skipbracket.php
     - geojson.inc.php
     - bbox.php
     - pos.inc.php
     - predicate.inc.php
     - geojson.php
     - map.php
-    - join.php
+    - joinf.php
+    - joinp.php
     - proj.php
     - select.php
     - parser.php

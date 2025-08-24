@@ -4,13 +4,14 @@
  */
 namespace Algebra;
 
+require_once 'parser.php';
+require_once 'skipbracket.php';
+
 use Dataset\Dataset;
 use GeoJSON\GeoJSON;
 use GeoJSON\Geometry;
 use BBox\BBox;
 use BBox\NONE;
-
-require_once 'parser.php';
 
 /** Une constante définie par son type et sa valeur stockée comme string.
  * Le format pour bboxInJSON est une liste de 4 coordonnées (xmin,ymin,xmax,ymax) codée en JSON.
@@ -414,7 +415,7 @@ EOT
     
     { // {constant} ::= {geojson}
       if ((substr($text0, 0, 1) == '{')
-        && ($json = GeoJSON::parse($text0)))
+        && ($json = SkipBracket::skip($text0)))
       {
         DsParser::addTrace($path, "succès {geojson}", $text0);
         $geojson = json_decode($json, true);

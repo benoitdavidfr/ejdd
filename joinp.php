@@ -1,26 +1,27 @@
 <?php
-/** Immlémentation d'une jointure entre 2 collections de JdD générant une nouvelle collection de requête.
+/** Jointure de 2 collections fondée sur un prédicat.
+ * Formellement c'est le produit cartésien des 2 collections suivi d'une sélection mais l'objectif dans un souci de performance
+ * est d'effectuer un join sur champs égaux et d'utiliser un index d'accès sur le champ dans une des 2 collections.
  * @package Algebra
  */
 namespace Algebra;
 
+require_once 'dataset.inc.php';
+
 use Dataset\Dataset;
 
-ini_set('memory_limit', '10G');
-
-define('A_FAIRE_JOIN', [
+define('A_FAIRE_JOINP', [
 <<<'EOT'
 EOT
 ]
 );
 
-require_once 'dataset.inc.php';
-
-/** Jointure entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
- * La clé d'une jointure est la concaténation des clés des collections d'origine;
- * cela permet un accès plus efficace au items par clé.
- */
-class Join extends Collection {
+/** Jointure sur prédicat entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
+* La clé d'une jointure est la concaténation des clés des collections d'origine;
+* cela permet un accès plus efficace aux items par clé.
+*/
+class JoinP extends Collection {
+  
   function __construct(readonly string $type, readonly Collection $coll1, readonly string $field1, readonly Collection $coll2, readonly string $field2) {
     if (in_array($coll1->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
@@ -42,36 +43,24 @@ class Join extends Collection {
   /** Concaténation de clas qui puisse être déconcaténées même imbriquées. */
   static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
   
-  /** détecte dans input une sous-chaine démrrant au début, ayant autant de { que de } et se terminant juste avant un }.
-   * Fonction nécessaire pour decatKeys(). Les algos concatKeys() et decatKeys()
-   */
-  static private function findStart(string $input): string {
-    $countOfBracket = 0; // nbre de { rencontrées - nombre de }
-    for($i=0; $i<strlen($input); $i++) {
-      $char = substr($input, $i, 1);
-      //echo "char=$char<br>\n";
-      if ($char == '{')
-        $countOfBracket++;
-      elseif ($char == '}') {
-        if ($countOfBracket > 0)
-          $countOfBracket--;
-        else
-          return substr($input, 0, $i);
-      }
-    }
-    return $input;
-  }
-  
   /** Décompose la clé dans les 2 clés d'origine qui ont été concaténées; retourne un tableau avec les clés 1 et 2.
    * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous en commentaire.
    * @return array{1: string, 2: string}
    */
   static function decatKeys(string $keys): array {
-    $result = [];
-    $result[1] = self::findStart(substr($keys, 1));
-    $len1 = strlen($result[1]);
-    $result[2] = substr($keys, $len1+3, -1);
-    return $result;
+    $start = SkipBracket::skip($keys);
+    return [1=> substr($start, 1, -1), 2=> substr($keys, 1, -1)];
+  }
+  
+  /** Test de decatKeys(). */
+  static function testDecatKeys(): void {
+    echo "<title>testDecatKeys</title><pre>\n";
+    $keys = '{6}{17622}';
+    $keys = "{c'est la 1ère}{c'est la 2nd}";
+    $keys = "{c'est {}la 1ère}{c'est{{}} la 2nd}";
+    $keys = "{c'est {}la 1ère{c'est{{}} la 2nd}";
+    echo "$keys -> "; print_r(self::decatKeys($keys));
+    die("Tué ligne ".__LINE__." de ".__FILE__);
   }
   
   /** L'accès aux items du Join par un Generator.
@@ -141,112 +130,9 @@ class Join extends Collection {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
-/** Teste la méthode pour concaténer des clés. Il faut que cela puisse s'imbriquer.
- * Un objet DoV est un dict de valeurs.
- * /
-class DoV {
-  const DATA = [
-    'a'=> 'b',
-    'c'=> 'd',
-  ];
-  
-  function __construct(readonly array $dov) {}
 
-  /** Génère un objet paramétré par $p * /
-  static function gen(string $p): self {
-    $a = [];
-    foreach (self::DATA as $k => $v) {
-      $a["$k$p"] = "$v$p";
-    }
-    return new self($a);
-  }
-  
-  static function concatKeys(string $k1, string $k2): string {
-    return "{{$k1}}{{$k2}}";
-  }
-  
-  /** détecte dans input une sous-chaine démrrant au début, ayant autant de { que de } et se terminant juste avant un } * /
-  static private function findStart(string $input): string {
-    $countOfBracket = 0; // nbre de { rencontrées - nombre de }
-    for($i=0; $i<strlen($input); $i++) {
-      $char = substr($input, $i, 1);
-      //echo "char=$char<br>\n";
-      if ($char == '{')
-        $countOfBracket++;
-      elseif ($char == '}') {
-        if ($countOfBracket > 0)
-          $countOfBracket--;
-        else
-          return substr($input, 0, $i);
-      }
-    }
-    return $input;
-  }
-  
-  /** Décompose la clé en les 2 clés qui ont été concaténées. * /
-  static function decatKeys(string $keys): array {
-    $result = [];
-    $result[1] = self::findStart(substr($keys, 1));
-    $len1 = strlen($result[1]);
-    $result[2] = substr($keys, $len1+3, -1);
-    return $result;
-  }
-  
-  static function testDecatKeys(): void {
-    //echo 'findStart=',self::findStart("{ABCDE{FGH}IJ}{KLMNOPQRSTUVWXYZ}}0123456789"),"<br>\n";
-    //print_r(self::decatKeys('{aaa}{bbb}'));
-    //print_r(self::decatKeys('{{aaa}{bbb}}{c}'));
-    print_r(self::decatKeys('{aaa}{{bbb}{c}}'));
-    die();
-  }
-  
-  static function join(self $dov1, self $dov2): self {
-    $j = [];
-    foreach($dov1->dov as $k1 => $v1) {
-      foreach($dov2->dov as $k2 => $v2) {
-        $j[self::concatKeys($k1,$k2)] = "$v1|$v2";
-      }
-    }
-    return new Dov($j);
-  }
-  
-  function display(): void {
-    echo "<table border=1>";
-    foreach ($this->dov as $k => $v)
-      echo "<tr><td><a href='?action=d&key=",urlencode($k),"'>$k</td>",
-           "<td>$v</td></tr>\n";
-    echo "</table>\n";
-  }
-  
-  static function test() { // Test global 
-    switch ($_GET['action'] ?? null) {
-      case null: {
-        echo "<pre>\n";
-        //print_r(Dov::gen('z')); die();
-        //print_r(DoV::join(DoV::gen('y'), DoV::gen('z'))); die();
-        $j = DoV::join(
-          DoV::gen('x'),
-          DoV::join(DoV::gen('y'), DoV::gen('z'))
-        );
-        print_r($j);
-        $j->display();
-        break;
-      }
-      case 'd': {
-        $keys = DoV::decatKeys($_GET['key']);
-        echo '<pre>$keys='; print_r($keys); echo "\n";
-        echo "$keys[1] -> "; print_r(DoV::gen('x')->dov[$keys[1]]); echo "\n";
-        echo "$keys[2] -> "; print_r(DoV::join(DoV::gen('y'), DoV::gen('z'))->dov[$keys[2]]); echo "\n";
-        break;
-      }
-    }
-  }
-};
-DoV::test();
-*/
-
-/** Test de Join. */
-class JoinTest {
+/** Test de JoinP. */
+class JoinPTest {
   const EXAMPLES = [
    "Région X Préfectures" => 'inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
    "Dépt X Préfectures" => 'inner-join(InseeCog.v_departement_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
@@ -346,7 +232,7 @@ class JoinTest {
           die();
         }
         else {
-          $join = new Join(
+          $join = new JoinP(
             $_GET['type'],
             CollectionOfDs::get(json_encode(['dataset'=>$_GET['dataset1'], 'collection'=>$_GET["collection1"]])),
             $_GET['field1'],
@@ -366,7 +252,7 @@ class JoinTest {
         $field1 = $matches[3];
         $coll2 = $matches[4];
         $field2 = $matches[5];
-        $join = new Join($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
+        $join = new JoinP($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
         $join->displayItems($_GET['skip'] ?? 0);
         break;
       }
@@ -380,7 +266,7 @@ class JoinTest {
         $field1 = $matches[3];
         $coll2 = $matches[4];
         $field2 = $matches[5];
-        $join = new Join($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
+        $join = new JoinP($type, CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
         if (isset($_GET['skip'])) {
           $join->displayItems($_GET['skip']);
         }
@@ -395,4 +281,4 @@ class JoinTest {
     }
   }
 };
-JoinTest::main();
+JoinPTest::main();
