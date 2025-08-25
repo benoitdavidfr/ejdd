@@ -8,8 +8,10 @@
 define('A_FAIRE', [
 <<<'EOT'
 - améliorations JoinP
+  - comment tracer les requêtes, properties, schema ?
+    - quoi afficher ?
   - stabiliser la gestion des préfix dans les 2 jointures
-    - utiliser les 2 1er carac. de la collection omme préfix si nécessaire
+    - utiliser les 3 1er carac. de la collection omme préfix si nécessaire
     - aligner les 2 Join
   - écrire les différentes méthodes properties
   - écrire l'algo du produit cartésien
@@ -48,6 +50,7 @@ define('JOURNAL', [
 <<<'EOT'
 25/8/2025:
   - j'ai transformé un JoinP en JoinF dans le cas le plus simple
+  - réécriture du test interactif de JoinP
 24/8/2025:
   - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
   - ajout d'un pt d'entrée start() au parser et d'un point "officiel" Collection::query()
@@ -188,6 +191,17 @@ geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featur
   
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
+
+EOT
+]
+);
+/** Utilisation de GitHub */
+define('GITHUB', [
+<<<'EOT'
+GitHub
+------
+Le 25/8/2025, j'ai réussi à synchroniser le dépôt avec gitbub.
+J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 
 EOT
 ]
