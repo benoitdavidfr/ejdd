@@ -31,6 +31,7 @@ EOT
 require_once 'dataset.inc.php';
 require_once 'proj.php';
 require_once 'joinf.php';
+require_once 'joinp.php';
 require_once 'predicate.inc.php';
 require_once 'select.php';
 
@@ -70,7 +71,8 @@ class DsParser {
     'space'=> '[ \n]+',
     '{point}'=> '\.',
     '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {field}
-    '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
+    '{joinFName}' => '(inner-joinf|left-joinf|diff-joinf)', // Les différentes opérations de jointure F
+    '{joinPName}' => '(inner-joinp|left-joinp|diff-joinp)', // Les différentes opérations de jointure P
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
   ];
   const BNF = [
@@ -80,12 +82,12 @@ class DsParser {
             | {expCollection}              // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                    // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-                  | {joinName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
-                  | 'spatial-join' '(' {expCollection} ',' {expCollection} ')'
-                  | 'union' '(' {expCollection} ',' {expCollection} ')'
+                  | {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+                  | {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+                //| 'union' '(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
                   | 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
                   | 'select' '(' {predicate} ',' {expCollection} ')'
-               // | 'map' '(' {phpFun} ',' {expCollection} ')' - à voir plus tard
+                //| 'map' '(' {phpFun} ',' {expCollection} ')' -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
 {namePair} ::= {name} '>' {name}
@@ -97,6 +99,12 @@ EOT
   
   /** @param list<string> $path - chemin des appels */
   static function addTrace(array $path, string $message, string $text): void {
+    foreach ($path as $pathElt) {
+      if (!is_string($pathElt)) {
+        echo '<pre>$path='; print_r($path);
+        throw new \Exception("path doit être une liste de string");
+      }
+    }
     self::$trace[] = ['path'=> $path, 'message'=> $message, 'text'=> $text];
   }
   
@@ -166,7 +174,7 @@ EOT
   
   /** @param list<string> $path - chemin des appels */
   static function program(array $path, string &$text0): Program|Collection|null {
-    $path[] = ['program'];
+    $path[] = 'program';
     
     // {program}#0 : 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
     $text = $text0;
@@ -233,9 +241,9 @@ EOT
     }
     self::addTrace($path, "Echec expCollection#0", $text0);
     
-    // {expCollection}#1 : {joinName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+    // {expCollection}#1 : {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
     $text = $text0;
-    if (($joinName = self::token($path, '{joinName}', $text))
+    if (($joinFName = self::token($path, '{joinFName}', $text))
       && self::pmatch('\(', $text)
         && ($expCollection1 = self::expCollection($path, $text))
           && self::pmatch(',', $text)
@@ -248,10 +256,29 @@ EOT
     ) {
       self::addTrace($path, "Succès expCollection#1", $text0);
       $text0 = $text;
-      return new JoinF($joinName, $expCollection1, $field1, $expCollection2, $field2);
+      return new JoinF(substr($joinFName, 0, -1), $expCollection1, $field1, $expCollection2, $field2);
     }
     self::addTrace($path, "Echec expCollection#1", $text0);
     
+    // {expCollection}#2 : {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+    $text = $text0;
+    if (($joinPName = self::token($path, '{joinPName}', $text))
+      && self::pmatch('\(', $text)
+        && ($expCollection1 = self::expCollection($path, $text))
+          && self::pmatch(',', $text)
+            && ($expCollection2 = self::expCollection($path, $text))
+              && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
+                && ($predicate = PredicateParser::predicate($path, $text))
+                  && self::pmatch('\)', $text)
+    ) {
+      self::addTrace($path, "Succès expCollection#1", $text0);
+      $text0 = $text;
+      return new JoinP(substr($joinPName, 0, -1), $expCollection1, $expCollection2, $predicate);
+    }
+    self::addTrace($path, "Echec expCollection#1", $text0);
+    
+    // MANQUE {expCollection}#3 : 'union' '(' {expCollection} ',' {expCollection} ')'
+
     // {expCollection}#4 : 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
     $text = $text0;
     if (self::pmatch('proj\(', $text) 
@@ -355,16 +382,15 @@ class DsParserTest {
     "display(proj)"=> "display(proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
     "proj -> renvoie rien"=> "proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
     "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
-    "jointure simple -> renvoie rien" => "inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
-    "display(jointure simple)" => "display(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
+    "jointure simple -> renvoie rien" => "inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
+    "display(jointure simple)" => "display(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
     "Expression complexe -> renvoie rien"
-      => "inner-join(inner-join(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
-    "spatial join"=>"spatial-join(InseeCog.v_region_2025, AeCogPe.region)",
+      => "inner-joinf(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
     "union"=> "union(InseeCog.v_region_2025, AeCogPe.region)",
     "DeptReg.régions" => "DeptReg.régions",
     "display DeptReg.régions" => "display(DeptReg.régions)",
     "display DeptReg.régions codeInsee=REG InseeCog.v_region_2025"
-      => "display(inner-join(DeptReg.régions, codeInsee, InseeCog.v_region_2025, REG))",
+      => "display(inner-joinf(DeptReg.régions, codeInsee, InseeCog.v_region_2025, REG))",
   ];
   
   static function main(): void {

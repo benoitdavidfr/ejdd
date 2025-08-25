@@ -4,10 +4,7 @@
  */
 namespace Algebra;
 
-use Dataset\Dataset;
-
-require_once 'dataset.inc.php';
-require_once 'joinf.php';
+require_once 'collection.inc.php';
 
 /** L'opérateur de projection qui applique à une Section une sélection et un renommage de ses champs et fournit une Section. */
 class Proj extends Collection {
@@ -31,6 +28,11 @@ class Proj extends Collection {
    */
   function implementedFilters(): array { return []; }
   
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+
   /** Projete un n-uplet.
    * @param int|string $key
    * @param array<mixed> $tuple
@@ -67,6 +69,9 @@ class Proj extends Collection {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
+
+require_once 'dataset.inc.php';
+use Dataset\Dataset;
 
 /** Test de Proj. */
 class ProjTest {

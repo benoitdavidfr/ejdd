@@ -21,8 +21,8 @@
  */
 namespace Dataset;
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/collection.inc.php';
-require_once __DIR__.'/predicate.inc.php';
+require_once 'collection.inc.php';
+require_once 'predicate.inc.php';
 
 use Algebra\RecArray;
 use Algebra\CollectionOfDs;

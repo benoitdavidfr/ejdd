@@ -3,8 +3,10 @@
  * @package Algebra
  */
 namespace Algebra;
-require_once __DIR__.'/predicate.inc.php';
-require_once __DIR__.'/geojson.inc.php';
+
+require_once 'dataset.inc.php';
+//require_once 'predicate.inc.php';
+//require_once 'geojson.inc.php';
 
 use Dataset\Dataset;
 use Algebra\DsParser;
@@ -169,23 +171,21 @@ class RecArray {
 //RecArray::test(); // Test RecArray 
 
 /** Le schéma JSON d'une Collection. */
-class SchemaOfCollection {
-  /** @var array<mixed> $array */
-  readonly array $array;
-
-  /** @param array<mixed> $schema */
-  function __construct(array $schema) { $this->array = $schema; }
-  
+abstract class SchemaOfCollection {
+  /** @param array<mixed> $array - contient le schéma JSON de la collection */
+  function __construct(readonly array $array) {}
+    
   /** Déduit du schéma si le type de la collection.
+   * @param array<mixed> $array - le schéma
    * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
    */
-  function kind2(int $debug): string {
+  static function skind2(array $array, int $debug): string {
     if ($debug) {
-      echo '<pre>array='; print_r($this->array); echo "</pre>\n";
+      echo '<pre>array='; print_r($array); echo "</pre>\n";
     }
-    switch ($type = $this->array['type']) {
+    switch ($type = $array['type']) {
       case 'object': {
-        $patProps = $this->array['patternProperties'];
+        $patProps = $array['patternProperties'];
         $prop = $patProps[array_keys($patProps)[0]];
         if (isset($prop['type'])) {
           $type = $prop['type'];
@@ -206,23 +206,23 @@ class SchemaOfCollection {
         }
       }
       case 'array': {
-        switch ($type = $this->array['items']['type'] ?? null) {
+        switch ($type = $array['items']['type'] ?? null) {
           case null: {
-            if (isset($this->array['items']['oneOf'])) {
-              switch ($type2 = $this->array['items']['oneOf'][0]['type'] ?? null) {
+            if (isset($array['items']['oneOf'])) {
+              switch ($type2 = $array['items']['oneOf'][0]['type'] ?? null) {
                 case null: {
                   //echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array=";
                   //print_r($this->array);
                   //echo "</pre>\n";
                   //return "this->array['items']['oneOf'][0]['type'] == null";
-                  throw new \Exception("this->array['items']['oneOf'][0]['type'] == null");
+                  throw new \Exception("array['items']['oneOf'][0]['type'] == null");
                 }
                 case 'object': return 'listOfTuples';
                 case 'array': return 'listOfValues';
-                default: throw new \Exception("this->array['items']['oneOf'][0]['type'] == '$type2' non prévu");
+                default: throw new \Exception("array['items']['oneOf'][0]['type'] == '$type2' non prévu");
               }
             }
-            elseif (($this->array['items'] ?? null) == []) {
+            elseif (($array['items'] ?? null) == []) {
               /*echo "<pre>this->array['items'] == []\nthis->array=";
               print_r($this->array);
               echo "</pre>\n";
@@ -234,7 +234,7 @@ class SchemaOfCollection {
               //print_r($this->array);
               //echo "</pre>\n";
               //return "this->array['items']['oneOf'] non défini";
-              throw new \Exception("this->array['items']['oneOf'] non défini");
+              throw new \Exception("array['items']['oneOf'] non défini");
             }
           }
           case 'object': return 'listOfTuples';
@@ -252,23 +252,94 @@ class SchemaOfCollection {
       }
     }
   }
-  
-  /** Debuggage de kind() */
-  function kind(?string $name=null, int $debug=0): string {
+
+  /** Debuggage de kind()
+   * @param array<mixed> $array - le schéma
+   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+   */
+  static function skind(array $array, ?string $name=null, int $debug=0): string {
     //$debug = ($name == 'InseeCog.v_commune_2025');
-    $kind = $this->kind2($debug);
+    $kind = self::skind2($array, $debug);
     if ($debug)
-      echo "SchemaOfCollection::kind($name) -> $kind<br>\n";
+      echo "SchemaOfCollection::skind($name) -> $kind<br>\n";
     return $kind;
   }
 
+  /** skind() appelé comme méthode non statique.
+   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+   */
+  function kind(?string $name=null): string { return self::skind($this->array, $name); }
+  
+  /** Création d'un SchemaOfCollection en fonction de son contenu.
+   * @param array<mixed> $array - le schéma
+   */
+  static function create(array $array): self {
+    return match (self::skind($array)) {
+      'dictOfTuples'=> new SchemaOfDictOfTuples($array),
+      'listOfTuples'=> new SchemaOfListOfTuples($array),
+      'dictOfValues','listOfValues'=> new SchemaOfXXXOfValues($array),
+    };
+  }
+  
   function toHtml(): string {
     $schema = $this->array;
     unset($schema['title']);
     unset($schema['description']);
     return RecArray::toHtml($schema);
   }
+
+  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  abstract function properties(): array;
 };
+
+/** Schema d'un dictOfTuples */
+class SchemaOfDictOfTuples extends SchemaOfCollection {
+  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+};
+
+/** Schema d'un listOfTuples */
+class SchemaOfListOfTuples extends SchemaOfCollection {
+  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array {
+    $items = $this->array['items'];
+    $props = [];
+    if (isset($items['properties'])) { // cas std non OneOf
+      foreach ($items['properties'] as $pname => $prop) {
+        $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])? $prop['type'] : json_encode($prop['type']));
+      }
+      return $props;
+    }
+    elseif (isset($items['oneOf'])) { // oneOf
+      //echo '$items[oneOf]='; print_r($items['oneOf']);
+      foreach ($items['oneOf'] as $case) {
+        foreach ($case['properties'] as $pname => $prop) {
+          //echo '$case[properties]='; print_r([$pname => $prop]);
+          $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])?$prop['type']:json_encode($prop['type']));
+        }
+      }
+      return $props;
+    }
+    else {
+      throw new \Exception("TO BE IMPLEMENTED");
+    }
+  }
+};
+
+/** Schema d'un dictOfValues|listOfValues */
+class SchemaOfXXXOfValues extends SchemaOfCollection {
+  /** Retourne la liste des propriétés potentielles
+   * @return array<string, string>
+   */
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+};
+
 
 /** Une Collection est un itérable d'Items soit exposé par un Dataset, soit issu d'une requête.
  * Une collection est capable d'itérer sur ses items, d'indiquer les filtres mis en oeuvre et d'afficher les items.
@@ -302,6 +373,11 @@ abstract class Collection {
    * @return list<string>
    */
   abstract function implementedFilters(): array;
+  
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  abstract function properties(): array;
   
   /** L'accès aux items d'une collection par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
@@ -402,7 +478,7 @@ class CollectionOfDs extends Collection {
   function __construct(string $dsName, string $name, array $schema) {
     $this->dsName = $dsName;
     $this->name = $name;
-    $this->schema = new SchemaOfCollection($schema);
+    $this->schema = SchemaOfCollection::create($schema);
     $this->title = $schema['title'];
     parent::__construct($this->schema->kind("$dsName.$name"));
   }
@@ -422,6 +498,11 @@ class CollectionOfDs extends Collection {
   /** Les filtres mis en oeuvre sont définis par le JdD. */
   function implementedFilters(): array { return Dataset::get($this->dsName)->implementedFilters(); }
   
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { return $this->schema->properties(); }
+
   /** La méthode getItems() est mise en oeuvre par le JdD.
    * @return \Generator<int|string,array<mixed>>
    */
@@ -512,3 +593,5 @@ class CollectionOfDs extends Collection {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
+
+throw new \Exception("collection.php - aucun code à exécuter");

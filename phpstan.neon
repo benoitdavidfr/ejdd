@@ -53,6 +53,7 @@ parameters:
     - predicate.inc.php
     - geojson.php
     - map.php
+    - join.php
     - joinf.php
     - joinp.php
     - proj.php

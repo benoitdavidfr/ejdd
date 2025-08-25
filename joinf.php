@@ -5,7 +5,8 @@
  */
 namespace Algebra;
 
-require_once 'dataset.inc.php';
+require_once 'collection.inc.php';
+require_once 'join.php';
 
 use Dataset\Dataset;
 
@@ -19,7 +20,7 @@ EOT
  * La clé d'une jointure est la concaténation des clés des collections d'origine;
  * cela permet un accès plus efficace au items par clé.
  */
-class JoinF extends Collection {
+class JoinF extends Collection {  
   function __construct(readonly string $type, readonly Collection $coll1, readonly string $field1, readonly Collection $coll2, readonly string $field2) {
     if (in_array($coll1->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
@@ -38,39 +39,25 @@ class JoinF extends Collection {
    */
   function implementedFilters(): array { return ['skip']; }
   
-  /** Concaténation de clas qui puisse être déconcaténées même imbriquées. */
-  static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
-  
-  /** Décompose la clé dans les 2 clés d'origine qui ont été concaténées; retourne un tableau avec les clés 1 et 2.
-   * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous en commentaire.
-   * @return array{1: string, 2: string}
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
    */
-  static function decatKeys(string $keys): array {
-    $start = SkipBracket::skip($keys);
-    return [1=> substr($start, 1, -1), 2=> substr($keys, 1, -1)];
-  }
-  
-  /** Test de decatKeys(). */
-  static function testDecatKeys(): void {
-    echo "<title>testDecatKeys</title><pre>\n";
-    $keys = '{6}{17622}';
-    $keys = "{c'est la 1ère}{c'est la 2nd}";
-    $keys = "{c'est {}la 1ère}{c'est{{}} la 2nd}";
-    $keys = "{c'est {}la 1ère{c'est{{}} la 2nd}";
-    echo "$keys -> "; print_r(self::decatKeys($keys));
-    die("Tué ligne ".__LINE__." de ".__FILE__);
-  }
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
   
   /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * @return \Generator<int|string,array<mixed>>
    */
   function getItems(array $filters=[]): \Generator {
+    echo "JoinF::getItems(), type=$this->type<br>\n";
     // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
     $no = $skip;
     foreach ($this->coll1->getItems() as $key1 => $tuple1) {
+      if (!isset($tuple1[$this->field1])) {
+        throw new \Exception("Champ $this->field1 non défini dans ".$this->coll1->id());
+      }
       $tuples2 = $this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]);
       $tuple = [];
       if ($this->type <> 'diff-join') {
@@ -80,11 +67,13 @@ class JoinF extends Collection {
       if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd collection
         if ($skip-- <= 0) {
           // attention à la manière de concaténer !!!
-          $key = ($this->kind == 'dictOfTuples') ? self::concatKeys($key1,'') : $no;
+          $key = ($this->kind == 'dictOfTuples') ? Join::concatKeys($key1,'') : $no;
           if ($this->type == 'left-join')
             yield $key => $tuple;
           elseif ($this->type == 'diff-join')
             yield $key => $tuple1;
+          else
+            throw new \Exception("Type = $this->type ni 'left-join' ni 'diff-join'");
           $no++;
         }
       }
@@ -94,7 +83,8 @@ class JoinF extends Collection {
             foreach ($tuple2 as $k => $v)
               $tuple["s2.$k"] = $v;
             if ($skip-- <= 0) {
-              $key = ($this->kind == 'dictOfTuples') ? self::concatKeys($key1,$key2) : $no;
+              $key = ($this->kind == 'dictOfTuples') ? Join::concatKeys($key1,$key2) : $no;
+              print_r([$key=> $tuple]);
               yield $key => $tuple;
               $no++;
             }
@@ -110,7 +100,7 @@ class JoinF extends Collection {
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(int|string $key): array|string|null {
-    $keys = self::decatKeys($key);
+    $keys = Join::decatKeys($key);
     if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
     if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
@@ -124,123 +114,20 @@ class JoinF extends Collection {
     return $tuple;
   }
 };
-//JoinF::testDecatKeys();
+
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
-/** Teste la méthode pour concaténer des clés. Il faut que cela puisse s'imbriquer.
- * Un objet DoV est un dict de valeurs.
- * /
-class DoV {
-  const DATA = [
-    'a'=> 'b',
-    'c'=> 'd',
-  ];
-  
-  function __construct(readonly array $dov) {}
-
-  /** Génère un objet paramétré par $p * /
-  static function gen(string $p): self {
-    $a = [];
-    foreach (self::DATA as $k => $v) {
-      $a["$k$p"] = "$v$p";
-    }
-    return new self($a);
-  }
-  
-  static function concatKeys(string $k1, string $k2): string {
-    return "{{$k1}}{{$k2}}";
-  }
-  
-  /** détecte dans input une sous-chaine démrrant au début, ayant autant de { que de } et se terminant juste avant un } * /
-  static private function findStart(string $input): string {
-    $countOfBracket = 0; // nbre de { rencontrées - nombre de }
-    for($i=0; $i<strlen($input); $i++) {
-      $char = substr($input, $i, 1);
-      //echo "char=$char<br>\n";
-      if ($char == '{')
-        $countOfBracket++;
-      elseif ($char == '}') {
-        if ($countOfBracket > 0)
-          $countOfBracket--;
-        else
-          return substr($input, 0, $i);
-      }
-    }
-    return $input;
-  }
-  
-  /** Décompose la clé en les 2 clés qui ont été concaténées. * /
-  static function decatKeys(string $keys): array {
-    $result = [];
-    $result[1] = self::findStart(substr($keys, 1));
-    $len1 = strlen($result[1]);
-    $result[2] = substr($keys, $len1+3, -1);
-    return $result;
-  }
-  
-  static function testDecatKeys(): void {
-    //echo 'findStart=',self::findStart("{ABCDE{FGH}IJ}{KLMNOPQRSTUVWXYZ}}0123456789"),"<br>\n";
-    //print_r(self::decatKeys('{aaa}{bbb}'));
-    //print_r(self::decatKeys('{{aaa}{bbb}}{c}'));
-    print_r(self::decatKeys('{aaa}{{bbb}{c}}'));
-    die();
-  }
-  
-  static function join(self $dov1, self $dov2): self {
-    $j = [];
-    foreach($dov1->dov as $k1 => $v1) {
-      foreach($dov2->dov as $k2 => $v2) {
-        $j[self::concatKeys($k1,$k2)] = "$v1|$v2";
-      }
-    }
-    return new Dov($j);
-  }
-  
-  function display(): void {
-    echo "<table border=1>";
-    foreach ($this->dov as $k => $v)
-      echo "<tr><td><a href='?action=d&key=",urlencode($k),"'>$k</td>",
-           "<td>$v</td></tr>\n";
-    echo "</table>\n";
-  }
-  
-  static function test() { // Test global 
-    switch ($_GET['action'] ?? null) {
-      case null: {
-        echo "<pre>\n";
-        //print_r(Dov::gen('z')); die();
-        //print_r(DoV::join(DoV::gen('y'), DoV::gen('z'))); die();
-        $j = DoV::join(
-          DoV::gen('x'),
-          DoV::join(DoV::gen('y'), DoV::gen('z'))
-        );
-        print_r($j);
-        $j->display();
-        break;
-      }
-      case 'd': {
-        $keys = DoV::decatKeys($_GET['key']);
-        echo '<pre>$keys='; print_r($keys); echo "\n";
-        echo "$keys[1] -> "; print_r(DoV::gen('x')->dov[$keys[1]]); echo "\n";
-        echo "$keys[2] -> "; print_r(DoV::join(DoV::gen('y'), DoV::gen('z'))->dov[$keys[2]]); echo "\n";
-        break;
-      }
-    }
-  }
-};
-DoV::test();
-*/
 
 ini_set('memory_limit', '10G');
 
 /** Test de JoinF. */
 class JoinFTest {
   const EXAMPLES = [
-   "Région X Préfectures" => 'inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
-   "Dépt X Préfectures" => 'inner-join(InseeCog.v_departement_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
+   "Région X Préfectures" => 'inner-joinf(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
+   "Dépt X Préfectures" => 'inner-joinf(InseeCog.v_departement_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
    "DeptReg.régions codeInsee=REG InseeCog.v_region_2025 (DeptReg.régions est un dictOfTuples)"
-     => "inner-join(DeptReg.régions,codeInsee,InseeCog.v_region_2025,REG)",
+     => "inner-joinf(DeptReg.régions,codeInsee,InseeCog.v_region_2025,REG)",
   ];
   /** procédure principale. */
   static function main(): void {
@@ -362,7 +249,7 @@ class JoinFTest {
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
         //echo '<pre>$_GET='; print_r($_GET); echo "</pre>\n";
         if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $_GET['collection'], $matches))
-          throw new \Exception("Erreur de décodage ducollId=$_GET[collection]");
+          throw new \Exception("Erreur de décodage du collId=$_GET[collection]");
         //echo '<pre>$matches='; print_r($matches); echo "</pre>\n";
         $type = $matches[1];
         $coll1 = $matches[2];

@@ -39,6 +39,8 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+25/8/2025:
+  - j'ai transformé un JoinP en JoinF dans le cas le plus simple
 24/8/2025:
   - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
   - ajout d'un pt d'entrée start() au parser et d'un point "officiel" Collection::query()
@@ -162,8 +164,8 @@ Lignes de commandes
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f index.php,geojson.php,dataset.inc.php,collection.inc.php,\
-geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,\
-join.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
+geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,skipbracket.php,\
+joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 
@@ -362,7 +364,8 @@ class Application {
           }
           echo "<h2>Autres</h2><ul>\n";
           echo "<li><a href='proj.php'>projection d'une collection de JdD</a></li>\n";
-          echo "<li><a href='join.php'>Jointure entre 2 collections de JdD</a></li>\n";
+          echo "<li><a href='joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
+          echo "<li><a href='joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
           echo "<li><a href='parser.php'>Parser</a></li>\n";
           echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";

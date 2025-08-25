@@ -24,6 +24,11 @@ class Select extends Collection {
    */
   function implementedFilters(): array { return ['skip']; }
   
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+
   /** L'accès aux items du Select par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * @return \Generator<int|string,array<mixed>>
@@ -73,6 +78,11 @@ class CollDyn extends Collection {
   /** @return list<string> */
   function implementedFilters(): array { return []; }
   
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+
   function getItems(array $filters=[]): \Generator {
     foreach ($this->tuples as $key => $tuple) {
       //echo "<pre>Dans CollDyn::getItems: ",print_r([$key => $tuple]); echo "</pre>\n";
