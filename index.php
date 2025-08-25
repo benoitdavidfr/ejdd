@@ -51,6 +51,10 @@ define('JOURNAL', [
 25/8/2025:
   - j'ai transformé un JoinP en JoinF dans le cas le plus simple
   - réécriture du test interactif de JoinP
+  - push sur Github
+  - création d'un README
+  - merge de la branche joinPredicate
+  - création d'une nouvelle branche joinPredicate2
 24/8/2025:
   - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
   - ajout d'un pt d'entrée start() au parser et d'un point "officiel" Collection::query()
@@ -188,7 +192,9 @@ geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featur
   Pour la merger:
     git checkout main # bascule sur main
     git merge hotfix  # fusion de la branche avec main
-  
+  Pour pousser sur github:
+    git push -u origin main
+    
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
 
