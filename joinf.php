@@ -49,7 +49,7 @@ class JoinF extends Collection {
    * @return \Generator<int|string,array<mixed>>
    */
   function getItems(array $filters=[]): \Generator {
-    echo "JoinF::getItems(), type=$this->type<br>\n";
+    //echo "JoinF::getItems(), type=$this->type<br>\n";
     // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
@@ -84,7 +84,7 @@ class JoinF extends Collection {
               $tuple["s2.$k"] = $v;
             if ($skip-- <= 0) {
               $key = ($this->kind == 'dictOfTuples') ? Join::concatKeys($key1,$key2) : $no;
-              print_r([$key=> $tuple]);
+              //print_r([$key=> $tuple]);
               yield $key => $tuple;
               $no++;
             }

@@ -7,6 +7,7 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
+- utiliser les 2 1er carac. de la collection omme préfix si nécessaire
 - prévoir un mécanisme de stockage des vues
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...

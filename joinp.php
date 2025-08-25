@@ -68,9 +68,9 @@ class Properties {
   /** Cherche si un algo plus efficace qu'un produit cartésien peut être utilisé.
    * Si c'est le cas retourne cet alorithme sous la forme d'une expression sur collections. Sinon retourne null. */ 
   function optimisedAlgo(string $type, Collection $coll1, Collection $coll2, Predicate $predicate): ?Collection {
-    echo '<pre>predicate='; print_r($predicate);
-    echo 'class=',get_class($predicate),"<br>\n";
-    echo 'properties=',json_encode($this->properties),"\n";
+    //echo '<pre>predicate='; print_r($predicate);
+    //echo 'class=',get_class($predicate),"<br>\n";
+    //echo 'properties=',json_encode($this->properties),"\n";
     switch ($class = get_class($predicate)) {
       case 'Algebra\PredicateField': {
         /** @var PredicateField $pf */
@@ -85,20 +85,20 @@ class Properties {
           // Pas d'algo plus efficace
           return null;
         }
-        echo '$this->sources=',json_encode($this->sources),"<br>\n";
+        /*echo '$this->sources=',json_encode($this->sources),"<br>\n";
         echo '($this->properties[$predicate->field1][source] == array_keys($this->sources)[0] ==> ',
-             $this->properties[$pf->field1]['source'],' == ',array_keys($this->sources)[0],"<br>\n";
+             $this->properties[$pf->field1]['source'],' == ',array_keys($this->sources)[0],"<br>\n"; */
         if ($this->properties[$pf->field1]['source'] == array_keys($this->sources)[0]) { // 1er champ -> 1ère source
-          echo "Champ $pf->field1 dans ",array_keys($this->sources)[0],"<br>\n";
+          //echo "Champ $pf->field1 dans ",array_keys($this->sources)[0],"<br>\n";
           $field1 = $pf->field1;
           $field2 = $pf->field2;
         }
         else {
-          echo "Champ $pf->field1 PAS dans ",array_keys($this->sources)[0],"<br>\n";
+          //echo "Champ $pf->field1 PAS dans ",array_keys($this->sources)[0],"<br>\n";
           $field1 = $pf->field2;
           $field2 = $pf->field1;
         }
-        echo "dans optimisedAlgo(), type=$type<br>\n";
+        //echo "dans optimisedAlgo(), type=$type<br>\n";
         return new JoinF($type, $coll1, $field1, $coll2, $field2);
       }
       default: throw new \Exception("sur $class");
@@ -151,31 +151,10 @@ class JoinP extends Collection {
   /** Concaténation de clas qui puisse être déconcaténées même imbriquées. */
   static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
   
-  /** Décompose la clé dans les 2 clés d'origine qui ont été concaténées; retourne un tableau avec les clés 1 et 2.
-   * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous en commentaire.
-   * @return array{1: string, 2: string}
-   */
-  static function decatKeys(string $keys): array {
-    $start = SkipBracket::skip($keys);
-    return [1=> substr($start, 1, -1), 2=> substr($keys, 1, -1)];
-  }
-  
-  /** Test de decatKeys(). */
-  static function testDecatKeys(): void {
-    echo "<title>testDecatKeys</title><pre>\n";
-    $keys = '{6}{17622}';
-    $keys = "{c'est la 1ère}{c'est la 2nd}";
-    $keys = "{c'est {}la 1ère}{c'est{{}} la 2nd}";
-    $keys = "{c'est {}la 1ère{c'est{{}} la 2nd}";
-    echo "$keys -> "; print_r(self::decatKeys($keys));
-    die("Tué ligne ".__LINE__." de ".__FILE__);
-  }
-  
   /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * @return \Generator<int|string,array<mixed>>
    */
-//POURQUOI CA NE MARCHE PAS
   function getItems(array $filters=[]): \Generator {
     // si skip est défini alors je saute skip tuples avant d'en renvoyer et de plus la numérotation commence à skip
     $skip = $filters['skip'] ?? 0;
@@ -183,9 +162,9 @@ class JoinP extends Collection {
     $no = $skip;
     
     if ($algo = $this->optimisedAlgo) {
-      echo 'algo=',$algo->id(),"<br>\n";
+      //echo 'algo=',$algo->id(),"<br>\n";
       foreach ($algo->getItems($filters) as $key => $tuple) {
-        print_r([$key=> $tuple]);
+        //print_r([$key=> $tuple]);
         yield $key => $tuple;
       }
     }
@@ -201,7 +180,7 @@ class JoinP extends Collection {
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(int|string $key): array|string|null {
-    $keys = self::decatKeys($key);
+    $keys = Join::decatKeys($key);
     if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
     if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
