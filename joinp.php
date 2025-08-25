@@ -16,17 +16,17 @@ EOT
 ]
 );
 
-/** construit la liste des propriétés de la jointure à partir des schémas des collections en entrée.
- * En cas de collision de nom, construite un nom
+/** Construit la liste des propriétés de la jointure à partir des schémas des collections en entrée.
+ * En cas de collision entre noms, génère un nom précédé du péfixe.
  */
-class Properties {
-  /** @var array<string,string> $sources - liste des sources de la forme [{prefix}=> {collId}] */
+class JoinProperties {
+  /** @var non-empty-array<string,string> $sources - liste des sources de la forme [{prefix}=> {collId}] */
   readonly array $sources;
-  /** @var array<string,array{'type':string,'sname':string,'source':string}> $properties - propriétés de la jointure indexées par leur nom final avec leur nom d'origine  */
+  /** @var non-empty-array<string,array{'type':string,'sname':string,'source':string}> $properties - propriétés de la jointure indexées par leur nom final avec leur nom d'origine  */
   readonly array $properties;
   
   /** Prend en entrée une liste de collections associées chacune à un préfix.
-   * @param array<string,Collection> $colls
+   * @param non-empty-array<string,Collection> $colls
    */
   function __construct(array $colls) {
     if (count($colls) <> 2) { // limité à 2 collections 
@@ -104,6 +104,18 @@ class Properties {
       default: throw new \Exception("sur $class");
     }
   }
+
+  /** Retourne les propriétés des sources telles qu'elles seront définies dans la jointure.
+   * @return array<string,array<string>> - [{prefix}=> [{nom}=> {type}]] * /
+  function sourceProps(): array {
+    $sprops = []; // le résultat
+    foreach ($this->properties as $prefix => $props) {
+      foreach ($props as $propName => $prop) {
+        $sprops[$prop['prefix']][$propName]= $prop['type'];
+      }
+    }
+    return $sprops;
+  }*/
 };
 
 /** Jointure sur prédicat entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
@@ -116,7 +128,7 @@ class JoinP extends Collection {
   readonly Collection $coll1;
   readonly Collection $coll2;
   readonly Predicate $predicate;
-  readonly Properties $properties;
+  readonly JoinProperties $joinProperties;
   readonly ?Collection $optimisedAlgo; // Algo optimisé
   
   function __construct(string $type, Collection $coll1, Collection $coll2, Predicate $predicate) {
@@ -129,8 +141,8 @@ class JoinP extends Collection {
     $this->coll1 = $coll1;
     $this->coll2 = $coll2;
     $this->predicate = $predicate;
-    $this->properties = new Properties(['s1'=> $coll1, 's2'=> $coll2]);
-    $this->optimisedAlgo = $this->properties->optimisedAlgo($this->type, $coll1, $coll2, $predicate);
+    $this->joinProperties = new JoinProperties(['s1'=> $coll1, 's2'=> $coll2]);
+    $this->optimisedAlgo = $this->joinProperties->optimisedAlgo($this->type, $coll1, $coll2, $predicate);
   }
 
   /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
@@ -169,13 +181,14 @@ class JoinP extends Collection {
       }
     }
     else {
-      throw new \Exception("To be implemented");
+      throw new \Exception("Produit cartésien - To be implemented");
     }
     
     return null;
   }
   
-  /** Retourne un n-uplet par sa clé.
+  /** A REVOIR
+   * Retourne un n-uplet par sa clé.
    * Je considère qu'une jointure perd les clés. L'accès par clé est donc un accès par index dans la liste.
    * @return array<mixed>|string|null
    */ 
@@ -207,6 +220,28 @@ class JoinPTest {
    "DeptReg.régions codeInsee=REG InseeCog.v_region_2025 (DeptReg.régions est un dictOfTuples)"
      => "inner-joinp(DeptReg.régions, InseeCog.v_region_2025, codeInsee = REG)",
   ];
+  
+  /** Fabrique une Table Row Html des propriéts à afficher à partir de [{prefix} => Collection]
+   * @param array<string, Collection> $colls - les collections et leur prefixe
+   */
+  static function collPropertiesHtml(array $colls): string {
+    $joinProperties = new JoinProperties($colls);
+    $propsPerColl = []; //[{prefix}=> [{propName}=> {type}]]
+    foreach ($joinProperties->properties as $propName=> $prop) {
+      $propsPerColl[$prop['source']][$propName] = $prop['type'];
+    }
+    
+    foreach ($propsPerColl as $prefix => $propsOfColl) {
+      $htmls[$prefix] = "<table border=1>"
+                        .implode('', array_map(
+                          function($name, $type): string { return "<tr><td>$name</td><td>$type</td></tr>\n"; },
+                          array_keys($propsOfColl), array_values($propsOfColl)))
+                        ."</td></tr></table>";
+    }
+    
+    return '<tr><td>Propriétés</td><td>'.implode('</td><td>', $htmls)."</td></tr>\n";
+  }
+  
   /** procédure principale. */
   static function main(): void {
     echo "<title>dataset/joinp</title>\n";
@@ -220,15 +255,14 @@ class JoinPTest {
           foreach (array_keys(Dataset::REGISTRE) as $dsName) {
             $datasets[$dsName] = Dataset::get($dsName)->title;
           }
-          /*echo "<table border=1><tr><form>\n",
+          echo "<table border=1><tr><form>\n",
                "<td>",HtmlForm::select('dataset1', array_merge([''=>'dataset1'], $datasets)),"</td>",
                "<td>",HtmlForm::select('dataset2', array_merge([''=>'dataset2'], $datasets)),"</td>\n",
                "<td><input type='submit' value='ok'></td>\n",
-               "</form></tr></table>\n",*/
+               "</form></tr></table>\n",
           die();
         }
-        /* A REVOIR
-        elseif (!isset($_GET['collection1'])) {
+        elseif (!isset($_GET['coll1'])) {
           echo "<h3>Choix des collections</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
@@ -250,67 +284,48 @@ class JoinPTest {
                "</form></table>\n";
           die();
         }
-        elseif (!isset($_GET['field1'])) {
-          echo "<h3>Choix des champs</h3>\n";
+        elseif (!isset($_GET['predicate'])) {
+          echo "<h3>Saisie du prédicat et du type de jointure</h3>\n";
           foreach ([1,2] as $i) {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
-            $item = [];
-            foreach ($ds->getItems($_GET["collection$i"]) as $item) { break; }
-            $selects[$i] = HtmlForm::select("field$i", array_keys($item));
-            $item = [];
+            $colls[$i] = $ds->collections[$_GET["coll$i"]];
           }
+          
+          // documentation des propriétés de chacun des collections avec les noms issus de la jointure
+          $collPropertiesHtml = self::collPropertiesHtml(['s1'=> $colls[1], 's2'=>$colls[2]]);
+          
+          $select = HtmlForm::select('type', [
+            'inner-join'=>"Inner-Join - Seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
+            'left-join'=> "Left-Join - Tous n-uplets 1ère coll. retournés avec s'ils existent ceux de la 2nd en correspondance",
+            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. sans correspondance dans la 2nd",
+          ]);
+          
           echo "<table border=1><form>\n",
                implode('',
                  array_map(
                    function($k) { return "<input type='hidden' name='$k' value='$_GET[$k]'>\n"; },
-                   ['dataset1', 'dataset2','collection1','collection2']
+                   ['dataset1', 'dataset2','coll1','coll2']
                  )
                ),
                "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[2]</td></tr>\n",
-               "<tr><td>collections</td><td>$_GET[collection1]</td><td>$_GET[collection2]</td></tr>\n",
-               "<tr><td>fields</th><td>$selects[1]</td><td>$selects[2]</td>",
-               "<td><input type='submit' value='ok'></td></tr>\n",
+               "<tr><td>collections</td><td>$_GET[coll1]</td><td>$_GET[coll2]</td></tr>\n",
+               "<tr><td>prédicat</th><td colspan=2><input type='text' name='predicate' size='180' /></td></tr>",
+               "<tr><td>type</td><td colspan=2>$select</td></tr>\n",
+               "<tr><td colspan=3><center><input type='submit' value='ok'></center></td></tr>\n",
+               $collPropertiesHtml,
                "</form></table>\n";
           die();
         }
-        elseif (!isset($_GET['type'])) {
-          echo "<h3>Choix du type de jointure</h3>\n";
-          foreach ([1,2] as $i) {
-            $ds = Dataset::get($_GET["dataset$i"]);
-            $dsTitles[$i] = $ds->title;
-          }
-          $select = HtmlForm::select('type', [
-            'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
-            'left-join'=> "Left-Join - tous les n-uplets de la 1ère coll. sont retournés avec s'ils existent ceux de la 2nd en correspondance",
-            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. n'ayant pas de correspondance dans le 2nd",
-          ]);
-          echo "<table border=1><form>\n",
-               implode(
-                 '',
-                 array_map(
-                   function($k) { return "<input type='hidden' name='$k' value='$_GET[$k]'>\n"; },
-                   ['dataset1', 'dataset2','collection1','collection2','field1','field2']
-                 )
-               ),
-               "<tr><td>datasets</td><td>$dsTitles[1]</td><td>$dsTitles[2]</td></tr>\n",
-               "<tr><td>collections</td><td>$_GET[collection1]</td><td>$_GET[collection2]</td></tr>\n",
-               "<tr><td>fields</th><td>$_GET[field1]</td><td>$_GET[field2]</td></tr>",
-               "<tr><td>type</td><td colspan=2>$select</td><td><input type='submit' value='ok'></td></tr>\n",
-               "</form></table>\n";
-          die();
-        }
-        else { // A CORRIGER 
-          throw new \Exception("To be implemented");
-          /*$join = new JoinP(
+        else {
+          $join = new JoinP(
             $_GET['type'],
-            CollectionOfDs::get(json_encode(['dataset'=>$_GET['dataset1'], 'collection'=>$_GET["collection1"]])),
-            $_GET['field1'],
-            CollectionOfDs::get(json_encode(['dataset'=>$_GET['dataset2'], 'collection'=>$_GET["collection2"]])),
-            $_GET['field2'],
+            CollectionOfDs::get("$_GET[dataset1].$_GET[coll1]"),
+            CollectionOfDs::get("$_GET[dataset2].$_GET[coll2]"),
+            PredicateParser::start($_GET['predicate'])
           );
-          $join->displayItems();* /
-        }*/
+          $join->displayItems();
+        }
         break;
       }
       case 'query': { // query transmises par l'appel initial 

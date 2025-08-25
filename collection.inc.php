@@ -170,7 +170,7 @@ class RecArray {
 };
 //RecArray::test(); // Test RecArray 
 
-/** Le schéma JSON d'une Collection. */
+/** Le schéma JSON d'une Collection d'un JdD. */
 abstract class SchemaOfCollection {
   /** @param array<mixed> $array - contient le schéma JSON de la collection */
   function __construct(readonly array $array) {}

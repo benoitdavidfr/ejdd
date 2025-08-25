@@ -7,7 +7,13 @@
 /** Actions à réaliser. */
 define('A_FAIRE', [
 <<<'EOT'
-- utiliser les 2 1er carac. de la collection omme préfix si nécessaire
+- améliorations JoinP
+  - stabiliser la gestion des préfix dans les 2 jointures
+    - utiliser les 2 1er carac. de la collection omme préfix si nécessaire
+    - aligner les 2 Join
+  - écrire les différentes méthodes properties
+  - écrire l'algo du produit cartésien
+  - écrire le cas d'un prédicat plus complexe
 - prévoir un mécanisme de stockage des vues
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
