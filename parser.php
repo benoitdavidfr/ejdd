@@ -77,17 +77,19 @@ class DsParser {
   ];
   const BNF = [
     <<<'EOT'
-{program} ::= 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
+{program} ::= 'display' '(' {expCollection} ')' // affiche le contenu d'une Collection'
             | 'draw' '(' {expDataset} ')'  // dessine la carte d'un Dataset'
             | {expCollection}              // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                    // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-                  | {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
-                  | {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
-                //| 'union' '(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
-                  | 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
-                  | 'select' '(' {predicate} ',' {expCollection} ')'
-                //| 'map' '(' {phpFun} ',' {expCollection} ')' -------------------------------- [TO BE COMPLETED]
+              1   | {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+              2   | {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+              3 //| 'Union' '(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
+              4   | 'Proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
+              5   | 'Select' '(' {predicate} ',' {expCollection} ')'
+              6   | 'CProduct' '(' {expCollection} ',' {expCollection} ')'
+              7   | 'OnLineColl' '(' {json} ')'
+              8 //| 'Map' '(' {phpFun} ',' {expCollection} ')' -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
 {namePair} ::= {name} '>' {name}
@@ -229,84 +231,122 @@ EOT
   static function expCollection(array $path, string &$text0): ?Collection {
     $path[] = "expCollection";
     //echo "Test expCollection($text0)<br>\n";
-    // {expCollection}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-    $text = $text0;
-    if (($dataset = self::expDataset($path, $text))
-      && self::token($path, '{point}', $text)
-        && ($name = self::token($path, '{name}', $text))
-    ) {
-      self::addTrace($path, "Succès expCollection#0", $text0);
-      $text0 = $text;
-      return $dataset->collections[$name];
-    }
-    self::addTrace($path, "Echec expCollection#0", $text0);
     
-    // {expCollection}#1 : {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
-    $text = $text0;
-    if (($joinFName = self::token($path, '{joinFName}', $text))
-      && self::pmatch('\(', $text)
-        && ($expCollection1 = self::expCollection($path, $text))
+    { // {expCollection}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
+      $text = $text0;
+      if (($dataset = self::expDataset($path, $text))
+        && self::token($path, '{point}', $text)
+          && ($name = self::token($path, '{name}', $text))
+      ) {
+        self::addTrace($path, "Succès expCollection#0", $text0);
+        $text0 = $text;
+        return $dataset->collections[$name];
+      }
+      self::addTrace($path, "Echec expCollection#0", $text0);
+    }
+    
+    { // {expCollection}#1 : {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+      $text = $text0;
+      if (($joinFName = self::token($path, '{joinFName}', $text))
+        && self::pmatch('\(', $text)
+          && ($expCollection1 = self::expCollection($path, $text))
+            && self::pmatch(',', $text)
+              && ($field1 = self::token($path, '{name}', $text))
+                && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
+                  && ($expCollection2 = self::expCollection($path, $text))
+                    && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
+                      && ($field2 = self::token($path, '{name}', $text))
+                        && self::pmatch('\)', $text)
+      ) {
+        self::addTrace($path, "Succès expCollection#1", $text0);
+        $text0 = $text;
+        return new JoinF(substr($joinFName, 0, -1), $expCollection1, $field1, $expCollection2, $field2);
+      }
+      self::addTrace($path, "Echec expCollection#1", $text0);
+    }
+    
+    { // {expCollection}#2 : {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+      $text = $text0;
+      if (($joinPName = self::token($path, '{joinPName}', $text))
+        && self::pmatch('\(', $text)
+          && ($expCollection1 = self::expCollection($path, $text))
+            && self::pmatch(',', $text)
+              && ($expCollection2 = self::expCollection($path, $text))
+                && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
+                  && ($predicate = PredicateParser::predicate($path, $text))
+                    && self::pmatch('\)', $text)
+      ) {
+        self::addTrace($path, "Succès expCollection#1", $text0);
+        $text0 = $text;
+        return new JoinP(substr($joinPName, 0, -1), $expCollection1, $expCollection2, $predicate);
+      }
+      self::addTrace($path, "Echec expCollection#1", $text0);
+    }
+    
+    // MANQUE {expCollection}#3 : 'Union' '(' {expCollection} ',' {expCollection} ')'
+
+    { // {expCollection}#4 : 'Proj(' {expCollection} ',' '[' {FieldPairs} ']' ')'
+      $text = $text0;
+      if (self::pmatch('proj\(', $text) 
+        && ($expCollection = self::expCollection($path, $text))
           && self::pmatch(',', $text)
-            && ($field1 = self::token($path, '{name}', $text))
-              && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
-                && ($expCollection2 = self::expCollection($path, $text))
-                  && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
-                    && ($field2 = self::token($path, '{name}', $text))
-                      && self::pmatch('\)', $text)
-    ) {
-      self::addTrace($path, "Succès expCollection#1", $text0);
-      $text0 = $text;
-      return new JoinF(substr($joinFName, 0, -1), $expCollection1, $field1, $expCollection2, $field2);
+            && self::pmatch('\[', $text)
+              && ($fieldPairs = self::fieldPairs($path, $text))
+                && self::pmatch('\]', $text)
+                  && self::pmatch('\)', $text)
+      ) {
+        $text0 = $text;
+        return new Proj($expCollection, $fieldPairs);
+      }
+      self::addTrace($path, "Echec expCollection#4", $text0);
     }
-    self::addTrace($path, "Echec expCollection#1", $text0);
-    
-    // {expCollection}#2 : {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
-    $text = $text0;
-    if (($joinPName = self::token($path, '{joinPName}', $text))
-      && self::pmatch('\(', $text)
+
+    { // {expCollection}#5 : 'Select(' {predicate} ',' {expCollection} ')'
+      $text = $text0;
+      if (self::pmatch('Select\(', $text)
+        && ($predicate = PredicateParser::predicate($path, $text))
+          && self::pmatch(',', $text)
+            && ($expCollection = self::expCollection($path, $text))
+              && self::pmatch('\)', $text)
+      ) {
+        $text0 = $text;
+        return new Select($predicate, $expCollection);
+      }
+      self::addTrace($path, "Echec expCollection#5", $text0);
+    }
+
+    { // {expCollection}#6 : 'CProduct(' {expCollection} ',' {expCollection} ')'
+      $text = $text0;
+      if (self::pmatch('CProduct\(', $text)
         && ($expCollection1 = self::expCollection($path, $text))
           && self::pmatch(',', $text)
             && ($expCollection2 = self::expCollection($path, $text))
-              && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
-                && ($predicate = PredicateParser::predicate($path, $text))
-                  && self::pmatch('\)', $text)
-    ) {
-      self::addTrace($path, "Succès expCollection#1", $text0);
-      $text0 = $text;
-      return new JoinP(substr($joinPName, 0, -1), $expCollection1, $expCollection2, $predicate);
+              && self::pmatch('\)', $text)
+      ) {
+        self::addTrace($path, "Succès expCollection#6", $text0);
+        $text0 = $text;
+        return new CProduct($expCollection1, $expCollection2);
+      }
+      self::addTrace($path, "Echec expCollection#6", $text0);
     }
-    self::addTrace($path, "Echec expCollection#1", $text0);
     
-    // MANQUE {expCollection}#3 : 'union' '(' {expCollection} ',' {expCollection} ')'
-
-    // {expCollection}#4 : 'proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
-    $text = $text0;
-    if (self::pmatch('proj\(', $text) 
-      && ($expCollection = self::expCollection($path, $text))
-        && self::pmatch(',', $text)
-          && self::pmatch('\[', $text)
-            && ($fieldPairs = self::fieldPairs($path, $text))
-              && self::pmatch('\]', $text)
-                && self::pmatch('\)', $text)
-    ) {
-      $text0 = $text;
-      return new Proj($expCollection, $fieldPairs);
+    { // {expCollection}#7 : 'OnLineColl' '(' {json} ')'
+      $text = $text0;
+      if (self::pmatch('OnLineColl\(', $text)
+        && (substr($text, 0, 1) == '{')
+          && ($json = SkipBracket::skip($text))
+            && self::pmatch('\)', $text))
+      {
+        self::addTrace($path, "succès {geojson}", $text0);
+        $text0 = $text;
+        $json = json_decode($json, true);
+        return new OnLineColl($json['properties'], $json['tuples']);
+        self::addTrace($path, "Echec expCollection#7", $text0);
+      }
     }
-    self::addTrace($path, "Echec expCollection#4", $text0);
-
-    // {expCollection}#5 : 'select' '(' {predicate} ',' {expCollection} ')'
-    $text = $text0;
-    if (self::pmatch('select\(', $text)
-      && ($predicate = PredicateParser::predicate($path, $text))
-        && self::pmatch(',', $text)
-          && ($expCollection = self::expCollection($path, $text))
-            && self::pmatch('\)', $text)
-    ) {
-      $text0 = $text;
-      return new Select($predicate, $expCollection);
-    }
-    self::addTrace($path, "Echec expCollection#5", $text0);
-
+    
+    // MANQUE {expCollection}#8 : 'Map' '(' {phpFun} ',' {expCollection} ')' 
+    
     self::addTrace($path, "Echec expCollection", $text0);
     return null;
   }

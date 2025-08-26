@@ -299,7 +299,20 @@ class SchemaOfDictOfTuples extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array {
+    //echo '<pre>schemaOfDictOfTuples='; print_r($this);
+    $patternProperties = $this->array['patternProperties'];
+    //echo '<pre>patternProperties='; print_r($patternProperties);
+    // Attention, si une propriété est définie dans plusieurs objectTypes, c'est le dernier qui est pris en compte
+    $props = [];
+    foreach ($patternProperties as $objectType) { // chaque type d'objet
+      //echo '<pre>$objectType='; print_r($objectType);
+      foreach ($objectType['properties'] as $pname => $prop) {
+        $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])? $prop['type'] : json_encode($prop['type']));
+      }
+    }
+    return $props;
+  }
 };
 
 /** Schema d'un listOfTuples */

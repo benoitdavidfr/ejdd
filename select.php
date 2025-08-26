@@ -4,7 +4,8 @@
  */
 namespace Algebra;
 
-require_once 'dataset.inc.php';
+require_once 'collection.inc.php';
+require_once 'onlinecoll.php';
 
 /** Opérateur de sélection des n-uplets sur un prédicat fournissant une collection.
  * Il y a une duplication entre l'opérateur Select et la possibilité pour une Collection de prendre en compte un filtre Predicate.
@@ -64,33 +65,6 @@ class Select extends Collection {
   function getOneItemByKey(int|string $key): array|string|null {
     return $this->coll->getOneItemByKey($key);
   }
-};
-
-/** Collection dynamique utile pour des tests. */
-class CollDyn extends Collection {
-  /** @var array<string,array<string,string|int|float>> $tuples */
-  readonly array $tuples;
-  /** @param array<string,array<string,string|int|float>> $tuples */
-  function __construct(array $tuples) { $this->tuples = $tuples; }
-  
-  function id(): string { return 'CollDyn()'.json_encode($this->tuples).')'; }
-  
-  /** @return list<string> */
-  function implementedFilters(): array { return []; }
-  
-  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
-   * @return array<string, string>
-   */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
-
-  function getItems(array $filters=[]): \Generator {
-    foreach ($this->tuples as $key => $tuple) {
-      //echo "<pre>Dans CollDyn::getItems: ",print_r([$key => $tuple]); echo "</pre>\n";
-      yield $key => $tuple;
-    }
-  }
-    
-  function getOneItemByKey(int|string $key): array|string|null { return $this->tuples[$key] ?? null; }
 };
 
 

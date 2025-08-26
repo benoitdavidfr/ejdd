@@ -53,11 +53,13 @@ parameters:
     - predicate.inc.php
     - geojson.php
     - map.php
+    - cproduct.php
     - join.php
     - joinf.php
     - joinp.php
     - proj.php
     - select.php
+    - onlinecoll.php
     - parser.php
     - datasets/dataseteg.php
     - datasets/inseecog.php

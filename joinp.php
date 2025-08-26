@@ -16,87 +16,45 @@ EOT
 ]
 );
 
-/** Construit la liste des propriétés de la jointure à partir des schémas des collections en entrée.
- * En cas de collision entre noms, génère un nom précédé du péfixe.
- */
-class JoinProperties {
-  /** @var non-empty-array<string,string> $sources - liste des sources de la forme [{prefix}=> {collId}] */
-  readonly array $sources;
-  /** @var non-empty-array<string,array{'type':string,'sname':string,'source':string}> $properties - propriétés de la jointure indexées par leur nom final avec leur nom d'origine  */
-  readonly array $properties;
-  
-  /** Prend en entrée une liste de collections associées chacune à un préfix.
-   * @param non-empty-array<string,Collection> $colls
-   */
-  function __construct(array $colls) {
-    if (count($colls) <> 2) { // limité à 2 collections 
-      throw new \Exception("TO BE IMPLEMENTED");
-    }
-    
-    $this->sources = array_map(function($coll) { return $coll->id(); }, $colls);
+ini_set('memory_limit', '10G');
+set_time_limit(5*60);
 
-    $collProperties = []; // [{prefix}=> $coll->properties()]
-    foreach ($colls as $prefix => $coll) {
-      $collProperties[$prefix] = $coll->properties();
-      //echo "<pre>$prefix ->propNames=",json_encode(array_keys($collProperties[$prefix])),"\n";
-    }
-
-    // détection des collisions de noms
-    $collisions = []; // [{propName} => [{prefix}=> 1]]
-    foreach ($collProperties as $prefix => $properties) {
-      foreach ($properties as $pName => $type) {
-        $collisions[$pName][$prefix] = 1;
-      }
-    }
-    
-    // constitution du dictionnaire des propriétés fusionnées
-    $fprops = [];
-    foreach ($collProperties as $prefix => $properties) {
-      foreach ($properties as $pName => $type) {
-        if (count($collisions[$pName]) == 1) { // il n'y a pas collision
-          $fprops[$pName] = ['type'=> $type, 'sname'=> $pName, 'source'=> $prefix];
-        }
-        else {
-          $fprops["{$prefix}_{$pName}"] = ['type'=> $type, 'sname'=> $pName, 'source'=> $prefix];
-        }
-      }
-    }
-    //echo '<pre>$joinp->props = '; print_r($fprops);
-    $this->properties = $fprops;
-  }
-    
+class Optimiser {
   /** Cherche si un algo plus efficace qu'un produit cartésien peut être utilisé.
    * Si c'est le cas retourne cet alorithme sous la forme d'une expression sur collections. Sinon retourne null. */ 
   function optimisedAlgo(string $type, Collection $coll1, Collection $coll2, Predicate $predicate): ?Collection {
-    //echo '<pre>predicate='; print_r($predicate);
+    echo '<pre>predicate='; print_r($predicate);
+    // Dans un 1er temps je n'accepte d'optimiser que le prédicats '='. A voir pour traitements spatiaux.
+    if ($predicate->comparator->compOp <> '=') {
+      return null;
+    }
     //echo 'class=',get_class($predicate),"<br>\n";
     //echo 'properties=',json_encode($this->properties),"\n";
     switch ($class = get_class($predicate)) {
       case 'Algebra\PredicateField': {
         /** @var PredicateField $pf */
         $pf = $predicate; // J'affirme que $predicate est un PredicateField pour satisfaire PhpStan */
-        if (!isset($this->properties[$pf->field1])) {
-          throw new \Exception("Champ ".$pf->field1." non défini dans les collections sources");
+        echo "<pre>pf="; print_r($pf);
+        echo '$properties='; print_r($this->properties);
+        if (!($field1 = $this->properties[$pf->field1]['sname'])) { // je traduit le nom de champ dans son nom d'origine
+          throw new \Exception("Champ '".$pf->field1."' non défini dans les collections sources");
         }
-        if (!isset($this->properties[$pf->field2])) {
-          throw new \Exception("Champ ".$pf->field2." non défini dans les collections sources");
+        if (!($field2 = $this->properties[$pf->field2]['sname'])) {
+          throw new \Exception("Champ '".$pf->field2."' non défini dans les collections sources");
         }
         if ($this->properties[$pf->field1]['source'] == $this->properties[$pf->field2]['source']) {
           // Pas d'algo plus efficace
           return null;
         }
+        
         /*echo '$this->sources=',json_encode($this->sources),"<br>\n";
         echo '($this->properties[$predicate->field1][source] == array_keys($this->sources)[0] ==> ',
              $this->properties[$pf->field1]['source'],' == ',array_keys($this->sources)[0],"<br>\n"; */
-        if ($this->properties[$pf->field1]['source'] == array_keys($this->sources)[0]) { // 1er champ -> 1ère source
-          //echo "Champ $pf->field1 dans ",array_keys($this->sources)[0],"<br>\n";
-          $field1 = $pf->field1;
-          $field2 = $pf->field2;
-        }
-        else {
+        if ($this->properties[$pf->field1]['source'] <> array_keys($this->sources)[0]) { // 1er champ -> 2ème source
           //echo "Champ $pf->field1 PAS dans ",array_keys($this->sources)[0],"<br>\n";
-          $field1 = $pf->field2;
-          $field2 = $pf->field1;
+          $f = $field1;
+          $field1 = $field2;
+          $field2 = $f;
         }
         //echo "dans optimisedAlgo(), type=$type<br>\n";
         return new JoinF($type, $coll1, $field1, $coll2, $field2);
@@ -104,18 +62,6 @@ class JoinProperties {
       default: throw new \Exception("sur $class");
     }
   }
-
-  /** Retourne les propriétés des sources telles qu'elles seront définies dans la jointure.
-   * @return array<string,array<string>> - [{prefix}=> [{nom}=> {type}]] * /
-  function sourceProps(): array {
-    $sprops = []; // le résultat
-    foreach ($this->properties as $prefix => $props) {
-      foreach ($props as $propName => $prop) {
-        $sprops[$prop['prefix']][$propName]= $prop['type'];
-      }
-    }
-    return $sprops;
-  }*/
 };
 
 /** Jointure sur prédicat entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
@@ -160,8 +106,8 @@ class JoinP extends Collection {
    */
   function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
 
-  /** Concaténation de clas qui puisse être déconcaténées même imbriquées. */
-  static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
+  /** Concaténation de clas qui puisse être déconcaténées même imbriquées. * /
+  static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }*/
   
   /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
@@ -179,9 +125,10 @@ class JoinP extends Collection {
         //print_r([$key=> $tuple]);
         yield $key => $tuple;
       }
+      return null;
     }
     else {
-      throw new \Exception("Produit cartésien - To be implemented");
+      throw new \Exception("Pas d'algo - To be implemented");
     }
     
     return null;

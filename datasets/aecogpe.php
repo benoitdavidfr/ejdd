@@ -35,7 +35,7 @@ EOT
 
 /** JdD Admin Express COG Carto petite échelle 2025 de l'IGN (AeCogPe). */
 class AeCogPe extends Dataset {
-  const GEOJSON_DIR = 'aecogpe2025';
+  const GEOJSON_DIR = __DIR__.'/aecogpe2025';
   const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";
   const DESCRIPTION = AECOGPE_DESCRIPTION[0];
   const SCHEMA = [
@@ -498,23 +498,6 @@ class AeCogPe extends Dataset {
   */
   function getItems(string $cname, mixed $filtre=null): \Generator {
     foreach (Feature::fromFile(self::GEOJSON_DIR."/$cname.geojson") as $no => $feature) {
-      
-      /*$feature = $feature->asArray();
-      $tuple = array_change_key_case($feature['properties']);
-      if (!isset($tuple['id']))
-        throw new \Exception("Champ 'id' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");
-      $id = $tuple['id'];
-      unset($tuple['id']);
-      // Si la bbbox est présente alors je la stoke dans la géométrie
-      $geometry = $feature['geometry'] ?? [];
-      if ($bbox = $feature['bbox'] ?? null) {
-        $geometry = ['type'=> $geometry['type'], 'bbox'=> $bbox, 'coordinates'=> $geometry['coordinates']];
-      }
-      // Si la géométrie est renseignée alors je la stocke dans le n-uplet
-      if ($geometry) {
-        $tuple['geometry'] = $geometry;
-      }*/
-      
       //echo '<pre>$feature retourné par fromFile()= '; print_r($feature);
       if (!($id = $feature->properties['ID']))
         throw new \Exception("Champ 'ID' absent du feature $no du fichier ".self::GEOJSON_DIR."/$cname.geojson");

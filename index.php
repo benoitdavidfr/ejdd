@@ -51,6 +51,7 @@ define('JOURNAL', [
 26/8/2025:
   - améliorations de inseecog.yaml
   - correction des chemins d'inclusion de source et d'ouverture de fichiers dans datasets/*.php
+  - ajout CProduct et OnLineColl, modif parser en conséquence et un peu plus
 25/8/2025:
   - j'ai transformé un JoinP en JoinF dans le cas le plus simple
   - réécriture du test interactif de JoinP
@@ -65,6 +66,12 @@ define('JOURNAL', [
     - je suis à une étape intermédiaire significative et censée fonctionner
     - les 2 évolutions précédentes n'ont rien à voir avec l'objectif de cette branche
   - création d'une nlle branche joinPredicate dont l'objectif est de développer un join fondé sur un prédicat
+EOT
+]
+);
+/** Journal des modifications du code avant août 2025. */
+define('JOURNAL_AVANT_24AOUT2025', [
+<<<'EOT'
 23/8/2025:
   - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
   - parsing du GeoJSON, des BBox et des positions dans Predicate
@@ -182,7 +189,7 @@ Lignes de commandes
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
 geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,skipbracket.php,\
-join.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
+cproduct.php,join.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 
