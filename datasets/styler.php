@@ -7,8 +7,8 @@
  */
 namespace Dataset;
 
-require_once 'vendor/autoload.php';
-require_once 'dataset.inc.php';
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../dataset.inc.php';
 
 use Algebra\RecArray;
 use Symfony\Component\Yaml\Yaml;
@@ -126,7 +126,7 @@ class StylerBuild {
         break;
       }
       case 'schema': {
-        $schema = Yaml::parseFile(strToLower('styler.yaml'));
+        $schema = Yaml::parseFile(__DIR__.strToLower('/styler.yaml'));
         
         // Validation du schéma des feuilles de styles par rapport au méta-schéma JSON Schema
         $validator = new Validator;
@@ -144,7 +144,7 @@ class StylerBuild {
         }
         
         // Validation des MD du jeu de données
-        $styleSheet = Yaml::parseFile(strToLower("$_GET[dataset].yaml"));
+        $styleSheet = Yaml::parseFile(__DIR__.strToLower("/$_GET[dataset].yaml"));
         $validator = new Validator;
         $data = RecArray::toStdObject($styleSheet);
         $validator->validate($data, $schema);

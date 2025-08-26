@@ -7,7 +7,7 @@
  */
 namespace Dataset;
 
-require_once 'dataset.inc.php';
+require_once __DIR__.'/../dataset.inc.php';
 
 /** Gère un cache de certains appels Http. */
 class Cache {

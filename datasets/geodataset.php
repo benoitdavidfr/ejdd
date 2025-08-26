@@ -7,9 +7,9 @@
  */
 namespace Dataset;
 
-require_once 'vendor/autoload.php';
-require_once 'dataset.inc.php';
-require_once 'geojson.inc.php';
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../dataset.inc.php';
+require_once __DIR__.'/../geojson.inc.php';
 
 use GeoJSON\Feature;
 use Symfony\Component\Yaml\Yaml;
@@ -27,7 +27,7 @@ class GeoDataset extends Dataset {
   
   function __construct(string $dsName) {
     $this->dsName = $dsName;
-    $md = Yaml::parseFile(strtolower(__DIR__."/$dsName.yaml"));
+    $md = Yaml::parseFile(__DIR__.strtolower("/$dsName.yaml"));
     parent::__construct($dsName, $md['title'], $md['description'], $md['$schema']);
     $this->params = $md['params'];
   }

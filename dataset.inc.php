@@ -191,7 +191,7 @@ abstract class Dataset {
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
     $schema = RecArray::toStdObject($this->schema);
-    $metaSchemaDataset = Yaml::parseFile('dataset.yaml');
+    $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
     $validator->validate($schema, $metaSchemaDataset);
     return $validator->isValid();
   }
@@ -217,7 +217,7 @@ abstract class Dataset {
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
     $schema = RecArray::toStdObject($this->schema);
-    $metaSchemaDataset = Yaml::parseFile('dataset.yaml');
+    $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
     $validator->validate($schema, $metaSchemaDataset);
     if ($validator->isValid()) {
       echo "Le schéma du JdD est conforme au méta-schéma des JdD.<br>\n";

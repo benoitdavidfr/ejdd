@@ -48,12 +48,15 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+26/8/2025:
+  - améliorations de inseecog.yaml
+  - correction des chemins d'inclusion de source et d'ouverture de fichiers dans datasets/*.php
 25/8/2025:
   - j'ai transformé un JoinP en JoinF dans le cas le plus simple
   - réécriture du test interactif de JoinP
   - push sur Github
   - création d'un README
-  - merge de la branche joinPredicate
+  - merge de la branche joinPredicate (pour pousser le README sur GitHub)
   - création d'une nouvelle branche joinPredicate2
 24/8/2025:
   - création d'un répertoire datasets dans lequel sont stockés les fichiers des JdD
@@ -395,7 +398,7 @@ class Application {
           echo "<li><a href='joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
           echo "<li><a href='parser.php'>Parser</a></li>\n";
-          echo "<li><a href='mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
+          echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
           echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
           echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
           echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",

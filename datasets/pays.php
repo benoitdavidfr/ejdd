@@ -7,7 +7,7 @@
  */
 namespace Dataset;
 
-require_once 'spreadsheetdataset.inc.php';
+require_once __DIR__.'/spreadsheetdataset.inc.php';
 
 /** JdD des Pays fondé sur l'utilisation de spreadsheetdataset.inc.php */
 class Pays extends SpreadSheetDataset {
