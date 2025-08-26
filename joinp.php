@@ -1,6 +1,6 @@
 <?php
 /** Jointure de 2 collections fondée sur un prédicat.
- * Formellement c'est le produit cartésien des 2 collections suivi d'une sélection mais l'objectif dans un souci de performance
+ * Formellement c'est le produit cartésien des 2 collections suivi d'une sélection mais l'objectif, dans un souci de performance,
  * est d'effectuer un join sur champs égaux et d'utiliser un index d'accès sur le champ dans une des 2 collections.
  * @package Algebra
  */

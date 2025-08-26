@@ -177,9 +177,9 @@ Lignes de commandes
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f index.php,geojson.php,dataset.inc.php,collection.inc.php,\
+    ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
 geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,skipbracket.php,\
-joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
+join.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 

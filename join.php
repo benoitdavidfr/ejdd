@@ -1,5 +1,7 @@
 <?php
-/** Elts communs à JoinP et JoinF. */
+/** Elts communs à JoinP et JoinF.
+ * @package Algebra
+ */
 namespace Algebra;
 
 require_once 'skipbracket.php';
