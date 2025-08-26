@@ -44,7 +44,7 @@ class GeoDataset extends Dataset {
     //print_r($filters);
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
-    foreach (Feature::fromFile(strtolower($this->dsName."/$cName.geojson")) as $no => $feature)  {
+    foreach (Feature::fromFile(__DIR__.strtolower('/'.$this->dsName."/$cName.geojson")) as $no => $feature)  {
       if ($no < $skip)
         continue;
       yield $no => $feature->toTuple();

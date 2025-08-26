@@ -211,10 +211,10 @@ define('JS_SRCE', [
   <!-- meta nécessaire pour le mobile -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- styles nécessaires pour le mobile -->
-  <link rel='stylesheet' href='leaflet/llmap.css'>
+  <link rel='stylesheet' href='../leaflet/llmap.css'>
   <!-- styles et src de Leaflet -->
-  <link rel="stylesheet" href='leaflet/leaflet.css'/>
-  <script src='leaflet/leaflet.js'></script>
+  <link rel="stylesheet" href='../leaflet/leaflet.css'/>
+  <script src='../leaflet/leaflet.js'></script>
   <!-- chgt du curseur -->
   <style>
   .leaflet-grab {
@@ -225,14 +225,14 @@ define('JS_SRCE', [
   }
   </style> 
   <!-- Include the edgebuffer plugin -->
-  <script src="leaflet/leaflet.edgebuffer.js"></script>
+  <script src="../leaflet/leaflet.edgebuffer.js"></script>
   <!-- Include the Control.Coordinates plugin -->
-  <link rel='stylesheet' href='leaflet/Control.Coordinates.css'>
-  <script src='leaflet/Control.Coordinates.js'></script>
+  <link rel='stylesheet' href='../leaflet/Control.Coordinates.css'>
+  <script src='../leaflet/Control.Coordinates.js'></script>
   <!-- Include the uGeoJSON plugin -->
-  <script src="leaflet/leaflet.uGeoJSON.js"></script>
+  <script src="../leaflet/leaflet.uGeoJSON.js"></script>
   <!-- plug-in d'appel des GeoJSON en AJAX -->
-  <script src='leaflet/leaflet-ajax.js'></script>
+  <script src='../leaflet/leaflet-ajax.js'></script>
 </head>
 <body>
   <div id="map" style="height: 100%; width: 100%"></div>

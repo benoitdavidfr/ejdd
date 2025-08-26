@@ -16,7 +16,7 @@ properties:
     patternProperties:
       '^[-A-Za-z0-9_]+$':
         description: |
-          Un thème associe à des sections de JdD un style ; de plus un JdD n'est valide que pour une certaine plage de zoom.
+          Un thème associe à des collections de JdD un style ; de plus un JdD n'est valide que pour une certaine plage de zoom.
         type: object
         additionalProperties: false
         properties:
@@ -29,13 +29,13 @@ properties:
               '^[-A-Za-z0-9_]+$':
                 description: Info sur le JdD
                 type: object
-                required: [sections]
+                required: [collections]
                 additionalProperties: false
                 properties:
                   minZoom: {description: niveau de zoom min à partir duquel le JdD est affiché, type: integer}
                   maxZoom: {description: niveau de zoom max jusqu'au quel le JdD est affiché, type: integer}
-                  sections:
-                    description: infos sur les sections indexées par le nom de la section
+                  collections:
+                    description: infos sur les collections indexées par le nom de la collection
                     type: object
                     additionalProperties: false
                     patternProperties:

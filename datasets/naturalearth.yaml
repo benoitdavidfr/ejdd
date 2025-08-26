@@ -15,42 +15,42 @@ themes:
       NE110mPhysical:
         minZoom: 0
         maxZoom: 2
-        sections:
+        collections:
           ne_110m_coastline:
             style:
               color: blue
       NE110mCultural:
         minZoom: 2
         maxZoom: 2
-        sections:
+        collections:
           ne_110m_admin_0_boundary_lines_land:
             style:
               color: '#ff7800'
       NE50mPhysical:
         minZoom: 3
         maxZoom: 4
-        sections:
+        collections:
           ne_50m_coastline:
             style:
               color: blue
       NE50mCultural:
         minZoom: 3
         maxZoom: 4
-        sections:
+        collections:
           ne_50m_admin_0_boundary_lines_land:
             style:
               color: '#ff7800'
       NE10mPhysical:
         minZoom: 5
         maxZoom: 8
-        sections:
+        collections:
           ne_10m_coastline:
             style:
               color: blue
       NE10mCultural:
         minZoom: 5
         maxZoom: 8
-        sections:
+        collections:
           ne_10m_admin_0_boundary_lines_land:
             style:
               color: '#ff7800'
@@ -60,21 +60,21 @@ themes:
       NE110mCultural:
         minZoom: 2
         maxZoom: 2
-        sections:
+        collections:
           ne_110m_admin_0_map_units:
             style:
               color: '#ff7800'
       NE50mCultural:
         minZoom: 3
         maxZoom: 4
-        sections:
+        collections:
           ne_50m_admin_0_map_units:
             style:
               color: '#ff7800'
       NE10mCultural:
         minZoom: 5
         maxZoom: 8
-        sections:
+        collections:
           ne_10m_admin_0_map_units:
             style:
               color: '#ff7800'
@@ -84,21 +84,21 @@ themes:
       NE110mCultural:
         minZoom: 2
         maxZoom: 2
-        sections:
+        collections:
           ne_110m_admin_0_map_subunits:
             style:
               color: '#ff7800'
       NE50mCultural:
         minZoom: 3
         maxZoom: 4
-        sections:
+        collections:
           ne_50m_admin_0_map_subunits:
             style:
               color: '#ff7800'
       NE10mCultural:
         minZoom: 5
         maxZoom: 8
-        sections:
+        collections:
           ne_10m_admin_0_map_subunits:
             style:
               color: '#ff7800'

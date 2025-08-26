@@ -226,7 +226,9 @@ class Feature {
    * @return \Generator<int, Feature>
    */
   static function fromFile(string $filePath): \Generator {
-    $fgjs = fopen($filePath, 'r');
+    if (!($fgjs = @fopen($filePath, 'r'))) {
+      throw new \Exception("Ouverture de $filePath");
+    }
     $nol = 0;
     $maxlen = 0; // pour connaitre la longueur max d'une ligne
     // fgets garde le \n à la fin
