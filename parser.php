@@ -420,7 +420,7 @@ class DsParserTest {
     "display(xx) -> erreur"=> "display(xx)",
     "display(Proj)"=> "display(Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
     "Proj -> renvoie rien"=> "Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
-    "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
+    "select"=> "display(Select(REG='02', InseeCog.v_region_2025))",
     "jointure simple -> renvoie rien" => "inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
     "display(jointure simple)" => "display(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
     "Expression complexe -> renvoie rien"
