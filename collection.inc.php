@@ -609,7 +609,7 @@ class CollectionOfDs extends Collection {
   /** Refabrique une CollectionOfDs à partir de son id. */
   static function get(string $collId): self {
     if (!preg_match('!^([^.]+)\.(.*)$!', $collId, $matches))
-      throw new \Exception("Erreur, collId '$collId' ne respecte pas le pattern");
+      throw new \Exception("Erreur, collId '$collId' ne respecte pas le pattern '!^([^.]+)\.(.*)$!'");
     return Dataset::get($matches[1])->collections[$matches[2]];
   }
   

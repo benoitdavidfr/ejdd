@@ -71,8 +71,7 @@ class DsParser {
     'space'=> '[ \n]+',
     '{point}'=> '\.',
     '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {field}
-    '{joinFName}' => '(inner-joinf|left-joinf|diff-joinf)', // Les différentes opérations de jointure F
-    '{joinPName}' => '(inner-joinp|left-joinp|diff-joinp)', // Les différentes opérations de jointure P
+    '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
   ];
   const BNF = [
@@ -82,8 +81,8 @@ class DsParser {
             | {expCollection}              // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                    // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-              1   | {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
-              2   | {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+              1   | {joinName} 'f(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+              2   | {joinName} 'p(' {expCollection} ',' {expCollection} ',' {predicate} ')'
               3 //| 'Union' '(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
               4   | 'Proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
               5   | 'Select' '(' {predicate} ',' {expCollection} ')'
@@ -245,10 +244,10 @@ EOT
       self::addTrace($path, "Echec expCollection#0", $text0);
     }
     
-    { // {expCollection}#1 : {joinFName} '(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+    { // {expCollection}#1 : {joinName} 'f(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
       $text = $text0;
-      if (($joinFName = self::token($path, '{joinFName}', $text))
-        && self::pmatch('\(', $text)
+      if (($joinName = self::token($path, '{joinName}', $text))
+        && self::pmatch('f\(', $text)
           && ($expCollection1 = self::expCollection($path, $text))
             && self::pmatch(',', $text)
               && ($field1 = self::token($path, '{name}', $text))
@@ -260,15 +259,15 @@ EOT
       ) {
         self::addTrace($path, "Succès expCollection#1", $text0);
         $text0 = $text;
-        return new JoinF(substr($joinFName, 0, -1), $expCollection1, $field1, $expCollection2, $field2);
+        return new JoinF($joinName, $expCollection1, $field1, $expCollection2, $field2);
       }
       self::addTrace($path, "Echec expCollection#1", $text0);
     }
     
-    { // {expCollection}#2 : {joinPName} '(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+    { // {expCollection}#2 : {joinName} 'p(' {expCollection} ',' {expCollection} ',' {predicate} ')'
       $text = $text0;
-      if (($joinPName = self::token($path, '{joinPName}', $text))
-        && self::pmatch('\(', $text)
+      if (($joinName = self::token($path, '{joinName}', $text))
+        && self::pmatch('p\(', $text)
           && ($expCollection1 = self::expCollection($path, $text))
             && self::pmatch(',', $text)
               && ($expCollection2 = self::expCollection($path, $text))
@@ -278,7 +277,7 @@ EOT
       ) {
         self::addTrace($path, "Succès expCollection#1", $text0);
         $text0 = $text;
-        return new JoinP(substr($joinPName, 0, -1), $expCollection1, $expCollection2, $predicate);
+        return new JoinP($joinName, $expCollection1, $expCollection2, $predicate);
       }
       self::addTrace($path, "Echec expCollection#1", $text0);
     }
@@ -287,7 +286,7 @@ EOT
 
     { // {expCollection}#4 : 'Proj(' {expCollection} ',' '[' {FieldPairs} ']' ')'
       $text = $text0;
-      if (self::pmatch('proj\(', $text) 
+      if (self::pmatch('Proj\(', $text) 
         && ($expCollection = self::expCollection($path, $text))
           && self::pmatch(',', $text)
             && self::pmatch('\[', $text)

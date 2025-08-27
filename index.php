@@ -51,6 +51,7 @@ define('JOURNAL', [
 27/8/2025:
   - amélioration des types simplifiés
   - adaptation de JoinF et JoinP
+  - réécriture de JoinF pour gérer les propriétés comme dans CProduct
 26/8/2025:
   - améliorations de inseecog.yaml
   - correction des chemins d'inclusion de source et d'ouverture de fichiers dans datasets/*.php
@@ -192,7 +193,7 @@ Lignes de commandes
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
 geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,skipbracket.php,\
-cproduct.php,join.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
+cproduct.php,concatkeys.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 

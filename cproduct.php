@@ -1,5 +1,7 @@
 <?php
-/** Produit cartésien entre collections. */
+/** Produit cartésien entre collections.
+ * @package Algebra
+ */
 namespace Algebra;
 
 require_once 'collection.inc.php';
@@ -55,6 +57,7 @@ class ProductProperties {
   }
   
   /** Fusionne un tuple de chaque collection pour créer un tuple du produit.
+   * Le second tuple peut-être vide, par dans le cas d'un left-join
    * @param array<string,mixed> $tuple1
    * @param array<string,mixed> $tuple2
    * @return array<string,mixed> */
@@ -63,7 +66,7 @@ class ProductProperties {
     //echo '$tuple1='; print_r($tuple1);
     //echo '$tuple2='; print_r($tuple2);
     foreach ($this->properties as $newName => $prop) {
-      $mergedTuple[$newName] = ($prop['source'] == 's1') ? $tuple1[$prop['sname']] : $tuple2[$prop['sname']];
+      $mergedTuple[$newName] = ($prop['source'] == 's1') ? $tuple1[$prop['sname']] : $tuple2[$prop['sname']] ?? null;
     }
     return $mergedTuple;
   }
@@ -133,6 +136,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de cons
 
 require_once 'onlinecoll.php';
 
+/** Test de CProduct. */
 class CProductTest {
   static function main():void {
     echo "<title>CProductTest</title>\n";

@@ -6,7 +6,7 @@ namespace Algebra;
 
 require_once 'skipbracket.php';
 
-/** Concaténation et déconcaténation de clés. */
+/** Concaténation et déconcaténation de clés lors d'un produit cartésien. */
 class Keys {
   /** Concatène 2 clés qui puisse être déconcaténées même avec imbrication. */
   static function concat(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }

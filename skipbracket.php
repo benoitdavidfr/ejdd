@@ -4,7 +4,7 @@
  */
 namespace Algebra;
 
-/** Classe hébergeant la fonction skip. */
+/** Classe définissant la fonction skipBracket qui extrait une sous-chaine entourée d'accolades. */
 class SkipBracket {
   /** Recoit un texte commençant par une accolade ouvrante et retourne l'extrait se terminant par la fermante de même niveau.
    * Le texte en entrée/sortie est raccourci du texte extrait.

@@ -13,7 +13,7 @@ use GeoJSON\Geometry;
 use BBox\BBox;
 use BBox\NONE;
 
-/** Une constante définie par son type et sa valeur stockée comme string.
+/** Une constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.
  * Le format pour bboxInJSON est une liste de 4 coordonnées (xmin,ymin,xmax,ymax) codée en JSON.
  */
 class Constant {
@@ -39,7 +39,7 @@ class Constant {
   }
 };
 
-/** Comparateur entre 2 valeurs non bouléennes retournant un bouléen défini par une string. */
+/** Comparateur entre 2 valeurs non bouléennes retournant un bouléen défini par une string ; utilisé dans les prédicats. */
 class Comparator {
   function __construct(readonly string $compOp) {}
   
@@ -139,7 +139,7 @@ class Comparator {
   }
 };
 
-/** Un Predicate est une expression bouléenne évaluable sur 1 n-uplet.
+/** Un Predicat est une expression logique évaluable sur 1 n-uplet.
  * Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
  * L'expression est représentée une imbrication d'objets des différentes classes.
  * Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.
@@ -211,7 +211,7 @@ class PredicateConstant extends Predicate {
   }
 };
 
-/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {constant} {op} {field}. */
+/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {constant} {comparator} {field}. */
 class PredicateConstantInv extends PredicateConstant {
   function __construct(Constant $constant, Comparator $comp, string $field) { parent::__construct($field, $comp, $constant); }
   
@@ -262,7 +262,7 @@ class PredicateField extends Predicate {
   }
 };
 
-/** Conjounction ou disjontion entre 2 prédicats. {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')' */
+/** Prédicat de conjonction ou de disjonction sur 2 prédicats. {predicate} ::= '('{predicate}')' {junction} '('{predicate}')' */
 class PredicateJunction extends Predicate {
   /** @param Predicate $leftPredicate - prédicat gauche
    * @param ('and'|'or') $junction - définition de l'opération de jonction
@@ -284,7 +284,7 @@ class PredicateJunction extends Predicate {
   }
 };
 
-/** Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser DsParser. */
+/** Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser de requêtes DsParser. */
 class PredicateParser {
   /** Les tokens ajoutés. */
   const TOKENS = [

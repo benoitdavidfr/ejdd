@@ -6,14 +6,14 @@ namespace Algebra;
 
 require_once 'collection.inc.php';
 
-/** L'opérateur de projection qui applique à une Section une sélection et un renommage de ses champs et fournit une Section. */
+/** L'opérateur de projection qui réduit le nombre de champs d'une Collection et les renomme. */
 class Proj extends Collection {
   /** @param array<string,string> $fieldPairs */
   function __construct(readonly Collection $coll, readonly array $fieldPairs) { parent::__construct('dictOfTuples'); }
   
   function id(): string {
     return
-      'proj('.$this->coll->id()
+      'Proj('.$this->coll->id()
       .', ['
       .implode(',',
         array_map(
@@ -97,7 +97,7 @@ class ProjTest {
           CollectionOfDs::get('InseeCog.v_region_2025'), 'CHEFLIEU',
           CollectionOfDs::get('InseeCog.v_commune_2025'), 'COM');
         //echo '<pre>$join='; print_r($join); echo "</pre>\n";
-        //$join->displayTuples();
+        $join->displayItems();
         $proj = new Proj($join, ['s1.REG'=>'reg', 's1.LIBELLE'=>'lib', 's2.LIBELLE'=>'préf']);
         echo '$proj->id()=',$proj->id(),"<br>\n";
         $proj->displayItems();
@@ -105,21 +105,12 @@ class ProjTest {
       }
       case 'display': {
         echo '<pre>$_GET='; print_r($_GET); echo "</pre>";
-        $projs = [
-          'proj(InseeCog.v_region_2025,REG/reg,LIBELLE/lib)'
-            => new Proj(CollectionOfDs::get('InseeCog.v_region_2025'), ['REG'=>'reg', 'LIBELLE'=>'lib']),
-          'proj('
-            .'inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM),'
-            .'s1.REG/reg,s1.LIBELLE/lib,s2.LIBELLE/préf)'
-            => new Proj(
-              new JoinF('inner-join',
-                CollectionOfDs::get('InseeCog.v_region_2025'), 'CHEFLIEU',
-                CollectionOfDs::get('InseeCog.v_commune_2025'), 'COM'),
-              ['s1.REG'=>'reg', 's1.LIBELLE'=>'lib', 's2.LIBELLE'=>'préf']),
-        ];
-        $proj = $projs[$_GET['collection']] ?? null;
-        $proj->displayItem($_GET['key']);
-        //throw new \Exception("Action $_GET[action] non prévue");
+        if ($proj = Collection::query($_GET['collection']))
+          $proj->displayItem($_GET['key']);
+        else {
+          DsParser::displayTrace();
+          throw new \Exception("Erreur sur Collection::query($_GET[collection]))");
+        }
         break;
       }
       default: throw new \Exception("Action $_GET[action] non prévue");

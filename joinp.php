@@ -6,9 +6,10 @@
  */
 namespace Algebra;
 
-require_once 'dataset.inc.php';
+require_once 'collection.inc.php';
+require_once 'cproduct.php';
 
-use Dataset\Dataset;
+//use Dataset\Dataset;
 
 define('A_FAIRE_JOINP', [
 <<<'EOT'
@@ -19,7 +20,7 @@ EOT
 ini_set('memory_limit', '10G');
 set_time_limit(5*60);
 
-/** L'optimiseur a pour objectif de définir l'algorithme le plus optimisé pour effectuer la jointure.
+/** L'optimiseur définit l'algorithme le plus optimisé pour effectuer la jointure sur prédicat.
  * Il a besoin de connaitre les propriétés du produit cartésien potentiel et c'est donc une sous-classe de ProductProperties.
  */
 class Optimiser extends ProductProperties {
@@ -76,7 +77,7 @@ class Optimiser extends ProductProperties {
   }
 };
 
-/** Jointure sur prédicat entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
+/** Jointure sur prédicat entre 2 collections fondée sur la définition d'un prédicat.
 * La clé d'une jointure est la concaténation des clés des collections d'origine;
 * cela permet un accès plus efficace aux items par clé.
 */
