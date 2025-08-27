@@ -147,6 +147,16 @@ abstract class Collection {
     echo "<h2>N-uplet de la collection ",$this->id()," ayant pour clé $key</h2>\n";
     echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
   }
+
+  /** Affiche les properties et données de la collection */
+  function display(int $skip=0): void {
+    echo '<h2>',$this->id(),"</h2>\n";
+
+    echo "<h3>Propriétés</h3>\n";
+    $this->displayProperties();
+    
+    $this->displayItems($skip);
+  }
 };
 
 

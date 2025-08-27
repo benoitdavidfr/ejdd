@@ -70,18 +70,17 @@ class ProductProperties {
     }
     return $mergedTuple;
   }
-    
-  /** Retourne les propriétés des sources telles qu'elles seront définies dans la jointure.
-   * @return array<string,array<string>> - [{prefix}=> [{nom}=> {type}]] * /
-  function sourceProps(): array {
-    $sprops = []; // le résultat
-    foreach ($this->properties as $prefix => $props) {
-      foreach ($props as $propName => $prop) {
-        $sprops[$prop['prefix']][$propName]= $prop['type'];
-      }
+
+  /* La liste des propriétés du produit.
+   * @return array<string,string>
+   */
+  function properties(): array {
+    $newProps = [];
+    foreach ($this->properties as $newName => $prop) {
+      $newProps[$newName] = $prop['type'];
     }
-    return $sprops;
-  }*/
+    return $newProps;
+  }
 };
 
 /** Produit cartésien entre collections. */

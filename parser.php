@@ -183,7 +183,7 @@ EOT
       && ($expCollection = self::expCollection($path, $text))
         && self::pmatch('^\)', $text))
     {
-      self::addTrace($path, "succès", "$text0 -> $text");
+      self::addTrace($path, "succès {program}#0", "$text0 -> $text");
       $text0 = $text;
       return new Program('display', $expCollection);
     }
@@ -418,8 +418,8 @@ class DsParserTest {
     "display"=> "display(InseeCog.v_region_2025)",
     "xx -> erreur"=> "xx",
     "display(xx) -> erreur"=> "display(xx)",
-    "display(proj)"=> "display(proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
-    "proj -> renvoie rien"=> "proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
+    "display(Proj)"=> "display(Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
+    "Proj -> renvoie rien"=> "Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
     "select"=> "display(select(REG='02', InseeCog.v_region_2025))",
     "jointure simple -> renvoie rien" => "inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
     "display(jointure simple)" => "display(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
@@ -478,7 +478,8 @@ class DsParserTest {
           die();
         }
         //echo '<pre>$program='; print_r($program); echo "</pre>\n";
-        if (get_class($program) == 'Program') {
+        //echo get_class($program);
+        if (get_class($program) == 'Algebra\Program') {
           $program();
         }
         break;

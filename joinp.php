@@ -9,8 +9,6 @@ namespace Algebra;
 require_once 'collection.inc.php';
 require_once 'cproduct.php';
 
-//use Dataset\Dataset;
-
 define('A_FAIRE_JOINP', [
 <<<'EOT'
 EOT
@@ -34,15 +32,15 @@ class Optimiser extends ProductProperties {
    * Dans un 1er temps je me limite aux JoinP avec un PredicateField où l'op est = et les 2 champs sont dans les 2 colls.
    */ 
   function optimisedAlgo(string $type, Collection $coll1, Collection $coll2, Predicate $predicate): ?Collection {
-    echo '<pre>predicate='; print_r($predicate);
+    //echo '<pre>predicate='; print_r($predicate);
     //echo 'class=',get_class($predicate),"<br>\n";
     //echo 'properties=',json_encode($this->properties),"\n";
     switch ($class = get_class($predicate)) {
       case 'Algebra\PredicateField': {
         /** @var PredicateField $pf */
         $pf = $predicate; // J'affirme que $predicate est un PredicateField pour satisfaire PhpStan */
-        echo "<pre>pf="; print_r($pf);
-        echo '$properties='; print_r($this->properties);
+        //echo "<pre>pf="; print_r($pf);
+        //echo '$properties='; print_r($this->properties);
         
         // Dans un 1er temps je n'accepte d'optimiser que le prédicats '='. A voir pour traitements spatiaux.
         if ($pf->comparator->compOp <> '=') {
@@ -120,7 +118,7 @@ class JoinP extends Collection {
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array { return $this->optimiser->properties(); }
 
   /** Concaténation de clas qui puisse être déconcaténées même imbriquées. * /
   static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }*/
@@ -169,6 +167,8 @@ class JoinP extends Collection {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
+
+use Dataset\Dataset;
 
 /** Test de JoinP. */
 class JoinPTest {
@@ -288,10 +288,10 @@ class JoinPTest {
       }
       case 'query': { // query transmises par l'appel initial 
         $query = self::EXAMPLES[$_GET['title']];
-        if (!($join = DsParser::start($query))) {
+        if (!($join = Collection::query($query))) {
           die("Echec du parse");
         }
-        $join->displayItems($_GET['skip'] ?? 0);
+        $join->display($_GET['skip'] ?? 0);
         break;
       }
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé

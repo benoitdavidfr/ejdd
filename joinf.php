@@ -15,8 +15,8 @@ EOT
 );
 
 /** Jointure entre 2 collections fondée sur la définition pour chaque collection d'un champ de jointure.
- * La clé d'une jointure est la concaténation des clés des collections d'origine;
- * cela permet un accès plus efficace au items par clé.
+ * La clé d'une jointure est la concaténation des clés des collections d'origine ce qui permet un accès plus efficace
+ * aux items par clé.
  */
 class JoinF extends Collection {
   readonly ProductProperties $pProps;
@@ -46,7 +46,7 @@ class JoinF extends Collection {
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array { return $this->pProps->properties(); }
   
   /** L'accès aux items du Join par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
@@ -58,13 +58,13 @@ class JoinF extends Collection {
     $skip = $filters['skip'] ?? 0;
     //echo "skip=$skip<br>\n";
     $no = $skip;
-    echo '<pre>pProps='; print_r($this->pProps); echo "</pre>\n";
+    //echo '<pre>pProps='; print_r($this->pProps); echo "</pre>\n";
     foreach ($this->coll1->getItems() as $key1 => $tuple1) {
       if (!isset($tuple1[$this->field1])) {
         throw new \Exception("Champ $this->field1 non défini dans ".$this->coll1->id());
       }
       $tuples2 = $this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]);
-      echo "getItemsOnValue($this->field2,".$tuple1[$this->field1].")<br>\n";
+      //echo "getItemsOnValue($this->field2,".$tuple1[$this->field1].")<br>\n";
       switch ($this->type) {
         case 'inner-join': {
           if (!$tuples2) {
@@ -148,15 +148,11 @@ class JoinF extends Collection {
     $keys = Keys::decat($key);
     if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
-    if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
-      return null;
     
-    $tuple = [];
-    foreach ($tuple1 as $k => $v)
-      $tuple["s1.$k"] = $v;
-    foreach ($tuple2 as $k => $v)
-      $tuple["s2.$k"] = $v;
-    return $tuple;
+    if (!$keys[2] || !($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
+      $tuple2 = [];
+    
+    return $this->pProps->mergeTuples($tuple1, $tuple2);
   }
 };
 
@@ -178,6 +174,7 @@ class JoinFTest {
      => "inner-join(DeptReg.régions,codeInsee,InseeCog.v_region_2025,REG)",
   ];
   
+  /** Exemples sur des cas spécifiques. */
   const COLL1 = [
     'properties'=> ['f1'=> 'string', 'f2'=> 'string'],
     'tuples'=> [
@@ -191,7 +188,6 @@ class JoinFTest {
       'k22'=> ['f1'=>'b', 'f3'=>'c'],
     ],
   ];
-  /** Exemples à partir de cas spécifiques. */
   static function examples2(): array {
     return [
       "inner-join"=> new JoinF('inner-join',
@@ -205,6 +201,13 @@ class JoinFTest {
       "left-join"=> new JoinF('left-join',
         new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1',
         new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
+      ),
+      "inner-join imbriqués"=> new JoinF('inner-join',
+        new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
+        new JoinF('inner-join',
+          new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
+          new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1'
+        ), 's1_f1',
       ),
     ];
   }
@@ -334,21 +337,13 @@ class JoinFTest {
       }
       case 'query2': {
         $join = self::examples2()[$_GET['title']];
-        echo '<pre>$join='; print_r($join);
+        //echo '<pre>$join='; print_r($join);
         $join->displayItems($_GET['skip'] ?? 0);
         break;
       }
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
         //echo '<pre>$_GET='; print_r($_GET); echo "</pre>\n";
-        if (!preg_match('!^([^(]+)\(([^,]+),([^,]+),([^,]+),([^)]+)\)$!', $_GET['collection'], $matches))
-          throw new \Exception("Erreur de décodage du collId=$_GET[collection]");
-        //echo '<pre>$matches='; print_r($matches); echo "</pre>\n";
-        $type = $matches[1];
-        $coll1 = $matches[2];
-        $field1 = $matches[3];
-        $coll2 = $matches[4];
-        $field2 = $matches[5];
-        $join = new JoinF(substr($type, 0, -1), CollectionOfDs::get($coll1), $field1, CollectionOfDs::get($coll2), $field2);
+        $join = Collection::query($_GET['collection']);
         if (isset($_GET['skip'])) {
           $join->displayItems($_GET['skip']);
         }
