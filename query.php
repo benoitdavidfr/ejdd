@@ -51,7 +51,7 @@ class Program {
   }
 };
 
-/** Le parser, appelé par start(), retourne un Program, une Collection ou null en cas d'erreur.
+/** Le parser de requêtes, appelé par start(), retourne un Program, une Collection ou null en cas d'erreur.
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
@@ -66,7 +66,7 @@ class Program {
  *    - retourne l'élément analysé en cas de succès et faux en cas d'échec
  *    - consomme le texte correspondant à l'élément en cas de succès mais n'y touche pas en cas d'échec.
  */
-class DsParser {
+class Query {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
@@ -413,7 +413,7 @@ EOT
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
 
-class DsParserTest {
+class QueryTest {
   const EXAMPLES = [
     "display"=> "display(InseeCog.v_region_2025)",
     "xx -> erreur"=> "xx",
@@ -446,7 +446,7 @@ class DsParserTest {
       }
       case 'bnf': { // Affiche la BNF du langage et les tokens 
         echo "<h2>BNF du langage de requêtes</h2>\n";
-        echo '<pre>',DsParser::BNF[0]."\n".PredicateParser::BNF[0],"</pre>\n";
+        echo '<pre>',Query::BNF[0]."\n".PredicateParser::BNF[0],"</pre>\n";
         echo "Les nonterminaux sont définis par des symboles entre accolades.<br>
           Les terminaux sont:<br>
           - d'une part les symboles entre guillemets dans la BNF qui correspondent à la chaîne entre guillemets et,<br>
@@ -454,8 +454,8 @@ class DsParserTest {
         echo "<table border=1><th>symbole</th><th>expression régulière</th>\n";
         echo implode('', array_map(
           function($symbol, $reg) { return "<tr><td>$symbol</td><td>$reg</td></tr>\n"; },
-          array_keys(array_merge(DsParser::TOKENS, PredicateParser::TOKENS)),
-          array_values(array_merge(DsParser::TOKENS, PredicateParser::TOKENS))
+          array_keys(array_merge(Query::TOKENS, PredicateParser::TOKENS)),
+          array_values(array_merge(Query::TOKENS, PredicateParser::TOKENS))
         ));
         echo "</table>\n";
         echo "Le symbole <b>space</b> est correspond à un blanc dans l'analyse lexicale.";
@@ -465,16 +465,16 @@ class DsParserTest {
       case 'show': { // affiche le requête compilée 
         $exp = self::EXAMPLES[$_GET['title']];
         echo "<pre>exp = $exp</pre>\n";
-        echo '<pre>result='; print_r(DsParser::start($exp));
+        echo '<pre>result='; print_r(Query::start($exp));
         echo "trace=\n";
-        DsParser::displayTrace();
+        Query::displayTrace();
         break;
       }
       case 'exec': { // exécute la requête 
         $input = self::EXAMPLES[$_GET['title']];
         echo "<pre>input = $input</pre>\n";
-        if (!($program = DsParser::start($input))) {
-          DsParser::displayTrace();
+        if (!($program = Query::start($input))) {
+          Query::displayTrace();
           die();
         }
         //echo '<pre>$program='; print_r($program); echo "</pre>\n";
@@ -486,8 +486,8 @@ class DsParserTest {
       }
       case 'display': { // traite une demande d'affichage d'un n-uplet générée par un display du résultat 
         echo '<pre>'; print_r($_GET); echo "</pre>\n";
-        if (!($collection = DsParser::start($_GET['collection']))) {
-          DsParser::displayTrace();
+        if (!($collection = Query::start($_GET['collection']))) {
+          Query::displayTrace();
           die();
         }
         $collection->displayItem($_GET['key']);
@@ -497,4 +497,4 @@ class DsParserTest {
     }
   }
 };
-DsParserTest::main();
+QueryTest::main();

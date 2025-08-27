@@ -42,6 +42,8 @@ define('JOURNAL', [
   - adaptation de JoinF et JoinP
   - réécriture de JoinF pour gérer les propriétés comme dans CProduct
   - qqs corrections de bugs
+  - merge joinPredicate2
+  - remplacement DsParser dans parser.php par Query dans query.php
 26/8/2025:
   - améliorations de inseecog.yaml
   - correction des chemins d'inclusion de source et d'ouverture de fichiers dans datasets/*.php
@@ -410,17 +412,16 @@ class Application {
           echo "</ul>\n";
         }
         else {
+          echo "<title>$_GET[dataset]</title>\n<h2>Choix de l'action</h2>\n";
           $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
-          echo "<title>dataset</title><h2>Choix de l'action</h2>\n";
-          echo "<a href='",strToLower($class),".php?dataset=$_GET[dataset]'>Appli de construction du JdD $_GET[dataset]</a><br>\n";
+          echo "<a href='datasets/",strToLower($class),".php?dataset=$_GET[dataset]'>",
+                "Appli de construction du JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
           echo "<a href='geojson.php/$_GET[dataset]'>Affiche en GeoJSON les collections du JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='?action=validate&dataset=$_GET[dataset]'>Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
+          echo "<a href='?action=validate&dataset=$_GET[dataset]'>",
+                "Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
           echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
-          /*echo "<a href='?action=union&file=$_GET[file]'>Exemple d'une union homogène</a><br>\n";
-          echo "<a href='?action=heteroUnion&file=$_GET[file]'>Exemple d'une union hétérogène</a><br>\n";
-          */
         }
         break;
       }

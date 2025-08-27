@@ -298,7 +298,7 @@ class JoinPTest {
         break;
       }
       case 'display': { // rappel pour un skip ou l'affichage d'un n-uplet précisé
-        $join = DsParser::start($_GET['collection']);
+        $join = Query::start($_GET['collection']);
         if (isset($_GET['skip'])) {
           $join->displayItems($_GET['skip']);
         }

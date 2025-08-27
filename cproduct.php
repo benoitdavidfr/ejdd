@@ -151,7 +151,7 @@ class CProductTest {
       case 'display': {
         //echo '<pre>'; print_r($_GET);
         if(!($coll = Collection::query($_GET['collection']))) {
-          DsParser::displayTrace();
+          Query::displayTrace();
           die();
         }
         //echo '<pre>$coll='; print_r($coll);

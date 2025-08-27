@@ -115,7 +115,7 @@ class ProjTest {
         if ($proj = Collection::query($_GET['collection']))
           $proj->displayItem($_GET['key']);
         else {
-          DsParser::displayTrace();
+          Query::displayTrace();
           throw new \Exception("Erreur sur Collection::query($_GET[collection]))");
         }
         break;

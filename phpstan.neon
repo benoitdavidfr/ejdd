@@ -60,7 +60,7 @@ parameters:
     - proj.php
     - select.php
     - onlinecoll.php
-    - parser.php
+    - query.php
     - datasets/dataseteg.php
     - datasets/inseecog.php
     - datasets/deptreg.php

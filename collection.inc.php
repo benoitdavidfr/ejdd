@@ -38,7 +38,7 @@ abstract class Collection {
   /** Point officiel pour requêter les collections.
    @return ?(self|Program)
    */
-  static function query(string $text): Program|self|null { return DsParser::start($text); }
+  static function query(string $text): Program|self|null { return Query::start($text); }
   
   /** @param ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
   function __construct(string $kind) { $this->kind = $kind; }

@@ -4,7 +4,7 @@
  */
 namespace Algebra;
 
-require_once 'parser.php';
+require_once 'query.php';
 require_once 'skipbracket.php';
 
 use Dataset\Dataset;
@@ -155,7 +155,7 @@ abstract class Predicate {
     elseif ($predicate = PredicateParser::start($text))
       return $predicate;
     else {
-      DsParser::displayTrace();
+      Query::displayTrace();
       throw new \Exception("Texte \"$text\" non reconnu par le parser");
     }
   }
@@ -320,14 +320,14 @@ EOT
     if (!($pattern = self::TOKENS[$tokenName] ?? null))
       throw new \Exception("Erreur dans token, tokenName=$tokenName inexistant");
     $matches = [];
-    if (DsParser::pmatch($pattern, $text, $matches)) {
+    if (Query::pmatch($pattern, $text, $matches)) {
       if ($path)
-        DsParser::addTrace($path, "Succès token($tokenName)", "$text0 -> $text");
+        Query::addTrace($path, "Succès token($tokenName)", "$text0 -> $text");
       return $matches[0];
     }
     else {
       if ($path)
-        DsParser::addTrace($path, "Echec token($tokenName)", "$text0 -> $text");
+        Query::addTrace($path, "Echec token($tokenName)", "$text0 -> $text");
       return null;
     }
   }
@@ -346,61 +346,61 @@ EOT
     $path[] = 'predicate';
     { // {predicate} ::= {name} {comparator} {constant}
       $text = $text0;
-      if (($field = DsParser::token($path, '{name}', $text))
+      if (($field = Query::token($path, '{name}', $text))
         && ($comparator = self::comparator($path, $text))
           && ($constant = self::constant($path, $text))
       ) {
-        DsParser::addTrace($path, "succès", $text);
+        Query::addTrace($path, "succès", $text);
         $text0 = $text;
         return new PredicateConstant($field, $comparator, $constant);
       }
-      DsParser::addTrace($path, "échec {predicate} ::= {name} {comparator} {constant}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {name} {comparator} {constant}", $text0);
     }
     
     { // {predicate} ::= {constant} {comparator} {name}
       $text = $text0;
       if (($constant = self::constant($path, $text))
         && ($comparator = self::comparator($path, $text))
-          && ($field = DsParser::token($path, '{name}', $text))
+          && ($field = Query::token($path, '{name}', $text))
       ) {
-        DsParser::addTrace($path, "succès", $text);
+        Query::addTrace($path, "succès", $text);
         $text0 = $text;
         return new PredicateConstantInv($constant, $comparator, $field);
       }
-      DsParser::addTrace($path, "échec {predicate} ::= {constant} {comparator} {name}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {constant} {comparator} {name}", $text0);
     }
     
     { // {predicate} ::= {name} {comparator} {name}
       $text = $text0;
-      if (($field1 = DsParser::token($path, '{name}', $text))
+      if (($field1 = Query::token($path, '{name}', $text))
         && ($comparator = self::comparator($path, $text))
-          && ($field2 = DsParser::token($path, '{name}', $text))
+          && ($field2 = Query::token($path, '{name}', $text))
       ) {
-        DsParser::addTrace($path, "succès", $text0);
+        Query::addTrace($path, "succès", $text0);
         $text0 = $text;
         return new PredicateField($field1, $comparator, $field2);
       }
-      DsParser::addTrace($path, "échec {predicate} ::= {name} {comparator} {name}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {name} {comparator} {name}", $text0);
     }
     
     { // {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'
       $text = $text0;
-      if (DsParser::pmatch('\(', $text)
+      if (Query::pmatch('\(', $text)
         && ($lpred = self::predicate($path, $text))
-          && DsParser::pmatch('\)', $text)
+          && Query::pmatch('\)', $text)
             && ($junction = self::token($path, '{junction}', $text))
-              && DsParser::pmatch('\(', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+              && Query::pmatch('\(', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
                 && ($rpred = self::predicate($path, $text))
-                  && DsParser::pmatch('\)', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+                  && Query::pmatch('\)', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
       ) {
-        DsParser::addTrace($path, "succès", $text0);
+        Query::addTrace($path, "succès", $text0);
         $text0 = $text;
         return new PredicateJunction($lpred, $junction, $rpred);
       }
-      DsParser::addTrace($path, "échec {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'", $text0);
+      Query::addTrace($path, "échec {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'", $text0);
     }
     
-    DsParser::addTrace($path, "échec {predicate}", $text0);
+    Query::addTrace($path, "échec {predicate}", $text0);
     return null;
   }
   
@@ -409,14 +409,14 @@ EOT
     $path[] = 'constant';
     { // {constant} ::= {float}
       if ($value = self::token($path, '{float}', $text0)) {
-        DsParser::addTrace($path, "succès {float}", $text0);
+        Query::addTrace($path, "succès {float}", $text0);
         return new Constant('float', $value);
       }
     }
     
     { // {constant} ::= {integer}
       if ($value = self::token($path, '{integer}', $text0)) {
-        DsParser::addTrace($path, "succès {integer}", $text0);
+        Query::addTrace($path, "succès {integer}", $text0);
         //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
         return new Constant('int', $value);
       }
@@ -424,7 +424,7 @@ EOT
 
     { // {constant} ::= {string}
       if ($value = self::token($path, '{string}', $text0)) {
-        DsParser::addTrace($path, "succès {string}", $text0);
+        Query::addTrace($path, "succès {string}", $text0);
         return new Constant('string', substr($value, 1, -1));
       }
     }
@@ -433,7 +433,7 @@ EOT
       if ((substr($text0, 0, 1) == '{')
         && ($json = SkipBracket::skip($text0)))
       {
-        DsParser::addTrace($path, "succès {geojson}", $text0);
+        Query::addTrace($path, "succès {geojson}", $text0);
         $geojson = json_decode($json, true);
         $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
         return new Constant('bboxInJSON', json_encode($bbox));
@@ -443,17 +443,17 @@ EOT
     { // {constant} ::= '[' {number} ',' {number}' ',' {number}' ',' {number}' ']'     // bbox
       $text = $text0;
       $numbers = [];
-      if (DsParser::pmatch('\[', $text)
+      if (Query::pmatch('\[', $text)
         && !is_null($numbers[0] = self::number($path, $text))
-          && DsParser::pmatch(',', $text)
+          && Query::pmatch(',', $text)
             && !is_null($numbers[1] = self::number($path, $text))
-              && DsParser::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+              && Query::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
                 && !is_null($numbers[2] = self::number($path, $text))
-                  && DsParser::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
+                  && Query::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue
                     && !is_null($numbers[3] = self::number($path, $text))
-                      && DsParser::pmatch('\]', $text))
+                      && Query::pmatch('\]', $text))
       {
-        DsParser::addTrace($path, "succès {bbox}", $text);
+        Query::addTrace($path, "succès {bbox}", $text);
         $text0 = $text;
         return new Constant('bboxInJSON', json_encode($numbers));
       }
@@ -462,20 +462,20 @@ EOT
     { // {constant} ::= '[' {number} ',' {number}' ']'                                 // point
       $text = $text0;
       $numbers = [];
-      if (DsParser::pmatch('\[', $text)
+      if (Query::pmatch('\[', $text)
         && !is_null($numbers[0] = self::number($path, $text))
-          && DsParser::pmatch(',', $text)
+          && Query::pmatch(',', $text)
             && !is_null($numbers[1] = self::number($path, $text))
-              && DsParser::pmatch('\]', $text))
+              && Query::pmatch('\]', $text))
       {
-        DsParser::addTrace($path, "succès {point}", $text);
+        Query::addTrace($path, "succès {point}", $text);
         $text0 = $text;
         // Un point est un BBox ayant ses 2 coins identiques
         return new Constant('bboxInJSON', json_encode([$numbers[0], $numbers[1], $numbers[0], $numbers[1]]));
       }
     }
     
-    DsParser::addTrace($path, "échec", $text);
+    Query::addTrace($path, "échec", $text);
     return null;
   }
   
@@ -484,11 +484,11 @@ EOT
   static function comparator(array $path, string &$text): ?Comparator {
     $path[] = 'comparator';
     if ($value = self::token($path, '{comparator}', $text)) {
-      DsParser::addTrace($path, "succès {comparator}", $text);
+      Query::addTrace($path, "succès {comparator}", $text);
       return new Comparator($value);
     }
 
-    DsParser::addTrace($path, "échec", $text);
+    Query::addTrace($path, "échec", $text);
     return null;
   }
 
@@ -498,17 +498,17 @@ EOT
     
     // {number} ::= {float}
     if (!is_null($number = self::token($path, '{float}', $text))) {
-      DsParser::addTrace($path, "succès {float}", $text);
+      Query::addTrace($path, "succès {float}", $text);
       return floatval($number);
     }
 
     // {number} ::= {integer}
     if (!is_null($number = self::token($path, '{integer}', $text))) {
-      DsParser::addTrace($path, "succès {integer}", $text);
+      Query::addTrace($path, "succès {integer}", $text);
       return intval($number);
     }
 
-    DsParser::addTrace($path, "échec", $text);
+    Query::addTrace($path, "échec", $text);
     return null;
   }
 };
