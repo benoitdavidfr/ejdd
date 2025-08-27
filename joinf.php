@@ -188,6 +188,7 @@ class JoinFTest {
       'k22'=> ['f1'=>'b', 'f3'=>'c'],
     ],
   ];
+  /** @return array<string,Collection> */
   static function examples2(): array {
     return [
       "inner-join"=> new JoinF('inner-join',

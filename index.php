@@ -10,7 +10,6 @@ define('A_FAIRE', [
 - améliorations JoinP
   - comment tracer les requêtes, properties, schema ?
     - quoi afficher ?
-  - écrire les différentes méthodes properties
   - écrire le cas d'un prédicat plus complexe
 - prévoir un mécanisme de stockage des vues
   - documenter la vue
@@ -19,13 +18,7 @@ define('A_FAIRE', [
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
   - proposer une mécanisme de recopie en local d'un JdD ou d'une partie
-- branch joinSuper
-  - faire évoluer l'opération de jointure pour qu'elle prenne la forme (Section, Section, {predicate})
-  - {name} est un nom d'attribut, ss modif s'il n'y a pas de confit, précédé de s1_ ou s2_ en cas de conflit
-  - modifier le ch de nom d'attribut dans la jointure -> s1_xxx & s2_yyy, uniquement en cas de conflit
 - dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
-- implémenter la jointure spatiale sur des BBox et des points.
-- réfléchir aux index et à un optimiseur
 - implémenter CQL ? partiellement ?
   - https://portal.ogc.org/files/96288#cql-bnf
 - réfléchir à un un bouquets de services OGC API Features
@@ -201,6 +194,7 @@ geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featur
   Pour créer une branche et y basculer:
     git checkout -b hotfix
   Pour la merger:
+    git commit # dans la branche
     git checkout main # bascule sur main
     git merge hotfix  # fusion de la branche avec main
   Pour pousser sur github:

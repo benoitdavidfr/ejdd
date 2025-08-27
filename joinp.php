@@ -11,6 +11,9 @@ require_once 'cproduct.php';
 
 define('A_FAIRE_JOINP', [
 <<<'EOT'
+- traiter les JoinP autres que inner-join
+- optimiser pour les prédicats complexes
+- optimiser inclusion et l'intersection spatiale
 EOT
 ]
 );
@@ -95,7 +98,7 @@ class JoinP extends Collection {
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
     if ($type <> 'inner-join') {
-      throw new \Exception("TO BE IMPLEMENTED");
+      throw new \Exception("TO BE IMPLEMENTED"); // JoinP de type autre que inner-join
     }
     $this->type = $type;
     $this->coll1 = $coll1;

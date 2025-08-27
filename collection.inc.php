@@ -538,7 +538,8 @@ class SchemaOfDictOfTuples extends SchemaOfCollection {
     $props = [];
     foreach ($patternProperties as $objectType) { // chaque type d'objet
       if (!isset($objectType['properties'])) {
-        throw new \Exception("TO BE IMPLEMENTED");
+        throw new \Exception("TO BE IMPLEMENTED"); // Cas où l'objectType n'a pas de champ properties, par ex oneOf
+                                                   // il faudrait mutualiser le code avec SchemaOfListOfTuples
       }
       //echo '<pre>$objectType='; print_r($objectType);
       foreach ($objectType['properties'] as $pname => $prop) {
@@ -577,7 +578,7 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
       return $props;
     }
     else {
-      throw new \Exception("TO BE IMPLEMENTED");
+      throw new \Exception("TO BE IMPLEMENTED"); // Cas autre, pas forcément utile
     }
   }
 };
@@ -587,7 +588,7 @@ class SchemaOfXXXOfValues extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array { return []; }
 };
 
 /** Une Collection d'un Dataset.

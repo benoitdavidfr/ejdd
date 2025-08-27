@@ -28,7 +28,7 @@ class Select extends Collection {
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array { return $this->coll->properties(); }
 
   /** L'accès aux items du Select par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer

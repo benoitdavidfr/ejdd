@@ -21,7 +21,7 @@ class ProductProperties {
    */
   function __construct(array $colls) {
     if (count($colls) <> 2) { // limité à 2 collections 
-      throw new \Exception("TO BE IMPLEMENTED");
+      throw new \Exception("Produit cartésien limité à 2 collections");
     }
     
     $this->sources = array_map(function($coll) { return $coll->id(); }, $colls);
@@ -71,7 +71,7 @@ class ProductProperties {
     return $mergedTuple;
   }
 
-  /* La liste des propriétés du produit.
+  /** La liste des propriétés du produit.
    * @return array<string,string>
    */
   function properties(): array {
@@ -85,7 +85,7 @@ class ProductProperties {
 
 /** Produit cartésien entre collections. */
 class CProduct extends Collection {
-  readonly ProductProperties $pprop;
+  readonly ProductProperties $pProps;
   
   function __construct(readonly Collection $coll1, readonly Collection $coll2) {
     if (in_array($coll1->kind, ['dictOfValues','listOfValues']))
@@ -93,7 +93,7 @@ class CProduct extends Collection {
     if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, produit cartésien impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
-    $this->pprop = new ProductProperties(['s1'=> $coll1, 's2'=> $coll2]);
+    $this->pProps = new ProductProperties(['s1'=> $coll1, 's2'=> $coll2]);
   }
   
   /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
@@ -109,14 +109,14 @@ class CProduct extends Collection {
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array { return $this->pProps->properties(); }
 
   function getItems(array $filters=[]): \Generator {
     foreach ($this->coll1->getItems() as $key1 => $tuple1) {
       //echo '<pre>$tuple1='; print_r($tuple1);
       foreach ($this->coll2->getItems() as $key2 => $tuple2) {
         //echo '<pre>$tuple2='; print_r($tuple2);
-        yield Keys::concat($key1, $key2) => $this->pprop->mergeTuples($tuple1, $tuple2);
+        yield Keys::concat($key1, $key2) => $this->pProps->mergeTuples($tuple1, $tuple2);
       }
     }
   }
@@ -125,7 +125,7 @@ class CProduct extends Collection {
     $keys = Keys::decat($key);
     $tuple1 = $this->coll1->getOneItemByKey($keys[1]);
     $tuple2 = $this->coll2->getOneItemByKey($keys[2]);
-    return $this->pprop->mergeTuples($tuple1, $tuple2);
+    return $this->pProps->mergeTuples($tuple1, $tuple2);
   }
 };
 

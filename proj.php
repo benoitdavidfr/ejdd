@@ -31,7 +31,14 @@ class Proj extends Collection {
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
    */
-  function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
+  function properties(): array {
+    $props = [];
+    $srcProps = $this->coll->properties();
+    foreach ($this->fieldPairs as $from => $to) {
+      $props[$to] = $srcProps['from'];
+    }
+    return $props;
+  }
 
   /** Projete un n-uplet.
    * @param int|string $key
