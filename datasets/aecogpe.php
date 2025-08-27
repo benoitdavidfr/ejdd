@@ -1,5 +1,5 @@
 <?php
-/** Définition et utilisation du JdD AeCongPe.
+/** JdD AeCongPe - Admin Express COG Carto petite échelle 2025 de l'IGN.
  * @package Dataset
  */
 namespace Dataset;
@@ -12,8 +12,8 @@ use GeoJSON\Feature;
 /** Description du JdD AeCogPe. */
 define('AECOGPE_DESCRIPTION', [
   <<<'EOT'
-Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartien à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
-Il contient les classes d'objets suivants:
+Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartient à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
+Il contient les classes d'objets suivantes:
  - ARRONDISSEMENT
  - ARRONDISSEMENT_MUNICIPAL
  - CANTON
@@ -28,22 +28,43 @@ Il contient les classes d'objets suivants:
  - REGION
 La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
 Le produit ADMIN EXPRESS COG PE est de plus conforme au code officiel géographique publié chaque année par l’INSEE et est destiné à des usages statistiques.
-Les champs ID issus du format SHP sont transformés en ID GeoJSON.
+Les champs ID issus du format SHP sont convertis en ID GeoJSON.
 EOT
 ]
 );
 
 /** JdD Admin Express COG Carto petite échelle 2025 de l'IGN (AeCogPe). */
 class AeCogPe extends Dataset {
+  /** Répertoire de stockage ds fichiers GeoJSON. */
   const GEOJSON_DIR = __DIR__.'/aecogpe2025';
   const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";
   const DESCRIPTION = AECOGPE_DESCRIPTION[0];
+  /* Type Polygon ou MultiPolygon GeoJSON .*/
+  const MPOLYGON = [
+    'description'=> "Géométrie GeoJSON Polygon ou MultiPolygon augmentée d'un bbox",
+    'type'=> 'object',
+    'properties'=> [
+      'type'=> [
+        'description'=> "Type de géométrie",
+        'enum'=> ['MultiPolygon','Polygon'],
+      ],
+      'bbox'=> [
+        'description'=> "BBox des coordonnées comme liste de 4 nombres",
+        'type'=> 'array',
+        'items'=> 'number',
+      ],
+      'coordinates'=> [
+        'description' => "Coordonnées",
+        'type'=> 'array',
+      ],
+    ],
+  ];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Schéma d'AeCogPe",
     'description'=> "AeCogPe",
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'region'],
+    'required'=> ['title','description','$schema', 'region', 'departement', 'epci'],
     'additionalProperties'=> false,
     'properties'=> [
       'title'=> ['description'=> "Titre du jeu de données", 'type'=> 'string'],
@@ -54,7 +75,7 @@ class AeCogPe extends Dataset {
       '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
       'region'=> [
         'title'=> "Région",
-        'description'=> "Région indexée sur le champs ID",
+        'description'=> "Région indexée sur le champ ID",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -75,27 +96,14 @@ class AeCogPe extends Dataset {
                 'description'=> "code INSEE de la région",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
       ],
       'departement'=> [
         'title'=> "Département",
-        'description'=> "Département indexé sur le champs ID",
+        'description'=> "Département indexé sur le champ ID",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -119,27 +127,14 @@ class AeCogPe extends Dataset {
                 'description'=> "code INSEE de la région à laquelle appartient le département",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
       ],
       'epci'=> [
         'title'=> "EPCI",
-        'description'=> "Etablissement Public de Coopération Intercommunale, indexé sur le champs ID",
+        'description'=> "Etablissement Public de Coopération Intercommunale, indexé sur le champ ID",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -165,27 +160,14 @@ class AeCogPe extends Dataset {
                   "Communauté urbaine",
                 ],
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
       ],
       'arrondissement'=> [
         'title'=> "Arrondissement",
-        'description'=> "Arrondissement, indexé sur le champs ID",
+        'description'=> "Arrondissement, indexé sur le champ ID",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -213,27 +195,14 @@ class AeCogPe extends Dataset {
                 'description'=> "code INSEE de la région à laquelle appartient le département",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
       ],
       'canton'=> [
         'title'=> "Canton",
-        'description'=> "Canton, indexé sur le champs ID",
+        'description'=> "Canton, indexé sur le champ ID",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [
@@ -253,20 +222,7 @@ class AeCogPe extends Dataset {
                 'description'=> "code INSEE de la région à laquelle appartient le département",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
@@ -324,20 +280,7 @@ class AeCogPe extends Dataset {
                 'description'=> "code Siren de l'EPCI auquel la commune appartient",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
@@ -363,20 +306,7 @@ class AeCogPe extends Dataset {
                 'description'=> "code INSEE du Canton",
                 'type'=> 'string',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['Point'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],
@@ -416,20 +346,7 @@ class AeCogPe extends Dataset {
                 'description'=> "population en nombre d'habitants",
                 'type'=> 'integer',
               ],
-              'geometry'=> [
-                'description'=> "Géométrie GeoJSON",
-                'type'=> 'object',
-                'properties'=> [
-                  'type'=> [
-                    'description'=> "Type de géométrie",
-                    'enum'=> ['MultiPolygon','Polygon'],
-                  ],
-                  'coordinates'=> [
-                    'description' => "Coordonnées",
-                    'type'=> 'array',
-                  ],
-                ],
-              ],
+              'geometry'=> self::MPOLYGON,
             ],
           ],
         ],

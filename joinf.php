@@ -6,7 +6,7 @@
 namespace Algebra;
 
 require_once 'collection.inc.php';
-require_once 'join.php';
+require_once 'concatkeys.php';
 
 use Dataset\Dataset;
 
@@ -67,7 +67,7 @@ class JoinF extends Collection {
       if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd collection
         if ($skip-- <= 0) {
           // attention à la manière de concaténer !!!
-          $key = ($this->kind == 'dictOfTuples') ? Join::concatKeys($key1,'') : $no;
+          $key = ($this->kind == 'dictOfTuples') ? Keys::concat($key1,'') : $no;
           if ($this->type == 'left-join')
             yield $key => $tuple;
           elseif ($this->type == 'diff-join')
@@ -83,7 +83,7 @@ class JoinF extends Collection {
             foreach ($tuple2 as $k => $v)
               $tuple["s2.$k"] = $v;
             if ($skip-- <= 0) {
-              $key = ($this->kind == 'dictOfTuples') ? Join::concatKeys($key1,$key2) : $no;
+              $key = ($this->kind == 'dictOfTuples') ? Keys::concat($key1,$key2) : $no;
               //print_r([$key=> $tuple]);
               yield $key => $tuple;
               $no++;
@@ -100,7 +100,7 @@ class JoinF extends Collection {
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(int|string $key): array|string|null {
-    $keys = Join::decatKeys($key);
+    $keys = Keys::decat($key);
     if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
     if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))

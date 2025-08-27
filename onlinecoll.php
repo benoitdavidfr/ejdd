@@ -26,7 +26,8 @@ class OnLineColl extends Collection {
     ],
   ];
   
-  /** @return array<string, Collection> */
+  /** Exemples d'OnLineColl.
+   * @return array<string, OnLineColl> */
   static function examples(): array {
     return [
       "Simple1" => new self(self::SIMPLE1['properties'], self::SIMPLE1['tuples']),
@@ -34,7 +35,8 @@ class OnLineColl extends Collection {
     ];
   }
   
-  /** @param array<string,array<string,string|int|float>> $tuples */
+  /** @param array<string,string> $properties
+   *  @param array<string,array<string,string|int|float>> $tuples */
   function __construct(readonly array $properties, readonly array $tuples) { parent::__construct('dictOfTuples'); }
   
   function id(): string { return 'OnLineColl('.json_encode(['properties'=>$this->properties, 'tuples'=>$this->tuples]).')'; }

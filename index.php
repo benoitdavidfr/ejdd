@@ -48,6 +48,9 @@ EOT
 /** Journal des modifications du code. */
 define('JOURNAL', [
 <<<'EOT'
+27/8/2025:
+  - amélioration des types simplifiés
+  - adaptation de JoinF et JoinP
 26/8/2025:
   - améliorations de inseecog.yaml
   - correction des chemins d'inclusion de source et d'ouverture de fichiers dans datasets/*.php

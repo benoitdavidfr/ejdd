@@ -1,21 +1,21 @@
 <?php
-/** Elts communs à JoinP et JoinF.
+/** Concaténation et déconcaténation de clés.
  * @package Algebra
  */
 namespace Algebra;
 
 require_once 'skipbracket.php';
 
-/** classe statique portant des fonctions communes à JoinF et JoinP. */
-class Join {
-  /** Concaténation de clas qui puisse être déconcaténées même imbriquées. */
-  static function concatKeys(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
+/** Concaténation et déconcaténation de clés. */
+class Keys {
+  /** Concatène 2 clés qui puisse être déconcaténées même avec imbrication. */
+  static function concat(string $k1, string $k2): string { return "{{$k1}}{{$k2}}"; }
   
   /** Décompose la clé dans les 2 clés d'origine qui ont été concaténées; retourne un tableau avec les clés 1 et 2.
-   * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous en commentaire.
+   * Les algos de concatKeys() et de decatKeys() sont testées avec la classe DoV ci-dessous dans la partie Test.
    * @return array{1: string, 2: string}
    */
-  static function decatKeys(string $keys): array {
+  static function decat(string $keys): array {
     $start = SkipBracket::skip($keys);
     return [1=> substr($start, 1, -1), 2=> substr($keys, 1, -1)];
   }
@@ -26,7 +26,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de cons
 
 
 /** Teste la méthode pour concaténer des clés, notamment la possibilité d'imbrication.
- * Les méthodes testées sont dans Join.
+ * Les méthodes testées sont dans Keys.
  * Un objet DoV est un dict de valeurs.
  */
 class DoV {
@@ -51,7 +51,7 @@ class DoV {
     $j = [];
     foreach($dov1->dov as $k1 => $v1) {
       foreach($dov2->dov as $k2 => $v2) {
-        $j[Join::concatKeys($k1,$k2)] = "$v1|$v2";
+        $j[Keys::concat($k1,$k2)] = "$v1|$v2";
       }
     }
     return new self($j);
@@ -81,7 +81,7 @@ class DoV {
         break;
       }
       case 'd': {
-        $keys = Join::decatKeys($_GET['key']);
+        $keys = Keys::decat($_GET['key']);
         echo '<pre>$keys='; print_r($keys); echo "\n";
         echo "$keys[1] -> "; print_r(DoV::gen('x')->dov[$keys[1]]); echo "\n";
         echo "$keys[2] -> "; print_r(DoV::join(DoV::gen('y'), DoV::gen('z'))->dov[$keys[2]]); echo "\n";

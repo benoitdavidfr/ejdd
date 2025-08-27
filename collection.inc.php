@@ -5,8 +5,8 @@
 namespace Algebra;
 
 require_once 'dataset.inc.php';
-//require_once 'predicate.inc.php';
-//require_once 'geojson.inc.php';
+require_once 'predicate.inc.php';
+require_once 'geojson.inc.php';
 
 use Dataset\Dataset;
 use Algebra\DsParser;
@@ -14,6 +14,141 @@ use JsonSchema\Validator;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;
+
+/** Une Collection est un itérable d'Items soit exposée par un Dataset, soit issue d'une requête.
+ * Une collection est capable d'itérer sur ses items, d'indiquer les filtres mis en oeuvre dans cette itération,
+ * de fournir un schéma simplifié, d'accéder à un Item par sa clé et d'afficher ses items.
+ * Il y a 2 types de collection: celles exposées par un JdD (CollectionOfDs) et celles issues d'une requête (Join, Proj, ...).
+ * Il y a 4 sortes (kind) de collection: 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+ * Une classe concrète doit indiquer la sorte de la Collection et définir les méthodes suivantes:
+ *   - id() construit un identifiant qui pourra ensuite être reconnu par le Parser pour reconstruire la Collection
+ *   - properties() fournit un schéma simplifié
+ *   - implementedFilters() indique quels filtres sont mis en oeuvre poar getItems()
+ *   - getItems() génère les Items
+ *   - getOneItemByKey() retourne un Item par sa clé
+ * Par ailleurs elle peut définir les méthodes suivantes:
+ *   - getItemsOnValue(), s'il existe un algo plus performant qu'une boucle sur les items de la collection
+ */
+abstract class Collection {
+  /** Nb de n-uplets par défaut par page à afficher */
+  const NB_TUPLES_PER_PAGE = 20;
+  /** @var ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
+  readonly string $kind; // 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+  
+  /** Point officiel pour requêter les collections.
+   @return ?(self|Program)
+   */
+  static function query(string $text): Program|self|null { return DsParser::start($text); }
+  
+  /** @param ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
+  function __construct(string $kind) { $this->kind = $kind; }
+  
+  /** L'identifiant permettant de recréer la Collection par le Parser de la forme "{Class}({paramètres})". */
+  abstract function id(): string;
+
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  abstract function properties(): array;
+  
+  /** Affiche les propriétés d'une collection sous la forme d'une table Html. */
+  function displayProperties(): void {
+    echo "<table border=1>";
+    foreach ($this->properties() as $pName => $simpType) {
+      echo "<tr><td>$pName</td><td>$simpType</td></tr>\n";
+    }
+    echo "</table>\n";
+  }
+  
+  /** Retourne les filtres implémentés par getItems().
+   * @return list<string>
+   */
+  abstract function implementedFilters(): array;
+  
+  /** L'accès aux items d'une collection par un Generator.
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
+   * @return \Generator<int|string,array<mixed>>
+   */
+  abstract function getItems(array $filters=[]): \Generator;
+
+  /** Retournbe un n-uplet par sa clé.
+   * @return array<mixed>|string|null
+   */ 
+  abstract function getOneItemByKey(int|string $key): array|string|null;
+  
+  /** Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.
+   * @return array<array<mixed>>
+   */ 
+  function getItemsOnValue(string $field, string $value): array {
+    $result = [];
+    foreach ($this->getItems() as $k => $item)
+      if ($item[$field] == $value)
+        $result[$k] = $item;
+    return $result;
+  }
+
+  /** Affiche les données de la collection */
+  function displayItems(int $skip=0): void {
+    echo "<h3>Contenu</h3>\n";
+    echo "<table border=1>\n";
+    $cols_prec = [];
+    $i = 0; // no de tuple
+    $filters = array_merge(
+      ['skip'=> $skip],
+      isset($_GET['predicate']) ? ['predicate'=> Predicate::fromText($_GET['predicate'])] : []
+    );
+    foreach ($this->getItems($filters) as $key => $item) {
+      $tuple = match ($this->kind) {
+        'dictOfTuples', 'listOfTuples' => $item,
+        'dictOfValues', 'listOfValues' => ['value'=> $item],
+        default => throw new \Exception("kind $this->kind non traité"),
+      };
+      $cols = array_merge(['key'], array_keys($tuple));
+      if ($cols <> $cols_prec)
+        echo '<th>',implode('</th><th>', $cols),"</th>\n";
+      $cols_prec = $cols;
+      echo "<tr><td><a href='?action=display&collection=",urlencode($this->id()),"&key=$key'>$key</a></td>";
+      foreach ($tuple as $k => $v) {
+        if ($v === null)
+          $v = '';
+        elseif ($k == 'geometry') { // affichage particulier d'une géométrie détectée par le nom du champ (A REVOIR)
+          $geom = Geometry::create($v);
+          $bbox = isset($v['bbox']) ? BBox::from4Coords($v['bbox']) : $geom->bbox();
+          $v = '<pre>'.Feature::geomToString($bbox, $geom).'</pre>';
+        }
+        elseif (is_array($v))
+          $v = '<pre>'.json_encode($v).'</pre>';
+        if (strlen($v) > 60)
+          $v = substr($v, 0, 57).'...';
+        echo "<td>$v</td>";
+      }
+      echo "</tr>\n";
+      if (in_array('skip', $this->implementedFilters()) && (++$i >= self::NB_TUPLES_PER_PAGE))
+        break;
+    }
+    echo "</table>\n";
+    if (in_array('skip', $this->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
+      $skip += $i;
+      echo "<a href='?action=display&collection=",urlencode($this->id()),
+             isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
+             "&skip=$skip'>",
+           "Suivants (skip=$skip)</a><br>\n";
+    }
+  }
+
+  function displayItem(string $key): void {
+    $item = $this->getOneItemByKey($key);
+    $tuple = match ($this->kind) {
+      'dictOfTuples', 'listOfTuples' => $item,
+      'dictOfValues', 'listOfValues' => ['value'=> $item],
+      default => throw new \Exception("kind $this->kind non traité"),
+    };
+    //echo "<pre>"; print_r($tuple);
+    echo "<h2>N-uplet de la collection ",$this->id()," ayant pour clé $key</h2>\n";
+    echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
+  }
+};
+
 
 /** Pour mettre du code Html dans un RecArray. */
 class HtmlCode {
@@ -170,12 +305,97 @@ class RecArray {
 };
 //RecArray::test(); // Test RecArray 
 
+/** Génère un type simplifié à partir d'un type d'une propriété défini dans un schéma JSON. */
+class SimplifiedType {
+  /** Crée un type simplifié d'un champ GeoJSON à partir de son type dans le schéma JSON.
+   * @param array<mixed> $props - les propriétés selon le formalisme du schéma JSON. */
+  static function forGeoJSON(array $props): ?string {
+    //echo '<pre>'; print_r($props);
+    if (!($props['type'] ?? null) || !($props['coordinates'] ?? null))
+      return null; // Ce n'est pas un type GeoJSON
+    elseif (isset($props['type']['enum']))
+      return 'GeoJSON('.implode('|', $props['type']['enum']).')';
+    else
+      throw new \Exception("Type GeoJSON non reconnu");
+  }
+  
+  /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
+   * Utilisé pour fabriquer des properties à partir du schéma.
+   * @param array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+  static function simplifiedType2(array $prop): string {
+    // Les types simples
+    if (in_array($prop['type'] ?? null, ['string','number','integer']))
+      return $prop['type'];
+    elseif (($prop['type'] ?? null) && ($prop['type']['enum'] ?? null))
+      return json_encode($prop['type']);
+    elseif (($prop['type'] ?? null) && ($prop['type']['const'] ?? null))
+      return json_encode($prop['type']);
+    elseif ('array' == ($prop['type'] ?? null)) {
+      return json_encode(['type'=> 'array', 'items'=> $prop['items']]);
+    }
+    elseif ('object' == ($prop['type'] ?? null)) {
+      if ($stgjs = self::forGeoJSON($prop['properties'] ?? null))
+        return $stgjs;
+      else
+        return json_encode(['type'=> 'object', 'properties'=> $prop['properties']]);
+    }
+    else {
+      return 'unknown';
+    }
+  }
+  
+  /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
+   * @param array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+  static function create(array $prop): string {
+    $stype = self::simplifiedType2($prop);
+    //echo '<pre>simplifiedType('; print_r($prop); echo ") returns '$stype'</pre>";
+    return $stype;
+  }
+  
+  /** Fusionne const et enum.
+   * @param array<array<mixed>> $sts - liste de types simplifiés à fusionner. */
+  static function mergeConstEnum(array $sts): string {
+    //echo 'mergeConstEnum(',json_encode(['sts'=>$sts]);
+    $enums = [];
+    foreach ($sts as $st) {
+      if (isset($st['const']))
+        $enums[$st['const']] = 1;
+      elseif (isset($st['enum'])) {
+        foreach ($st['enum'] as $v)
+          $enums[$v] = 1;
+      }
+      else
+        throw new \Exception("Cas impossible");
+    }
+    $return = json_encode(['enum'=> array_keys($enums)]);
+    //echo "return $return<br>\n";
+    return $return;
+  }
+    
+  /** Fusionne 2 types simplifiés */
+  static function merge2(string $st1, string $st2): string {
+    if ($st1 == $st2)
+      return $st1;
+    elseif (preg_match('!^{"(const|enum)":!', $st1) && preg_match('!^{"(const|enum)":!', $st2))
+      return self::mergeConstEnum([json_decode($st1, true), json_decode($st2, true)]);
+    else
+      return "$st1|$st2";
+  }
+
+  /** Fusionne 2 types simplifiés */
+  static function merge(string $st1, string $st2): string {
+    $merge = self::merge2($st1, $st2);
+    //echo "merge($st1, $st2) returns $merge<br>\n";
+    return $merge;
+  }
+};
+
 /** Le schéma JSON d'une Collection d'un JdD. */
 abstract class SchemaOfCollection {
   /** @param array<mixed> $array - contient le schéma JSON de la collection */
   function __construct(readonly array $array) {}
     
-  /** Déduit du schéma si le type de la collection.
+  /** Déduit du schéma de quelle sorte de collection il s'agit.
    * @param array<mixed> $array - le schéma
    * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
    */
@@ -270,7 +490,7 @@ abstract class SchemaOfCollection {
    */
   function kind(?string $name=null): string { return self::skind($this->array, $name); }
   
-  /** Création d'un SchemaOfCollection en fonction de son contenu.
+  /** Création d'un SchemaOfCollection en fonction sa sorte déduite de son contenu.
    * @param array<mixed> $array - le schéma
    */
   static function create(array $array): self {
@@ -281,6 +501,7 @@ abstract class SchemaOfCollection {
     };
   }
   
+  /** Produit le code Html pour afficher le schéma. */
   function toHtml(): string {
     $schema = $this->array;
     unset($schema['title']);
@@ -306,9 +527,12 @@ class SchemaOfDictOfTuples extends SchemaOfCollection {
     // Attention, si une propriété est définie dans plusieurs objectTypes, c'est le dernier qui est pris en compte
     $props = [];
     foreach ($patternProperties as $objectType) { // chaque type d'objet
+      if (!isset($objectType['properties'])) {
+        throw new \Exception("TO BE IMPLEMENTED");
+      }
       //echo '<pre>$objectType='; print_r($objectType);
       foreach ($objectType['properties'] as $pname => $prop) {
-        $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])? $prop['type'] : json_encode($prop['type']));
+        $props[$pname] = SimplifiedType::create($prop);
       }
     }
     return $props;
@@ -325,7 +549,7 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
     $props = [];
     if (isset($items['properties'])) { // cas std non OneOf
       foreach ($items['properties'] as $pname => $prop) {
-        $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])? $prop['type'] : json_encode($prop['type']));
+        $props[$pname] = SimplifiedType::create($prop);
       }
       return $props;
     }
@@ -334,7 +558,10 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
       foreach ($items['oneOf'] as $case) {
         foreach ($case['properties'] as $pname => $prop) {
           //echo '$case[properties]='; print_r([$pname => $prop]);
-          $props[$pname] = !isset($prop['type'])?'unknown': (is_string($prop['type'])?$prop['type']:json_encode($prop['type']));
+          if (!isset($props[$pname]))
+            $props[$pname] = SimplifiedType::create($prop);
+          else
+            $props[$pname] = SimplifiedType::merge($props[$pname], SimplifiedType::create($prop));
         }
       }
       return $props;
@@ -353,131 +580,9 @@ class SchemaOfXXXOfValues extends SchemaOfCollection {
   function properties(): array { throw new \Exception("TO BE IMPLEMENTED"); }
 };
 
-
-/** Une Collection est un itérable d'Items soit exposé par un Dataset, soit issu d'une requête.
- * Une collection est capable d'itérer sur ses items, d'indiquer les filtres mis en oeuvre et d'afficher les items.
- * Il y a 2 types de collection, celles exposées par un JdD (CollectionOfDs) et celles issues d'une requête (Join, Proj, ...).
- * Une classe concrète doit indiquer le kind de la Collection et définir les méthodes suivantes:
- *   - id()
- *   - getItems()
- *   - implementedFilters()
- *   - getOneItemByKey()
- * Par ailleurs elle peut définir les méthodes suivantes:
- *   - getItemsOnValue(), s'il existe un algo plus performant
- */
-abstract class Collection {
-  /** Nb de n-uplets par défaut par page à afficher */
-  const NB_TUPLES_PER_PAGE = 20;
-  /** @var ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
-  readonly string $kind; // 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
-  
-  /** Point officiel pour requêter les collections.
-   @return ?(self|Program)
-   */
-  static function query(string $text): Program|self|null { return DsParser::start($text); }
-  
-  /** @param ('dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues') $kind - type des éléments */
-  function __construct(string $kind) { $this->kind = $kind; }
-  
-  /** L'identifiant permettant de recréer la Collection. */
-  abstract function id(): string;
-  
-  /** Retourne les filtres implémentés par getItems().
-   * @return list<string>
-   */
-  abstract function implementedFilters(): array;
-  
-  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
-   * @return array<string, string>
-   */
-  abstract function properties(): array;
-  
-  /** L'accès aux items d'une collection par un Generator.
-   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
-   * @return \Generator<int|string,array<mixed>>
-   */
-  abstract function getItems(array $filters=[]): \Generator;
-
-  /** Retournbe un n-uplet par sa clé.
-   * @return array<mixed>|string|null
-   */ 
-  abstract function getOneItemByKey(int|string $key): array|string|null;
-  
-  /** Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.
-   * @return array<array<mixed>>
-   */ 
-  function getItemsOnValue(string $field, string $value): array {
-    $result = [];
-    foreach ($this->getItems() as $k => $item)
-      if ($item[$field] == $value)
-        $result[$k] = $item;
-    return $result;
-  }
-
-  /** Affiche les données de la collection */
-  function displayItems(int $skip=0): void {
-    echo "<h3>Contenu</h3>\n";
-    echo "<table border=1>\n";
-    $cols_prec = [];
-    $i = 0; // no de tuple
-    $filters = array_merge(
-      ['skip'=> $skip],
-      isset($_GET['predicate']) ? ['predicate'=> Predicate::fromText($_GET['predicate'])] : []
-    );
-    foreach ($this->getItems($filters) as $key => $item) {
-      $tuple = match ($this->kind) {
-        'dictOfTuples', 'listOfTuples' => $item,
-        'dictOfValues', 'listOfValues' => ['value'=> $item],
-        default => throw new \Exception("kind $this->kind non traité"),
-      };
-      $cols = array_merge(['key'], array_keys($tuple));
-      if ($cols <> $cols_prec)
-        echo '<th>',implode('</th><th>', $cols),"</th>\n";
-      $cols_prec = $cols;
-      echo "<tr><td><a href='?action=display&collection=",urlencode($this->id()),"&key=$key'>$key</a></td>";
-      foreach ($tuple as $k => $v) {
-        if ($v === null)
-          $v = '';
-        elseif ($k == 'geometry') { // affichage particulier d'une géométrie
-          $geom = Geometry::create($v);
-          $bbox = isset($v['bbox']) ? BBox::from4Coords($v['bbox']) : $geom->bbox();
-          $v = '<pre>'.Feature::geomToString($bbox, $geom).'</pre>';
-        }
-        elseif (is_array($v))
-          $v = '<pre>'.json_encode($v).'</pre>';
-        if (strlen($v) > 60)
-          $v = substr($v, 0, 57).'...';
-        echo "<td>$v</td>";
-      }
-      echo "</tr>\n";
-      if (in_array('skip', $this->implementedFilters()) && (++$i >= self::NB_TUPLES_PER_PAGE))
-        break;
-    }
-    echo "</table>\n";
-    if (in_array('skip', $this->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
-      $skip += $i;
-      echo "<a href='?action=display&collection=",urlencode($this->id()),
-             isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
-             "&skip=$skip'>",
-           "Suivants (skip=$skip)</a><br>\n";
-    }
-  }
-
-  function displayItem(string $key): void {
-    $item = $this->getOneItemByKey($key);
-    $tuple = match ($this->kind) {
-      'dictOfTuples', 'listOfTuples' => $item,
-      'dictOfValues', 'listOfValues' => ['value'=> $item],
-      default => throw new \Exception("kind $this->kind non traité"),
-    };
-    //echo "<pre>"; print_r($tuple);
-    echo "<h2>N-uplet de la collection ",$this->id()," ayant pour clé $key</h2>\n";
-    echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
-  }
-};
-
 /** Une Collection d'un Dataset.
- * La plupart des fonctionnalités d'une telle collection sont mises en oeuvre par la classe de JdD concrète héritant de Dataset. */
+ * D'une part contient son schéma et, d'autre part,la plupart des fonctionnalités d'une telle collection sont mises en oeuvre
+ * par la classe de JdD concrète héritant de Dataset. */
 class CollectionOfDs extends Collection {
   /** @var string $dsName - Le nom du JdD contenant la collection. */
   readonly string $dsName;
@@ -538,6 +643,12 @@ class CollectionOfDs extends Collection {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->array['description']);
+
+    if ($this->properties()) {
+      echo "<h3>Propriétés</h3>\n";
+      $this->displayProperties();
+    }
+
     echo "<h3>Schéma</h3>\n";
     echo $this->schema->toHtml();
     

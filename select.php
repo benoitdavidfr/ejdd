@@ -72,79 +72,72 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de cons
 
 /** Test de Select. */
 class SelectTest {
-  const SIMPLECOLLDYN_TUPLES = [
-    'key1'=> ['stringField'=> 'stringValue', 'float'=> 5.0, 'int'=> 25],
-    'key2'=> ['stringField'=> 'stringValue2', 'float'=> 3.14, 'int'=> 0],
-    'key3'=> ['stringField'=> 'stringValue2', 'float'=> 0, 'int'=> 0],
-  ];
-  
   /** @return TGJSimpleGeometry */
   static function square(int $min, int $max): array {
     return ['type'=> 'LineString', 'coordinates'=> [[$min,$min],[$max,$max]]];
   }
   
   /** @return array<string,array<string,mixed>> */
-  static function spatialCollDynTuples(): array {
+  static function spatialOnLineColl(): array {
     return [
-      'key1'=> ['stringField'=> 'square(0,10)', 'float'=> 5.0, 'int'=> 25, 'geom'=> self::square(0,10)],
+      'properties'=> ['stringField'=> 'string', 'float'=> 'number', 'int'=> 'integer', 'geom'=> 'GeoJSON(LineString)'],
+      'tuples'=> [
+        'key1'=> ['stringField'=> 'square(0,10)', 'float'=> 5.0, 'int'=> 25, 'geom'=> self::square(0,10)]
+      ],
     ];
   }
 
   /** @return array<string,array{'collection': Collection, 'predicate': Predicate}> */
   static function examples(): array {
     return [
-      /*
+      //*
       "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une collection acceptant predicate)" => [
         'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
-        'predicate'=> new PredicateConstant('NCC', new CondOp('match'), new Constant('string', '!FRANCE!')),
+        'predicate'=> new PredicateConstant('NCC', new Comparator('match'), new Constant('string', '!FRANCE!')),
       ],
       "DeptReg.régions.nom match '!France!' (cas d'une collection n'acceptant pas predicate)" => [
         'collection'=> CollectionOfDs::get('DeptReg.régions'),
-        'predicate'=> new PredicateConstant('nom', new CondOp('match'), new Constant('string', '!France!')),
+        'predicate'=> new PredicateConstant('nom', new Comparator('match'), new Constant('string', '!France!')),
       ],
-      "SimpleCollDyn" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
-        'predicate'=> new PredicateConstant('stringField', new CondOp('='), new Constant('string', 'stringValue')),
+      "SimpleOnLineColl where stringField='stringValue'" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
+        'predicate'=> new PredicateConstant('stringField', new Comparator('='), new Constant('string', 'stringValue')),
       ],
-      "SimpleCollDyn2" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
-        'predicate'=> new PredicateConstant('stringField', new CondOp('<>'), new Constant('string', 'stringValue')),
+      "SimpleOnLineColl  where stringField<>'stringValue'" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
+        'predicate'=> new PredicateConstant('stringField', new Comparator('<>'), new Constant('string', 'stringValue')),
       ],
-      "SimpleCollDyn3" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
-        'predicate'=> new PredicateConstant('float', new CondOp('<'), new Constant('int', 4)),
+      "SimpleOnLineColl where float < 4 (construit à la main)" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
+        'predicate'=> new PredicateConstant('float', new Comparator('<'), new Constant('int', '4')),
       ],
-      "SimpleCollDyn4" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+      "SimpleOnLineColl where float < 4 (avec fromText())" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
         'predicate'=> Predicate::fromText('float < 4'),
       ],
-      "SimpleCollDyn4bis" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+      "SimpleOnLineColl where 4 > float" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
         'predicate'=> Predicate::fromText('4 > float'),
       ],
-      "SimpleCollDyn5" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+      "SimpleOnLineColl where (float > 2) and (float < 4)" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
         'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
       ],
-      "SimpleCollDyn6" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
-        'predicate'=> Predicate::fromText('(float > 2) and (float < 4)'),
-      ],
-      "SimpleCollDyn7" => [
-        'collection'=> new CollDyn(self::SIMPLECOLLDYN_TUPLES),
+      "SimpleOnLineColl where (2 < float) and (float < 4)" => [
+        'collection'=> OnLineColl::examples()['Simple1'],
         'predicate'=> Predicate::fromText('(2 < float) and (float < 4)'),
       ],
-      "SpatialCollDyn" => [
-        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+      "SpatialOnLineColl where float > 2" => [
+        'collection'=> new OnLineColl(self::spatialOnLineColl()['properties'], self::spatialOnLineColl()['tuples']),
         'predicate'=> Predicate::fromText('float > 2'),
       ],
-      */
-      "SpatialCollDyn2 with json_encode" => [
-        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+      //*/
+      "SpatialOnLineColl2 with json_encode" => [
+        'collection'=> new OnLineColl(self::spatialOnLineColl()['properties'], self::spatialOnLineColl()['tuples']),
         'predicate'=> Predicate::fromText('geom intersects '.json_encode(self::square(5, 20))),
       ],
-      "SpatialCollDyn2 with bbox" => [
-        'collection'=> new CollDyn(self::spatialCollDynTuples()),
+      "SpatialOnLineColl2 with bbox" => [
+        'collection'=> new OnLineColl(self::spatialOnLineColl()['properties'], self::spatialOnLineColl()['tuples']),
         'predicate'=> Predicate::fromText('geom intersects [5,5,20,20]'),
       ],
       "Départements intersects [1@46,3@47] with json_encode"=> [

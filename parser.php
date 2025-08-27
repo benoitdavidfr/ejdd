@@ -341,8 +341,8 @@ EOT
         $text0 = $text;
         $json = json_decode($json, true);
         return new OnLineColl($json['properties'], $json['tuples']);
-        self::addTrace($path, "Echec expCollection#7", $text0);
       }
+      self::addTrace($path, "Echec expCollection#7", $text0);
     }
     
     // MANQUE {expCollection}#8 : 'Map' '(' {phpFun} ',' {expCollection} ')' 

@@ -54,7 +54,7 @@ parameters:
     - geojson.php
     - map.php
     - cproduct.php
-    - join.php
+    - concatkeys.php
     - joinf.php
     - joinp.php
     - proj.php

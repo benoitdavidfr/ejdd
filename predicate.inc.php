@@ -189,18 +189,13 @@ abstract class Predicate {
 /** Prédicat de comparaison d'un champ du n-uplet avec une constante, prédicat {name} {comparator} {constant}.
  * Le champ utilisé doit être défini dans le n-uplet, sinon une exception est lancée. */
 class PredicateConstant extends Predicate {
-  /** @param bool $inv - si true alors les 2 valeurs doivent être inversées
-   * @param string $field - nom du champ
-   * @param Comparator $comp - définition de l'opération de comparaison
-   * @param Constant $constant - la constante */
-  function __construct(readonly bool $inv, readonly string $field, readonly Comparator $comp, readonly Constant $constant) {}
+  /** @param string $field - nom du champ
+   *  @param Comparator $comp - définition de l'opération de comparaison
+   *  @param Constant $constant - la constante */
+  function __construct(readonly string $field, readonly Comparator $comp, readonly Constant $constant) {}
 
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string {
-    return $this->inv ?
-      $this->constant->id().' '.$this->comp->id().' '.$this->field
-        : $this->field.' '.$this->comp->id().' '.$this->constant->id();
-  }
+  function id(): string { return $this->field.' '.$this->comp->id().' '.$this->constant->id(); }
   
   /** Evaluation du prédicat sur 1 n-uplet. */
   function eval(array $tuples): bool {
@@ -210,7 +205,28 @@ class PredicateConstant extends Predicate {
     if (($val = $tuples[$this->field] ?? null) === null)
       throw new \Exception("field $this->field absent");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = $this->inv ? $this->comp->eval($this->constant->value(), $val) : $this->comp->eval($val, $this->constant->value());
+    $result = $this->comp->eval($val, $this->constant->value());
+    //echo "result=",$result ? 'vrai':'faux',"<br>\n";
+    return $result;
+  }
+};
+
+/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {constant} {op} {field}. */
+class PredicateConstantInv extends PredicateConstant {
+  function __construct(Constant $constant, Comparator $comp, string $field) { parent::__construct($field, $comp, $constant); }
+  
+  /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
+  function id(): string { return $this->constant->id().' '.$this->comp->id().' '.$this->field; }
+
+  /** Evaluation du prédicat sur 1 n-uplet. */
+  function eval(array $tuples): bool {
+    //echo '<pre>';
+    //echo '$this='; print_r($this);
+    //echo '$tuples='; print_r($tuples);
+    if (($val = $tuples[$this->field] ?? null) === null)
+      throw new \Exception("field $this->field absent");
+    //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
+    $result = $this->comp->eval($this->constant->value(), $val);
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
@@ -336,7 +352,7 @@ EOT
       ) {
         DsParser::addTrace($path, "succès", $text);
         $text0 = $text;
-        return new PredicateConstant(false, $field, $comparator, $constant);
+        return new PredicateConstant($field, $comparator, $constant);
       }
       DsParser::addTrace($path, "échec {predicate} ::= {name} {comparator} {constant}", $text0);
     }
@@ -349,7 +365,7 @@ EOT
       ) {
         DsParser::addTrace($path, "succès", $text);
         $text0 = $text;
-        return new PredicateConstant(true, $field, $comparator, $constant);
+        return new PredicateConstantInv($constant, $comparator, $field);
       }
       DsParser::addTrace($path, "échec {predicate} ::= {constant} {comparator} {name}", $text0);
     }

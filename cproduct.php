@@ -3,9 +3,9 @@
 namespace Algebra;
 
 require_once 'collection.inc.php';
-require_once 'join.php';
+require_once 'concatkeys.php';
 
-/** Construit la liste des propriétés du produit cartésien à partir de la méthode properties() des collections en entrée.
+/** Construit la liste des propriétés du produit cartésien à partir de la méthode properties() des collections sources.
  * En cas de collision entre noms, génère un nom précédé du péfixe.
  */
 class ProductProperties {
@@ -54,6 +54,10 @@ class ProductProperties {
     $this->properties = $fprops;
   }
   
+  /** Fusionne un tuple de chaque collection pour créer un tuple du produit.
+   * @param array<string,mixed> $tuple1
+   * @param array<string,mixed> $tuple2
+   * @return array<string,mixed> */
   function mergeTuples(array $tuple1, array $tuple2): array {
     $mergedTuple = [];
     //echo '$tuple1='; print_r($tuple1);
@@ -110,13 +114,13 @@ class CProduct extends Collection {
       //echo '<pre>$tuple1='; print_r($tuple1);
       foreach ($this->coll2->getItems() as $key2 => $tuple2) {
         //echo '<pre>$tuple2='; print_r($tuple2);
-        yield Join::concatKeys($key1, $key2) => $this->pprop->mergeTuples($tuple1, $tuple2);
+        yield Keys::concat($key1, $key2) => $this->pprop->mergeTuples($tuple1, $tuple2);
       }
     }
   }
 
   function getOneItemByKey(int|string $key): array|string|null {
-    $keys = Join::decatKeys($key);
+    $keys = Keys::decat($key);
     $tuple1 = $this->coll1->getOneItemByKey($keys[1]);
     $tuple2 = $this->coll2->getOneItemByKey($keys[2]);
     return $this->pprop->mergeTuples($tuple1, $tuple2);
@@ -135,7 +139,7 @@ class CProductTest {
     echo "<h2>Test de CProduct sur les 2 OnlineColl</h2>\n";
     switch ($_GET['action'] ?? null) {
       case null: {
-        $examples = OnlineColl::examples();
+        $examples = OnLineColl::examples();
         $cproduct = new CProduct($examples['Simple1'], $examples['Simple2']);
         //echo '<pre>cproduct='; print_r($cproduct);
         $cproduct->displayItems();

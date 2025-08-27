@@ -19,15 +19,21 @@ EOT
 ini_set('memory_limit', '10G');
 set_time_limit(5*60);
 
-class Optimiser {
+/** L'optimiseur a pour objectif de définir l'algorithme le plus optimisé pour effectuer la jointure.
+ * Il a besoin de connaitre les propriétés du produit cartésien potentiel et c'est donc une sous-classe de ProductProperties.
+ */
+class Optimiser extends ProductProperties {
+  /** Prend en entrée une liste de collections associées chacune à un préfix.
+   * @param non-empty-array<string,Collection> $colls
+   */
+  function __construct(array $colls) { parent::__construct($colls); }
+  
   /** Cherche si un algo plus efficace qu'un produit cartésien peut être utilisé.
-   * Si c'est le cas retourne cet alorithme sous la forme d'une expression sur collections. Sinon retourne null. */ 
+   * Si c'est le cas retourne cet alorithme sous la forme d'une expression sur collections. Sinon retourne null.
+   * Dans un 1er temps je me limite aux JoinP avec un PredicateField où l'op est = et les 2 champs sont dans les 2 colls.
+   */ 
   function optimisedAlgo(string $type, Collection $coll1, Collection $coll2, Predicate $predicate): ?Collection {
     echo '<pre>predicate='; print_r($predicate);
-    // Dans un 1er temps je n'accepte d'optimiser que le prédicats '='. A voir pour traitements spatiaux.
-    if ($predicate->comparator->compOp <> '=') {
-      return null;
-    }
     //echo 'class=',get_class($predicate),"<br>\n";
     //echo 'properties=',json_encode($this->properties),"\n";
     switch ($class = get_class($predicate)) {
@@ -36,7 +42,13 @@ class Optimiser {
         $pf = $predicate; // J'affirme que $predicate est un PredicateField pour satisfaire PhpStan */
         echo "<pre>pf="; print_r($pf);
         echo '$properties='; print_r($this->properties);
-        if (!($field1 = $this->properties[$pf->field1]['sname'])) { // je traduit le nom de champ dans son nom d'origine
+        
+        // Dans un 1er temps je n'accepte d'optimiser que le prédicats '='. A voir pour traitements spatiaux.
+        if ($pf->comparator->compOp <> '=') {
+          return null;
+        }
+        
+        if (!($field1 = $this->properties[$pf->field1]['sname'])) { // je traduis le nom de champ dans son nom d'origine
           throw new \Exception("Champ '".$pf->field1."' non défini dans les collections sources");
         }
         if (!($field2 = $this->properties[$pf->field2]['sname'])) {
@@ -59,7 +71,7 @@ class Optimiser {
         //echo "dans optimisedAlgo(), type=$type<br>\n";
         return new JoinF($type, $coll1, $field1, $coll2, $field2);
       }
-      default: throw new \Exception("sur $class");
+      default: return null;
     }
   }
 };
@@ -74,7 +86,7 @@ class JoinP extends Collection {
   readonly Collection $coll1;
   readonly Collection $coll2;
   readonly Predicate $predicate;
-  readonly JoinProperties $joinProperties;
+  readonly Optimiser $optimiser;
   readonly ?Collection $optimisedAlgo; // Algo optimisé
   
   function __construct(string $type, Collection $coll1, Collection $coll2, Predicate $predicate) {
@@ -83,12 +95,15 @@ class JoinP extends Collection {
     if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
+    if ($type <> 'inner-join') {
+      throw new \Exception("TO BE IMPLEMENTED");
+    }
     $this->type = $type;
     $this->coll1 = $coll1;
     $this->coll2 = $coll2;
     $this->predicate = $predicate;
-    $this->joinProperties = new JoinProperties(['s1'=> $coll1, 's2'=> $coll2]);
-    $this->optimisedAlgo = $this->joinProperties->optimisedAlgo($this->type, $coll1, $coll2, $predicate);
+    $this->optimiser = new Optimiser(['s1'=> $coll1, 's2'=> $coll2]);
+    $this->optimisedAlgo = $this->optimiser->optimisedAlgo($this->type, $coll1, $coll2, $predicate);
   }
 
   /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
@@ -119,18 +134,13 @@ class JoinP extends Collection {
     //echo "skip=$skip<br>\n";
     $no = $skip;
     
-    if ($algo = $this->optimisedAlgo) {
-      //echo 'algo=',$algo->id(),"<br>\n";
-      foreach ($algo->getItems($filters) as $key => $tuple) {
-        //print_r([$key=> $tuple]);
-        yield $key => $tuple;
-      }
-      return null;
+    // S'il n'existe pas d'optimisation alors l'algo est un produit cartésien suivi d'un Select
+    $algo = $this->optimisedAlgo ?? new Select($this->predicate, new CProduct($this->coll1, $this->coll2));
+    //echo 'algo=',$algo->id(),"<br>\n";
+    foreach ($algo->getItems($filters) as $key => $tuple) {
+      //print_r([$key=> $tuple]);
+      yield $key => $tuple;
     }
-    else {
-      throw new \Exception("Pas d'algo - To be implemented");
-    }
-    
     return null;
   }
   
@@ -140,7 +150,7 @@ class JoinP extends Collection {
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(int|string $key): array|string|null {
-    $keys = Join::decatKeys($key);
+    $keys = Keys::decat($key);
     if (!($tuple1 = $this->coll1->getOneItemByKey($keys[1])))
       return null;
     if (!($tuple2 = $this->coll2->getOneItemByKey($keys[2])))
@@ -172,7 +182,7 @@ class JoinPTest {
    * @param array<string, Collection> $colls - les collections et leur prefixe
    */
   static function collPropertiesHtml(array $colls): string {
-    $joinProperties = new JoinProperties($colls);
+    $joinProperties = new ProductProperties($colls);
     $propsPerColl = []; //[{prefix}=> [{propName}=> {type}]]
     foreach ($joinProperties->properties as $propName=> $prop) {
       $propsPerColl[$prop['source']][$propName] = $prop['type'];

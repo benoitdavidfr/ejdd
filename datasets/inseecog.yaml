@@ -247,7 +247,7 @@ $schema:
                 type: string
                 pattern: '^\d[\dAB]\d?$'
               CTCD:
-                description: Collectivité territoriale assurant le rôle de conseil départemental (?)
+                description: Collectivité territoriale ayant les compétences départementales
                 type: string
               ARR:
                 description: code Insee de l'arrondissement sauf pour les Communes de Mayotte
@@ -311,7 +311,8 @@ $schema:
                 type: string
                 pattern: '^(\d[\dAB]\d?|)$'
               CTCD:
-                description: '????'
+                description: Collectivité territoriale ayant les compétences départementales
+                type: string
               ARR:
                 description: vide pour COMA et COMD, code arrondissement pour ARM
                 type: string
