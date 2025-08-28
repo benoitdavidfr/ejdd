@@ -272,14 +272,21 @@ set_time_limit(5*60);
  *    - title -> titre du JdD sur une ligne
  *    - description -> texte de présentation du JdD aussi longue qu'utile (il faudrait la mettre en Markdown)
  *    - $schema -> schéma JSON listant les collections et décrivant la structure et la sémantique de chacune
- *  - le **schéma JSON** d'une collection définit son exposition en Php (en non son stockage)
+ *  - le **schéma JSON** d'une collection définit son exposition en Php (et non son stockage)
  *    - en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
- *      est sigifiante ou n'est qu'un numéro d'ordre
+ *      est signifiante ou n'est qu'un numéro d'ordre
  *  - la **catégorie d'un JdD** définit le comportement du JdD et finalement le code Php de sa manipulation,
  *    elle permet de mutualiser le code Php entre différents jeux ayant le même comportement 
- *  - je distingue
- *    - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
- *    - de sa construction (Build) qui importe le JdD dans le système à partir d'une représentation externe
+ *  - des **requêtes** peuvent être exprimées au moyen d'**opérateurs** qui consomment une ou plusieurs collections
+ *    et en produisent une nouvelle,
+ *    - les opérateurs peuvent s'enchainer
+ *    - la liste des oéprateurs est la suivante
+ *      - sélection d'une collection pour restreindre le contenu d'une collection en fonction d'un prédicat
+ *      - projection d'une collection pour supprimer et/ou renommer ses champs
+ *      - produit cartésien entre 2 collections
+ *      - jointure sur champs et sur prédicats
+ *      - union de 2 collections
+ *    - enfin un langage de requêtes permet de formuler des requêtes et de les exécuter
  *
  * ### Structuration en Php:
  *  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
@@ -296,7 +303,7 @@ set_time_limit(5*60);
  *          - qui définit une méthode statique main() qui est appelée à la fin du fichier
  *  - la classe Collection représente un itérable d'items qui peut
  *      - soit appartenir à un JdD (CollectionOfDs),
- *      - soit être générée dynamiquement par une opération ensembliste (join, projection, ...)
+ *      - soit être générée dynamiquement par un opérateur (join, projection, ...)
  *  - les MD d'un JdD respectent la forme du schéma JSON et doivent être conformes à un méta-schéma des JdD
  *
  * ### Utilisation en Php:
@@ -388,13 +395,15 @@ class Application {
     switch ($_GET['action'] ?? null) {
       case null: {
         if (!isset($_GET['dataset'])) {
-          echo "<title>dataset</title><h2>Choix du JdD</h2>\n";
+          echo "<title>dataset</title>\n";
+          echo "<h2>Choix d'un JdD</h2>\n";
           foreach (Dataset::REGISTRE as $dsName=> $class) {
             $dataset = Dataset::get($dsName);
             //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
             echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
           }
-          echo "<h2>Autres</h2><ul>\n";
+          
+          echo "<h2>Tests</h2><ul>\n";
           echo "<li><a href='proj.php'>Projection d'une collection</a></li>\n";
           echo "<li><a href='select.php'>Sélection d'une collection</a></li>\n";
           echo "<li><a href='joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
@@ -403,6 +412,9 @@ class Application {
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
           echo "<li><a href='query.php'>Requêter les collections</a></li>\n";
           echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
+          echo "</ul>\n";
+
+          echo "<h2>Autres</h2><ul>\n";
           echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
           echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
           echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
