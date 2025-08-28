@@ -1,5 +1,5 @@
 <?php
-/** Produit cartésien entre collections.
+/** Produit cartésien de collections.
  * @package Algebra
  */
 namespace Algebra;
@@ -57,7 +57,7 @@ class ProductProperties {
   }
   
   /** Fusionne un tuple de chaque collection pour créer un tuple du produit.
-   * Le second tuple peut-être vide, par dans le cas d'un left-join
+   * Le second tuple peut-être vide, par dans le cas d'un LeftJoin
    * @param array<string,mixed> $tuple1
    * @param array<string,mixed> $tuple2
    * @return array<string,mixed> */
@@ -83,7 +83,7 @@ class ProductProperties {
   }
 };
 
-/** Produit cartésien entre collections. */
+/** Produit cartésien de 2 collections. */
 class CProduct extends Collection {
   readonly ProductProperties $pProps;
   
@@ -97,9 +97,7 @@ class CProduct extends Collection {
   }
   
   /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
-  function id(): string {
-    return 'CProduct('.$this->coll1->id().','.$this->coll2->id().')';
-  }
+  function id(): string { return 'CProduct('.$this->coll1->id().','.$this->coll2->id().')'; }
     
   /** Retourne les filtres implémentés par getTuples().
    * @return list<string>
@@ -111,6 +109,7 @@ class CProduct extends Collection {
    */
   function properties(): array { return $this->pProps->properties(); }
 
+  /* Génération des items du produit catésien, VOIR l'implem de skip. */
   function getItems(array $filters=[]): \Generator {
     foreach ($this->coll1->getItems() as $key1 => $tuple1) {
       //echo '<pre>$tuple1='; print_r($tuple1);
@@ -120,7 +119,8 @@ class CProduct extends Collection {
       }
     }
   }
-
+  
+  /** Récupération d'un item du produit cartésien par sa clé. */
   function getOneItemByKey(int|string $key): array|string|null {
     $keys = Keys::decat($key);
     $tuple1 = $this->coll1->getOneItemByKey($keys[1]);

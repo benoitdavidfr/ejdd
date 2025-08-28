@@ -99,8 +99,8 @@ class ProjTest {
         break;
       }
       case 'projDeJoin': {
-        // proj(inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM),s1.REG/reg,s1.LIBELLE/lib,s2.LIBELLE/préf)
-        $join = new JoinF('inner-join',
+        // proj(InnerJoin(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM),s1.REG/reg,s1.LIBELLE/lib,s2.LIBELLE/préf)
+        $join = new JoinF('InnerJoin',
           CollectionOfDs::get('InseeCog.v_region_2025'), 'CHEFLIEU',
           CollectionOfDs::get('InseeCog.v_commune_2025'), 'COM');
         //echo '<pre>$join='; print_r($join); echo "</pre>\n";

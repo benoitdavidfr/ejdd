@@ -7,23 +7,14 @@
 namespace Algebra;
 
 /* Actions à réaliser. */
-define('A_FAIRE_PARSER', [
+define('A_FAIRE_QUERY', [
 <<<'EOT'
-- coder select et union
-- améliorer la gestion des clés
-  - dans une jointure, je perd les clés des tables des 2 côtés pour créer une liste de tuples
-    - solution choisie
-    - si j'ai 1 dictOfValues ou listOfValues alors je les transforme en dictOfTuples/listOfTuples
-    - si j'ai 2 listOfValues alors je crée un listOfValues sans clé
-    - sinon je crée un dictOfValues et je prends comme clé la contacténation des clés avec le caractère '-' entre les 2
-  - il faudrait pouvoir utiliser la clé comme champ de jointure en utilisant le nom de champ 'key'
+- coder union, draw, map
 - ajouter
   - agrégation
-  - jointure spatiale ?
-  - map ?
   - utilisation d'un champ comme clé, transformation d'un listOfTuples en dictOfTuples
   - transfert de la clé comme champ, transformation d'un dictOfTuples en listOfTuples
-- pourquoi ODS st très lent alors que ca allait avant ?
+- pourquoi ODS est très lent alors que ca allait avant ?
 EOT
 ]
 );
@@ -31,8 +22,8 @@ EOT
 require_once 'dataset.inc.php';
 require_once 'proj.php';
 require_once 'joinf.php';
-require_once 'joinp.php';
 require_once 'predicate.inc.php';
+require_once 'joinp.php';
 require_once 'select.php';
 
 use Dataset\Dataset;
@@ -58,36 +49,36 @@ class Program {
  * Le parsing d'un {predicate} est délégué à la classe PredicateParser
  *
  * Du point de vue implémentation, la classe est statique et regroupe les fonctions:
- *  - addTrace() et displayTrace() gèrent la trace
- *  - pmatch() est un preg_match() amélioré
- *  - token() teste si le texte commence par un token donné
  *  - start() est la fonction d'appel du parser avec le texte d'une requête
- *  - une fonction par nonterminal qui
- *    - retourne l'élément analysé en cas de succès et faux en cas d'échec
- *    - consomme le texte correspondant à l'élément en cas de succès mais n'y touche pas en cas d'échec.
+ *  - addTrace() et displayTrace() gèrent la trace
+ *  - pmatch() est un preg_match() adapté
+ *  - token() teste si le texte commence par un token donné
+ *  - une fonction par nonterminal qui:
+ *    - en cas de succès retourne l'élément issu de l'analyse et consomme le texte correspondant à cet élément
+ *    - sinon retourne faux et ne touche pas au texte.
  */
 class Query {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
-    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {field}
-    '{joinName}' => '(inner-join|left-join|diff-join)', // Les différentes opérations de jointure
+    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {fieldName}
+    '{joinType}' => '(InnerJoin|LeftJoin|DiffJoin)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
   ];
   const BNF = [
     <<<'EOT'
-{program} ::= 'display' '(' {expCollection} ')' // affiche le contenu d'une Collection'
-            | 'draw' '(' {expDataset} ')'  // dessine la carte d'un Dataset'
-            | {expCollection}              // retourne un Generator pour exploitation par API
-{expDataset} ::= {name}                    // eg: InseeCog
-{expCollection} ::= {expDataset} {point} {name} // eg: InseeCog.v_region_2025
-              1   | {joinName} 'f(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
-              2   | {joinName} 'p(' {expCollection} ',' {expCollection} ',' {predicate} ')'
-              3 //| 'Union' '(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
-              4   | 'Proj' '(' {expCollection} ',' '[' {FieldPairs} ']' ')'
-              5   | 'Select' '(' {predicate} ',' {expCollection} ')'
-              6   | 'CProduct' '(' {expCollection} ',' {expCollection} ')'
-              7   | 'OnLineColl' '(' {json} ')'
+{program} ::= 'display(' {expCollection} ')' // affiche le contenu d'une Collection'
+            | 'draw(' {expDataset} ')'       // dessine la carte d'un Dataset'
+            | {expCollection}                // retourne un Generator pour exploitation par API
+{expDataset} ::= {name}                      // eg: InseeCog
+{expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
+              1   | {joinType} 'F(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+              2   | {joinType} 'P(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+              3 //| 'Union(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
+              4   | 'Proj(' {expCollection} ',' '[' {FieldPairs} ']' ')'
+              5   | 'Select(' {predicate} ',' {expCollection} ')'
+              6   | 'CProduct(' {expCollection} ',' {expCollection} ')'
+              7   | 'OnLineColl(' {json} ')'
               8 //| 'Map' '(' {phpFun} ',' {expCollection} ')' -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
@@ -95,10 +86,12 @@ class Query {
 EOT
   ];
   
-  /** @var list<array{'path': list<string>, 'message': string, 'text': string}> $trace - Trace des succès et échecs d'appels à des non terminaux et terminaux de TOKENS (sauf space) */
+  /** Stocke la trace des appels à l'analyseur afin de comprendre un échec.
+   * @var list<array{'path': list<string>, 'message': string, 'text': string}> $trace - Trace des succès et échecs d'appels à des non terminaux et terminaux de TOKENS (sauf space) */
   static array $trace;
   
-  /** @param list<string> $path - chemin des appels */
+  /** Ajoute un élément à la trace
+   * @param list<string> $path - chemin des appels */
   static function addTrace(array $path, string $message, string $text): void {
     foreach ($path as $pathElt) {
       if (!is_string($pathElt)) {
@@ -109,6 +102,7 @@ EOT
     self::$trace[] = ['path'=> $path, 'message'=> $message, 'text'=> $text];
   }
   
+  /** Affiche la trace. */
   static function displayTrace(): void {
     echo "<pre>trace:\n";
     foreach (self::$trace as $trace) {
@@ -116,6 +110,33 @@ EOT
            "    message: ",$trace['message'],"\n",
            "    text: ",$trace['text'],"\n";
     }
+  }
+  
+  /** Affiche la BNF et les tokens. */
+  static function displayBnf(): void {
+    echo "<h2>BNF du langage de requêtes</h2>\n";
+    echo "<p>Les nonterminaux sont définis par des symboles entre accolades.<br>
+      Les terminaux sont:<ul>
+      <li>d'une part les symboles entre guillemets dans la BNF qui correspondent à la chaîne entre guillemets et,</li>
+      <li>d'autre part, les symboles entre accolades définis par une expression régulière indiquée dans la table des Tokens
+          ci-dessous,</li>
+      <li>enfin, les symboles {json} et {geojson}, traités de manière spécifiques en utilisant json_decode()
+      </ul>\n";
+    echo '<pre>',Query::BNF[0]."\n".PredicateParser::BNF[0],"</pre>\n";
+    echo "<h3>Notes</h3><ul>\n";
+    echo "<li>OnLineColl() permet de définir en ligne simplement une collection et est utilisée pour les tests,
+    <a href='onlinecoll.php?action=doc'>plus d'infos ici</a>.</li>\n";
+    echo "</ul>\n";
+    
+    echo "<h2>Table des Tokens</h2>\n";
+    echo "<table border=1><th>symbole</th><th>expression régulière</th>\n";
+    echo implode('', array_map(
+      function($symbol, $reg) { return "<tr><td>$symbol</td><td><pre>$reg</pre></td></tr>\n"; },
+      array_keys(array_merge(Query::TOKENS, PredicateParser::TOKENS)),
+      array_values(array_merge(Query::TOKENS, PredicateParser::TOKENS))
+    ));
+    echo "</table>\n";
+    echo "Le symbole <b>space</b> correspond à un blanc dans l'analyse lexicale.";
   }
   
   /** preg_match modifié qui notamment si match modifie le texte en entrée en renvoyant le reste non matché.
@@ -164,7 +185,7 @@ EOT
     }
   }
   
-  /** Point officiel d'appel du parser qui est indépendant des noms des nonterminaux.
+  /** Point d'appel du parser indépendant des noms des nonterminaux.
    * Retourne un programme ou une collection en cas de succès, null en cas d'échec.
    * Retourne null si le texte n'est pas entièrement consommé.
    */
@@ -177,27 +198,31 @@ EOT
   static function program(array $path, string &$text0): Program|Collection|null {
     $path[] = 'program';
     
-    // {program}#0 : 'display' '(' {expCollection} ')' // affiche le contenu d'une table'
-    $text = $text0;
-    if (self::pmatch('display\(', $text)
-      && ($expCollection = self::expCollection($path, $text))
-        && self::pmatch('^\)', $text))
-    {
-      self::addTrace($path, "succès {program}#0", "$text0 -> $text");
-      $text0 = $text;
-      return new Program('display', $expCollection);
+    { // {program}#0 : 'display(' {expCollection} ')' // affiche le contenu d'une table'
+      $text = $text0;
+      if (self::pmatch('display\(', $text)
+        && ($expCollection = self::expCollection($path, $text))
+          && self::pmatch('^\)', $text))
+      {
+        self::addTrace($path, "succès {program}#0", "$text0 -> $text");
+        $text0 = $text;
+        return new Program('display', $expCollection);
+      }
+      self::addTrace($path, "Echec {program}#0", $text0);
     }
-    self::addTrace($path, "Echec {program}#0", $text0);
     
-    // {program}#2 : {expCollection}
-    $text = $text0;
-    if (($expCollection = self::expCollection($path, $text)))
-    {
-      self::addTrace($path, "succès", "$text0 -> $text");
-      $text0 = $text;
-      return $expCollection;
+    // MANQUE {program}#1 : 'draw' '(' {expDataset} ')'
+    
+    { // {program}#2 : {expCollection}
+      $text = $text0;
+      if (($expCollection = self::expCollection($path, $text)))
+      {
+        self::addTrace($path, "succès", "$text0 -> $text");
+        $text0 = $text;
+        return $expCollection;
+      }
+      self::addTrace($path, "Echec {program}#2", $text0);
     }
-    self::addTrace($path, "Echec {program}#2", $text0);
     
     //throw new \Exception("Erreur sur program($text0), reste \"$text\"");
     self::addTrace($path, "Echec {program}", $text0);
@@ -244,10 +269,10 @@ EOT
       self::addTrace($path, "Echec expCollection#0", $text0);
     }
     
-    { // {expCollection}#1 : {joinName} 'f(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+    { // {expCollection}#1 : {joinType} 'F(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
       $text = $text0;
-      if (($joinName = self::token($path, '{joinName}', $text))
-        && self::pmatch('f\(', $text)
+      if (($joinType = self::token($path, '{joinType}', $text))
+        && self::pmatch('F\(', $text)
           && ($expCollection1 = self::expCollection($path, $text))
             && self::pmatch(',', $text)
               && ($field1 = self::token($path, '{name}', $text))
@@ -257,17 +282,17 @@ EOT
                       && ($field2 = self::token($path, '{name}', $text))
                         && self::pmatch('\)', $text)
       ) {
-        self::addTrace($path, "Succès expCollection#1", $text0);
+        self::addTrace($path, "Succès JoinF", $text0);
         $text0 = $text;
-        return new JoinF($joinName, $expCollection1, $field1, $expCollection2, $field2);
+        return new JoinF($joinType, $expCollection1, $field1, $expCollection2, $field2);
       }
-      self::addTrace($path, "Echec expCollection#1", $text0);
+      self::addTrace($path, "Echec JoinF", $text0);
     }
     
-    { // {expCollection}#2 : {joinName} 'p(' {expCollection} ',' {expCollection} ',' {predicate} ')'
+    { // {expCollection}#2 : {joinType} 'P(' {expCollection} ',' {expCollection} ',' {predicate} ')'
       $text = $text0;
-      if (($joinName = self::token($path, '{joinName}', $text))
-        && self::pmatch('p\(', $text)
+      if (($joinType = self::token($path, '{joinType}', $text))
+        && self::pmatch('P\(', $text)
           && ($expCollection1 = self::expCollection($path, $text))
             && self::pmatch(',', $text)
               && ($expCollection2 = self::expCollection($path, $text))
@@ -275,14 +300,14 @@ EOT
                   && ($predicate = PredicateParser::predicate($path, $text))
                     && self::pmatch('\)', $text)
       ) {
-        self::addTrace($path, "Succès expCollection#1", $text0);
+        self::addTrace($path, "Succès JoinP", $text0);
         $text0 = $text;
-        return new JoinP($joinName, $expCollection1, $expCollection2, $predicate);
+        return new JoinP($joinType, $expCollection1, $expCollection2, $predicate);
       }
-      self::addTrace($path, "Echec expCollection#1", $text0);
+      self::addTrace($path, "Echec JoinP", $text0);
     }
     
-    // MANQUE {expCollection}#3 : 'Union' '(' {expCollection} ',' {expCollection} ')'
+    // MANQUE {expCollection}#3 : 'Union(' {expCollection} ',' {expCollection} ')'
 
     { // {expCollection}#4 : 'Proj(' {expCollection} ',' '[' {FieldPairs} ']' ')'
       $text = $text0;
@@ -294,10 +319,11 @@ EOT
                 && self::pmatch('\]', $text)
                   && self::pmatch('\)', $text)
       ) {
+        self::addTrace($path, "Succès Proj", $text0);
         $text0 = $text;
         return new Proj($expCollection, $fieldPairs);
       }
-      self::addTrace($path, "Echec expCollection#4", $text0);
+      self::addTrace($path, "Echec Proj", $text0);
     }
 
     { // {expCollection}#5 : 'Select(' {predicate} ',' {expCollection} ')'
@@ -308,10 +334,11 @@ EOT
             && ($expCollection = self::expCollection($path, $text))
               && self::pmatch('\)', $text)
       ) {
+        self::addTrace($path, "Succès Select", $text0);
         $text0 = $text;
         return new Select($predicate, $expCollection);
       }
-      self::addTrace($path, "Echec expCollection#5", $text0);
+      self::addTrace($path, "Echec Select", $text0);
     }
 
     { // {expCollection}#6 : 'CProduct(' {expCollection} ',' {expCollection} ')'
@@ -322,31 +349,30 @@ EOT
             && ($expCollection2 = self::expCollection($path, $text))
               && self::pmatch('\)', $text)
       ) {
-        self::addTrace($path, "Succès expCollection#6", $text0);
+        self::addTrace($path, "Succès CProduct", $text0);
         $text0 = $text;
         return new CProduct($expCollection1, $expCollection2);
       }
-      self::addTrace($path, "Echec expCollection#6", $text0);
+      self::addTrace($path, "Echec CProduct", $text0);
     }
     
     { // {expCollection}#7 : 'OnLineColl' '(' {json} ')'
       $text = $text0;
       if (self::pmatch('OnLineColl\(', $text)
         && (substr($text, 0, 1) == '{')
-          && ($json = SkipBracket::skip($text))
+          && ($json = SkipBracket::skip($text)) && ($json = json_decode($json, true))
             && self::pmatch('\)', $text))
       {
-        self::addTrace($path, "succès {geojson}", $text0);
+        self::addTrace($path, "succès OnLineColl", $text0);
         $text0 = $text;
-        $json = json_decode($json, true);
         return new OnLineColl($json['properties'], $json['tuples']);
       }
-      self::addTrace($path, "Echec expCollection#7", $text0);
+      self::addTrace($path, "Echec OnLineColl", $text0);
     }
     
     // MANQUE {expCollection}#8 : 'Map' '(' {phpFun} ',' {expCollection} ')' 
     
-    self::addTrace($path, "Echec expCollection", $text0);
+    self::addTrace($path, "Echec {expCollection}", $text0);
     return null;
   }
   
@@ -407,7 +433,7 @@ EOT
     die("Fin ligne ".__LINE__);
   }
 };
-//DsParser::test();
+//Query::test();
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
@@ -421,22 +447,22 @@ class QueryTest {
     "display(Proj)"=> "display(Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
     "Proj -> renvoie rien"=> "Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib])",
     "select"=> "display(Select(REG='02', InseeCog.v_region_2025))",
-    "jointure simple -> renvoie rien" => "inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
-    "display(jointure simple)" => "display(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
+    "jointure simple -> renvoie rien" => "InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
+    "display(jointure simple)" => "display(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
     "Expression complexe -> renvoie rien"
-      => "inner-joinf(inner-joinf(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
+      => "InnerJoinF(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
     "union"=> "union(InseeCog.v_region_2025, AeCogPe.region)",
     "DeptReg.régions" => "DeptReg.régions",
     "display DeptReg.régions" => "display(DeptReg.régions)",
     "display DeptReg.régions codeInsee=REG InseeCog.v_region_2025"
-      => "display(inner-joinf(DeptReg.régions, codeInsee, InseeCog.v_region_2025, REG))",
+      => "display(InnerJoinF(DeptReg.régions, codeInsee, InseeCog.v_region_2025, REG))",
   ];
   
   static function main(): void {
-    echo "<title>parser</title>\n";
+    echo "<title>query</title>\n";
     switch ($_GET['action'] ?? null) {
       case null: {
-        echo "<h2>Test de DsParser</h2>\n";
+        echo "<h2>Test de Query</h2>\n";
         echo "<a href='?action=bnf'>Affiche la BNF du langage</a><br>\n";
         echo "<h3>Exemples pour tester</h3>\n";
         foreach (self::EXAMPLES as $title => $exp)
@@ -445,21 +471,7 @@ class QueryTest {
         break;
       }
       case 'bnf': { // Affiche la BNF du langage et les tokens 
-        echo "<h2>BNF du langage de requêtes</h2>\n";
-        echo '<pre>',Query::BNF[0]."\n".PredicateParser::BNF[0],"</pre>\n";
-        echo "Les nonterminaux sont définis par des symboles entre accolades.<br>
-          Les terminaux sont:<br>
-          - d'une part les symboles entre guillemets dans la BNF qui correspondent à la chaîne entre guillemets et,<br>
-          - d'autre part les symboles suivants définis par l'expression régulière indiquée:</p>";
-        echo "<table border=1><th>symbole</th><th>expression régulière</th>\n";
-        echo implode('', array_map(
-          function($symbol, $reg) { return "<tr><td>$symbol</td><td>$reg</td></tr>\n"; },
-          array_keys(array_merge(Query::TOKENS, PredicateParser::TOKENS)),
-          array_values(array_merge(Query::TOKENS, PredicateParser::TOKENS))
-        ));
-        echo "</table>\n";
-        echo "Le symbole <b>space</b> est correspond à un blanc dans l'analyse lexicale.";
-        //echo '<pre>'; print_r(DsParser::TOKENS); echo "</pre>\n";
+        Query::displayBnf();
         break;
       }
       case 'show': { // affiche le requête compilée 

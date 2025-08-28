@@ -9,6 +9,21 @@ require_once 'collection.inc.php';
  * L'id de la collection est défini par son contenu, ce qui est limitant car l'id ne doit pas être trop long.
  */
 class OnLineColl extends Collection {
+  const DOC = [
+<<<'EOT'
+OnLineColl() est une construction du langage de requête et une classe qui permettent de définir simplement de petites
+collections spécifiques pour répondre à des besoins de tests.<br>
+
+Comme classe, <tt>OnLineColl</tt> s'utilise par <tt>new OnLineColl({properties}, {tuples})</tt> où:<ul>
+<li><tt>{properties}</tt> est un dictionnaire <tt>[{nomDuChamp}=> {typeSimplifiéDuChamp}]</tt></li>
+<li><tt>{tuples}</tt> est un dict de n-uplets de la forme
+    <tt>[{key1}=> [{champ1}=> {val1}, {champ2}=> {val2}, ...], {key2}=> [{champ1}=> {val1}, ...], ...]</tt></li>
+</ul>
+
+Dans une requête <tt>OnLineColl</tt> s'utilise par:
+<tt>OnlineColl({"properties": {"champ1":"type1", ...}, "tuples": {"key1":{"champ1":"type1", ...}, ...},})</tt>
+EOT    
+  ];
   const SIMPLE1 = [
     'properties'=> ['stringField'=> 'string', 'float'=> 'float', 'int'=> 'int'],
     'tuples'=> [
@@ -76,12 +91,17 @@ class OnLineCollTest {
     switch ($_GET['action'] ?? null) {
       case null: {
         echo "<h2>Test de la classe OnLineColl</h2>\n";
+        echo "<a href='?action=doc'>Documentation</a><br>\n";
         foreach (OnLineColl::examples() as $title => $coll) {
           echo "<h3>$title</h3>\n";
           //echo '<pre>'; print_r($collDyn); echo "</pre>\n";
           $coll->displayItems();
           echo '<pre>'; print_r($coll); echo "</pre>\n";
         }
+        break;
+      }
+      case 'doc': {
+        echo OnLineColl::DOC[0];
         break;
       }
       case 'display': { // Pour affichage d'un tuple depuis le display

@@ -15,7 +15,7 @@ use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;
 
-/** Une Collection est un itérable d'Items soit exposée par un Dataset, soit issue d'une requête.
+/** Une Collection est un itérable d'Items, soit exposée par un Dataset, soit issue d'une requête sur des collections.
  * Une collection est capable d'itérer sur ses items, d'indiquer les filtres mis en oeuvre dans cette itération,
  * de fournir un schéma simplifié, d'accéder à un Item par sa clé et d'afficher ses items.
  * Il y a 2 types de collection: celles exposées par un JdD (CollectionOfDs) et celles issues d'une requête (Join, Proj, ...).
@@ -525,7 +525,7 @@ abstract class SchemaOfCollection {
   abstract function properties(): array;
 };
 
-/** Schema d'un dictOfTuples */
+/** Schema d'un dictOfTuples. */
 class SchemaOfDictOfTuples extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
@@ -550,7 +550,7 @@ class SchemaOfDictOfTuples extends SchemaOfCollection {
   }
 };
 
-/** Schema d'un listOfTuples */
+/** Schema d'un listOfTuples. */
 class SchemaOfListOfTuples extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
@@ -583,7 +583,7 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
   }
 };
 
-/** Schema d'un dictOfValues|listOfValues */
+/** Schema d'un dictOfValues|listOfValues (peu utilisé). */
 class SchemaOfXXXOfValues extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles
    * @return array<string, string>
@@ -591,7 +591,7 @@ class SchemaOfXXXOfValues extends SchemaOfCollection {
   function properties(): array { return []; }
 };
 
-/** Une Collection d'un Dataset.
+/** Collection exposée par un un Dataset.
  * D'une part contient son schéma et, d'autre part,la plupart des fonctionnalités d'une telle collection sont mises en oeuvre
  * par la classe de JdD concrète héritant de Dataset. */
 class CollectionOfDs extends Collection {

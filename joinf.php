@@ -26,8 +26,8 @@ class JoinF extends Collection {
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
-    if (!in_array($type, ['inner-join','left-join','diff-join'])) {
-      throw new \Exception("Erreur sur type='$type' qui doit être dans ['inner-join','left-join','diff-join']");
+    if (!in_array($type, ['InnerJoin','LeftJoin','DiffJoin'])) {
+      throw new \Exception("Erreur sur type='$type' qui doit être dans ['InnerJoin','LeftJoin','DiffJoin']");
     }
     parent::__construct('dictOfTuples');
     $this->pProps = new ProductProperties(['s1'=> $coll1, 's2'=> $coll2]);
@@ -66,7 +66,7 @@ class JoinF extends Collection {
       $tuples2 = $this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]);
       //echo "getItemsOnValue($this->field2,".$tuple1[$this->field1].")<br>\n";
       switch ($this->type) {
-        case 'inner-join': {
+        case 'InnerJoin': {
           if (!$tuples2) {
             echo "Aucun tuples2<br>\n";
             continue 2; // je passe au tuple1 suivant
@@ -78,7 +78,7 @@ class JoinF extends Collection {
           }
           break;
         }
-        case 'diff-join': {
+        case 'DiffJoin': {
           if ($tuples2) {
             continue 2; // je passe au tuple1 suivant
           }
@@ -87,7 +87,7 @@ class JoinF extends Collection {
           }
           break;
         }
-        case 'left-join': {
+        case 'LeftJoin': {
           if (!$tuples2) {
             if ($skip-- <= 0) {
               yield Keys::concat($key1, '') => $this->pProps->mergeTuples($tuple1, []);
@@ -106,24 +106,24 @@ class JoinF extends Collection {
       }
       /*
       $tuple = [];
-      if ($this->type <> 'diff-join') {
+      if ($this->type <> 'DiffJoin') {
         foreach ($tuple1 as $k => $v)
           $tuple["s1.$k"] = $v;
       }
       if (!$tuples2) { // $tuple1 n'a PAS de correspondance dans la 2nd collection
         if ($skip-- <= 0) {
           $key = Keys::concat($key1,'');
-          if ($this->type == 'left-join')
+          if ($this->type == 'LeftJoin')
             yield $key => $tuple;
-          elseif ($this->type == 'diff-join')
+          elseif ($this->type == 'DiffJoin')
             yield $key => $tuple1;
           else
-            throw new \Exception("Type = $this->type ni 'left-join' ni 'diff-join'");
+            throw new \Exception("Type = $this->type ni 'LeftJoin' ni 'DiffJoin'");
           $no++;
         }
       }
       else { // $tuple1 A une correspondance dans la 2nd collection
-        if (in_array($this->type, ['left-join', 'inner-join'])) {
+        if (in_array($this->type, ['LeftJoin', 'InnerJoin'])) {
           foreach ($tuples2 as $key2 => $tuple2) {
             foreach ($tuple2 as $k => $v)
               $tuple["s2.$k"] = $v;
@@ -168,10 +168,10 @@ ini_set('memory_limit', '10G');
 class JoinFTest {
   /** Exemples basiques à partir de vrai datasets */
   const EXAMPLES1 = [
-   "Région X Préfectures" => 'inner-join(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
-   "Dépt X Préfectures" => 'inner-join(InseeCog.v_departement_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
+   "Région X Préfectures" => 'InnerJoin(InseeCog.v_region_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
+   "Dépt X Préfectures" => 'InnerJoin(InseeCog.v_departement_2025,CHEFLIEU,InseeCog.v_commune_2025,COM)',
    "DeptReg.régions codeInsee=REG InseeCog.v_region_2025 (DeptReg.régions est un dictOfTuples)"
-     => "inner-join(DeptReg.régions,codeInsee,InseeCog.v_region_2025,REG)",
+     => "InnerJoin(DeptReg.régions,codeInsee,InseeCog.v_region_2025,REG)",
   ];
   
   /** Exemples sur des cas spécifiques. */
@@ -191,21 +191,21 @@ class JoinFTest {
   /** @return array<string,Collection> */
   static function examples2(): array {
     return [
-      "inner-join"=> new JoinF('inner-join',
+      "InnerJoin"=> new JoinF('InnerJoin',
         new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
         new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1',
       ),
-      "diff-join"=> new JoinF('diff-join',
+      "DiffJoin"=> new JoinF('DiffJoin',
         new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1',
         new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
       ),
-      "left-join"=> new JoinF('left-join',
+      "LeftJoin"=> new JoinF('LeftJoin',
         new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1',
         new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
       ),
-      "inner-join imbriqués"=> new JoinF('inner-join',
+      "InnerJoin imbriqués"=> new JoinF('InnerJoin',
         new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
-        new JoinF('inner-join',
+        new JoinF('InnerJoin',
           new OnLineColl(self::COLL1['properties'], self::COLL1['tuples']), 'f1',
           new OnLineColl(self::COLL2['properties'], self::COLL2['tuples']), 'f1'
         ), 's1_f1',
@@ -291,9 +291,9 @@ class JoinFTest {
             $dsTitles[$i] = $ds->title;
           }
           $select = HtmlForm::select('type', [
-            'inner-join'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
-            'left-join'=> "Left-Join - tous les n-uplets de la 1ère coll. sont retournés avec s'ils existent ceux de la 2nd en correspondance",
-            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. n'ayant pas de correspondance dans le 2nd",
+            'InnerJoin'=>"Inner-Join - seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
+            'LeftJoin'=> "Left-Join - tous les n-uplets de la 1ère coll. sont retournés avec s'ils existent ceux de la 2nd en correspondance",
+            'DiffJoin'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. n'ayant pas de correspondance dans le 2nd",
           ]);
           echo "<table border=1><form>\n",
                implode(

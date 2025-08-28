@@ -112,8 +112,8 @@ abstract class Dataset {
     }
     /*elseif (preg_match('!^([^(]+)\(!', $dsName, $matches)) {
       switch ($matches[1]) {
-        case 'inner-join':
-        case 'left-join': {
+        case 'InnerJoin':
+        case 'LeftJoin': {
           require_once 'join.php';
           return new Join($dsName);
         }

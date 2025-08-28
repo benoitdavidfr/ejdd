@@ -11,7 +11,7 @@ require_once 'cproduct.php';
 
 define('A_FAIRE_JOINP', [
 <<<'EOT'
-- traiter les JoinP autres que inner-join
+- traiter les JoinP autres que InnerJoin
 - optimiser pour les prédicats complexes
 - optimiser inclusion et l'intersection spatiale
 EOT
@@ -83,7 +83,7 @@ class Optimiser extends ProductProperties {
 * cela permet un accès plus efficace aux items par clé.
 */
 class JoinP extends Collection {
-  /** @var ('inner-join') $type */
+  /** @var ('InnerJoin') $type */
   readonly string $type;
   readonly Collection $coll1;
   readonly Collection $coll2;
@@ -97,8 +97,8 @@ class JoinP extends Collection {
     if (in_array($coll2->kind, ['dictOfValues','listOfValues']))
       throw new \Exception("Erreur, join impossible avec dictOfValues|listOfValues");
     parent::__construct('dictOfTuples');
-    if ($type <> 'inner-join') {
-      throw new \Exception("TO BE IMPLEMENTED"); // JoinP de type autre que inner-join
+    if ($type <> 'InnerJoin') {
+      throw new \Exception("TO BE IMPLEMENTED"); // JoinP de type autre que InnerJoin
     }
     $this->type = $type;
     $this->coll1 = $coll1;
@@ -176,10 +176,10 @@ use Dataset\Dataset;
 /** Test de JoinP. */
 class JoinPTest {
   const EXAMPLES = [
-   "Région X Préfectures" => 'inner-joinp(InseeCog.v_region_2025, InseeCog.v_commune_2025, CHEFLIEU = COM)',
-   "Dépt X Préfectures" => 'inner-joinp(InseeCog.v_departement_2025,InseeCog.v_commune_2025, CHEFLIEU = COM)',
+   "Région X Préfectures" => 'InnerJoinP(InseeCog.v_region_2025, InseeCog.v_commune_2025, CHEFLIEU = COM)',
+   "Dépt X Préfectures" => 'InnerJoinP(InseeCog.v_departement_2025,InseeCog.v_commune_2025, CHEFLIEU = COM)',
    "DeptReg.régions codeInsee=REG InseeCog.v_region_2025 (DeptReg.régions est un dictOfTuples)"
-     => "inner-joinp(DeptReg.régions, InseeCog.v_region_2025, codeInsee = REG)",
+     => "InnerJoinP(DeptReg.régions, InseeCog.v_region_2025, codeInsee = REG)",
   ];
   
   /** Fabrique une Table Row Html des propriéts à afficher à partir de [{prefix} => Collection]
@@ -257,9 +257,9 @@ class JoinPTest {
           $collPropertiesHtml = self::collPropertiesHtml(['s1'=> $colls[1], 's2'=>$colls[2]]);
           
           $select = HtmlForm::select('type', [
-            'inner-join'=>"Inner-Join - Seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
-            'left-join'=> "Left-Join - Tous n-uplets 1ère coll. retournés avec s'ils existent ceux de la 2nd en correspondance",
-            'diff-join'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. sans correspondance dans la 2nd",
+            'InnerJoin'=>"Inner-Join - Seuls les n-uplets ayant une correspondance dans les 2 collections sont retournés",
+            'LeftJoin'=> "Left-Join - Tous n-uplets 1ère coll. retournés avec s'ils existent ceux de la 2nd en correspondance",
+            'DiffJoin'=> "Diff-Join - Ne sont retournés que les n-uplets de la 1ère coll. sans correspondance dans la 2nd",
           ]);
           
           echo "<table border=1><form>\n",

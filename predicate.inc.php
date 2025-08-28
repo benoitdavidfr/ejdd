@@ -7,13 +7,12 @@ namespace Algebra;
 require_once 'query.php';
 require_once 'skipbracket.php';
 
-use Dataset\Dataset;
-use GeoJSON\GeoJSON;
+//use GeoJSON\GeoJSON;
 use GeoJSON\Geometry;
 use BBox\BBox;
 use BBox\NONE;
 
-/** Une constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.
+/** Constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.
  * Le format pour bboxInJSON est une liste de 4 coordonnées (xmin,ymin,xmax,ymax) codée en JSON.
  */
 class Constant {
@@ -39,7 +38,7 @@ class Constant {
   }
 };
 
-/** Comparateur entre 2 valeurs non bouléennes retournant un bouléen défini par une string ; utilisé dans les prédicats. */
+/** Comparaison entre 2 valeurs retournant un bouléen, utilisé dans les prédicats, défini par une string. */
 class Comparator {
   function __construct(readonly string $compOp) {}
   
@@ -61,7 +60,7 @@ class Comparator {
       throw new \Exception("Erreur preg_match sur pattern='$pattern'");
   }
   
-  /** interprétation de l'opérateur (=|<>|<|<=|>|>=|match).
+  /** évaluation du comparateu sur 2 valeurs, retourne un bouléen.
    * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $left
    * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $right */
   function eval(mixed $left, mixed $right): bool {
@@ -431,10 +430,10 @@ EOT
     
     { // {constant} ::= {geojson}
       if ((substr($text0, 0, 1) == '{')
-        && ($json = SkipBracket::skip($text0)))
+        && ($json = SkipBracket::skip($text0))
+          && ($geojson = json_decode($json, true)))
       {
         Query::addTrace($path, "succès {geojson}", $text0);
-        $geojson = json_decode($json, true);
         $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
         return new Constant('bboxInJSON', json_encode($bbox));
       }
@@ -518,6 +517,8 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'util
 
 
 require_once 'collection.inc.php';
+
+use Dataset\Dataset;
 
 /** Test de la classe Predicate. */
 class PredicateTest {

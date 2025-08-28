@@ -5,12 +5,12 @@
  */
 
 /** Actions à réaliser. */
-define('A_FAIRE', [
+const A_FAIRE = [
 <<<'EOT'
-- améliorations JoinP
-  - comment tracer les requêtes, properties, schema ?
-    - quoi afficher ?
-  - écrire le cas d'un prédicat plus complexe
+Actions à réaliser:
+- comment tracer les requêtes, properties, schema ?
+  - quoi afficher ?
+- écrire le cas d'un prédicat plus complexe dans JoinP
 - prévoir un mécanisme de stockage des vues
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
@@ -32,11 +32,15 @@ define('A_FAIRE', [
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
 EOT
-]
-);
+];
 /** Journal des modifications du code. */
-define('JOURNAL', [
+const JOURNAL = [
+'récents'=> [
 <<<'EOT'
+Journal des modifications récentes du code
+------------------------------------------
+28/8/2025:
+  - changement des noms des types de jointure pour les aligner sur les autres opérateurs
 27/8/2025:
   - amélioration des types simplifiés
   - adaptation de JoinF et JoinP
@@ -63,10 +67,8 @@ define('JOURNAL', [
     - les 2 évolutions précédentes n'ont rien à voir avec l'objectif de cette branche
   - création d'une nlle branche joinPredicate dont l'objectif est de développer un join fondé sur un prédicat
 EOT
-]
-);
-/** Journal des modifications du code avant août 2025. */
-define('JOURNAL_AVANT_24AOUT2025', [
+],
+'AVANT_24AOUT2025'=> [
 <<<'EOT'
 23/8/2025:
   - dev de PredicateParser et tests pour préparer l'extension à la jointure spatiale
@@ -117,10 +119,8 @@ define('JOURNAL_AVANT_24AOUT2025', [
 11/8/2025:
   - reprise du code, amélioration de la doc
 EOT
-]
-);
-/** Journal des modifications du code avant août 2025. */
-define('JOURNAL_AVANT_AOUT2025', [
+],
+'AVANT_AOUT2025'=> [
 <<<'EOT'
 16/7/2025:
   - ajout d'un analyseur syntaxique sur expressions de création de dataset
@@ -166,13 +166,13 @@ define('JOURNAL_AVANT_AOUT2025', [
   - à la différence de la V1 il n'est plus nécessaire de stocker un JdD en JSON
   - par exemple pour AdminExpress le JdD peut documenter les tables et renvoyer vers les fichiers GeoJSON
 EOT
-]
-);
+],
+];
 /** Cmdes utiles */
-define('LIGNE_DE_COMMANDE', [
+const LIGNE_DE_COMMANDE = [
 <<<'EOT'
-Lignes de commandes
----------------------
+Lignes de commandes utiles
+--------------------------
   Installation des modules nécessaires:
     composer require --dev phpstan/phpstan
     composer require justinrainbow/json-schema
@@ -184,7 +184,7 @@ Lignes de commandes
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
-geojson.inc.php,bbox.php,pos.inc.php,predicate.inc.php,skipbracket.php,\
+geojson.inc.php,bbox.php,pos.inc.php,query.php,predicate.inc.php,skipbracket.php,\
 cproduct.php,concatkeys.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
 dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
@@ -206,10 +206,9 @@ geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featur
     ssh -lbdavid ssh-bdavid.alwaysdata.net
 
 EOT
-]
-);
+];
 /** Utilisation de GitHub */
-define('GITHUB', [
+const GITHUB = [
 <<<'EOT'
 GitHub
 ------
@@ -217,8 +216,7 @@ Le 25/8/2025, j'ai réussi à synchroniser le dépôt avec gitbub.
 J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 
 EOT
-]
-);
+];
 
 require_once 'dataset.inc.php';
 
@@ -397,11 +395,13 @@ class Application {
             echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
           }
           echo "<h2>Autres</h2><ul>\n";
-          echo "<li><a href='proj.php'>projection d'une collection de JdD</a></li>\n";
+          echo "<li><a href='proj.php'>Projection d'une collection</a></li>\n";
+          echo "<li><a href='select.php'>Sélection d'une collection</a></li>\n";
           echo "<li><a href='joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
           echo "<li><a href='joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
+          echo "<li><a href='cproduct.php'>Produit cartésien entre 2 collections</a></li>\n";
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
-          echo "<li><a href='parser.php'>Parser</a></li>\n";
+          echo "<li><a href='query.php'>Requêter les collections</a></li>\n";
           echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
           echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
           echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
