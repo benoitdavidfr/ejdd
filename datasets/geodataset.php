@@ -28,7 +28,7 @@ class GeoDataset extends Dataset {
   function __construct(string $dsName) {
     $this->dsName = $dsName;
     $md = Yaml::parseFile(__DIR__.strtolower("/$dsName.yaml"));
-    parent::__construct($dsName, $md['title'], $md['description'], $md['$schema']);
+    parent::__construct($dsName, $md['$schema']);
     $this->params = $md['params'];
   }
 
@@ -97,6 +97,9 @@ class GeoDatasetBuild {
   static function main(): void {
     switch ($_GET['action'] ?? null) {
       case null: {
+        if (!isset($_GET['dataset'])) {
+          throw new \Exception("Le paramètre dataset doit être fourni");
+        }
         $dataset = new GeoDataset($_GET['dataset']);
         echo "COORDINATE_PRECISION=",$dataset->params['COORDINATE_PRECISION'],"\n";
         printf(" soit au %s: %.3f mm<br>\n",

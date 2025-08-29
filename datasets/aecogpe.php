@@ -37,8 +37,6 @@ EOT
 class AeCogPe extends Dataset {
   /** Répertoire de stockage ds fichiers GeoJSON. */
   const GEOJSON_DIR = __DIR__.'/aecogpe2025';
-  const TITLE = "Admin Express COG Carto petite échelle 2025 de l'IGN";
-  const DESCRIPTION = AECOGPE_DESCRIPTION[0];
   /* Type Polygon ou MultiPolygon GeoJSON .*/
   const MPOLYGON = [
     'description'=> "Géométrie GeoJSON Polygon ou MultiPolygon augmentée d'un bbox",
@@ -61,17 +59,12 @@ class AeCogPe extends Dataset {
   ];
   const SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma d'AeCogPe",
-    'description'=> "AeCogPe",
+    'title'=> "Admin Express COG Carto petite échelle 2025 de l'IGN",
+    'description'=> AECOGPE_DESCRIPTION[0],
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'region', 'departement', 'epci'],
+    'required'=> ['$schema', 'region', 'departement', 'epci'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> ['description'=> "Titre du jeu de données", 'type'=> 'string'],
-      'description'=> [
-        'description'=> "Commentaire sur le jeu de données",
-        'type'=> 'string',
-      ],
       '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
       'region'=> [
         'title'=> "Région",
@@ -407,7 +400,7 @@ class AeCogPe extends Dataset {
   ];
   
   function __construct(string $name) {
-    parent::__construct($name, self::TITLE, self::DESCRIPTION, self::SCHEMA);
+    parent::__construct($name, self::SCHEMA);
   }
   
   /* L'accès aux Items du JdD par un générateur.

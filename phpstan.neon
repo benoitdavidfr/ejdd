@@ -52,7 +52,7 @@ parameters:
     - pos.inc.php
     - predicate.inc.php
     - geojson.php
-    - map.php
+    #- map.php - n'est plus utile
     - cproduct.php
     - concatkeys.php
     - joinf.php

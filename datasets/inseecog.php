@@ -15,8 +15,8 @@ use Symfony\Component\Yaml\Yaml;
  */
 class InseeCog extends Dataset {
   function __construct(string $name) {
-    $params = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));
-    parent::__construct($name, $params['title'], $params['description'], $params['$schema']);
+    $schema = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));
+    parent::__construct($name, $schema);
   }
   
   /** Retourne les filtres implémentés par getTuples().

@@ -1,59 +1,54 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
 title: "World EEZ"
 description: |
   Diffusé par [Marineregions.org](https://www.marineregions.org/about.php)
   Marine Regions’ products have been licensed under CC-BY since Maritime Boundaries version 11 (2019).
-$schema:
-  $schema: 'http://json-schema.org/draft-07/schema#'
-  title: "Schéma de World EEZ"
-  description: "World EEZ"
-  type: 'object'
-  required: ['title','description','$schema', 'region']
-  additionalProperties: false
-  properties:
-    title: {'description': "Titre du jeu de données", 'type': 'string'}
-    description: {'description': "Commentaire sur le jeu de données", 'type': 'string'}
-    $schema: {'description': "Schéma JSON du jeu de données", 'type': 'object'}
-    eez_boundaries_v11:
-      title: "eez_boundaries_v11"
-      description: "eez_boundaries_v11"
-      type: 'array'
-      items:
-        type: object
-        properties:
-    eez_v11:
-      title: "Zone Economique Exclusive"
-      description: "Zone Economique Exclusive"
-      type: array
-      items:
-        type: 'object'
-        required: ['mrgid','geoname','mrgid_ter1','pol_type','mrgid_sov1','territory1','geometry']
-        properties:
-          mrgid:
-            description: "id ??"
-            type: number
-          geoname:
-            description: "nom de l'objet"
-            type: string
-          mrgid_ter1:
-            description: "id ter1"
-            type: number
-          pol_type:
-            description: "type de zone"
-            type: 'string'
-          mrgid_sov1:
-            description: "id état souverain 1"
-            type: number
-          territory1:
-            description: "Etat souverain 1"
-            type: 'string'
-          geometry:
-            description: "Géométrie GeoJSON"
-            type: 'object'
-            properties:
-              type:
-                description: "Type de géométrie"
-                enum: ['MultiPolygon','Polygon']
-              coordinates:
-                description: "Coordonnées"
-                type: 'array'
+type: 'object'
+required: ['title','description','$schema', 'region']
+additionalProperties: false
+properties:
+  $schema: {'description': "Schéma JSON du jeu de données", 'type': 'object'}
+  eez_boundaries_v11:
+    title: "eez_boundaries_v11"
+    description: "eez_boundaries_v11"
+    type: 'array'
+    items:
+      type: object
+      properties:
+  eez_v11:
+    title: "Zone Economique Exclusive"
+    description: "Zone Economique Exclusive"
+    type: array
+    items:
+      type: 'object'
+      required: ['mrgid','geoname','mrgid_ter1','pol_type','mrgid_sov1','territory1','geometry']
+      properties:
+        mrgid:
+          description: "id ??"
+          type: number
+        geoname:
+          description: "nom de l'objet"
+          type: string
+        mrgid_ter1:
+          description: "id ter1"
+          type: number
+        pol_type:
+          description: "type de zone"
+          type: 'string'
+        mrgid_sov1:
+          description: "id état souverain 1"
+          type: number
+        territory1:
+          description: "Etat souverain 1"
+          type: 'string'
+        geometry:
+          description: "Géométrie GeoJSON"
+          type: 'object'
+          properties:
+            type:
+              description: "Type de géométrie"
+              enum: ['MultiPolygon','Polygon']
+            coordinates:
+              description: "Coordonnées"
+              type: 'array'
 eof:

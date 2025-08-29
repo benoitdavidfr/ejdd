@@ -21,8 +21,8 @@ class WorldEez extends Dataset {
   const MAP_SCALE = 1/1_000_000;
  
   function __construct(string $name) {
-    $md = Yaml::parseFile(self::YAML_FILE);
-    parent::__construct($name, $md['title'], $md['description'], $md['$schema']);
+    $schema = Yaml::parseFile(self::YAML_FILE);
+    parent::__construct($name, $schema);
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.

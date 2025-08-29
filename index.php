@@ -8,6 +8,7 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
+- le type construit dans properties() est-iul utilisé, peut-on le supprimer ?
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d'un prédicat plus complexe dans JoinP
@@ -39,6 +40,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+29/8/2025:
+  - gestion des titre et description des JdD dans le schéma
 28/8/2025:
   - changement des noms des types de jointure pour les aligner sur les autres opérateurs
 27/8/2025:

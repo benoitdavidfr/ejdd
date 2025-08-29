@@ -11,6 +11,23 @@ require_once __DIR__.'/../dataset.inc.php';
 
 /** Gère un cache de certains appels Http. */
 class Cache {
+  /** Retourne le chemin du répertoire contenant le fichier. */
+  static function dirPath(string $filePath): string {
+    $exploded = explode('/', $filePath);
+    array_pop($exploded);
+    return implode('/', $exploded);
+  }
+  
+  /** Teste si le répertoire du filePath existe et si non le crée, de manière récursive. */
+  static function createDir(string $filePath): void {
+    $dirPath = self::dirPath($filePath);
+    if (!is_dir($dirPath)) {
+      self::createDir($dirPath);
+      echo "Création de $dirPath<br>\n";
+      mkdir($dirPath);
+    }
+  }
+  
   /** Lecture d'un flux.
    * @param string $filePath - chemin du fichier du cache relatif à __DIR__."/featureserver/"
    * @param string $url - URL du flux à lire
@@ -24,6 +41,7 @@ class Cache {
       $string = file_get_contents($url);
       if ($string === false)
         throw new \Exception("Ouverture $url impossible");
+      self::createDir($filePath);
       file_put_contents($filePath, $string);
       return $string;
     }
@@ -53,7 +71,7 @@ class WfsCap {
   
   /** Déduction du schema à partir des capacités.
    * @return array<mixed> */
-  function jsonSchemaOfTheDs(): array {
+  function jsonSchemaOfTheDs(string $fsName): array {
     $collections = [];
     //echo '$elt='; print_r($this->elt);
     //echo 'FeatureTypeList='; print_r($this->elt->FeatureTypeList->FeatureType);
@@ -73,8 +91,8 @@ class WfsCap {
     ksort($collections);
     return [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
-      'title'=> "Schema du serveur WFS",
-      'description'=> "Schema du serveur WFS",
+      'title'=> FeatureServer::REGISTRE[$fsName]['title'],
+      'description'=> FeatureServer::REGISTRE[$fsName]['description'],
       'type'=> 'object',
       'properties'=> $collections,
     ];
@@ -112,7 +130,7 @@ class FeatureServer extends Dataset {
     $this->cap = new WfsCap($name);
     //echo '<pre>'; print_r($this);
     $registre = self::REGISTRE[$name];
-    parent::__construct($name, $registre['title'], $registre['description'], $this->cap->jsonSchemaOfTheDs());
+    parent::__construct($name, $this->cap->jsonSchemaOfTheDs($name));
   }
   
   /** Retourne les filtres implémentés par getTuples().

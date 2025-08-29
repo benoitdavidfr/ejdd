@@ -47,8 +47,8 @@ abstract class Dataset {
     'InseeCog'=> null,
     'DeptReg'=> null,
     'NomsCnig'=> null,
-    'NomsCtCnigC'=> null,
-    'Pays'=> null,
+    //'NomsCtCnigC'=> null,
+    //'Pays'=> null,
     'MapDataset'=> null,
     'AeCogPe'=> null,
     'WorldEez'=> null,
@@ -58,7 +58,7 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
-    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+    //'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
     'wfs-fr-ign-gpf'=> 'FeatureServer',
   ];
   const UNITS = [
@@ -77,21 +77,22 @@ abstract class Dataset {
   /** @var array<string,CollectionOfDs> $collections Le dict. des collections. */
   readonly array $collections;
   
-  /** @param array<mixed> $schema Le schéma JSON de la collection */
-  function __construct(string $name, string $title, string $description, array $schema) {
-    $this->name = $name;
-    $this->title = $title;
-    $this->description = $description;
+  /** @param array<mixed> $schema Le schéma JSON du JdD */
+  function __construct(string $dsName, array $schema) {
+    $this->name = $dsName;
+    $this->title = $schema['title'];
+    $this->description = $schema['description'];
     $this->schema = $schema;
     $definitions = $schema['definitions'] ?? null;
     $collections = [];
-    foreach ($schema['properties'] as $key => $value) {
-      if (in_array($key, ['title','description','$schema']))
+    foreach ($schema['properties'] as $key => $schemaOfColl) {
+      if (in_array($key, ['$schema']))
         continue;
       // s'il existe des définitions alors elles doivent être transmises dans chaque sou-schéma
-      if ($definitions)
-        $value = array_merge(['definitions'=> $definitions], $value);
-      $collections[$key] = new CollectionOfDs($name, $key, $value);
+      $schemaOfColl = $definitions ? array_merge(['definitions'=> $definitions], $schemaOfColl) : $schemaOfColl;
+      
+      //echo '<pre>$schemaOfColl = '; print_r($schemaOfColl);
+      $collections[$key] = new CollectionOfDs($dsName, $key, $schemaOfColl);
     }
     $this->collections = $collections;
   }

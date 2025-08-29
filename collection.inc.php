@@ -556,7 +556,9 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
    * @return array<string, string>
    */
   function properties(): array {
-    $items = $this->array['items'];
+    if (!($items = ($this->array['items'] ?? null))) {
+      return [];
+    }
     $props = [];
     if (isset($items['properties'])) { // cas std non OneOf
       foreach ($items['properties'] as $pname => $prop) {
@@ -578,6 +580,7 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
       return $props;
     }
     else {
+      echo '<pre>$this(SchemaOfListOfTuples)='; print_r($this);
       throw new \Exception("TO BE IMPLEMENTED"); // Cas autre, pas forcément utile
     }
   }

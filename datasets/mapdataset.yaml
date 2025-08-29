@@ -1,15 +1,13 @@
-title: Jeu de données de définition de cartes
-description: |
-  L'objectif de ce JdD est de définir des cartes affichables en Leaflet sans avoir à éditer le code JS correspondant.
-  Ainsi la définition des cartes est stockée dans ce fichier Yaml.
-  Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
-  chacune définie dans la section layer notamment par un type et des paramètres.
-  Les cartes peuvent être dessinées à partir de l'IHM définie dans le script mapdataset.php.
-  Les noms de couche dans la définition des cartes doivent exister dans la section layer.
 $schema:
   $schema: 'http://json-schema.org/draft-07/schema#'
-  title: Schéma du jeu de données de description des cartes
-  description: Ce jeu contient la description de cartes.
+  title: Jeu de données de définition de cartes
+  description: |
+    L'objectif de ce JdD est de définir des cartes affichables en Leaflet sans avoir à éditer le code JS correspondant.
+    Ainsi la définition des cartes est stockée dans ce fichier Yaml.
+    Une carte est principalement composée de couches de base (baseLayers) et de couches de superposition (overlays),
+    chacune définie dans la section layer notamment par un type et des paramètres.
+    Les cartes peuvent être dessinées à partir de l'IHM définie dans le script mapdataset.php.
+    Les noms de couche dans la définition des cartes doivent exister dans la section layer.
   definitions:
     layerList:
       description: liste de noms de couches
@@ -116,19 +114,11 @@ $schema:
     
   type: object
   required:
-    - title
-    - description
     - $schema
     - maps
     - layers
   additionalProperties: false
   properties:
-    title:
-      description: 'Titre du jeu de données'
-      type: string
-    description:
-      description: 'Description du jeu de données'
-      type: string
     $schema:
       description: 'Schéma JSON du jeu de données'
       type: object

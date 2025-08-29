@@ -20,7 +20,7 @@ class NomsCnig extends Dataset {
   
   function __construct(string $name) {
     $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
-    parent::__construct($name, $this->data['title'],  $this->data['description'], $this->data['$schema']);
+    parent::__construct($name, $this->data['$schema']);
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
@@ -675,18 +675,15 @@ de Tromelin
 de Clipperton
 EOT,
   ];
-  const TITLE = "Noms CNIG";
-  const DESCRIPTION = "Noms CNIG";
   /** Scéma JSON du JdD des noms CNIG */
   const SCHEMA_JSON = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma du jeu de données nomsCnig",
+    'title'=> "Noms CNIG",
+    'description'=> "Noms CNIG",
     'type'=> 'object',
-    'required'=> ['title','description','$schema','nomsCnig'],
+    'required'=> ['$schema','nomsCnig'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> ['type'=> 'string'],
-      'description'=> ['type'=> 'string'],
       'nomsCnig'=> [
         'title'=> "Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG",
         'description'=> "Cette table transcrit le document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf.
@@ -875,8 +872,6 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
       }
       case 'storeAndValidate': {
         $dataset = [
-          'title'=> self::TITLE,
-          'description'=> self::DESCRIPTION,
           '$schema'=> self::SCHEMA_JSON,
           'nomsCnig'=> self::build(),
         ];

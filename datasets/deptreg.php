@@ -36,7 +36,7 @@ class DeptReg extends Dataset {
   
   function __construct(string $name) {
     $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
-    parent::__construct($name, $this->data['title'], $this->data['description'], $this->data['$schema']);
+    parent::__construct($name, $this->data['$schema']);
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
@@ -64,8 +64,6 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISAT
 
 /** Construction du JdD DeptReg. */
 class DeptRegBuild {
-  /** Titre du jeu de données */
-  const TITLE = "Jeu de données DeptReg décrivant les départements, les régions et les \"domaines internet des Préfectures\"";
   /** Description du jeu de données */
   const DESCRIPTION = [
     <<<'EOT'
@@ -86,19 +84,12 @@ EOT
   /** Schema JSON du jeu de données */
   const SCHEMA_JSON = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma du jeu de données deptreg des départements, régions et domaines internet des préfectures",
+    'title'=> "Jeu de données DeptReg décrivant les départements, les régions et les \"domaines internet des Préfectures\"",
+    'description'=> self::DESCRIPTION[0],
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'régions', 'départements', 'outre-mer','nomsCnig','prefdom'],
+    'required'=> ['$schema', 'régions', 'départements', 'outre-mer','nomsCnig','prefdom'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> [
-        'description'=> "Titre du jeu de données",
-        'type'=> 'string',
-      ],
-      'description'=> [
-        'description'=> "Commentaire sur le jeu de données",
-        'type'=> 'string',
-      ],
       '$schema'=> [
         'description'=> "Schéma JSON du jeu de données",
         'type'=> 'object',
@@ -917,8 +908,6 @@ EOT
     $depts['D07']['nom'] = 'Ardèche';
     
     return [
-      'title'=> self::TITLE,
-      'description'=> self::DESCRIPTION[0],
       '$schema'=> self::SCHEMA_JSON,
       'régions'=> $regs,
       'départements'=> $depts,

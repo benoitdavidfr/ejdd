@@ -8,8 +8,6 @@ require_once __DIR__.'/../dataset.inc.php';
 
 /** Exemple trivial de JdD */
 class DatasetEg extends Dataset {
-  const TITLE = "Exemple de jeu de données trivial utilisé pour tester les scripts";
-  const DESCRIPTION = "Ce jeu de données trivial est utilisé pour tester les scripts";
   const DATA = [
     'exDictOfTuple'=> [
       'schema'=> [
@@ -160,20 +158,12 @@ class DatasetEg extends Dataset {
   ]; // Examples organisés avec chacun son schéma et ses données
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma du jeu de données exemple",
-    'description'=> "Ce jeu et son schéma permettent de tester les scripts.",
+    'title'=> "Exemple de jeu de données trivial utilisé pour tester les scripts",
+    'description'=> "Ce jeu de données trivial est utilisé pour tester les scripts",
     'type'=> 'object',
-    'required'=> ['title','description','$schema', 'tableEg', 'dictEg','tableOneOf'],
+    'required'=> ['$schema', 'tableEg', 'dictEg','tableOneOf'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> [
-        'description'=> "Titre du jeu de données",
-        'type'=> 'string',
-      ],
-      'description'=> [
-        'description'=> "Description du jeu de données",
-        'type'=> 'string',
-      ],
       '$schema'=> [
         'description'=> "Schéma JSON du jeu de données",
         'type'=> 'object',
@@ -187,7 +177,7 @@ class DatasetEg extends Dataset {
       $schema['properties'][$sname] = $example['schema'];
     }
     //echo '<pre>$schema='; print_r($schema); echo "</pre>\n";
-    parent::__construct($name, self::TITLE, self::DESCRIPTION, $schema);
+    parent::__construct($name, $schema);
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.

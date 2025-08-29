@@ -16,16 +16,17 @@ use Symfony\Component\Yaml\Yaml;
  * Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.
  */
 class MapDataset extends Dataset {
+  /** Chemin du contenu du JdD en Yaml. */
   const YAML_FILE_PATH = __DIR__.'/mapdataset.yaml';
-  /** @var array<string,mixed> $data Les données des différentes collections du jeu */
+  /** @var array<string,mixed> $data - Les données des différentes collections du jeu */
   readonly array $data;
   
   function __construct(string $name) {
     $dataset = Yaml::parseFile(self::YAML_FILE_PATH);
-    parent::__construct($name, $dataset['title'], $dataset['description'], $dataset['$schema']);
+    parent::__construct($name, $dataset['$schema']);
     $data = [];
     foreach ($dataset as $key => $value) {
-      if (!in_array($key, ['title', 'description', '$schema']))
+      if (!in_array($key, ['$schema']))
         $data[$key] = $value;
     }
     $this->data = $data;
