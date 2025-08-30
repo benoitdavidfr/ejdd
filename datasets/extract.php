@@ -28,7 +28,7 @@ class Extract extends Dataset {
       echo "collName=$collName ; ";
       echo '<pre>$coll='; print_r($coll);
       $sources[$collName] = $coll['source'];
-      $schema['properties'][$collName] = $coll['$schema'];
+      $schema['properties'][$collName] = $coll['$schema'] ?? null;
     }
     $this->sources = $sources;
     parent::__construct($name, $schema);

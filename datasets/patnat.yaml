@@ -42,4 +42,6 @@ parc_national:
         zone:
         bbox:
         geometry:
-    
+apb:
+  source: wfs-fr-ign-gpf.patrinat_pn:parc_national
+

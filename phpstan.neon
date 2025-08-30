@@ -46,6 +46,7 @@ parameters:
     - index.php
     - dataset.inc.php
     - collection.inc.php
+    - schema.inc.php
     - skipbracket.php
     - geojson.inc.php
     - bbox.php
