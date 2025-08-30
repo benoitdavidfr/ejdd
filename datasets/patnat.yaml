@@ -1,0 +1,45 @@
+title: Définition du jeu de données Patnat
+# il s'agit du schéma du jeu de données issu de l'extraction
+schemaOfExtract:
+  title: Couches géographiques publiées par Patnat
+  description: |
+    Couches géographiques publiées par Patnat (MNHN/OFB)
+  type: object
+  properties:
+    $schema:
+      description: La propriété schéma
+      type: array
+        
+parc_national:
+  source: wfs-fr-ign-gpf.patrinat_pn:parc_national
+  $schema:
+    title: Parcs nationaux
+    description: Parcs nationaux
+    type: array
+    items:
+      type: object
+      properties:
+        id_local:
+        nom_site:
+        date_crea:
+        modif_adm:
+        modif_geo:
+        url_fiche:
+        surf_off:
+        acte_deb:
+        acte_fin:
+        gest_site:
+        operateur:
+        precision:
+        src_geom:
+        src_annee:
+        marin:
+        p1_nature:
+        p4_geologi:
+        id_mnhn:
+        area_sig:
+        cd_sig:
+        zone:
+        bbox:
+        geometry:
+    
