@@ -22,7 +22,7 @@ class InseeCog extends Dataset {
   /** Retourne les filtres implémentés par getTuples().
    * @return list<string>
    */
-  function implementedFilters(): array { return ['skip', 'predicate']; }
+  function implementedFilters(string $collName): array { return ['skip', 'predicate']; }
 
   /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $collection nom de la collection

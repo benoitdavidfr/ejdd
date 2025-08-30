@@ -18,26 +18,18 @@ use JsonSchema\Validator;
 class Styler extends Dataset {
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
-    'title'=> "Schéma d'un jeu de données issu de Styler",
-    'description'=> "Schéma.",
+    'title'=> "**Remplacé par le titre du JdD stocké dans la feuille de style**",
+    'description'=> "**Remplacé par la description du JdD stockée dans la feuille de style**.",
     'type'=> 'object',
-    'required'=> ['title','description','$schema', '{styledLayer}'],
+    'required'=> ['$schema', '{styledLayer}'],
     'additionalProperties'=> false,
     'properties'=> [
-      'title'=> [
-        'description'=> "Titre du jeu de données",
-        'type'=> 'string',
-      ],
-      'description'=> [
-        'description'=> "Description du jeu de données",
-        'type'=> 'string',
-      ],
       '$schema'=> [
         'description'=> "Schéma JSON du jeu de données",
         'type'=> 'object',
       ],
       '{styledLayer}'=> [
-        'title'=> "L'unique couche avec les Features stylés",
+        'title'=> "L'unique collection avec les Features stylés",
         'description'=> "Array de n-uplet contenant chacun au moins le champ style.",
         'type'=> 'array',
         'items'=> [
@@ -68,12 +60,14 @@ class Styler extends Dataset {
   function __construct(string $ssName) {
     $this->styleSheet = Yaml::parseFile(__DIR__.strToLower("/$ssName.yaml"));
     $schema = self::JSON_SCHEMA;
+    $schema['title'] = $this->styleSheet['titleOfDataset'];
+    $schema['description'] = $this->styleSheet['descriptionOfDataset'];
     foreach (array_keys($this->styleSheet['themes']) as $theme) {
       $schema['properties'][$theme] = $schema['properties']['{styledLayer}'];
     }
     unset($schema['properties']['{styledLayer}']);
     //echo '<pre>$params='; print_r($this->params); echo "</pre>\n";
-    parent::__construct($ssName, $this->styleSheet['title'], $this->styleSheet['description'], $schema);
+    parent::__construct($ssName, $schema);
   }
   
   /** L'accès aux tuples d'une collection du JdD par un Generator.

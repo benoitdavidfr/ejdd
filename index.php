@@ -8,7 +8,19 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- le type construit dans properties() est-iul utilisé, peut-on le supprimer ?
+- définir un mécanisme d'extrait de jeu de donnée
+  - par exemples pour créer
+    - un jeu Patrinat à partir du serveur WFS IGN
+  - idée de faire une catagorie de Dataset Extract
+    - qui se fonde sur un fichier Yaml qui définisse le schéma et les collections d'origine
+- voir comment gérer les géométries dans d'autres systèmes de coordonnées
+  - ex: wfs-fr-ign-gpf.patrinat_pn%3Aparc_national
+  - une solution pourrait être de faire un opérateu de reprojection
+  - une autre serait d'internaliser ce traitement dans FeatureServer pour qu'il produise des géométries en LonLat WGS84
+- revoir les datasets initiaux
+  - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
+- le type construit dans properties() est-il utilisé, peut-on le supprimer ?
+  - il est utile pour détecter les champs géométriques
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d'un prédicat plus complexe dans JoinP
@@ -40,6 +52,9 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+30/8/2025:
+  - ajout de la catégorie Extract
+  - ajout d'un paramètre à Dataset::implementedFilters()
 29/8/2025:
   - gestion des titre et description des JdD dans le schéma
 28/8/2025:

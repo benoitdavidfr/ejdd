@@ -7,6 +7,15 @@ description: |
     50m: 3-4
     10m: 5-8
     1m: 9
+titleOfDataset: Natural Earth stylée
+descriptionOfDataset: |
+  Ce jeu de données est le résultat de l'application de la feuille de styles NaturalEarth sur les 6 JdD:
+    - NE110mPhysical
+    - NE110mCultural
+    - NE50mPhysical
+    - NE50mCultural
+    - NE10mPhysical
+    - NE10mCultural
 $schema: 'https://dataset.geoapi.fr/styler.yaml'                        
 themes:
   coastlinesAndBoundaries:

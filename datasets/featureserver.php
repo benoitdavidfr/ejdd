@@ -136,7 +136,7 @@ class FeatureServer extends Dataset {
   /** Retourne les filtres implémentés par getTuples().
    * @return list<string>
    */
-  function implementedFilters(): array { return ['skip']; }
+  function implementedFilters(string $collName): array { return ['skip']; }
   
   /** L'accès aux items d'une collection du JdD par un Generator. A REVOIR pour descendre le bbox dans la geometry !!!
    * @param string $cName nom de la collection

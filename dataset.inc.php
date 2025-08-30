@@ -47,8 +47,8 @@ abstract class Dataset {
     'InseeCog'=> null,
     'DeptReg'=> null,
     'NomsCnig'=> null,
-    //'NomsCtCnigC'=> null,
-    //'Pays'=> null,
+    'NomsCtCnigC'=> null,
+    'Pays'=> null,
     'MapDataset'=> null,
     'AeCogPe'=> null,
     'WorldEez'=> null,
@@ -58,8 +58,9 @@ abstract class Dataset {
     'NE50mCultural' => 'GeoDataset',
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
-    //'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
     'wfs-fr-ign-gpf'=> 'FeatureServer',
+    'Patnat'=> 'Extract',
   ];
   const UNITS = [
     0 => 'octets',
@@ -132,7 +133,7 @@ abstract class Dataset {
    *  - predicate: Predicate - prédicat à vérifier sur le n-uplet
    * @return list<string>
    */
-  function implementedFilters(): array { return []; }
+  function implementedFilters(string $collName): array { return []; }
   
   /** L'accès aux items d'une collection du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
    * @param string $collection nom de la collection

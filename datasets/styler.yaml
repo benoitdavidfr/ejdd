@@ -1,11 +1,13 @@
 title: Schéma JSON des feuilles de styles utilisées par Styler
 $schema: 'http://json-schema.org/draft-07/schema#'
 type: object
-required: [title, description,$schema,themes]
+required: [title, description,title, description,$schema,themes]
 additionalProperties: false
 properties:
-  title: {description: nom de la feuille de style, type: string}
+  title: {description: titre de la feuille de style, type: string}
   description: {description: description de la feuille de style, type: string}
+  titleOfDataset: {description: "titre du jeu de données issu du stylage", type: string}
+  descriptionOfDataset: {description: "description du jeu de données issu du stylage", type: string}
   eof: {description: signalement de la fin du fichier optionnel}
   themes:
     description: |

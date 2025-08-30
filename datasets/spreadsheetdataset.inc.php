@@ -149,23 +149,21 @@ abstract class SpreadSheetDataset extends Dataset {
     }
     $collections[$ccoll->name] = $ccoll;
     $this->docCollections = $collections;
-    parent::__construct($name, $title, $description, $this->jsonSchema());
+    parent::__construct($name, $this->jsonSchema($title, $description));
   }
   
   /** @return array<mixed> */
-  function jsonSchema(): array {
+  function jsonSchema(string $title, string $description): array {
     //echo 'docSheet = '; print_r($this);
     $schema = [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
-      'title'=> "Schéma générè à partir de la feuille doc de ".$this->filePath,
-      'description'=> "Ce jeu et son schéma sont générés à partir de la feuille doc de ".$this->filePath,
+      'title'=> $title,
+      'description'=> $description,
       'type'=> 'object',
-      'required'=> array_merge(['title','description','$schema'], array_keys($this->docCollections)),
+      'required'=> array_merge(['$schema'], array_keys($this->docCollections)),
       'additionalProperties'=> false,
       'properties'=> array_merge(
         [
-          'title'=> ['description'=> "Titre du jeu de données", 'type'=> 'string'],
-          'description'=> ['description'=> "Description du jeu de données", 'type'=> 'string'],
           '$schema'=> ['description'=> "Schéma JSON du jeu de données", 'type'=> 'object'],
         ],
         array_map(

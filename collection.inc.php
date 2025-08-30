@@ -331,8 +331,8 @@ class SimplifiedType {
   
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
    * Utilisé pour fabriquer des properties à partir du schéma.
-   * @param array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
-  static function simplifiedType2(array $prop): string {
+   * @param ?array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+  static function simplifiedType2(?array $prop): string {
     // Les types simples
     if (in_array($prop['type'] ?? null, ['string','number','integer']))
       return $prop['type'];
@@ -355,8 +355,8 @@ class SimplifiedType {
   }
   
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
-   * @param array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
-  static function create(array $prop): string {
+   * @param ?array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+  static function create(?array $prop): string {
     $stype = self::simplifiedType2($prop);
     //echo '<pre>simplifiedType('; print_r($prop); echo ") returns '$stype'</pre>";
     return $stype;
@@ -628,7 +628,7 @@ class CollectionOfDs extends Collection {
   }
   
   /** Les filtres mis en oeuvre sont définis par le JdD. */
-  function implementedFilters(): array { return Dataset::get($this->dsName)->implementedFilters(); }
+  function implementedFilters(): array { return Dataset::get($this->dsName)->implementedFilters($this->name); }
   
   /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>

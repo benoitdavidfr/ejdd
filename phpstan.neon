@@ -74,6 +74,7 @@ parameters:
     - datasets/geodataset.php
     - datasets/styler.php
     - datasets/featureserver.php
+    - datasets/extract.php
     - zoomleveL.php
     #- lib/coordsys.inc.php
     #- lib/gebox.inc.php

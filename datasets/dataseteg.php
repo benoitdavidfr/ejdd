@@ -8,7 +8,8 @@ require_once __DIR__.'/../dataset.inc.php';
 
 /** Exemple trivial de JdD */
 class DatasetEg extends Dataset {
-  const DATA = [
+  /** Collections avec chacune son schéma et ses données. */
+  const COLLECTIONS = [
     'exDictOfTuple'=> [
       'schema'=> [
         'title'=> "Exemple de DictOfTuple",
@@ -155,13 +156,14 @@ class DatasetEg extends Dataset {
         "seconde valeur",
       ],
     ],
-  ]; // Examples organisés avec chacun son schéma et ses données
+  ];
+  /** Squelette du schéma, doit être complété par les schémas des collections. */
   const JSON_SCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Exemple de jeu de données trivial utilisé pour tester les scripts",
     'description'=> "Ce jeu de données trivial est utilisé pour tester les scripts",
     'type'=> 'object',
-    'required'=> ['$schema', 'tableEg', 'dictEg','tableOneOf'],
+    'required'=> ['$schema'],
     'additionalProperties'=> false,
     'properties'=> [
       '$schema'=> [
@@ -173,8 +175,9 @@ class DatasetEg extends Dataset {
   
   function __construct(string $name) {
     $schema = self::JSON_SCHEMA;
-    foreach (self::DATA as $sname => $example) {
-      $schema['properties'][$sname] = $example['schema'];
+    foreach (self::COLLECTIONS as $cname => $collection) {
+      $schema['required'][] = $cname;
+      $schema['properties'][$cname] = $collection['schema'];
     }
     //echo '<pre>$schema='; print_r($schema); echo "</pre>\n";
     parent::__construct($name, $schema);
@@ -190,7 +193,7 @@ class DatasetEg extends Dataset {
    */
   function getItems(string $collection, array $filters=[]): \Generator {
     $skip = $filters['skip'] ?? 0;
-    foreach (self::DATA[$collection]['data'] as $key => $item) {
+    foreach (self::COLLECTIONS[$collection]['data'] as $key => $item) {
       if ($skip-- > 0)
         continue;
       yield $key => $item;
@@ -201,7 +204,7 @@ class DatasetEg extends Dataset {
    * @return array<mixed>|string|null
    */ 
   function getOneTupleByKey(string $collection, string|int $key): array|string|null {
-    return self::DATA[$collection]['data'][$key];
+    return self::COLLECTIONS[$collection]['data'][$key];
   }
 };
 
