@@ -36,7 +36,7 @@ class Pays extends SpreadSheetDataset {
         echo '<pre>'; print_r([
           'title'=> $pays->title,
           'description'=> $pays->description,
-          '$schema'=> $pays->jsonSchema(),
+          '$schema'=> $pays->jsonSchema($pays->title, $pays->description),
         ]);
         break;
       }

@@ -34,7 +34,7 @@ class NomsCtCnigC extends SpreadSheetDataset {
         echo '<pre>'; print_r([
           'title'=> $objet->title,
           'description'=> $objet->description,
-          '$schema'=> $objet->jsonSchema(),
+          '$schema'=> $objet->jsonSchema($objet->title, $objet->description),
         ]);
         break;
       }
