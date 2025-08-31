@@ -54,6 +54,7 @@ Journal des modifications récentes du code
 ------------------------------------------
 31/8/2025:
   - correction bugs
+  - création d'un fichier extractsch.yaml contenant le schéma des fichiers de description des JdD extract
 30/8/2025:
   - ajout de la catégorie Extract
   - ajout d'un paramètre à Dataset::implementedFilters()

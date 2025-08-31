@@ -21,10 +21,7 @@ class Extract extends Dataset {
     $sources = [];
     $data = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));
     $schema = $data['schemaOfExtract'];
-    foreach ($data as $collName => $coll) {
-      if (in_array($collName, ['title', 'description', 'schemaOfExtract','eof'])) {
-        continue;
-      }
+    foreach ($data['collections'] as $collName => $coll) {
       //echo "collName=$collName ; "; echo '<pre>$coll='; print_r($coll);
       $sources[$collName] = $coll['source'];
       $schema['properties'][$collName] = $coll['$schema'] ?? null;
@@ -62,21 +59,62 @@ class Extract extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
+use JsonSchema\Validator;
+use Algebra\RecArray;
+
 /** Construction d'Extract. */
 class ExtractBuild {
   static function main(): void {
     switch ($_GET['action'] ?? null) {
       case null: {
-        echo "<a href='?action=display'>display</a><br>\n";
+        echo "<a href='?action=display&dataset=$_GET[dataset]'>display</a><br>\n";
+        echo "<a href='?action=validate&dataset=$_GET[dataset]'>Valide le fichier Yaml / son schéma</a><br>\n";
         break;
       }
       case 'display': {
         if (!isset($_GET['collection'])) {
-          $patnat = new Extract('Patnat');
+          $patnat = new Extract($_GET['dataset']);
           $patnat->display();
         }
         else {
           CollectionOfDs::get($_GET['collection'])->display();
+        }
+        break;
+      }
+      case 'validate': {
+        require_once __DIR__.'/../vendor/autoload.php';
+        $schema = Yaml::parseFile(__DIR__.strToLower("/extractsch.yaml"));
+        
+        // Validation du schéma contenu dans le fichier / méta schéma JSON Schema
+        $validator = new Validator;
+        $stdObject = RecArray::toStdObject($schema);
+        $validator->validate($stdObject, $schema['$schema']);
+        if ($validator->isValid()) {
+          echo "Le schéma du fichier Yaml est conforme au méta-schéma JSON Schema.<br>\n";
+        }
+        else {
+          echo "<pre>Le schéma du fichier Yaml n'est pas conforme au méta-schéma JSON Schema. Violations:\n";
+          foreach ($validator->getErrors() as $error) {
+            printf("[%s] %s\n", $error['property'], $error['message']);
+          }
+          echo "</pre>\n";
+        }
+        
+        // validation des données par rapport à leur schéma 
+        $data = Yaml::parseFile(__DIR__.strToLower("/$_GET[dataset].yaml"));
+        //print_r($data);
+        $validator = new Validator;
+        $stdObject = RecArray::toStdObject($data);
+        $validator->validate($stdObject, $schema);
+        if ($validator->isValid()) {
+          echo "Le fichier Yaml du JdD est conforme à son schéma.<br>\n";
+        }
+        else {
+          echo "<pre>Le schéma Yaml décrivant le JdD n'est pas conforme au schéma des JdD extract. Violations:\n";
+          foreach ($validator->getErrors() as $error) {
+            printf("[%s] %s\n", $error['property'], $error['message']);
+          }
+          echo "</pre>\n";
         }
         break;
       }

@@ -31,7 +31,7 @@ description: |
   patrinat_znieff2_mer:znieff2_mer	Patrinat __ ZNIEFF2_MER	listOfTuples
   patrinat_zpr:zpr	Patrinat __ ZPR	listOfTuples
   patrinat_zps:zps	Patrinat __ ZPS
-  
+
 schemaOfExtract:
   title: Couches géographiques publiées par Patnat
   description: |
@@ -42,54 +42,57 @@ schemaOfExtract:
       description: La propriété schéma
       type: array
         
-parc_national:
-  source: wfs-fr-ign-gpf.patrinat_pn:parc_national
-  $schema:
-    title: Parcs nationaux
-    description: Parcs nationaux
-    type: array
-    items:
-      type: object
-      properties:
-        id_local:
-        nom_site:
-        date_crea:
-        modif_adm:
-        modif_geo:
-        url_fiche:
-        surf_off:
-        acte_deb:
-        acte_fin:
-        gest_site:
-        operateur:
-        precision:
-        src_geom:
-        src_annee:
-        marin:
-        p1_nature:
-        p4_geologi:
-        id_mnhn:
-        area_sig:
-        cd_sig:
-        zone:
-        bbox:
-        geometry:
-apb:
-  source: wfs-fr-ign-gpf.patrinat_apb:apb
-  $schema:
-    title: Arrêtés de protection de biotope (APB)
-    description: |
-      Arrêtés de protection de biotope (APB)
-    type: array
-    items:
-      type: object
-apg:
-  source: wfs-fr-ign-gpf.patrinat_apg:apg
-  $schema:
-    title: Arrêtés de protection de géotope (APG)
-    description: |
-      Arrêtés de protection de géotope (APG)
-    type: array
-    items:
-      type: object
+collections:
+  parc_national:
+    source: wfs-fr-ign-gpf.patrinat_pn:parc_national
+    $schema:
+      title: Parcs nationaux
+      description: Parcs nationaux
+      type: array
+      items:
+        type: object
+        properties:
+          id_local:
+          nom_site:
+            description: Nom du site
+            type: string
+          date_crea:
+          modif_adm:
+          modif_geo:
+          url_fiche:
+          surf_off:
+          acte_deb:
+          acte_fin:
+          gest_site:
+          operateur:
+          precision:
+          src_geom:
+          src_annee:
+          marin:
+          p1_nature:
+          p4_geologi:
+          id_mnhn:
+          area_sig:
+          cd_sig:
+          zone:
+          bbox:
+          geometry:
+  apb:
+    source: wfs-fr-ign-gpf.patrinat_apb:apb
+    $schema:
+      title: Arrêtés de protection de biotope (APB)
+      description: |
+        Arrêtés de protection de biotope (APB)
+      type: array
+      items:
+        type: object
+  apg:
+    source: wfs-fr-ign-gpf.patrinat_apg:apg
+    $schema:
+      title: Arrêtés de protection de géotope (APG)
+      description: |
+        Arrêtés de protection de géotope (APG)
+      type: array
+      items:
+        type: object
 eof:
