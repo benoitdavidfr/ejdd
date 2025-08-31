@@ -136,11 +136,11 @@ abstract class Dataset {
   function implementedFilters(string $collName): array { return []; }
   
   /** L'accès aux items d'une collection du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
-   * @param string $collection nom de la collection
-   * @param array<string,mixed> $filters filtres éventuels sur les items à renvoyer
+   * @param string $collName - nom de la collection
+   * @param array<string,mixed> $filters - filtres éventuels sur les items à renvoyer
    * @return \Generator<string|int,array<mixed>>
    */
-  abstract function getItems(string $collection, array $filters=[]): \Generator;
+  abstract function getItems(string $collName, array $filters=[]): \Generator;
   
   /** Retourne l'item ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<mixed>|string|null

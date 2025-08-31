@@ -52,6 +52,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+31/8/2025:
+  - correction bugs
 30/8/2025:
   - ajout de la catégorie Extract
   - ajout d'un paramètre à Dataset::implementedFilters()

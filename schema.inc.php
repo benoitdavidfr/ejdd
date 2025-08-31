@@ -1,5 +1,16 @@
 <?php
-/** schema d'une collection. */
+/** Le schéma JSON d'une Collection d'un JdD.
+ * Le schéma d'une collection est créé par SchemaOfCollection::create() avec en paramètre l'array représentant ce schéma JSON.
+ * Il existe plusieures sortes de collection:
+ *   - listOfTuples
+ *   - dictOfTuples
+ *   - listOfValues
+ *   - dictOfValues
+ * kind() et skind() déterminent en fonction du schéma la sorte de collection et permet de créer un objet schéma adapté.
+ * Un schéma sait renvoyer la liste des propriétés sous la forme [{name}=> {simplifiedType}] ; il s'agit dde ttes les prop.
+ * potentielles et {simplifiedType} est une chaîne de caractères.
+ * Les properties peuvent ne pas être définies dans le schéma et dans ce cas certaines opérations seront interdites.
+ */
 namespace Algebra;
 
 /** Pour mettre du code Html dans un RecArray. */
@@ -422,8 +433,8 @@ class SchemaOfListOfTuples extends SchemaOfCollection {
       return $props;
     }
     else {
-      echo '<pre>$this(SchemaOfListOfTuples)='; print_r($this);
-      throw new \Exception("TO BE IMPLEMENTED"); // Cas autre, pas forcément utile
+      // Je considère que les propriétés ne sont pas définies
+      return [];
     }
   }
 };
@@ -433,6 +444,10 @@ class SchemaOfXXXOfValues extends SchemaOfCollection {
   /** Retourne la liste des propriétés potentielles
    * @return array<string, string>
    */
+  function properties(): array { return []; }
+};
+
+class NoSchema extends SchemaOfCollection {
   function properties(): array { return []; }
 };
 

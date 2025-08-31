@@ -22,15 +22,15 @@ class Extract extends Dataset {
     $data = Yaml::parseFile(__DIR__.strToLower("/$name.yaml"));
     $schema = $data['schemaOfExtract'];
     foreach ($data as $collName => $coll) {
-      if (in_array($collName, ['title', 'description', 'schemaOfExtract'])) {
+      if (in_array($collName, ['title', 'description', 'schemaOfExtract','eof'])) {
         continue;
       }
-      echo "collName=$collName ; ";
-      echo '<pre>$coll='; print_r($coll);
+      //echo "collName=$collName ; "; echo '<pre>$coll='; print_r($coll);
       $sources[$collName] = $coll['source'];
       $schema['properties'][$collName] = $coll['$schema'] ?? null;
     }
     $this->sources = $sources;
+    //echo '<pre>$schema='; print_r($schema);
     parent::__construct($name, $schema);
   }
   

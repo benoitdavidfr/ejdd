@@ -522,6 +522,15 @@ use Dataset\Dataset;
 
 /** Test de la classe Predicate. */
 class PredicateTest {
+  /** Au moins 1 collection du jeu implément predicate. */
+  static function atLeast1CollImplementPredicate(Dataset $dataset): bool {
+    foreach ($dataset->collections as $collName => $coll) {
+      if (in_array('predicate', $dataset->implementedFilters($collName)))
+        return true;
+    }
+    return false;
+  }
+  
   /** Fonction de test de la classe. */
   static function main(): void {
     switch ($_GET['action'] ?? null) {
@@ -553,7 +562,7 @@ class PredicateTest {
           echo "<h3>Choix d'un dataset</h3>\n";
           foreach (array_keys(Dataset::REGISTRE) as $dsName) {
             $dataset = Dataset::get($dsName);
-            if (in_array('predicate', $dataset->implementedFilters()))
+            if (self::atLeast1CollImplementPredicate($dataset))
               echo "<a href='?action=$_GET[action]&dataset=$dsName'>",$dataset->title,"</a><br>\n";
           }
           die();
@@ -563,7 +572,8 @@ class PredicateTest {
           $dataset = Dataset::get($_GET['dataset']);
           echo "<h3>Choix d'une collection</h3>\n";
           foreach ($dataset->collections as $cname => $collection) {
-            echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$cname'>$collection->title</a><br>\n";
+            if (in_array('predicate', $dataset->implementedFilters($cname)))
+              echo "<a href='?action=$_GET[action]&dataset=$_GET[dataset]&collection=$cname'>$collection->title</a><br>\n";
           }
           die();
         }
