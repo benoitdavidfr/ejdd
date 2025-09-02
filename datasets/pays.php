@@ -11,7 +11,7 @@ require_once __DIR__.'/spreadsheetdataset.inc.php';
 
 /** JdD des Pays fondé sur l'utilisation de spreadsheetdataset.inc.php */
 class Pays extends SpreadSheetDataset {
-  const FILE_PATH = 'pays.ods';
+  const FILE_PATH = __DIR__.'/pays.ods';
   
   function __construct(string $name) { parent::__construct($name, self::FILE_PATH); }
     

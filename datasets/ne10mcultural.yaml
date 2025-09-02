@@ -170,8 +170,6 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {}
     ne_10m_admin_0_countries_fra:
       title: ne_10m Admin 0 – Countries FRA
       description: '???'
@@ -216,8 +214,6 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {}
     ne_10m_admin_0_map_units:
       title: ne_10m Admin 0 – map_units
       description: |
@@ -257,12 +253,10 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {  }
     ne_10m_admin_0_map_subunits:
       title: ne_10m Admin 0 – map_subunits
       description: |
-        les sous-unités corespondent à une décomposition des unités. Par exemple pour la France la Corse est dissociée de l'hexagone.'
+        les sous-unités corespondent à une décomposition des unités. Par exemple pour la France la Corse est dissociée de l'hexagone.
       type: array
       items:
         type: object
@@ -298,6 +292,4 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {  }
 eof:

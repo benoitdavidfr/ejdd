@@ -8,9 +8,10 @@ require_once __DIR__.'/../dataset.inc.php';
 require_once __DIR__.'/../geojson.inc.php';
 
 use GeoJSON\Feature;
+use Symfony\Component\Yaml\Yaml;
 
 /** Description du JdD AeCogPe. */
-define('AECOGPE_DESCRIPTION', [
+define('xxAECOGPE_DESCRIPTION', [
   <<<'EOT'
 Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartient à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
 Il contient les classes d'objets suivantes:
@@ -37,8 +38,9 @@ EOT
 class AeCogPe extends Dataset {
   /** Répertoire de stockage ds fichiers GeoJSON. */
   const GEOJSON_DIR = __DIR__.'/aecogpe2025';
-  /* Type Polygon ou MultiPolygon GeoJSON .*/
-  const MPOLYGON = [
+  const SCHEMA_PATH = __DIR__.'/aecogpe.yaml';
+  /* Type Polygon ou MultiPolygon GeoJSON .* /
+  const xxMPOLYGON = [
     'description'=> "Géométrie GeoJSON Polygon ou MultiPolygon augmentée d'un bbox",
     'type'=> 'object',
     'properties'=> [
@@ -57,7 +59,7 @@ class AeCogPe extends Dataset {
       ],
     ],
   ];
-  const SCHEMA = [
+  const xxSCHEMA = [
     '$schema'=> 'http://json-schema.org/draft-07/schema#',
     'title'=> "Admin Express COG Carto petite échelle 2025 de l'IGN",
     'description'=> AECOGPE_DESCRIPTION[0],
@@ -397,10 +399,11 @@ class AeCogPe extends Dataset {
         ],
       ],
     ],
-  ];
+  ]; */
   
   function __construct(string $name) {
-    parent::__construct($name, self::SCHEMA);
+    $schema = Yaml::parseFile(self::SCHEMA_PATH);
+    parent::__construct($name, $schema);
   }
   
   /* L'accès aux Items du JdD par un générateur.
@@ -458,9 +461,14 @@ class AeCogPeBuild {
   static function main(): void {
     switch ($_GET['action'] ?? null) {
       case null: {
+        //echo "<a href='?action=yaml'>Affiche le schéma en Yaml</a><br>\n";
         echo "<a href='?action=buildGeoJson'>Produit les fichier GeoJSON à partir des fichiers SHP de la livraison</a><br>\n";
         break;
       }
+      /*case 'yaml': {
+        echo '<pre>',Yaml::dump(AeCogPe::SCHEMA, 9, 2),"</pre>\n";
+        break;
+      }*/
       case 'buildGeoJson': {
         self::buildGeoJson();
         break;

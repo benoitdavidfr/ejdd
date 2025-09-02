@@ -72,13 +72,17 @@ class WfsCap {
   /** Déduction du schema à partir des capacités.
    * @return array<mixed> */
   function jsonSchemaOfTheDs(string $fsName): array {
-    $collections = [];
+    $requiredProps = ['$schema'];
+    $collectionProps = [
+      '$schema'=> ['description'=> "Le schéma du JdD", 'type'=> 'object'],
+    ];
     //echo '$elt='; print_r($this->elt);
     //echo 'FeatureTypeList='; print_r($this->elt->FeatureTypeList->FeatureType);
     foreach ($this->elt->FeatureTypeList->FeatureType as $featureType) {
       //print_r($featureType);
-      $name = str_replace('__', ':', (string)$featureType->Name);
-      $collections[$name] = [
+      $ftname = str_replace('__', ':', (string)$featureType->Name);
+      $requiredProps[] = $ftname;
+      $collectionProps[$ftname] = [
         'title'=> (string)$featureType->Title,
         'description'=> 'Abstract: '.(string)$featureType->Abstract
           ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
@@ -87,14 +91,18 @@ class WfsCap {
           ."\n&nbsp;&nbsp;&nbsp;&nbsp;UpperCorner:".$featureType->ows__WGS84BoundingBox->ows__UpperCorner,
         'type'=> 'array',
       ];
+      if (count($requiredProps) > 2) break;
     }
-    ksort($collections);
+    sort($requiredProps);
+    ksort($collectionProps);
     return [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
       'title'=> FeatureServer::REGISTRE[$fsName]['title'],
       'description'=> FeatureServer::REGISTRE[$fsName]['description'],
       'type'=> 'object',
-      'properties'=> $collections,
+      'required'=> $requiredProps,
+      'additionalProperties'=> false,
+      'properties'=> $collectionProps,
     ];
   }
   

@@ -52,9 +52,12 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+1/9/2025:
+  - suite amélioration du schéma dataset.yaml
 31/8/2025:
   - correction bugs
   - création d'un fichier extractsch.yaml contenant le schéma des fichiers de description des JdD extract
+  - amélioration du schéma dataset.yaml, clarification des niveaux possibles de documentation dans un schéma
 30/8/2025:
   - ajout de la catégorie Extract
   - ajout d'un paramètre à Dataset::implementedFilters()
@@ -207,7 +210,7 @@ Lignes de commandes utiles
     ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
 geojson.inc.php,bbox.php,pos.inc.php,query.php,predicate.inc.php,skipbracket.php,\
 cproduct.php,concatkeys.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
-dataseteg.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
+debugscripts.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
 geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
 
   Fenêtre Php8.2:
@@ -409,6 +412,8 @@ set_time_limit(5*60);
  *   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
  * - FeatureServer:
  *   - wfs-fr-ign-gpf (non opérationnel)
+ * - Extract:
+ *   - Patrinat
  */
 class Application {
   /** Code initial de l'application. */

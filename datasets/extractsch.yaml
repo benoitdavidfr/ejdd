@@ -1,3 +1,4 @@
+title: Les fichiers Yaml définissant un JdD extract doivent être conformes à ce schéma
 $schema: 'http://json-schema.org/draft-07/schema#'
 type: object
 required: [title, description, schemaOfExtract, collections]
@@ -22,6 +23,12 @@ properties:
         type: string
       type:
         const: object
+      required:
+        type: array
+        items:
+          type: string
+      additionalProperties:
+        const: false
       properties:
         type: object
         properties:
@@ -62,6 +69,8 @@ properties:
                   type:
                     description: chaque tuple est un object
                     const: object
+                  additionalProperties:
+                    const: false
                   properties:
                     description: liste des champs du tuple, non obligatoire
                     type: object

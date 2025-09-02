@@ -1,5 +1,13 @@
 <?php
-/** Le schéma JSON d'une Collection d'un JdD.
+/** Schéma JSON d'une Collection d'un JdD.
+ * Le schéma JSON d'une collection documente la structure de cette collection. Il peut être plus ou moins complet.
+ * A minima il doit contenir le titre et la description de la collection et doit indiquer si la collection comporte ou non
+ * des clés.
+ * Un 2nd niveau indique si les items sont des string, des tuples et des tuples hétérogènes (oneOf).
+ * Un 3ème niveau fournit la liste des champs des tuples avec leur type.
+ * Enfin un 4ème niveau fournit une description pour chaque champ.
+ * La structuration du schéma d'une collection est défini par le schéma défini dans dataset.yaml
+ *  
  * Le schéma d'une collection est créé par SchemaOfCollection::create() avec en paramètre l'array représentant ce schéma JSON.
  * Il existe plusieures sortes de collection:
  *   - listOfTuples
@@ -168,7 +176,7 @@ class RecArray {
 };
 //RecArray::test(); // Test RecArray 
 
-/** Génère un type simplifié à partir d'un type d'une propriété défini dans un schéma JSON. */
+/* * Génère un type simplifié à partir d'un type d'une propriété défini dans un schéma JSON. */
 class SimplifiedType {
   /** Crée un type simplifié d'un champ GeoJSON à partir de son type dans le schéma JSON.
    * @param array<mixed> $props - les propriétés selon le formalisme du schéma JSON. */
@@ -178,13 +186,15 @@ class SimplifiedType {
       return null; // Ce n'est pas un type GeoJSON
     elseif (isset($props['type']['enum']))
       return 'GeoJSON('.implode('|', $props['type']['enum']).')';
+    elseif (isset($props['type']['const']))
+      return 'GeoJSON('.$props['type']['const'].')';
     else
       throw new \Exception("Type GeoJSON non reconnu");
   }
   
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
    * Utilisé pour fabriquer des properties à partir du schéma.
-   * @param ?array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+   * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
   static function simplifiedType2(?array $prop): string {
     // Les types simples
     if (in_array($prop['type'] ?? null, ['string','number','integer']))
@@ -208,7 +218,7 @@ class SimplifiedType {
   }
   
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
-   * @param ?array<mixed> $prop - la proprité selon le formalisme du schéma JSON dont on veut le type simplifié. */
+   * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
   static function create(?array $prop): string {
     $stype = self::simplifiedType2($prop);
     //echo '<pre>simplifiedType('; print_r($prop); echo ") returns '$stype'</pre>";
@@ -253,124 +263,144 @@ class SimplifiedType {
   }
 };
 
+
 /** Le schéma JSON d'une Collection d'un JdD. */
 abstract class SchemaOfCollection {
-  /** @param array<mixed> $array - contient le schéma JSON de la collection */
-  function __construct(readonly array $array) {}
-    
-  /** Déduit du schéma de quelle sorte de collection il s'agit.
-   * @param array<mixed> $array - le schéma
-   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
-   */
-  static function skind2(array $array, int $debug): string {
-    if ($debug) {
-      echo '<pre>array='; print_r($array); echo "</pre>\n";
-    }
-    switch ($type = $array['type']) {
-      case 'object': {
-        $patProps = $array['patternProperties'];
-        $prop = $patProps[array_keys($patProps)[0]];
-        if (isset($prop['type'])) {
-          $type = $prop['type'];
-        }
-        elseif (array_keys($prop) == ['oneOf']) {
-          //echo "OneOf<br>\n";
-          $oneOf = $prop['oneOf'];
-          $type = $oneOf[0]['type'];
-        }
-        //echo "type=$type<br>\n";
-        switch ($type ?? null) {
-          case 'object': return 'dictOfTuples';
-          case 'string': return 'dictOfValues';
-          default: {
-            echo "<pre>prop="; print_r($prop);
-            throw new \Exception("type ".($type ?? 'inconnu')." non prévu");
-          }
-        }
-      }
-      case 'array': {
-        switch ($type = $array['items']['type'] ?? null) {
-          case null: {
-            if (isset($array['items']['oneOf'])) {
-              switch ($type2 = $array['items']['oneOf'][0]['type'] ?? null) {
-                case null: {
-                  //echo "<pre>this->array['items']['oneOf'][0]['type'] == null\nthis->array=";
-                  //print_r($this->array);
-                  //echo "</pre>\n";
-                  //return "this->array['items']['oneOf'][0]['type'] == null";
-                  throw new \Exception("array['items']['oneOf'][0]['type'] == null");
-                }
-                case 'object': return 'listOfTuples';
-                case 'array': return 'listOfValues';
-                default: throw new \Exception("array['items']['oneOf'][0]['type'] == '$type2' non prévu");
-              }
-            }
-            elseif (($array['items'] ?? null) == []) {
-              /*echo "<pre>this->array['items'] == []\nthis->array=";
-              print_r($this->array);
-              echo "</pre>\n";
-              return "this->array['items'] == []";*/
-              return 'listOfTuples'; // je prend par défaut
-            }
-            else {
-              //echo "<pre>this->array['items']['oneOf'] non défini\nthis->array=";
-              //print_r($this->array);
-              //echo "</pre>\n";
-              //return "this->array['items']['oneOf'] non défini";
-              throw new \Exception("array['items']['oneOf'] non défini");
-            }
-          }
-          case 'object': return 'listOfTuples';
-          case 'array': return 'listOfValues';
-          case 'string': return 'listOfValues';
-          default: {
-            //echo ("this->array['items']['type'] == '$type' non prévu");
-            //return "this->array['items']['type'] == '$type' non prévu";
-            throw new \Exception("this->array['items']['type'] == '$type' non prévu");
-          }
-        }
-      }
-      default: {
-        throw new \Exception("Cas non traité sur type=$type");
-      }
-    }
-  }
-
-  /** Debuggage de kind()
-   * @param array<mixed> $array - le schéma
-   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
-   */
-  static function skind(array $array, ?string $name=null, int $debug=0): string {
-    //$debug = ($name == 'InseeCog.v_commune_2025');
-    $kind = self::skind2($array, $debug);
-    if ($debug)
-      echo "SchemaOfCollection::skind($name) -> $kind<br>\n";
-    return $kind;
-  }
-
-  /** skind() appelé comme méthode non statique.
-   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
-   */
-  function kind(?string $name=null): string { return self::skind($this->array, $name); }
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(readonly array $schema, readonly SchemaOfItem $schemaOfItem) {}
   
-  /** Création d'un SchemaOfCollection en fonction sa sorte déduite de son contenu.
-   * @param array<mixed> $array - le schéma
+  /** Remplace dans un schéma les définitions par leur valeur.
+   * @param array<mixed> $array
+   * @param array<string,mixed> $definitions
+   * @return array<mixed> */
+  static function defReplace(array $array, array $definitions=[], bool $first=false): array {
+    if ($first) {
+      echo '<pre>defReplace($array='; print_r($array); echo ")\n";
+    }
+    if (isset($array['definitions'])) {
+      $definitions = array_merge($definitions, $array['definitions']);
+      unset($array['definitions']);
+    }
+    if ($val = $array['$ref'] ?? null) {
+      if (!preg_match('!^#/definitions/(.*)$!', $val, $matches)) {
+        throw new \Exception("'\$ref: $val' non compris");
+      }
+      $defKey = $matches[1];
+      if (!($defVal = $definitions[$defKey] ?? null)) {
+        throw new \Exception("Définition $defKey non trouvée");
+      }
+      $array = $defVal;
+    }
+    $result = [];
+    foreach ($array as $key => $val) {
+      $result[$key] = is_array($val) ? self::defReplace($val, $definitions, false) : $val;
+    }
+    if ($first) {
+      echo '<pre>defReplace returns '; print_r($result); echo "\n";
+    }
+    return $result;
+  }
+  
+  /** Création d'un SchemaOfCollection.
+   * @param array<mixed> $schema - le schéma
    */
-  static function create(array $array): self {
-    return match (self::skind($array)) {
-      'dictOfTuples'=> new SchemaOfDictOfTuples($array),
-      'listOfTuples'=> new SchemaOfListOfTuples($array),
-      'dictOfValues','listOfValues'=> new SchemaOfXXXOfValues($array),
+  static function create(array $schema): self {
+    return match($type = $schema['type'] ?? null) {
+      'object'=> new SchemaOfDict(self::defReplace($schema)),
+      'array' => new SchemaOfList(self::defReplace($schema)),
+      default => throw new \Exception("type = '$type' inconnu"),
     };
   }
+
+  /** Déduit du schéma de quelle sorte de collection il s'agit.
+   * @return 'dictOfTuples'|'dictOfValues'|'listOfTuples'|'listOfValues'
+   */
+  abstract function kind(?string $name=null): string;
   
+  abstract function classes(): string;
+  
+  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
+   * @return array<string, string>
+   */
+  function properties(): array { return $this->schemaOfItem->properties(); }
+
   /** Produit le code Html pour afficher le schéma. */
   function toHtml(): string {
-    $schema = $this->array;
+    $schema = $this->schema;
     unset($schema['title']);
     unset($schema['description']);
     return RecArray::toHtml($schema);
   }
+};
+
+class SchemaOfDict extends SchemaOfCollection {
+  function __construct(array $schema) {
+    if (!isset($schema['patternProperties'])) { // A minima, l'item n'est pas défini
+      $schemaOfItem = SchemaOfItem::create([]);
+    }
+    elseif (count($schema['patternProperties']) <> 1) { // Plusieurs types de clés, cas non prévu
+      throw new \Exception("Plusieurs types de clés");
+    }
+    else {
+      $pp = $schema['patternProperties'];
+      $schemaOfItem = SchemaOfItem::create(array_values($pp)[0]);
+    }
+    parent::__construct($schema, $schemaOfItem);
+  }
+  
+  /** Déduit du schéma de quelle sorte de collection il s'agit.
+   * @return 'dictOfTuples'|'dictOfValues'
+   */
+  function kind(?string $name=null): string { return 'dictOf'.$this->schemaOfItem->kind(); }
+
+  function classes(): string { return 'SchemaOfDict('.$this->schemaOfItem->class().')'; }
+};
+
+class SchemaOfList extends SchemaOfCollection {
+  function __construct(array $schema) {
+    parent::__construct($schema, SchemaOfItem::create($schema['items'] ?? []));
+  }
+  
+  /** Déduit du schéma de quelle sorte de collection il s'agit.
+   * @return 'listOfTuples'|'listOfValues'
+   */
+  function kind(?string $name=null): string { return 'listOf'.$this->schemaOfItem->kind(); }
+
+  function classes(): string { return 'SchemaOfList('.$this->schemaOfItem->class().')'; }
+};
+
+abstract class SchemaOfItem {
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(readonly array $schema) {}
+
+  /** Création d'un SchemaOfItem.
+   * @param array<mixed> $schema - le schéma
+   */
+  static function create(array $schema): self {
+    switch ($schema['type'] ?? null) {
+      case null: {
+        if (!$schema) {
+          return new SchemaOfUndefinedItem([]);
+        }
+        elseif (isset($schema['oneOf'])) {
+          return new SchemaOfOneOfItem($schema);
+        }
+        else {
+          throw new \Exception("schemaOfItem=".json_encode($schema)." non reconnu");
+        }
+      }
+      case 'string': return new SchemaOfAtomicItem($schema);
+      case 'object': return new SchemaOfTupleItem($schema);
+      default: throw new \Exception("schemaOfItem=".json_encode($schema)." non reconnu");
+    }
+  }
+
+  /** Déduit du schéma de quelle sorte d'Item il s'agit.
+   * @return 'Tuples'|'Values'
+   */
+  abstract function kind(): string;
+
+  abstract function class(): string;
 
   /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
    * @return array<string, string>
@@ -378,77 +408,103 @@ abstract class SchemaOfCollection {
   abstract function properties(): array;
 };
 
-/** Schema d'un dictOfTuples. */
-class SchemaOfDictOfTuples extends SchemaOfCollection {
-  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
-   * @return array<string, string>
+class SchemaOfUndefinedItem extends SchemaOfItem {
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(array $schema) { parent::__construct($schema); }
+
+  /** Déduit du schéma de quelle sorte d'Item il s'agit. Dans ce cas c'est arbitrairement 'Tuples'
+   * @return 'Tuples'|'Values'
    */
+  function kind(): string { return 'Tuples'; }
+
+  function class(): string { return 'SchemaOfUndefinedItem'; }
+
+  function properties(): array { return []; }
+};
+
+class SchemaOfAtomicItem extends SchemaOfItem {
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(array $schema) { parent::__construct($schema); }
+
+  /** Déduit du schéma de quelle sorte d'Item il s'agit.
+   * @return 'Tuples'|'Values'
+   */
+  function kind(): string { return 'Values'; }
+
+  function class(): string { return 'SchemaOfAtomicItem'; }
+
+  function properties(): array { return []; }
+};
+
+class SchemaOfTupleItem extends SchemaOfItem {
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(array $schema) { parent::__construct($schema); }
+
+  /** Déduit du schéma de quelle sorte d'Item il s'agit.
+   * @return 'Tuples'|'Values'
+   */
+  function kind(): string { return 'Tuples'; }
+
+  function class(): string { return 'SchemaOfTupleItem'; }
+
   function properties(): array {
-    //echo '<pre>schemaOfDictOfTuples='; print_r($this);
-    $patternProperties = $this->array['patternProperties'];
-    //echo '<pre>patternProperties='; print_r($patternProperties);
-    // Attention, si une propriété est définie dans plusieurs objectTypes, c'est le dernier qui est pris en compte
-    $props = [];
-    foreach ($patternProperties as $objectType) { // chaque type d'objet
-      if (!isset($objectType['properties'])) {
-        throw new \Exception("TO BE IMPLEMENTED"); // Cas où l'objectType n'a pas de champ properties, par ex oneOf
-                                                   // il faudrait mutualiser le code avec SchemaOfListOfTuples
-      }
-      //echo '<pre>$objectType='; print_r($objectType);
-      foreach ($objectType['properties'] as $pname => $prop) {
-        $props[$pname] = SimplifiedType::create($prop);
-      }
-    }
-    return $props;
+    //echo '<pre>'; print_r($this->schema);
+    return array_map(
+      function($prop) {
+        return SimplifiedType::create($prop);
+      },
+      $this->schema['properties'] ?? []
+    );
   }
 };
 
-/** Schema d'un listOfTuples. */
-class SchemaOfListOfTuples extends SchemaOfCollection {
-  /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
-   * @return array<string, string>
+class SchemaOfOneOfItem extends SchemaOfItem {
+  /** @var array<SchemaOfItem> $alternates - les différents types alternatifs */
+  readonly array $alternates;
+  
+  /** @param array<mixed> $schema - le schéma JSON. */
+  function __construct(array $schema) {
+    parent::__construct($schema);
+    $alternates = [];
+    foreach ($schema['oneOf'] as $each) {
+      $alternates[] = SchemaOfItem::create($each);
+    }
+    $this->alternates = $alternates;
+  }
+
+  /** Déduit du schéma de quelle sorte d'Item il s'agit.
+   * @return 'Tuples'|'Values'
    */
+  function kind(): string { return 'Tuples'; }
+
+  function class(): string {
+    return 'SchemaOfOneOfItem('
+      .implode('|', array_map(
+        function($alt) { return $alt->class(); },
+        $this->alternates
+       ))
+      .')';
+  }
+
   function properties(): array {
-    if (!($items = ($this->array['items'] ?? null))) {
-      return [];
-    }
-    $props = [];
-    if (isset($items['properties'])) { // cas std non OneOf
-      foreach ($items['properties'] as $pname => $prop) {
-        $props[$pname] = SimplifiedType::create($prop);
+    //echo '<pre>'; print_r($this->schema);
+    $altProps = null; // le résultat des propriétés des alternatives
+    foreach ($this->alternates as $alt) {
+      $props = $alt->properties(); // les propriétés de l'alternative courante
+      if ($altProps === null) {
+        $altProps = $props;
       }
-      return $props;
-    }
-    elseif (isset($items['oneOf'])) { // oneOf
-      //echo '$items[oneOf]='; print_r($items['oneOf']);
-      foreach ($items['oneOf'] as $case) {
-        foreach ($case['properties'] as $pname => $prop) {
-          //echo '$case[properties]='; print_r([$pname => $prop]);
-          if (!isset($props[$pname]))
-            $props[$pname] = SimplifiedType::create($prop);
+      else {
+        foreach ($props as $pName => $pType) {
+          if (!isset($altProps[$pName]))
+            $altProps[$pName] = $pType;
           else
-            $props[$pname] = SimplifiedType::merge($props[$pname], SimplifiedType::create($prop));
+            $altProps[$pName] = SimplifiedType::merge($altProps[$pName], $pType);
         }
       }
-      return $props;
     }
-    else {
-      // Je considère que les propriétés ne sont pas définies
-      return [];
-    }
+    return $altProps;
   }
-};
-
-/** Schema d'un dictOfValues|listOfValues (peu utilisé). */
-class SchemaOfXXXOfValues extends SchemaOfCollection {
-  /** Retourne la liste des propriétés potentielles
-   * @return array<string, string>
-   */
-  function properties(): array { return []; }
-};
-
-class NoSchema extends SchemaOfCollection {
-  function properties(): array { return []; }
 };
 
 

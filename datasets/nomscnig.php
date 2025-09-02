@@ -684,6 +684,10 @@ EOT,
     'required'=> ['$schema','nomsCnig'],
     'additionalProperties'=> false,
     'properties'=> [
+      '$schema'=> [
+        'description'=> "Le schéma du JdD",
+        'type'=> 'object',
+      ],
       'nomsCnig'=> [
         'title'=> "Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG",
         'description'=> "Cette table transcrit le document approuvé le 10 décembre 2021 (https://cnig.gouv.fr/IMG/pdf/collectivites-territoriales_cnt_10-decembre-2021.pdf.

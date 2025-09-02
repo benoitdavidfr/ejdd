@@ -34,16 +34,16 @@ use Symfony\Component\Yaml\Yaml;
 //use GeoJSON\Feature;
 
 /** Classe abstraite des JdD.
- * Une sous-classe concrète doit définir la méthode getTuples().
+ * Une sous-classe concrète doit définir la méthode getItems().
  * Elle peut par ailleurs redéfinir les méthodes:
  *   - implementedFilters() pour indiquer les filtres pris en compte dans getTuples(),
- *   - getOneTupleByKey() d'accès aux n-uplets sur clé s'il existe un algo. plus performant.
- *   - getTuplesOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
+ *   - getOneItemByKey() d'accès aux n-uplets sur clé s'il existe un algo. plus performant.
+ *   - getItemsOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
  */
 abstract class Dataset {
   /** Registre contenant la liste des JdD sous la forme {dsName} => {className}|null */
   const REGISTRE = [
-    'DatasetEg'=> null,
+    'DebugScripts'=> null,
     'InseeCog'=> null,
     'DeptReg'=> null,
     'NomsCnig'=> null,
@@ -79,7 +79,15 @@ abstract class Dataset {
   readonly array $collections;
   
   /** @param array<mixed> $schema Le schéma JSON du JdD */
-  function __construct(string $dsName, array $schema) {
+  function __construct(string $dsName, array $schema, bool $validate=true) {
+    if ($validate) {
+      if (!self::schemaIsValidS($schema)) {
+        echo "<h2>$dsName</h2>\n";
+        echo "<pre>",Yaml::dump($schema, 9, 2),"</pre>\n";
+        self::displaySchemaErrorsS($schema);
+        //throw new \Exception("Schéma de $dsName invalide");
+      }
+    }
     $this->name = $dsName;
     $this->title = $schema['title'];
     $this->description = $schema['description'];
@@ -181,28 +189,35 @@ abstract class Dataset {
     return $array;
   }
   
-  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD */
-  function schemaIsValid(): bool {
+  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD.
+   * @param array<mixed> $schema - le schéma
+   */
+  static function schemaIsValidS(array $schema): bool {
     // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
     $validator = new Validator;
-    $schema = RecArray::toStdObject($this->schema);
-    $validator->validate($schema, $this->schema['$schema']);
+    $stdObject = RecArray::toStdObject($schema);
+    $validator->validate($stdObject, $schema['$schema']);
     if (!$validator->isValid())
     return false;
     
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
-    $schema = RecArray::toStdObject($this->schema);
+    $stdObject = RecArray::toStdObject($schema);
     $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
-    $validator->validate($schema, $metaSchemaDataset);
+    $validator->validate($stdObject, $metaSchemaDataset);
     return $validator->isValid();
   }
   
-  /** Affiche les erreurs de non conformité du schéma */
-  function displaySchemaErrors(): void {
+  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD. */
+  function schemaIsValid(): bool { return self::schemaIsValidS($this->schema); }
+  
+  /** Affiche les erreurs de non conformité du schéma.
+   * @param array<mixed> $schema - le schéma
+   */
+  static function displaySchemaErrorsS(array $schema): void {
     $validator = new Validator;
-    $data = RecArray::toStdObject($this->schema);
-    $validator->validate($data, $this->schema['$schema']);
+    $data = RecArray::toStdObject($schema);
+    $validator->validate($data, $schema['$schema']);
 
     // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
     if ($validator->isValid()) {
@@ -218,7 +233,7 @@ abstract class Dataset {
 
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
-    $schema = RecArray::toStdObject($this->schema);
+    $schema = RecArray::toStdObject($schema);
     $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
     $validator->validate($schema, $metaSchemaDataset);
     if ($validator->isValid()) {
@@ -232,6 +247,9 @@ abstract class Dataset {
       echo "</pre>\n";
     }
   }
+  
+  /** Affiche les erreurs de non conformité du schéma */
+  function displaySchemaErrors(): void { self::displaySchemaErrorsS($this->schema); }
   
   /** Vérifie la conformité du JdD par rapport à son schéma */
   function isValid(bool $verbose): bool {

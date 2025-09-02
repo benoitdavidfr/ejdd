@@ -211,7 +211,7 @@ properties:
               C: Canton
               N: Canton « fictif » pour communes nouvelles
               V: Canton-Ville (ou pseudo-canton)
-          type: {enum: [C, 'N', V]} 
+          enum: [C, 'N', V]
   v_commune_2025:
     title: Communes, Communes associées, Communes déléguées et arrondissements municipaux
     description: |
@@ -470,8 +470,7 @@ properties:
               COM	Commune
               CPT	Code à 5 chiffres de La Passion-Clipperton
               DIS	District
-          type:
-            enum: [CIR, CDM, COM, CPT, DIS]
+          enum: [CIR, CDM, COM, CPT, DIS]
         COMER:
           description: code COMER
           type: string
@@ -497,7 +496,7 @@ properties:
               1: Actuel
               4: Territoire ayant son propre code officiel géographique
           type: string
-          enum: [1, 4]
+          enum: ['1', '4']
         CRPAY:
           description: '???'
         LIBCOG:

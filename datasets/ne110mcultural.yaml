@@ -56,8 +56,6 @@ $schema:
         type: object
         required: []
         propertiesForGeoJSON: ['sov_a3','admin','adm0_a3','name','name_long','name_fr']
-        additionalProperties: true
-        properties: {}
     ne_110m_admin_0_map_units:
       title: ne_110m Admin 0 – map_units
       description: |
@@ -66,6 +64,4 @@ $schema:
       items:
         type: object
         propertiesForGeoJSON: ['sov_a3','admin','adm0_a3','name','name_long','name_fr']
-        additionalProperties: true
-        properties: {  }
 eof:

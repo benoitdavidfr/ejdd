@@ -1,15 +1,97 @@
 $schema: 'http://json-schema.org/draft-07/schema#'
-title: 'Méta schéma des JdD'
+$id: 'https://dataset.geoapi.fr/dataset.yaml'
+title: Méta schéma des JdD
+description: |
+  Tout schéma fourni à la construction d'un JdD doit être conforme à ce schéma.
+  Ce schéma peut être plus ou moins détaillé. Voir dans la doc de schema.inc.php les niveaux de complétude d'un schéma.
 definitions:
-  collectionDict:
-    description: "Cas d'une collection dictOfTuples ou dictOfValues"
+  itemIsValue:
+    description: type d'item qui est une valeur de type string, l'item a un champ type qui vaut 'string'
+    type: object
+    additionalProperties: false
+    required: [type]
+    properties:
+      type:
+        const: string
+      description:
+        type: string
+  itemIsTuple:
+    description: |
+      type d'item qui est un n-uplet.
+      Seul le type est obligatoire et doit valoir 'object'. Les autres props dont properties ne sont pas obligatoires.
+    type: object
+    additionalProperties: false
+    required: [type]
+    properties:
+      type:
+        const: object
+      description:
+        type: string
+      required:
+        description: liste des champs requis dans le tuple
+        type: array
+        items:
+          type: string
+      additionalProperties:
+        const: false
+      properties:
+        description: liste des champs du tuple, indexés sur leur nom
+        type: object
+        additionalProperties: false
+        patternProperties:
+          '^[a-zA-Z][a-zA-Z0-9_]*$':
+            type: object
+            additionalProperties: false
+            properties:
+              type:
+                type: string
+              description:
+                type: string
+              pattern:
+                type: string
+              enum:
+                type: array
+                items:
+                  type: string
+      propertiesForGeoJSON:
+        description: liste des champs affichés dans la carte
+        type: array
+        items:
+          type: string
+  itemIsTupleOneOf:
+    description: type d'item qui est n-uplet décrit avec plusieurs types possibles
+    type: object
+    additionalProperties: false
+    required: [oneOf]
+    properties:
+      oneOf:
+        type: array
+      description:
+        type: string
+  itemType:
+    description: |
+      définition du type des items: valeur atomique, n-uplet ou n-uplet OneOf.
+    oneOf:
+      - description: l'item est une valeur de type string
+        $ref: '#/definitions/itemIsValue'
+      - description: item = n-uplet
+        $ref: '#/definitions/itemIsTuple'
+      - description: item = n-uplet OneOf
+        $ref: '#/definitions/itemIsTupleOneOf'
+  collectionIsADict:
+    description: |
+      Cas d'une collection dictOfTuples ou dictOfValues.
+      Au niveau 1, title, description et type doivent être définis.
+      La prop. patternProperties n'est pas forcément définie mais si elle l'est alors elle définit le pattern de la clé
+      et si l'item est une valeur ou un n-uplet.
+      Je ne sais pas dire que la valeur doit être un itemType. Je teste une solution !
     type: object
     required:
-          - title
-          - description
-          - type
-          - additionalProperties
-          - patternProperties
+      - title
+      - description
+      - type
+      #- additionalProperties
+      #- patternProperties
     properties:
       title:
         type: string
@@ -21,90 +103,81 @@ definitions:
         const: false
       patternProperties:
         type: object
-  collectionList:
-    description: "Cas d'une section listOfTuples ou listOfValues"
+        patternProperties:
+          '.*':
+            $ref: '#/definitions/itemType'
+  collectionIsAList:
+    description: |
+      Cas d'une collection listOfTuples ou listOfValues.
+      Au niveau 1, title, description et type doivent être définis.
+      La prop. items n'est pas forcément définie mais si elle l'est alors elle définit une valeur ou un n-uplet.
     required:
-          - title
-          - description
-          - type
-          - items
+      - title
+      - description
+      - type
+    additionalProperties: false
     properties:
-          title:
-              type: string
-          description:
-              type: string
-          type:
-              const: array
-  collection:
+      title:
+        description: 
+        type: string
+      description:
+        type: string
+      type:
+        const: array
+      items:
+        $ref: '#/definitions/itemType'
+  collectionType:
     oneOf:
-      - $ref: '#/definitions/collectionDict'
-      - $ref: '#/definitions/collectionList'
+      - $ref: '#/definitions/collectionIsADict'
+      - $ref: '#/definitions/collectionIsAList'
 type: object
 required:
-    - $schema
-    - type
-    - required
-    - additionalProperties
-    - properties
+  - $schema
+  - title
+  - description
+  - type
+  - required
+  - additionalProperties
+  - properties
 properties:
   $schema:
-    description: 'Le méta-schéma du schéma'
+    description: Le méta-schéma du schéma
     const: 'http://json-schema.org/draft-07/schema#'
   title:
-      description: 'Titre du JdD'
-      type: string
+    description: Titre du JdD
+    type: string
   description:
-      description: 'Description du JdD'
-      type: string
+    description: Description du JdD
+    type: string
   type:
-      description: 'toujours object'
-      const: object
+    description: toujours object
+    const: object
   required:
-      description: 'Liste des champs obligatoires pour le JdD'
-      type: array
-      items:
-          type: string
+    description: Liste des collections du JdD + le champ $schema
+    type: array
+    items:
+      type: string
   additionalProperties:
-      description: 'toujours false'
-      const: false
+    description: 'toujours false'
+    const: false
   properties:
-      description: 'Les collections du JdD'
-      type: object
-      required:
-          - title
+    description: La définition des collections du JdD, de leur type, et de la prop. $schema
+    type: object
+    additionalProperties: false
+    required:
+      - $schema
+    properties:
+      $schema:
+        type: object
+        required:
           - description
-          - $schema
-      properties:
-          title:
-              type: object
-              required:
-                  - description
-                  - type
-              properties:
-                  description:
-                      type: string
-                  type:
-                      const: string
+          - type
+        properties:
           description:
-              type: object
-              required:
-                  - description
-                  - type
-              properties:
-                  description:
-                      type: string
-                  type:
-                      const: string
-          $schema:
-              type: object
-              required:
-                  - description
-                  - type
-              properties:
-                  description:
-                      type: string
-                  type:
-                      const: object
-      additionalProperties:
-          $ref: '#/definitions/collection'
+            type: string
+          type:
+            const: object
+    patternProperties:
+      '^[a-zA-Z]+':
+        $ref: '#/definitions/collectionType'
 eof:

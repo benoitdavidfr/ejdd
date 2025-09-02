@@ -62,7 +62,7 @@ parameters:
     - select.php
     - onlinecoll.php
     - query.php
-    - datasets/dataseteg.php
+    - datasets/debugscripts.php
     - datasets/inseecog.php
     - datasets/deptreg.php
     - datasets/nomscnig.php

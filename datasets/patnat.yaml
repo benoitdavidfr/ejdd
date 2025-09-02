@@ -33,15 +33,18 @@ description: |
   patrinat_zps:zps	Patrinat __ ZPS
 
 schemaOfExtract:
+  $schema: 'http://json-schema.org/draft-07/schema#'
   title: Couches géographiques publiées par Patnat
   description: |
     Couches géographiques publiées par Patnat (MNHN/OFB)
   type: object
+  required: [$schema]
+  additionalProperties: false
   properties:
     $schema:
       description: La propriété schéma
-      type: array
-        
+      type: object
+
 collections:
   parc_national:
     source: wfs-fr-ign-gpf.patrinat_pn:parc_national
@@ -51,6 +54,7 @@ collections:
       type: array
       items:
         type: object
+        additionalProperties: false
         properties:
           id_local:
           nom_site:

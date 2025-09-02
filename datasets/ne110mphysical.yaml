@@ -34,7 +34,7 @@ $schema:
     La signification des différentes couches et de leurs attributs n'est pas simple.
   type: object
   required: ['$schema', 'ne_110m_coastline', 'ne_110m_wgs84_bounding_box']
-  additionalProperties: true
+  additionalProperties: false
   properties:
     $schema:
       description: Schéma JSON du jeu de données

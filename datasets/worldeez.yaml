@@ -14,7 +14,6 @@ properties:
     type: 'array'
     items:
       type: object
-      properties:
   eez_v11:
     title: "Zone Economique Exclusive"
     description: "Zone Economique Exclusive"

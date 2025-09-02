@@ -53,7 +53,7 @@ $schema:
     ne_50m_admin_0_boundary_lines_land:
       title: ne_50m Country boundaries on land and offshore
       description: |
-        Natural Earth shows de facto boundaries by default according to who controls the territory, versus de jure. Adjusted to taste which boundaries are shown, hidden, and how they are rendered using the fclass_* properties paired with the POV worldview polygons above.'
+        Natural Earth shows de facto boundaries by default according to who controls the territory, versus de jure. Adjusted to taste which boundaries are shown, hidden, and how they are rendered using the fclass_* properties paired with the POV worldview polygons above.
       type: array
       items:
         type: object
@@ -105,8 +105,6 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {}
     ne_50m_admin_0_map_units:
       title: ne_50m Admin 0 – map_units
       description: |
@@ -146,8 +144,6 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {  }
     ne_50m_admin_0_map_subunits:
       title: ne_50m Admin 0 – map_subunits
       description: |
@@ -187,6 +183,4 @@ $schema:
           - region_un
           - subregion
           - name_fr
-        additionalProperties: true
-        properties: {  }
 eof:

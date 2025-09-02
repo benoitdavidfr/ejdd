@@ -1,0 +1,352 @@
+$schema: 'http://json-schema.org/draft-07/schema#'
+title: "Admin Express COG Carto petite échelle 2025 de l'IGN"
+description: |
+  Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartient à la gemme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
+  Il contient les classes d'objets suivantes:
+    - ARRONDISSEMENT
+    - ARRONDISSEMENT_MUNICIPAL
+    - CANTON
+    - CHEFLIEU_ARRONDISSEMENT_MUNICIPAL
+    - CHEFLIEU_COMMUNE
+    - CHEFLIEU_COMMUNE_ASSOCIEE_OU_DELEGUEE
+    - COLLECTIVITE_TERRITORIALE
+    - COMMUNE
+    - COMMUNE_ASSOCIEE_OU_DELEGUEE
+    - DEPARTEMENT
+    - EPCI
+    - REGION
+  La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
+  Le produit ADMIN EXPRESS COG PE est de plus conforme au code officiel géographique publié chaque année par l’INSEE et est destiné à des usages statistiques.
+  Les champs ID issus du format SHP sont convertis en ID GeoJSON.
+definitions:
+  GJSPolygon:
+    description: "Géométrie GeoJSON Polygon ou MultiPolygon augmentée d'un bbox"
+    type: object
+    properties:
+      type:
+        description: 'Type de géométrie'
+        enum: [MultiPolygon, Polygon]
+      bbox:
+        description: 'BBox des coordonnées comme liste de 4 nombres'
+        type: array
+        items: number
+      coordinates:
+        description: Coordonnées
+        type: array
+  GJSPoint:
+    description: "Géométrie GeoJSON Point augmentée d'un bbox"
+    type: object
+    properties:
+      type:
+        description: 'Type de géométrie'
+        const: Point
+      bbox:
+        description: 'BBox des coordonnées comme liste de 4 nombres'
+        type: array
+        items: number
+      coordinates:
+        description: Coordonnées
+        type: array
+    
+type: object
+required:
+  - $schema
+  - region
+  - departement
+  - epci
+additionalProperties: false
+properties:
+  $schema:
+    description: 'Schéma JSON du jeu de données'
+    type: object
+  region:
+    title: Région
+    description: 'Région indexée sur le champ ID'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - nom_m
+          - nom
+          - insee_reg
+          - geometry
+        additionalProperties: false
+        properties:
+          nom_m:
+            description: 'nom en majuscules'
+            type: string
+          nom:
+            description: nom
+            type: string
+          insee_reg:
+            description: 'code INSEE de la région'
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  departement:
+    title: Département
+    description: 'Département indexé sur le champ ID'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - nom_m
+          - nom
+          - insee_dep
+          - insee_reg
+          - geometry
+        properties:
+          nom_m:
+            description: 'nom en majuscules'
+            type: string
+          nom:
+            description: nom
+            type: string
+          insee_dep:
+            description: 'code INSEE du département'
+            type: string
+          insee_reg:
+            description: 'code INSEE de la région à laquelle appartient le département'
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  epci:
+    title: EPCI
+    description: 'Etablissement Public de Coopération Intercommunale, indexé sur le champ ID'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - code_siren
+          - nom
+          - nature
+          - geometry
+        additionalProperties: false
+        properties:
+          code_siren:
+            description: 'code SIREN'
+            type: string
+          nom:
+            description: nom
+            type: string
+          nature:
+            description: nature
+            enum:
+              - "Communauté d'agglomération"
+              - 'Communauté de communes'
+              - 'Etablissement public territorial'
+              - Métropole
+              - 'Communauté urbaine'
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  arrondissement:
+    title: Arrondissement
+    description: 'Arrondissement, indexé sur le champ ID'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - nom_m
+          - nom
+          - insee_arr
+          - insee_dep
+          - insee_reg
+          - geometry
+        properties:
+          nom_m:
+            description: 'nom en majuscules'
+            type: string
+          nom:
+            description: nom
+            type: string
+          insee_arr:
+            description: "code INSEE de l'arrondissement"
+            type: string
+          insee_dep:
+            description: 'code INSEE du département'
+            type: string
+          insee_reg:
+            description: 'code INSEE de la région à laquelle appartient le département'
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  canton:
+    title: Canton
+    description: 'Canton, indexé sur le champ ID'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - insee_can
+          - insee_dep
+          - insee_reg
+          - geometry
+        properties:
+          insee_can:
+            description: 'code INSEE du Canton'
+            type: string
+          insee_dep:
+            description: 'code INSEE du département'
+            type: string
+          insee_reg:
+            description: 'code INSEE de la région à laquelle appartient le département'
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  commune:
+    title: Commune
+    description: Commune
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        required:
+          - nom
+          - nom_m
+          - insee_com
+          - statut
+          - population
+          - insee_can
+          - insee_arr
+          - insee_dep
+          - insee_reg
+          - siren_epci
+          - geometry
+        additionalProperties: false
+        properties:
+          nom:
+            description: 'nom en minuscules'
+            type: string
+          nom_m:
+            description: 'nom en majuscules'
+            type: string
+          insee_com:
+            description: 'code Insee de la commune'
+            type: string
+          statut:
+            description: 'statut de la commune'
+            enum:
+              - 'Commune simple'
+          population:
+            description: "population en nombre d'habitants"
+            type: integer
+          insee_can:
+            description: 'code Insee du canton ?? auquel la commune appartient'
+            type: string
+          insee_arr:
+            description: "code Insee de l'arrondissement auquel la commune appartient"
+            type: string
+          insee_dep:
+            description: 'code Insee du département auquel la commune appartient'
+            type: string
+          insee_reg:
+            description: 'code Insee de la région à laquelle la commune appartient'
+            type: string
+          siren_epci:
+            description: "code Siren de l'EPCI auquel la commune appartient"
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  chflieu_commune:
+    title: 'Chef-lieu de commmune'
+    description: 'Chef-lieu de commmune'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+        properties:
+          nom:
+            description: nom
+            type: string
+          id_com:
+            description: 'id de la commune'
+            type: string
+          insee_com:
+            description: 'code INSEE du Canton'
+            type: string
+          geometry:
+            $ref: '#/definitions/GJSPoint'
+  commune_associee_ou_deleguee:
+    title: 'Commune associée ou déléguée'
+    description: 'Commune associée ou déléguée'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '.*':
+        type: object
+        required:
+          - nom
+          - nom_m
+          - insee_cad
+          - insee_com
+          - nature
+          - population
+          - geometry
+        additionalProperties: false
+        properties:
+          nom:
+            description: 'nom en minuscules'
+            type: string
+          nom_m:
+            description: 'nom en majuscules'
+            type: string
+          insee_cad:
+            description: 'code Insee de la commune associée ou déléguée'
+            type: string
+          insee_com:
+            description: 'code Insee de la commune'
+            type: string
+          nature:
+            description: nature
+            enum:
+              - COMD
+              - COMA
+          population:
+            description: "population en nombre d'habitants"
+            type: integer
+          geometry:
+            $ref: '#/definitions/GJSPolygon'
+  chflieu_commune_associee_ou_deleguee:
+    title: 'Chef-lieu de ommune associée ou déléguée'
+    description: 'Chef-lieu de ommune associée ou déléguée'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+  arrondissement_municipal:
+    title: 'Arrondissement municipal'
+    description: 'Arrondissement municipal'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+  chflieu_arrondissement_municipal:
+    title: "Chef-lieu d'arrondissement municipal"
+    description: "Chef-lieu d'arrondissement municipal"
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object
+  collectivite_territoriale:
+    title: 'Collectivités territoriales ayant les compétences départementales'
+    description: 'Collectivités territoriales ayant les compétences départementales'
+    type: object
+    additionalProperties: false
+    patternProperties:
+      '':
+        type: object

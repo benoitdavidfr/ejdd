@@ -1,7 +1,8 @@
 title: Schéma JSON des feuilles de styles utilisées par Styler
+$id: 'https://dataset.geoapi.fr/styler.yaml'
 $schema: 'http://json-schema.org/draft-07/schema#'
 type: object
-required: [title, description,title, description,$schema,themes]
+required: [title, description,titleOfDataset, descriptionOfDataset,$schema,themes]
 additionalProperties: false
 properties:
   title: {description: titre de la feuille de style, type: string}
@@ -18,7 +19,7 @@ properties:
     patternProperties:
       '^[-A-Za-z0-9_]+$':
         description: |
-          Un thème associe à des collections de JdD un style ; de plus un JdD n'est valide que pour une certaine plage de zoom.
+          Un thème associe un style à des collections de JdD ; de plus un JdD n'est valide que pour une certaine plage de zoom.
         type: object
         additionalProperties: false
         properties:

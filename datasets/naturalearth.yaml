@@ -2,11 +2,11 @@ title: Feuille de style NaturaEarth
 description: |
   Cette feuille de style est conçue pour être utilisée par styler.php.
   Elle définit les éléments de style pour NaturalEarth.
-  naturalEarth:
+  Les niveaux Leaflet d'affichage sont les suivants:
     110m: 2
     50m: 3-4
     10m: 5-8
-    1m: 9
+    1m: 9 (pas dispo dans NaturalEarth)
 titleOfDataset: Natural Earth stylée
 descriptionOfDataset: |
   Ce jeu de données est le résultat de l'application de la feuille de styles NaturalEarth sur les 6 JdD:
@@ -16,7 +16,7 @@ descriptionOfDataset: |
     - NE50mCultural
     - NE10mPhysical
     - NE10mCultural
-$schema: 'https://dataset.geoapi.fr/styler.yaml'                        
+$schema: 'https://dataset.geoapi.fr/styler.yaml'
 themes:
   coastlinesAndBoundaries:
     title: Les limites côtières et les limites de pays

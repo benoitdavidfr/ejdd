@@ -181,7 +181,7 @@ class CollectionOfDs extends Collection {
     parent::__construct($this->schema->kind("$dsName.$name"));
   }
   
-  function description(): string { return $this->schema->array['description']; }
+  function description(): string { return $this->schema->schema['description']; }
   
   /** Génère un identifiant de la collection, par exemple pour être passé en paramètre $_GET */
   function id(): string { return $this->dsName.'.'.$this->name; }
@@ -222,7 +222,7 @@ class CollectionOfDs extends Collection {
   function display(int $skip=0): void {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
-    echo str_replace("\n", "<br>\n", $this->schema->array['description']);
+    echo str_replace("\n", "<br>\n", $this->schema->schema['description']);
 
     if ($this->properties()) {
       echo "<h3>Propriétés</h3>\n";
@@ -241,6 +241,7 @@ class CollectionOfDs extends Collection {
   
   /** Vérifie que la collection est conforme à son schéma */
   function isValid(bool $verbose): bool {
+    $verbose = true;
     $t0 = microtime(true);
     $nbTuples = 0;
     $kind = $this->schema->kind();
@@ -251,9 +252,10 @@ class CollectionOfDs extends Collection {
         'listOfTuples', 'listOfValues' => [$item],
         default => throw new \Exception("kind $kind non traité"),
       };
+      $data[$key]['geometry'] = '';
       $data = RecArray::toStdObject($tuple);
-      //echo "<pre>appel de Validator::validate avec data=";print_r($data); echo "et schema="; print_r($this->schema->array);
-      $validator->validate($data, $this->schema->array);
+      //echo "<pre>appel de Validator::validate avec data=";print_r($data); echo "et schema="; print_r($this->schema->schema);
+      $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid())
         return false;
       $nbTuples++;
@@ -280,7 +282,7 @@ class CollectionOfDs extends Collection {
         default => throw new \Exception("kind $kind non traité"),
       };
       $data = RecArray::toStdObject($data);
-      $validator->validate($data, $this->schema->array);
+      $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid()) {
         foreach ($validator->getErrors() as $error) {
           $error['property'] = $this->name.".[$key].".substr($error['property'], 4);
