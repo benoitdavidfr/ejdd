@@ -241,7 +241,7 @@ class CollectionOfDs extends Collection {
   
   /** Vérifie que la collection est conforme à son schéma */
   function isValid(bool $verbose): bool {
-    $verbose = true;
+    //$verbose = true;
     $t0 = microtime(true);
     $nbTuples = 0;
     $kind = $this->schema->kind();
