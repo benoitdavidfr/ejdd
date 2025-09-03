@@ -208,11 +208,8 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f README.md,index.php,geojson.php,dataset.inc.php,collection.inc.php,\
-geojson.inc.php,bbox.php,pos.inc.php,query.php,predicate.inc.php,skipbracket.php,\
-cproduct.php,concatkeys.php,joinf.php,joinp.php,proj.php,select.php,spreadsheetdataset.inc.php,zoomleveL.php,\
-debugscripts.php,inseecog.php,deptreg.php,nomscnig.php,nomsctcnigc.php,pays.php,\
-geodataset.php,mapdataset.php,map.php,styler.php,aecogpe.php,worldeez.php,featureserver.php
+    ../phpDocumentor.phar -f README.md,bbox.php,collection.inc.php,concatkeys.php,cproduct.php,dataset.inc.php,geojson.inc.php,geojson.php,index.php,joinf.php,joinp.php,onlinecoll.php,pos.inc.php,predicate.inc.php,proj.php,query.php,schema.inc.php,select.php,skipbracket.php,testschema.php,zoomlevel.php,\
+datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash

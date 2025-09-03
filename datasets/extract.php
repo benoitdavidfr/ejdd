@@ -12,7 +12,7 @@ use Algebra\RecArray;
 use Symfony\Component\Yaml\Yaml;
 use JsonSchema\Validator;
 
-/** Catégorie de jeux de données définis comme une agrégation de collections d&finies dans d'autres jeux.
+/** Catégorie de jeux de données définis comme une agrégation de collections définies dans d'autres jeux.
  * Permet aussi de définir un schéma sur chacune des collections.
  * Les collections et les schéma sont définis dans un fichier Yaml ayant pour nom celui du jeux de données.
  */

@@ -439,6 +439,7 @@ EOT
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
 
+/** Test de Query. */
 class QueryTest {
   const EXAMPLES = [
     "display"=> "display(InseeCog.v_region_2025)",

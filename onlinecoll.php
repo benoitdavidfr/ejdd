@@ -85,6 +85,7 @@ EOT
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
 
+/** Test de OnLineColl. */
 class OnLineCollTest {
   static function main():void {
     echo "<title>OnLineColl</title>\n";

@@ -176,7 +176,9 @@ class RecArray {
 };
 //RecArray::test(); // Test RecArray 
 
-/* * Génère un type simplifié à partir d'un type d'une propriété défini dans un schéma JSON. */
+/** Génère un type simplifié à partir d'un type d'une propriété défini dans un schéma JSON.
+ * Un type dans un schéma JSON peut être assez complexe. Un type simplifié est défini sur une chaine de caractères.
+ */
 class SimplifiedType {
   /** Crée un type simplifié d'un champ GeoJSON à partir de son type dans le schéma JSON.
    * @param array<mixed> $props - les propriétés selon le formalisme du schéma JSON. */
@@ -264,7 +266,7 @@ class SimplifiedType {
 };
 
 
-/** Le schéma JSON d'une Collection d'un JdD. */
+/** Schéma JSON d'une Collection d'un JdD. */
 abstract class SchemaOfCollection {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(readonly array $schema, readonly SchemaOfItem $schemaOfItem) {}
@@ -333,6 +335,7 @@ abstract class SchemaOfCollection {
   }
 };
 
+/** Schéma JSON d'une collection définie comme un dictionnaire. */
 class SchemaOfDict extends SchemaOfCollection {
   function __construct(array $schema) {
     if (!isset($schema['patternProperties'])) { // A minima, l'item n'est pas défini
@@ -356,6 +359,7 @@ class SchemaOfDict extends SchemaOfCollection {
   function classes(): string { return 'SchemaOfDict('.$this->schemaOfItem->class().')'; }
 };
 
+/** Schéma JSON d'une collection définie comme une liste. */
 class SchemaOfList extends SchemaOfCollection {
   function __construct(array $schema) {
     parent::__construct($schema, SchemaOfItem::create($schema['items'] ?? []));
@@ -369,6 +373,7 @@ class SchemaOfList extends SchemaOfCollection {
   function classes(): string { return 'SchemaOfList('.$this->schemaOfItem->class().')'; }
 };
 
+/** Schéma JSON de l'item de la collection. */
 abstract class SchemaOfItem {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(readonly array $schema) {}
@@ -408,6 +413,7 @@ abstract class SchemaOfItem {
   abstract function properties(): array;
 };
 
+/** Schéma JSON d'un item de collection non défini. */
 class SchemaOfUndefinedItem extends SchemaOfItem {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(array $schema) { parent::__construct($schema); }
@@ -422,6 +428,7 @@ class SchemaOfUndefinedItem extends SchemaOfItem {
   function properties(): array { return []; }
 };
 
+/** Schéma JSON d'un item de collection atomique, cad non n-uplet. */
 class SchemaOfAtomicItem extends SchemaOfItem {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(array $schema) { parent::__construct($schema); }
@@ -436,6 +443,7 @@ class SchemaOfAtomicItem extends SchemaOfItem {
   function properties(): array { return []; }
 };
 
+/** Schéma JSON d'un item de collection n-uplet. */
 class SchemaOfTupleItem extends SchemaOfItem {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(array $schema) { parent::__construct($schema); }
@@ -458,6 +466,7 @@ class SchemaOfTupleItem extends SchemaOfItem {
   }
 };
 
+/** Schéma JSON d'un item de collection oneOf. */
 class SchemaOfOneOfItem extends SchemaOfItem {
   /** @var array<SchemaOfItem> $alternates - les différents types alternatifs */
   readonly array $alternates;
