@@ -33,26 +33,42 @@ definitions:
         items:
           type: string
       additionalProperties:
-        const: false
+        enum: [false, true]
       properties:
         description: liste des champs du tuple, indexés sur leur nom
         type: object
         additionalProperties: false
         patternProperties:
-          '^[a-zA-Z][a-zA-Z0-9_]*$':
-            type: object
-            additionalProperties: false
-            properties:
-              type:
-                type: string
-              description:
-                type: string
-              pattern:
-                type: string
-              enum:
-                type: array
-                items:
-                  type: string
+          '^[a-zA-Zéèàîçôù][-a-zA-Z0-9éèàîçôù_]*$':
+            oneOf:
+              - description: cas d'un champ défini uniquement par son nom
+                type: 'null'
+              - description: cas d'un champ défini
+                type: object
+                additionalProperties: false
+                properties:
+                  type:
+                    type: string
+                  description:
+                    type: string
+                  pattern:
+                    type: string
+                  enum:
+                    type: array
+                    items:
+                      type: string
+                  $ref:
+                    description: Pour les champs dont le type est défini dans les définitions
+                    type: string
+                  additionalProperties:
+                    enum: [true, false]
+                  required:
+                    type: array
+                    items:
+                      type: string
+                  properties:
+                    description: Pour les champs défini par un object, comme par ex. les géométries GeoJSON
+                    type: object
       propertiesForGeoJSON:
         description: liste des champs affichés dans la carte
         type: array

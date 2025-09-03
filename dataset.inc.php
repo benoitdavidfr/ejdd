@@ -79,7 +79,7 @@ abstract class Dataset {
   readonly array $collections;
   
   /** @param array<mixed> $schema Le schéma JSON du JdD */
-  function __construct(string $dsName, array $schema, bool $validate=true) {
+  function __construct(string $dsName, array $schema, bool $validate=false) {
     if ($validate) {
       if (!self::schemaIsValidS($schema)) {
         echo "<h2>$dsName</h2>\n";

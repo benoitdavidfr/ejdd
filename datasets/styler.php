@@ -40,7 +40,7 @@ class Styler extends Dataset {
             'style'=> [
               'description'=> "Style au sens Leaflet",
               'type'=> 'object',
-              'required'=> 'color',
+              'required'=> ['color'],
               'additionalProperties'=> true,
               'properties'=> [
                 'color'=> [

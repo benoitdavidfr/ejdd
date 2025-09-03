@@ -565,8 +565,7 @@ properties:
               COMA: Commune associée
               COMD: Commune déléguée
             éventuellement vide
-          type:
-            enum: [ARM, COM, COMA, COMD, '']
+          enum: [ARM, COM, COMA, COMD, '']
         COM_AV:
           description: code commune avant, éventuellement vide
           type: string
@@ -604,8 +603,7 @@ properties:
               COM: Commune
               COMA: Commune associée
               COMD: Commune déléguée
-          type:
-            enum: [ARM, COM, COMA, COMD]
+          enum: [ARM, COM, COMA, COMD]
         COM_AP:
           description: code commune après
           type: string
@@ -652,8 +650,7 @@ properties:
               COM: Commune
               COMA: Commune associée
               COMD: Commune déléguée
-          type:
-            enum: [ARM, COM, COMA, COMD]
+          enum: [ARM, COM, COMA, COMD]
         COM:
           description: code Insee de l'entité
           type: string

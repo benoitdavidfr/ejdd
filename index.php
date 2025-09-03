@@ -8,19 +8,13 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- définir un mécanisme d'extrait de jeu de donnée
-  - par exemples pour créer
-    - un jeu Patrinat à partir du serveur WFS IGN
-  - idée de faire une catagorie de Dataset Extract
-    - qui se fonde sur un fichier Yaml qui définisse le schéma et les collections d'origine
+- faire une requête WFS sur un rectangle particulier
 - voir comment gérer les géométries dans d'autres systèmes de coordonnées
   - ex: wfs-fr-ign-gpf.patrinat_pn%3Aparc_national
   - une solution pourrait être de faire un opérateu de reprojection
   - une autre serait d'internaliser ce traitement dans FeatureServer pour qu'il produise des géométries en LonLat WGS84
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
-- le type construit dans properties() est-il utilisé, peut-on le supprimer ?
-  - il est utile pour détecter les champs géométriques
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d'un prédicat plus complexe dans JoinP
@@ -52,8 +46,15 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
-1/9/2025:
+3/9/2025:
+  - suite amélioration du schéma dataset.yaml, MapDataset n'est pas conforme au schéma dataset.yaml
+1-2/9/2025:
   - suite amélioration du schéma dataset.yaml
+  - refonte schema.inc.php
+EOT
+],
+'AVANT_SEPT2025'=> [
+<<<'EOT'
 31/8/2025:
   - correction bugs
   - création d'un fichier extractsch.yaml contenant le schéma des fichiers de description des JdD extract
