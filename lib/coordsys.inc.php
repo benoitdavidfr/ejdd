@@ -35,6 +35,8 @@
  *
  * journal: |
  * - 5-10/2/2022:
+ *   - chgt espace de noms et package en CoordSys
+ * - 5-10/2/2022:
  *   - Ajout d'une exception dans les projections WebMercator et WorldMercator lorsque la latitude est < -85 ou > 85
  *   - Transformation des Exception en \SExcept et fourniture d'un code de type string
  *   - Amélioration de la doc
@@ -63,9 +65,9 @@
  *   - ajout de chg pour améliorer l'indépendance de ce module avec geom2d.inc.php
  * - 23/6/2016
  *   - première version
- * @package coordsys
+ * @package CoordSys
  */
-namespace coordsys;
+namespace CoordSys;
 
 $VERSION[basename(__FILE__)] = date(DATE_ATOM, filemtime(__FILE__));
 

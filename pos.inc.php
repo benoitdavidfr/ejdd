@@ -30,22 +30,32 @@ class Pos {
   static function dist(array $pos1, array $pos2): float {
     return abs($pos2[0]-$pos1[0]) + abs($pos2[1]-$pos1[1]);
   }
+
+  /** reprojète une TPos
+   * @param TPos $pos
+   * @return TPos */
+  static function reproj(callable $reprojPos, array $pos): array { return $reprojPos($pos); }
 };
 
 /** Fonction sur les TLPos, définies comme liste de TPos. */
 class LPos {
   /** Vérifie que le paramètre est un TLPos.
-   * @param TLPos $geom
+   * @param TLPos $lpos
    */
-  static function is(mixed $geom): bool {
-    if (!is_array($geom))
+  static function is(mixed $lpos): bool {
+    if (!is_array($lpos))
       return false;
-    foreach ($geom as $pos) {
+    foreach ($lpos as $pos) {
       if (!Pos::is($pos))
         return false;
     }
     return true;
   }
+  
+  /** reprojète une TLPos et la retourne
+   * @param TLPos $lpos
+   * @return TLPos */
+  static function reproj(callable $reprojPos, array $lpos): array { return array_map($reprojPos, $lpos); }
 };
 
 /** Fonction sur les TLLPos, définies comme liste de TLPos. */
@@ -62,6 +72,13 @@ class LLPos {
     }
     return true;
   }
+  
+  /** reprojète une TLLPos et la retourne
+   * @param TLLPos $llpos
+   * @return TLLPos */
+  static function reproj(callable $reprojPos, array $llpos): array {
+    return array_map(function($lpos) use($reprojPos) { return LPos::reproj($reprojPos, $lpos); }, $llpos);
+  }
 };
 
 /** Fonction sur les TLLLPos, définies comme liste de TLLPos. */
@@ -77,6 +94,13 @@ class LLLPos {
         return false;
     }
     return true;
+  }
+
+  /** reprojète une TLLLPos et la retourne
+   * @param TLLLPos $lllpos
+   * @return TLLLPos */
+  static function reproj(callable $reprojPos, array $lllpos): array {
+    return array_map(function($llpos) use($reprojPos) { return LLPos::reproj($reprojPos, $llpos); }, $lllpos);
   }
 };
 

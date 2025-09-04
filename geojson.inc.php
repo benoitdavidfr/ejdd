@@ -24,6 +24,16 @@ class U {
  * Les différentes primitives géométriques héritent de cette classe abstraite.
  */
 abstract class Geometry {
+  /** libellé court des types de géométrie pour affichage. */
+  const SHORT_TYPES = [
+    'Point' => 'SPt',
+    'MultiPoint'=> 'MPt',
+    'LineString'=> 'SLs',
+    'MultiLineString'=> 'MLs',
+    'Polygon'=> 'SPol',
+    'MultiPolygon'=> 'MPol',
+  ];
+
   readonly string $type;
   /** @var TPos|TLPos|TLLPos|TLLLPos $coordinates */
   readonly array $coordinates;
@@ -53,17 +63,30 @@ abstract class Geometry {
   
   /** calcule le BBox à partir des coordonnées. */
   abstract function bbox(): BBox;
+
+  /** Retourne une représentation string de la géométrie. */
+  function toString(BBox $bbox): string {
+    $shortType = self::SHORT_TYPES[$this->type] ?? null;
+    return "{{$shortType}: $bbox}";
+  }
+
+  /** reprojète une géométrie, prend en paramètre une fonction de reprojection d'une position, retourne un objet géométrie */
+  abstract function reproject(callable $reprojPos): self;
 };
 
 /** Point GeoJSON ; coordinates est un TPos. */
 class Point extends Geometry {
   function __construct(array $geom) {
     if (!Pos::is($geom['coordinates']))
-      throw new \Exception("Le type des coordonnées d'un Point doit TPos");
+      throw new \Exception("Le type des coordonnées d'un Point doit être TPos");
     parent::__construct($geom);
   }
 
   function bbox(): BBox { return BBox::fromPos($this->coordinates); }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'Point', 'coordinates'=> $reprojPos($this->coordinates)]);
+  }
 };
 
 /** MultiPoint GeoJSON ; coordinates est un TLPos. */
@@ -75,6 +98,10 @@ class MultiPoint extends Geometry {
   }
 
   function bbox(): BBox { return BBox::fromLPos($this->coordinates); }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'MultiPoint', 'coordinates'=> LPos::reproj($reprojPos, $this->coordinates)]);
+  }
 };
 
 /** Linestring GeoJSON ; coordinates est un TLPos. */
@@ -102,6 +129,10 @@ class LineString extends Geometry {
     //echo "dist=$dist\n";
     return $dist;
   }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'LineString', 'coordinates'=> LPos::reproj($reprojPos, $this->coordinates)]);
+  }
 };
 
 /** MultiLineString GeoJSON ; coordinates est un TLLPos. */
@@ -113,6 +144,10 @@ class MultiLineString extends Geometry {
   }
 
   function bbox(): BBox { return BBox::fromLLPos($this->coordinates); }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'MultiLineString', 'coordinates'=> LLPos::reproj($reprojPos, $this->coordinates)]);
+  }
 };
 
 /** Polygon GeoJSON ; coordinates est un TLLPos. */
@@ -130,6 +165,10 @@ class Polygon extends Geometry {
   function reso(): float {
     $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0]]);
     return $ls->reso();
+  }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'Polygon', 'coordinates'=> LLPos::reproj($reprojPos, $this->coordinates)]);
   }
 };
 
@@ -153,6 +192,10 @@ class MultiPolygon extends Geometry {
     $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0][0]]);
     return $ls->reso();
   }
+  
+  function reproject(callable $reprojPos): self {
+    return new self(['type'=> 'MultiPolygon', 'coordinates'=> LLLPos::reproj($reprojPos, $this->coordinates)]);
+  }
 };
 
 /** Feature GeoJSON.
@@ -161,15 +204,6 @@ class MultiPolygon extends Geometry {
  * Si les propriétés ou la géométrie est absente, le champ correspondant contient null. 
  */
 class Feature {
-  /** libellé court des types de géométrie pour affichage. */
-  const SHORT_TYPES = [
-    'Point' => 'SPt',
-    'MultiPoint'=> 'MPt',
-    'LineString'=> 'SLs',
-    'MultiLineString'=> 'MLs',
-    'Polygon'=> 'SPol',
-    'MultiPolygon'=> 'MPol',
-  ];
   /** ?int|string $id - Eventuellement un identifiant du Feature, sinon null. */
   readonly mixed $id;
   /** @var ?array<mixed> $properties  - les properties GeoJSON */
@@ -203,21 +237,13 @@ class Feature {
   /** Retourne le BBox et s'il n'est pas stocké alors le calcule. Retourne null si aucune géométrie n'est définie. */
   function bbox(): ?BBox { return $this->bbox ?? ($this->geometry ? $this->geometry->bbox() : null); }
   
-  /** Retourne une représentation string de la géométrie. */
-  static function geomToString(?BBox $bbox, ?Geometry $geom): string {
-    if (!$geom)
-      return 'NONE';
-    $shortType = self::SHORT_TYPES[$geom->type] ?? null;
-    return "{{$shortType}: $bbox}";
-  }
-  
   /** Génère un affichage du Feature en éludant les coordonnées de la géométrie. */
   function __toString(): string {
     //var_dump($this);
     return
        (!is_null($this->id) ? json_encode($this->id).'=> ' : '')
       .'{properties:'.json_encode($this->properties, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).', '
-      .'geom:'.self::geomToString($this->bbox(), $this->geometry)
+      .'geom:'.$this->geometry->toString($this->bbox())
       .'}';
   }
 

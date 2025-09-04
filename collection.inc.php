@@ -115,7 +115,7 @@ abstract class Collection {
         elseif ($k == 'geometry') { // affichage particulier d'une géométrie détectée par le nom du champ (A REVOIR)
           $geom = Geometry::create($v);
           $bbox = isset($v['bbox']) ? BBox::from4Coords($v['bbox']) : $geom->bbox();
-          $v = '<pre>'.Feature::geomToString($bbox, $geom).'</pre>';
+          $v = '<pre>'.$geom->toString($bbox).'</pre>';
         }
         elseif (is_array($v))
           $v = '<pre>'.json_encode($v).'</pre>';
@@ -189,8 +189,12 @@ class CollectionOfDs extends Collection {
   /** Refabrique une CollectionOfDs à partir de son id. */
   static function get(string $collId): self {
     if (!preg_match('!^([^.]+)\.(.*)$!', $collId, $matches))
-      throw new \Exception("Erreur, collId '$collId' ne respecte pas le pattern '!^([^.]+)\.(.*)$!'");
-    return Dataset::get($matches[1])->collections[$matches[2]];
+      throw new \Exception("CollId '$collId' ne respecte pas le pattern '!^([^.]+)\.(.*)$!'");
+    if (($ds = Dataset::get($matches[1])) == null)
+      throw new \Exception("Le JdD '$matches[1]' n'existe pas");
+    if (!isset($ds->collections[$matches[2]]))
+      throw new \Exception("La collection '$matches[2]' n'existe pas dans le JdD '$matches[1]'");
+    return $ds->collections[$matches[2]];
   }
   
   /** Les filtres mis en oeuvre sont définis par le JdD. */

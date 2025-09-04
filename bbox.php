@@ -27,9 +27,10 @@
  * @package BBox
  */
 namespace BBox;
-use Pos\Pos;
 
 require_once('pos.inc.php');
+
+use Pos\Pos;
 
 /** Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox. */
 class Pt {
@@ -153,6 +154,10 @@ class BBox {
   /** Génère un array de 4 coordonnées utilisé en GeoJSON.
    * @return array{0: float, 1:float, 2:float, 3:float} */
   function as4Coordinates(): array { return [$this->sw->x, $this->sw->y, $this->ne->x, $this->ne->y]; }
+  
+  /** Génère un array de 4 coordonnées LatLon utilisé par WFS.
+   * @return array{0: float, 1:float, 2:float, 3:float} */
+  function as4CoordsLatLon(): array { return [$this->sw->y, $this->sw->x, $this->ne->y, $this->ne->x]; }
   
   /** Fabrique une BBox à partir d'une Pos.
    * @param TPos $pos

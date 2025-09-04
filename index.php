@@ -8,11 +8,6 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- faire une requête WFS sur un rectangle particulier
-- voir comment gérer les géométries dans d'autres systèmes de coordonnées
-  - ex: wfs-fr-ign-gpf.patrinat_pn%3Aparc_national
-  - une solution pourrait être de faire un opérateu de reprojection
-  - une autre serait d'internaliser ce traitement dans FeatureServer pour qu'il produise des géométries en LonLat WGS84
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -46,9 +41,11 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
-3/9/2025:
-  - suite amélioration du schéma dataset.yaml, MapDataset n'est pas conforme au schéma dataset.yaml
-1-2/9/2025:
+4/9/2025:
+  - améliorations de FeatureServer
+    - prise en compte du filtre bbox dans la requête au serveur WFS
+    - transformation des coordonnées en WGS84 LonLat
+1-3/9/2025:
   - suite amélioration du schéma dataset.yaml
   - refonte schema.inc.php
 EOT
@@ -209,7 +206,8 @@ Lignes de commandes utiles
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,bbox.php,collection.inc.php,concatkeys.php,cproduct.php,dataset.inc.php,geojson.inc.php,geojson.php,index.php,joinf.php,joinp.php,onlinecoll.php,pos.inc.php,predicate.inc.php,proj.php,query.php,schema.inc.php,select.php,skipbracket.php,testschema.php,zoomlevel.php,\
-datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
+datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php,\
+lib/coordsys.inc.php,lib/sexcept.inc.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
