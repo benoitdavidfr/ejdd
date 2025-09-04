@@ -34,8 +34,10 @@
  * Voir ~/html/geovect/coordsys/light.inc.php
  *
  * journal: |
- * - 5-10/2/2022:
+ * - 4/9/2025:
  *   - chgt espace de noms et package en CoordSys
+ *   - amélioration de la doc
+ *   - réécriture des tests
  * - 5-10/2/2022:
  *   - Ajout d'une exception dans les projections WebMercator et WorldMercator lorsque la latitude est < -85 ou > 85
  *   - Transformation des Exception en \SExcept et fourniture d'un code de type string
@@ -74,7 +76,7 @@ $VERSION[basename(__FILE__)] = date(DATE_ATOM, filemtime(__FILE__));
 require_once __DIR__.'/sexcept.inc.php';
 
 /**
- * interface de définition d'un ellipsoide
+ * Interface de définition d'un ellipsoide.
  *
  * La présente interface spécifie comment un ellipsoide doit être défini, à savoir pouvoir restituer les 3 paramètres:
  *    - demi grand axe (semi-major axis) en mètres
@@ -96,7 +98,7 @@ interface iEllipsoid {
 };
 
 /**
- * interface de définition d'un système de coordonnées
+ * Interface de définition d'un système de coordonnées.
  *
  * Un système de coordonnées doit savoir convertir une pos. géographique (longitude, latitude) définie en degrés déc.
  * en coordonnées projetées [X, Y] dans l'espace euclidien, et vice-versa.
@@ -121,7 +123,7 @@ interface iCoordSys {
   static function geo(array $xy, ?string $proj=null): array;
 };
   
-/** définition de l'ellipsoide IAG_GRS_1980 */
+/** Définition de l'ellipsoide IAG_GRS_1980. */
 class IAG_GRS_1980 implements iEllipsoid {
   const PARAMS = [
     'title'=> "Ellipsoide GRS (Geodetic Reference System) 1980 défini par l'IAG (Int. Association of Geodesy)",
@@ -136,7 +138,7 @@ class IAG_GRS_1980 implements iEllipsoid {
   static function e(): float { return sqrt(self::e2()); }
 };
 
-/** définition du système de coordonnées Lambert 93 défini sur l'ellipsoide IAG_GRS_1980 */
+/** Conversion de coordonnées vers et depuis Lambert 93 défini sur l'ellipsoide IAG_GRS_1980 */
 class Lambert93 extends IAG_GRS_1980 implements iCoordSys {
   const c = 11754255.426096; //constante de la projection
   const n = 0.725607765053267; //exposant de la projection
@@ -177,7 +179,7 @@ class Lambert93 extends IAG_GRS_1980 implements iCoordSys {
   }
 };
   
-/** définition du système de coordonnées Web Mercator
+/** Conversion de coordonnées vers et depuis le système Web Mercator.
  *
  * WebMercator est défini sur une sphère ayant comme rayon le demi grand axe de l'ellipsoide IAG_GRS_1980 */
 class WebMercator extends IAG_GRS_1980 implements iCoordSys {
@@ -213,19 +215,19 @@ class WebMercator extends IAG_GRS_1980 implements iCoordSys {
   }
 };
 
-/** définition du système de coordonnées LonLatDd correspondant aux coord. géo. en degrés décimaux dans l'ordre (lon,lat) */
+/** Conversion de coordonnées vers et depuis LonLatDd correspondant aux coord. géo. en degrés décimaux dans l'ordre (lon,lat) */
 class LonLatDd extends IAG_GRS_1980 implements iCoordSys {
   static function proj(array $lonlat, ?string $proj=null): array { return $lonlat; }
   static function geo(array $xy, ?string $proj=null): array { return $xy; }
 };
 
-/** définition du système de coordonnées LatLonDd correspond aux coord. géo. en degrés décimaux dans l'ordre (lat,lon) */
+/** Conversion de coordonnées vers et depuis LatLonDd correspond aux coord. géo. en degrés décimaux dans l'ordre (lat,lon) */
 class LatLonDd extends IAG_GRS_1980 implements iCoordSys {
   static function proj(array $lonlat, ?string $proj=null): array { return [$lonlat[1], $lonlat[0]]; }
   static function geo(array $xy, ?string $proj=null): array { return [$xy[1], $xy[0]]; }
 };
 
-/** définition d'un ellipsoide paramétrable
+/** Définition de divers ellipsoides.
  *
  * La classe porte d'une part les constantes définissant différents ellipsoides et, d'autre part,
  * la définition d'un ellipsoide courant. Par défaut utilisation de l'ellipsoide IAG_GRS_1980.
@@ -284,7 +286,9 @@ class Ellipsoid implements iEllipsoid {
   static function e(): float { return sqrt(self::e2()); }
 };
 
-/** définition de la projection de Mercator et du système de coordonnées WorldMercator défini sur l'ellipsoide IAG_GRS_1980. */
+/** Conversion de coordonnées vers et depuis la projection de Mercator et du système de coordonnées WorldMercator défini sur l'ellipsoide IAG_GRS_1980.
+ * La projection de Mercator peut être définie sur différents ellipsoides.
+ */
 class WorldMercator extends Ellipsoid implements iCoordSys {
   const ErrorBadLat = 'WorldMercator::ErrorBadLat';
   const ErrorNoConvergence = 'WorldMercator::ErrorNoConvergence';
@@ -329,7 +333,7 @@ class WorldMercator extends Ellipsoid implements iCoordSys {
 };
 
 
-/** définition des systèmes de coordonnées UTM zone
+/** Conversion de coordonnées vers et depuis les systèmes de coordonnées UTM zone
  *
  * La projection UTM est définie par zone correspondant à un fuseau de 6 degrés en séparant l’hémisphère Nord du Sud.
  * Soit au total 120 zones (60 pour le Nord et 60 pour le Sud).
@@ -418,7 +422,7 @@ class UTM extends Ellipsoid implements iCoordSys {
 };
 
 
-if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return;
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
 /** Transformation d'une valeur en radians en une chaine en degres sexagesimaux
@@ -471,134 +475,136 @@ function radians2degresSexa(float $r, string $ptcardinal='', float $dr=0): strin
 
 echo "<html><head><meta charset='UTF-8'><title>coordsys</title></head><body><pre>";
 
-if (!isset($_GET['test'])) {
-  echo "<a href='?test=usgs'>Test d'UTM du cas du rapport USGS pp 269-270</a>\n";
-  echo "<a href='?test=ign'>Test sur des points IGN connus dans plusieurs systèmes de coordonnées</a>\n";
-  echo "<a href='?test=merc'>Tests Mercator</a>\n";
-  echo "<a href='?test=lwemerc'>Tests limites WebMercator</a>\n";
-  echo "<a href='?test=lwomerc'>Tests limites WorldMercator</a>\n";
-  die();
-}
-
-elseif ($_GET['test']=='usgs') { // Test d'UTM fondé sur le cas du rapport USGS pp 269-270
-  echo "Example du rapport USGS pp 269-270 utilisant l'Ellipsoide de Clarke 1866\n";
-  Ellipsoid::set('Clarke1866');
-  $pt = [-73.5, 40.5];
-  echo "phi=",radians2degresSexa($pt[1]/180*PI(),'N'),", lambda=", radians2degresSexa($pt[0]/180*PI(),'E'),"\n";
-  $utm = UTM::proj($pt, '18N');
-  echo "UTM: X=$utm[0] / 127106.5, Y=$utm[1] / 4,484,124.4\n";
-  
-  $verif = UTM::geo($utm, '18N');
-  echo "phi=",radians2degresSexa($verif[1]/180*PI(),'N')," / ",radians2degresSexa($pt[1]/180*PI(),'N'),
-       ", lambda=", radians2degresSexa($verif[0]/180*PI(),'E')," / ", radians2degresSexa($pt[0]/180*PI(),'E'),"\n";
-  //die("FIN ligne ".__LINE__);
-  Ellipsoid::set();
-}
-
-elseif ($_GET['test']=='ign') { // vérification des algos sur des points connus dans plusieurs systèmes de coordonnées
-  $refs = [
-    'Paris I (d) Quartier Carnot'=>[
-      'src'=> 'http://geodesie.ign.fr/fiches/pdf/7505601.pdf',
-      'L93'=> [658557.548, 6860084.001],
-      'LatLong'=> [48.839473, 2.435368],
-      'dms'=> ["48°50'22.1016''N", "2°26'07.3236''E"],
-      'WebMercator'=> [271103.889193, 6247667.030696],
-      'UTM-31N'=> [458568.90, 5409764.67],
-    ],
-    'FORT-DE-FRANCE V (c)' =>[
-      'src'=>'http://geodesie.ign.fr/fiches/pdf/9720905.pdf',
-      'UTM'=> ['20N'=> [708544.10, 1616982.70]],
-      'dms'=> ["14° 37' 05.3667''N", "61° 03' 50.0647''W" ],
-    ],
-    'SAINT-DENIS C (a)' =>[
-      'src'=>'http://geodesie.ign.fr/fiches/pdf/97411C.pdf',
-      'UTM'=> ['40S'=> [338599.03, 7690489.04]],
-      'dms'=> ["20° 52' 43.6074'' S", "55° 26' 54.2273'' E" ],
-    ],
-  ];
-
-  foreach ($refs as $name => $ref) {
-    echo "\nCoordonnees Pt Geodesique <a href='$ref[src]'>$name</a>\n";
-    if (isset($ref['L93'])) {
-      $clamb = $ref['L93'];
-      echo "geo ($clamb[0], $clamb[1], L93) ->";
-      $cgeo = Lambert93::geo ($clamb);
-      printf ("phi=%s / %s lambda=%s / %s\n",
-        radians2degresSexa($cgeo[1]/180*PI(),'N', 1/180*PI()/60/60/10000), $ref['dms'][0],
-        radians2degresSexa($cgeo[0]/180*PI(),'E', 1/180*PI()/60/60/10000), $ref['dms'][1]);
-      $cproj = Lambert93::proj($cgeo);
-      printf ("Verification du calcul inverse: %.2f / %.2f , %.2f / %.2f\n\n",
-                $cproj[0], $clamb[0], $cproj[1], $clamb[1]);
-
-      $cwm = WebMercator::proj($cgeo);
-      printf ("Coordonnées en WebMercator: %.2f / %.2f, %.2f / %.2f\n",
-                $cwm[0], $ref['WebMercator'][0], $cwm[1], $ref['WebMercator'][1]);
-  
-  // UTM
-      $zone = UTM::zone($cgeo);
-      echo "\nUTM:\nzone=$zone\n";
-      $cutm = UTM::proj($cgeo, $zone);
-      printf ("Coordonnées en UTM-$zone: %.2f / %.2f, %.2f / %.2f\n",
-        $cutm[0], $ref['UTM-31N'][0], $cutm[1], $ref['UTM-31N'][1]);
-      $verif = UTM::geo($cutm, $zone);
-      echo "Verification du calcul inverse:\n";
-      printf ("phi=%s / %s lambda=%s / %s\n",
-        radians2degresSexa($verif[1]/180*PI(),'N', 1/180*PI()/60/60/10000), $ref['dms'][0],
-        radians2degresSexa($verif[0]/180*PI(),'E', 1/180*PI()/60/60/10000), $ref['dms'][1]);
-    }
-    elseif (isset($ref['UTM'])) {
-      $zone = array_keys($ref['UTM'])[0];
-      $cutm0 = $ref['UTM'][$zone];
-      $cgeo = UTM::geo($cutm0, $zone);
-      printf ("phi=%s / %s lambda=%s / %s\n",
-        radians2degresSexa($cgeo[1]/180*PI(),'N'), $ref['dms'][0],
-        radians2degresSexa($cgeo[0]/180*PI(),'E'), $ref['dms'][1]);
-      $cutm = UTM::proj($cgeo, $zone);
-      printf ("Coordonnées en UTM-%s: %.2f / %.2f, %.2f / %.2f\n", $zone, $cutm[0], $cutm0[0], $cutm[1], $cutm0[1]);
-    }
+switch ($_GET['action'] ?? null) {
+  case null: {
+    echo "<a href='?action=usgs'>Test d'UTM du cas du rapport USGS pp 269-270</a>\n";
+    echo "<a href='?action=ign'>Test sur des points IGN connus dans plusieurs systèmes de coordonnées</a>\n";
+    echo "<a href='?action=merc'>Tests Mercator</a>\n";
+    echo "<a href='?action=lwemerc'>Tests limites WebMercator</a>\n";
+    echo "<a href='?action=lwomerc'>Tests limites WorldMercator</a>\n";
+    break;
   }
-}
-
-elseif ($_GET['test']=='merc') {
-  //echo "proj([-180,0])="; print_r(WorldMercator::proj([-180,0]));
-  //echo "proj([180,0])="; print_r(WorldMercator::proj([180,0]));
-  //echo "proj([0,0])="; print_r(WorldMercator::proj([0,0]));
-  echo "WebMercator::proj([360,0])="; print_r(WebMercator::proj([360,0]));
-  echo "WebMercator::proj([0,80])="; print_r(WebMercator::proj([0,80]));
-  echo "WebMercator::proj([180,WebMercator::MaxLat])="; print_r(WebMercator::proj([180,WebMercator::MaxLat]));
+  case 'usgs': { // Test d'UTM fondé sur le cas du rapport USGS pp 269-270
+    echo "Example du rapport USGS pp 269-270 utilisant l'Ellipsoide de Clarke 1866\n";
+    Ellipsoid::set('Clarke1866');
+    $pt = [-73.5, 40.5];
+    echo "phi=",radians2degresSexa($pt[1]/180*PI(),'N'),", lambda=", radians2degresSexa($pt[0]/180*PI(),'E'),"\n";
+    $utm = UTM::proj($pt, '18N');
+    echo "UTM: X=$utm[0] / 127106.5, Y=$utm[1] / 4,484,124.4\n";
   
-  echo "WorldMercator::proj([360,0])="; print_r(WorldMercator::proj([360,0]));
-  echo "WorldMercator::proj([0,80])="; print_r(WorldMercator::proj([0,80]));
-
-
-  /*bboxDM:
-    SW: '79°00,00''S - 100°00,00''E'
-    NE: '80°00,00''N - 490°00,00''E'
-  */
-  echo "WebMercator::proj([-260,0])="; print_r(WebMercator::proj([-260,0]));
-
-  //echo "proj([0, 90])="; print_r(WorldMercator::proj([0, 90]));
-  
-  echo 'WebMercator::geo([IAG_GRS_1980::a()*pi(), IAG_GRS_1980::a()*pi()])=';
-  print_r(WebMercator::geo([IAG_GRS_1980::a()*pi(), IAG_GRS_1980::a()*pi()]));
-}
-
-elseif ($_GET['test']=='lwemerc') { // Test de valeurs de latitude > 89 ou < -89
-  for ($lat=89; $lat<=90; $lat += 0.1) {
-    echo "lat=$lat -> "; 
-    echo 90-$lat;
-    //print_r(WebMercator::proj([90,$lat])); 
-    print_r(WebMercator::proj([-90,-$lat]));
+    $verif = UTM::geo($utm, '18N');
+    echo "phi=",radians2degresSexa($verif[1]/180*PI(),'N')," / ",radians2degresSexa($pt[1]/180*PI(),'N'),
+         ", lambda=", radians2degresSexa($verif[0]/180*PI(),'E')," / ", radians2degresSexa($pt[0]/180*PI(),'E'),"\n";
+    //die("FIN ligne ".__LINE__);
+    Ellipsoid::set();
+    break;
   }
-  $xy = WebMercator::proj([-90,-90]);
-  print_r($xy);
-  if ($xy[1] == -INF)
-    echo "== -INF\n";
-}
+  case 'ign': { // vérification des algos sur des points connus dans plusieurs systèmes de coordonnées
+    $refs = [
+      'Paris I (d) Quartier Carnot'=>[
+        'src'=> 'http://geodesie.ign.fr/fiches/pdf/7505601.pdf',
+        'L93'=> [658557.548, 6860084.001],
+        'LatLong'=> [48.839473, 2.435368],
+        'dms'=> ["48°50'22.1016''N", "2°26'07.3236''E"],
+        'WebMercator'=> [271103.889193, 6247667.030696],
+        'UTM-31N'=> [458568.90, 5409764.67],
+      ],
+      'FORT-DE-FRANCE V (c)' =>[
+        'src'=>'http://geodesie.ign.fr/fiches/pdf/9720905.pdf',
+        'UTM'=> ['20N'=> [708544.10, 1616982.70]],
+        'dms'=> ["14° 37' 05.3667''N", "61° 03' 50.0647''W" ],
+      ],
+      'SAINT-DENIS C (a)' =>[
+        'src'=>'http://geodesie.ign.fr/fiches/pdf/97411C.pdf',
+        'UTM'=> ['40S'=> [338599.03, 7690489.04]],
+        'dms'=> ["20° 52' 43.6074'' S", "55° 26' 54.2273'' E" ],
+      ],
+    ];
 
-elseif ($_GET['test']=='lwomerc') { // Test de valeurs de latitude > 89 ou < -89
-  $xy = WorldMercator::proj([180, 0]);
-  print_r($xy);
-  $lonlat = WorldMercator::geo([0, $xy[0]]);
-  print_r($lonlat);
+    foreach ($refs as $name => $ref) {
+      echo "\nCoordonnees Pt Geodesique <a href='$ref[src]'>$name</a>\n";
+      if (isset($ref['L93'])) {
+        $clamb = $ref['L93'];
+        echo "geo ($clamb[0], $clamb[1], L93) ->";
+        $cgeo = Lambert93::geo ($clamb);
+        printf ("phi=%s / %s lambda=%s / %s\n",
+          radians2degresSexa($cgeo[1]/180*PI(),'N', 1/180*PI()/60/60/10000), $ref['dms'][0],
+          radians2degresSexa($cgeo[0]/180*PI(),'E', 1/180*PI()/60/60/10000), $ref['dms'][1]);
+        $cproj = Lambert93::proj($cgeo);
+        printf ("Verification du calcul inverse: %.2f / %.2f , %.2f / %.2f\n\n",
+                  $cproj[0], $clamb[0], $cproj[1], $clamb[1]);
+
+        $cwm = WebMercator::proj($cgeo);
+        printf ("Coordonnées en WebMercator: %.2f / %.2f, %.2f / %.2f\n",
+                  $cwm[0], $ref['WebMercator'][0], $cwm[1], $ref['WebMercator'][1]);
+  
+    // UTM
+        $zone = UTM::zone($cgeo);
+        echo "\nUTM:\nzone=$zone\n";
+        $cutm = UTM::proj($cgeo, $zone);
+        printf ("Coordonnées en UTM-$zone: %.2f / %.2f, %.2f / %.2f\n",
+          $cutm[0], $ref['UTM-31N'][0], $cutm[1], $ref['UTM-31N'][1]);
+        $verif = UTM::geo($cutm, $zone);
+        echo "Verification du calcul inverse:\n";
+        printf ("phi=%s / %s lambda=%s / %s\n",
+          radians2degresSexa($verif[1]/180*PI(),'N', 1/180*PI()/60/60/10000), $ref['dms'][0],
+          radians2degresSexa($verif[0]/180*PI(),'E', 1/180*PI()/60/60/10000), $ref['dms'][1]);
+      }
+      elseif (isset($ref['UTM'])) {
+        $zone = array_keys($ref['UTM'])[0];
+        $cutm0 = $ref['UTM'][$zone];
+        $cgeo = UTM::geo($cutm0, $zone);
+        printf ("phi=%s / %s lambda=%s / %s\n",
+          radians2degresSexa($cgeo[1]/180*PI(),'N'), $ref['dms'][0],
+          radians2degresSexa($cgeo[0]/180*PI(),'E'), $ref['dms'][1]);
+        $cutm = UTM::proj($cgeo, $zone);
+        printf ("Coordonnées en UTM-%s: %.2f / %.2f, %.2f / %.2f\n", $zone, $cutm[0], $cutm0[0], $cutm[1], $cutm0[1]);
+      }
+    }
+    break;
+  }
+  case 'merc': {
+    //echo "proj([-180,0])="; print_r(WorldMercator::proj([-180,0]));
+    //echo "proj([180,0])="; print_r(WorldMercator::proj([180,0]));
+    //echo "proj([0,0])="; print_r(WorldMercator::proj([0,0]));
+    echo "WebMercator::proj([360,0])="; print_r(WebMercator::proj([360,0]));
+    echo "WebMercator::proj([0,80])="; print_r(WebMercator::proj([0,80]));
+    echo "WebMercator::proj([180,WebMercator::MaxLat])="; print_r(WebMercator::proj([180,WebMercator::MaxLat]));
+  
+    echo "WorldMercator::proj([360,0])="; print_r(WorldMercator::proj([360,0]));
+    echo "WorldMercator::proj([0,80])="; print_r(WorldMercator::proj([0,80]));
+
+
+    /*bboxDM:
+      SW: '79°00,00''S - 100°00,00''E'
+      NE: '80°00,00''N - 490°00,00''E'
+    */
+    echo "WebMercator::proj([-260,0])="; print_r(WebMercator::proj([-260,0]));
+
+    //echo "proj([0, 90])="; print_r(WorldMercator::proj([0, 90]));
+  
+    echo 'WebMercator::geo([IAG_GRS_1980::a()*pi(), IAG_GRS_1980::a()*pi()])=';
+    print_r(WebMercator::geo([IAG_GRS_1980::a()*pi(), IAG_GRS_1980::a()*pi()]));
+    break;
+  }
+  case 'lwemerc': { // Test de valeurs de latitude > 89 ou < -89
+    for ($lat=89; $lat<=90; $lat += 0.1) {
+      echo "lat=$lat -> "; 
+      echo 90-$lat;
+      //print_r(WebMercator::proj([90,$lat])); 
+      print_r(WebMercator::proj([-90,-$lat]));
+    }
+    $xy = WebMercator::proj([-90,-90]);
+    print_r($xy);
+    if ($xy[1] == -INF)
+      echo "== -INF\n";
+    break;
+  }
+  case 'lwomerc': { // Test de valeurs de latitude > 89 ou < -89
+    $xy = WorldMercator::proj([180, 0]);
+    print_r($xy);
+    $lonlat = WorldMercator::geo([0, $xy[0]]);
+    print_r($lonlat);
+    break;
+  }
 }

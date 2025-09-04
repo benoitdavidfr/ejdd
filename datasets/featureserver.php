@@ -58,7 +58,7 @@ class Cache {
 };
 
 /** Effectue les chgt de syst. de coord. */
-class CRS {
+class Wgs84LonLat {
   /** Fabrique une fonction de conversion en WGS84 LonLat en fonction du code CRS défini comme URN OGC.
    * CRS utilisés dans wfs-fr-ign-gpf:
    *   - EPSG:4326
@@ -71,7 +71,7 @@ class CRS {
    *   - EPSG:5490 = RGAF09 / UTM zone 20N (utilisé dans les Antilles françaises)
    *   - EPSG:3944 = RGF93 v1 / CC44 (utilisé pour le cadastre)
    */
-  static function reproj2Wgs84LonLat(string $crs): callable {
+  static function reproj(string $crs): callable {
     if (!preg_match('!^urn:ogc:def:crs:EPSG::(\d+)$!', $crs, $matches)) {
       throw new \Exception("CRS '$crs' non interprété");
     }
@@ -102,39 +102,16 @@ class CRS {
    * @param array<mixed> $geometry
    * @return array<mixed>
    */
-  static function geom2Wgs84LonLat(string $crs, array $geometry): array {
-    return Geometry::create($geometry)->reproject(self::reproj2Wgs84LonLat($crs))->asArray();
-    /*echo "currentCrs=$currentCrs<br>\n";
-    if (!preg_match('!^urn:ogc:def:crs:EPSG::(\d+)$!', $currentCrs, $matches)) {
-      throw new \Exception("CRS '$currentCrs' non interprété");
-    }
-    $epsg = $matches[1];
-    return match ($epsg) {
-      '4326'=> $geometry,
-      // EPSG:2154 = Lambert93
-      '2154'=> Geometry::create($geometry)->reproject(function ($pos) { return Lambert93::geo($pos); })->asArray(),
-      // EPSG:3857 = WebMercator
-      '3857'=> Geometry::create($geometry)->reproject(function ($pos) { return WebMercator::geo($pos); })->asArray(),
-      // ESG:4471 = RGM04 / UTM zone 38S (utilisé à Mayotte)
-      '4471'=> Geometry::create($geometry)->reproject(function ($pos) { return UTM::geo($pos, '38S'); })->asArray(),
-      // ESG:32620 = WGS 84 / UTM zone 20N (utilisé dans les Antilles)
-      '32620'=> Geometry::create($geometry)->reproject(function ($pos) { return UTM::geo($pos, '20N'); })->asArray(),
-      // EPSG:2972 = RGFG95 / UTM zone 22N (utilisé en Guyane)
-      '2972'=> Geometry::create($geometry)->reproject(function ($pos) { return UTM::geo($pos, '22N'); })->asArray(),
-      // EPSG:2975 = RGR92 / UTM zone 40S (utilisé à La Réunion)
-      '2975'=> Geometry::create($geometry)->reproject(function ($pos) { return UTM::geo($pos, '40S'); })->asArray(),
-      // EPSG:5490 = RGAF09 / UTM zone 20N (utilisé dans les Antilles françaises)
-      '5490'=> Geometry::create($geometry)->reproject(function ($pos) { return UTM::geo($pos, '20N'); })->asArray(),
-      default=> throw new \Exception("EPSG:$epsg non traité"),
-    };*/
+  static function geom(string $crs, array $geometry): array {
+    return Geometry::create($geometry)->reproject(self::reproj($crs))->asArray();
   }
   
   /** Convertit un bbox en $crs en WGS84 LonLat.
    * @param array<float> $bbox
    * @return array<float>
    */
-  static function bbox2Wgs84LonLat(string $crs, array $bbox): array {
-    $reproj = self::reproj2Wgs84LonLat($crs);
+  static function bbox(string $crs, array $bbox): array {
+    $reproj = self::reproj($crs);
     $sw = $reproj([$bbox[0], $bbox[1]]);
     $ne = $reproj([$bbox[2], $bbox[3]]);
     return [$sw[0], $sw[1], $ne[0], $ne[1]];
@@ -307,9 +284,9 @@ class FeatureServer extends Dataset {
         //echo "Aucun résultat retourné<br>\n";
         return;
       }
-      $geometry = CRS::geom2Wgs84LonLat($defaultCRS, $fcoll['features'][0]['geometry']);
+      $geometry = Wgs84LonLat::geom($defaultCRS, $fcoll['features'][0]['geometry']);
       if (isset($fcoll['features'][0]['bbox'])) {
-        $geometry['bbox'] = CRS::bbox2Wgs84LonLat($defaultCRS, $fcoll['features'][0]['bbox']);
+        $geometry['bbox'] = Wgs84LonLat::bbox($defaultCRS, $fcoll['features'][0]['bbox']);
       }
       $tuple = array_merge(
         $fcoll['features'][0]['properties'],

@@ -8,6 +8,8 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
+- tester si on le serveur WFS peut faire lui-meêm la reprojection
+- lire plusieurs features à la fois
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -30,7 +32,7 @@ Actions à réaliser:
 - catalogage des données ?
 - transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
-  - voir pourquoi c'est lent, ca met en cause la méthode
+  - voir pourquoi c'est lent, ca remet en cause la méthode
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
 EOT
