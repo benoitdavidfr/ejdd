@@ -11,10 +11,11 @@ require_once __DIR__.'/geojson.inc.php';
 
 use Dataset\Dataset;
 use Algebra\DsParser;
-use JsonSchema\Validator;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;
+use Symfony\Component\Yaml\Yaml;
+use JsonSchema\Validator;
 
 /** Une Collection est un itérable d'Items, soit exposée par un Dataset, soit issue d'une requête sur des collections.
  * Une collection est capable d'itérer sur ses items, d'indiquer les filtres mis en oeuvre dans cette itération,
@@ -119,8 +120,8 @@ abstract class Collection {
         }
         elseif (is_array($v))
           $v = '<pre>'.json_encode($v).'</pre>';
-        if (strlen($v) > 60)
-          $v = substr($v, 0, 57).'...';
+        if (mb_strlen($v) > 60)
+          $v = mb_substr($v, 0, 57).'...';
         echo "<td>$v</td>";
       }
       echo "</tr>\n";
@@ -200,7 +201,7 @@ class CollectionOfDs extends Collection {
   /** Les filtres mis en oeuvre sont définis par le JdD. */
   function implementedFilters(): array { return Dataset::get($this->dsName)->implementedFilters($this->name); }
   
-  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom}=>{jsonType}].
+  /** Retourne la liste des propriétés potentielles des tuples de la collection sous la forme [{nom} => {simplifiedType}].
    * @return array<string, string>
    */
   function properties(): array { return $this->schema->properties(); }
@@ -227,6 +228,12 @@ class CollectionOfDs extends Collection {
     echo '<h2>',$this->title,"</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->schema['description']);
+    
+    // Prédicat
+    if (in_array('predicate', $this->implementedFilters()))
+      echo Predicate::form();
+    
+    $this->displayItems($skip);
 
     if ($this->properties()) {
       echo "<h3>Propriétés</h3>\n";
@@ -235,16 +242,10 @@ class CollectionOfDs extends Collection {
 
     echo "<h3>Schéma</h3>\n";
     echo $this->schema->toHtml();
-    
-    // Prédicat
-    if (in_array('predicate', $this->implementedFilters()))
-      echo Predicate::form();
-    
-    $this->displayItems($skip);
   }
   
   /** Vérifie que la collection est conforme à son schéma */
-  function isValid(bool $verbose): bool {
+  function isValid(bool $verbose, int $nbreItems=0): bool {
     //$verbose = true;
     $t0 = microtime(true);
     $nbTuples = 0;
@@ -256,15 +257,20 @@ class CollectionOfDs extends Collection {
         'listOfTuples', 'listOfValues' => [$item],
         default => throw new \Exception("kind $kind non traité"),
       };
-      $data[$key]['geometry'] = '';
+      //$data[$key]['geometry'] = '';
       $data = RecArray::toStdObject($tuple);
-      //echo "<pre>appel de Validator::validate avec data=";print_r($data); echo "et schema="; print_r($this->schema->schema);
+      //echo "<pre>appel de Validator::validate avec data=\n",Yaml::dump(['data'=> $tuple], 4, 2),
+      //     "\net schema=\n",Yaml::dump(['$schema'=>$this->schema->schema], 9, 2);
       $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid())
         return false;
       $nbTuples++;
       if (!($nbTuples % 10_000) && $verbose)
         printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
+      if ($nbreItems && ($nbTuples >= $nbreItems)) {
+        //echo "Fin après $nbreItems items<br>\n";
+        break;
+      }
     }
     if ($verbose)
       printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);

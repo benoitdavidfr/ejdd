@@ -29,7 +29,8 @@ definitions:
       bbox:
         description: 'BBox des coordonnées comme liste de 4 nombres'
         type: array
-        items: number
+        items:
+          type: number
       coordinates:
         description: Coordonnées
         type: array
@@ -43,7 +44,8 @@ definitions:
       bbox:
         description: 'BBox des coordonnées comme liste de 4 nombres'
         type: array
-        items: number
+        items:
+          type: number
       coordinates:
         description: Coordonnées
         type: array

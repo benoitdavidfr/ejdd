@@ -8,8 +8,7 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- tester si on le serveur WFS peut faire lui-meêm la reprojection
-- lire plusieurs features à la fois
+- dans FeatureServer lire plusieurs features à la fois
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -43,6 +42,13 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+5/9/2025:
+  - dans FeatureServer
+    - gestion de la projection en WGS84 par le serveur WFS
+    - pagination des requêtes WFS
+    - utilisation de l'id comme key et implém de getOneItemByKey()
+  - ajout de FeatureServerExtract pour sélectionner les FeatureTypes selon le début de leur nom
+  - intégration du serveur WFS du Shom et création de la documentation dans Shom
 4/9/2025:
   - améliorations de FeatureServer
     - prise en compte du filtre bbox dans la requête au serveur WFS
@@ -208,8 +214,7 @@ Lignes de commandes utiles
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,bbox.php,collection.inc.php,concatkeys.php,cproduct.php,dataset.inc.php,geojson.inc.php,geojson.php,index.php,joinf.php,joinp.php,onlinecoll.php,pos.inc.php,predicate.inc.php,proj.php,query.php,schema.inc.php,select.php,skipbracket.php,testschema.php,zoomlevel.php,\
-datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php,\
-lib/coordsys.inc.php,lib/sexcept.inc.php
+datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
@@ -457,6 +462,8 @@ class Application {
           echo "<a href='geojson.php/$_GET[dataset]'>Affiche en GeoJSON les collections du JdD $_GET[dataset]</a><br>\n";
           echo "<a href='?action=validate&dataset=$_GET[dataset]'>",
                 "Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
+          echo "<a href='?action=validate&dataset=$_GET[dataset]&nbreItems=10'>",
+                "Vérifie la conformité d'un extrait du JdD $_GET[dataset] / son schéma</a><br>\n";
           echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
         }
         break;
@@ -490,7 +497,7 @@ class Application {
           $dataset->displaySchemaErrors();
         }
 
-        if ($dataset->isValid(true)) {
+        if ($dataset->isValid(true, $_GET['nbreItems'] ?? 0)) {
           echo "Le JdD est conforme à son schéma.<br>\n";
         }
         else {

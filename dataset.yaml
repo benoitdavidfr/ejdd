@@ -138,9 +138,10 @@ definitions:
         type: string
       description:
         type: string
-      defaultCRS:
-        description: Pour une collection géoréférencée, le système de coordonnées par défaut comme URN OGC
-        type: string
+      # Ttes les coords étant fournies en WGS84 LonLat, la fourniture du defaultCRS est inutile
+      #defaultCRS:
+      #  description: Pour une collection géoréférencée, le système de coordonnées par défaut comme URN OGC
+      #  type: string
       bbox:
         description: Pour une collection géoréférencée, le BBox comme array des 4 coord. géo. lonMin, latMin, lonMax, latMax
         type: array

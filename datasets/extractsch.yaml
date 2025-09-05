@@ -1,5 +1,101 @@
 title: Les fichiers Yaml définissant un JdD extract doivent être conformes à ce schéma
 $schema: 'http://json-schema.org/draft-07/schema#'
+definitions:
+  schemaOfAField:
+    description: définition d'un champ d'un n-uplet
+    oneOf:
+      - description: le champ peut n'être défini que par son nom
+        type: 'null'
+      - description: le champ peut être défini plus en détails
+        type: object
+        additionalProperties: false
+        required: [description, type]
+        properties:
+          description:
+            description: la définition du champ
+            type: string
+          type:
+            description: le type du champ
+            type: string
+          pattern:
+            description: éventuel pattern pour une valeur de type string
+            type: string
+          required:
+            description: sous-champs oblgatoires pour une valeur de type object
+            type: array
+            items:
+              type: string
+          properties:
+            description: définition des sous-champs pour une valeur de type object
+            type: object
+    
+  schemaOfAnItem:
+    description: description des tuples de la collection
+    type: object
+    required: [type]
+    additionalProperties: false
+    properties:
+      type:
+        description: chaque tuple est un object
+        const: object
+      additionalProperties:
+        const: false
+      required:
+        description: liste des champs obligatoires
+        type: array
+        items:
+          type: string
+      properties:
+        description: liste des champs du tuple, non obligatoire
+        type: object
+        additionalProperties: false
+        patternProperties:
+          '^[a-z]+':
+            $ref: '#/definitions/schemaOfAField'
+    
+  schemaOfAListOfItems:
+    type: object
+    required: [title, description, type]
+    additionalProperties: false
+    properties:
+      title:
+        description: nom de la collection
+        type: string
+      description:
+        description: description de la collection
+        type: string
+      type:
+        description: la collection est une liste d'items
+        const: array
+      items:
+        $ref: '#/definitions/schemaOfAnItem'
+  
+  schemaOfADictOfItems:
+    type: object
+    required: [title, description, type]
+    additionalProperties: false
+    properties:
+      title:
+        description: nom de la collection
+        type: string
+      description:
+        description: description de la collection
+        type: string
+      type:
+        description: la collection est un dict d'items
+        const: object
+      additionalProperties:
+        enum: [true, false]
+      patternProperties:
+        type: object
+        patternProperties:
+          '':
+            $ref: '#/definitions/schemaOfAnItem'
+    
+  schemaOfACollection:
+    oneOf:
+      - $ref: '#/definitions/schemaOfAListOfItems'
+      - $ref: '#/definitions/schemaOfADictOfItems'
 type: object
 required: [title, description, schemaOfExtract, collections]
 additionalProperties: false
@@ -38,7 +134,7 @@ properties:
     type: object
     additionalProperties: false
     patternProperties:
-      '^[a-z_]+':
+      '^[a-zA-Z0-9:_]+':
         type: object
         required: [source, $schema]
         additionalProperties: false
@@ -47,49 +143,6 @@ properties:
             description: la collection source sous la forme {datasetName}.{collectionName}
             type: string
           $schema:
-            type: object
-            required: [title, description, type, items]
-            additionalProperties: false
-            properties:
-              title:
-                description: nom de la collection
-                type: string
-              description:
-                description: description de la collection
-                type: string
-              type:
-                description: chaque collection est une liste d'items
-                const: array
-              items:
-                description: description des tuples de la collection
-                type: object
-                required: [type]
-                additionalProperties: false
-                properties:
-                  type:
-                    description: chaque tuple est un object
-                    const: object
-                  additionalProperties:
-                    const: false
-                  properties:
-                    description: liste des champs du tuple, non obligatoire
-                    type: object
-                    additionalProperties: false
-                    patternProperties:
-                      '^[a-z]+':
-                        oneOf:
-                          - description: le champ peut n'être défini que par son nom
-                            type: 'null'
-                          - description: le champ peut être défini plus en détails
-                            type: object
-                            additionalProperties: false
-                            required: [description, type]
-                            properties:
-                              description:
-                                description: la définition du champ
-                                type: string
-                              type:
-                                description: le type du champ
-                                type: string
+            $ref: '#/definitions/schemaOfACollection'
   eof:
     type: null

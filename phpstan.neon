@@ -75,12 +75,13 @@ parameters:
     - datasets/geodataset.php
     - datasets/styler.php
     - datasets/featureserver.php
+    - datasets/featureserverextract.php
     - datasets/extract.php
     - zoomleveL.php
-    - lib/coordsys.inc.php
+    #- lib/coordsys.inc.php
     #- lib/gebox.inc.php
     #- lib/gegeom.inc.php
     #- lib/pos.inc.php
-    - lib/sexcept.inc.php
+    #- lib/sexcept.inc.php
     #- lib/zoom.inc.php
   treatPhpDocTypesAsCertain: false

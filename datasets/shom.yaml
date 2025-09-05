@@ -1,0 +1,845 @@
+title: Documentation des collections exposées sur le serveur WFS du Shom
+description: |
+
+  Il reste à intégrer:
+    
+  lim:
+    Limites maritimes
+    Catégorie 2 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie2_lines_3857
+    Catégorie 3 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie3_lines_3857
+    Catégorie 4 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie4_lines_3857
+    Catégorie 5 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie5_lines_3857
+    Classe B des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classeb_lines_3857
+    Classe C des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classec_polygone_3857
+    Classe D des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classed_polygone_3857
+    Délimitations maritimes : lignes de base droites	DELMAR_BDD_WFS:au_baseline
+    Délimitations maritimes : délimitation établie par un accord entre Etats	DELMAR_BDD_WFS:au_maritimeboundary_agreedmaritimeboundary
+    Délimitations maritimes : limite extérieure de la zone contiguë	DELMAR_BDD_WFS:au_maritimeboundary_contiguouszone
+    Délimitations maritimes : limite extérieure du plateau continental	DELMAR_BDD_WFS:au_maritimeboundary_continentalshelf
+    Délimitations maritimes : limite extérieure de la ZEE	DELMAR_BDD_WFS:au_maritimeboundary_economicexclusivezone
+    Délimitations maritimes : limite d'espace maritime revendiqué par la France sans accord	DELMAR_BDD_WFS:au_maritimeboundary_nonagreedmaritimeboundary
+    Délimitations maritimes : limite extérieure de la mer territoriale	DELMAR_BDD_WFS:au_maritimeboundary_territorialsea
+    Espaces maritimes de souveraineté ou de juridiction : mer territoriale	ESPACES_MARITIMES_BDD_WFS:au_territorial_sea
+    Espaces maritimes de souveraineté ou de juridiction : zone contiguë	ESPACES_MARITIMES_BDD_WFS:au_contiguous_zone
+    Espaces maritimes de souveraineté ou de juridiction : ZEE	ESPACES_MARITIMES_BDD_WFS:au_exclusive_economic_zone
+    Espaces maritimes de souveraineté ou de juridiction : plateau continental	ESPACES_MARITIMES_BDD_WFS:au_continental_shelf
+    Dispositifs de séparation du trafic : Sections de routes en eau profonde	DST_BDD_WFS:dwrtpt
+    Dispositifs de séparation du trafic : Zones de navigation côtière	DST_BDD_WFS:istzne
+    Dispositifs de séparation du trafic : Zones de prudence	DST_BDD_WFS:prcare
+    Dispositifs de séparation du trafic : Lignes d’appel radio	DST_BDD_WFS:rdocal_lne
+    Dispositifs de séparation du trafic : Lignes de séparation du trafic	DST_BDD_WFS:tselne
+    Dispositifs de séparation du trafic : Zones de séparation du trafic	DST_BDD_WFS:tsezne
+    Dispositifs de séparation du trafic : Limites de dispositif de séparation du trafic	DST_BDD_WFS:tssbnd
+    Dispositifs de séparation du trafic : Couloirs de circulation	DST_BDD_WFS:tsslpt
+    Dispositifs de séparation du trafic : Routes à double sens de circulation	DST_BDD_WFS:twrtpt
+    Limites de salure des eaux (linéaire)	LIMITES_SALURE_EAUX_WFS:lse_3857_arc
+    Limites de salure des eaux (ponctuel)	LIMITES_SALURE_EAUX_WFS:lse_3857_point
+    Limites des affaires maritimes (linéaire)	LIMITE_INSCRIPTION_MARITIMES_WFS:lim_3857_arc
+    Limites des affaires maritimes (ponctuel)	LIMITE_INSCRIPTION_MARITIMES_WFS:lim_3857_point
+    Limites transversales de la mer (linéaire)	LIMITES_TRANSVERSALES_MER_WFS:ltm_3857_arc
+    Limites transversales de la mer (ponctuel)	LIMITES_TRANSVERSALES_MER_WFS:ltm_3857_point
+    Limite des 3 milles marins relative à la pêche	LIMITES_PECHE_BDD_WFS:limite_3milles_peche_wgs84_epsg4326
+    Limite intérieure de la bande côtière de pêche (6 M)	LIMITES_PECHE_BDD_WFS:limite_6milles_bande_cotiere_peche_wgs84_epsg4326
+    Limite de pêche en Outre-Mer (100 M)	LIMITES_PECHE_BDD_WFS:limite_100milles_peche_outre_mer_wgs84_epsg4326
+    Limite de la redevance d'archéologie préventive	RAP_BDD_WFS:limite_redevance_archeologie_preventive_wgs84_epsg4326
+    Limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_ligne
+    Emprise maximale de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_polygones
+    Segments fictifs de fermeture de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_fermetureslimar
+    Trait de côte DOM-COM	TCH-LINE_BDD_WLD_WGS84G_WFS:tch_complet_wfs
+    Trait de Côte Haute Résolution - Îles subantarctiques françaises	TCHR_3857_WFS:tchr_kerguelen_3857
+  BDML:
+    Base de données maritimes et littorales
+    Balisage : balises cardinales	BALISAGE_BDD_WFS:bcncar
+    Balisage : balises de danger isolé	BALISAGE_BDD_WFS:bcnisd
+    Balisage : balises latérales	BALISAGE_BDD_WFS:bcnlat
+    Balisage : balises spéciales	BALISAGE_BDD_WFS:bcnspp
+    Balisage : bouées cardinales	BALISAGE_BDD_WFS:boycar
+    Balisage : bouées de changement	BALISAGE_BDD_WFS:boyinb
+    Balisage : bouées de danger isolé	BALISAGE_BDD_WFS:boyisd
+    Balisage : bouées latérales	BALISAGE_BDD_WFS:boylat
+    Balisage : bouées d'eaux saines	BALISAGE_BDD_WFS:boysaw
+    Balisage : bouées spéciales	BALISAGE_BDD_WFS:boyspp
+    Balisage : marques de jour	BALISAGE_BDD_WFS:daymar
+    Balisage : signaux de brume	BALISAGE_BDD_WFS:fogsig
+    Balisage : forts	BALISAGE_BDD_WFS:forstc
+    Balisage : feux	BALISAGE_BDD_WFS:lights
+    Balisage : amers	BALISAGE_BDD_WFS:lndmrk
+    Balisage : dispositifs d'amarrage	BALISAGE_BDD_WFS:morfac
+    Balisage : objets virtuels	BALISAGE_BDD_WFS:newobj
+    Balisage : plateformes en mer	BALISAGE_BDD_WFS:ofsplf
+    Balisage : poteaux et pieux	BALISAGE_BDD_WFS:pilpnt
+    Balisage : pylônes et piles de pont	BALISAGE_BDD_WFS:pylons
+    Balisage : stations radar	BALISAGE_BDD_WFS:radsta
+    Balisage : statios radio, radiophares	BALISAGE_BDD_WFS:rdosta
+    Balisage : balises répondeuses radar	BALISAGE_BDD_WFS:rtpbcn
+    Balisage : réservoirs et silos	BALISAGE_BDD_WFS:siltnk
+    Balisage : stations de signaux de trafic	BALISAGE_BDD_WFS:sistat
+    Balisage : stations de signaux d'avertissements	BALISAGE_BDD_WFS:sistaw
+    Balisage : voyants	BALISAGE_BDD_WFS:topmar
+    Balisage : arbre isolé	BALISAGE_BDD_WFS:vegatn
+    Câbles sous-marins	CABLES_BDD_WFS:cblsub_lv
+    Conduites sous-marines	CABLES_BDD_WFS:pipsol_lv
+    Épaves sous-marines	EPAVES_BDD_WFS:wrecks
+    Obstructions sous-marines	EPAVES_BDD_WFS:obstrn
+    Informations portuaires : poste d'amarrage	INFORMATIONS_PORTUAIRES_BDD_WFS:berths_point
+    Informations portuaires : bâtiment isolé localisant un bureau	INFORMATIONS_PORTUAIRES_BDD_WFS:buisgl_point
+    Informations portuaires : poste de contrôle	INFORMATIONS_PORTUAIRES_BDD_WFS:chkpnt_point
+    Informations portuaires : grue (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:cranes_point
+    Informations portuaires : grue (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:cranes_polygon
+    Informations portuaires : dock flottant	INFORMATIONS_PORTUAIRES_BDD_WFS:flodoc_polygon
+    Informations portuaires : gril de carénage	INFORMATIONS_PORTUAIRES_BDD_WFS:gridrn_polygon
+    Informations portuaires : zone portuaire	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbare_polygon
+    Informations portuaires : fonction du port (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbfac_point
+    Informations portuaires : fonction du port (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbfac_polygon
+    Informations portuaires : navire désarmé	INFORMATIONS_PORTUAIRES_BDD_WFS:hulkes_polygon
+    Informations portuaires : barrage anti-pollution	INFORMATIONS_PORTUAIRES_BDD_WFS:oilbar_line
+    Informations portuaires : lieu d'embarquement du pilote	INFORMATIONS_PORTUAIRES_BDD_WFS:pilbop_point
+    Informations portuaires : station de sauvetage	INFORMATIONS_PORTUAIRES_BDD_WFS:rscsta_point
+    Informations portuaires : installation pour embarcations de plaisance (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:smcfac_point
+    Informations portuaires : installation pour embarcations de plaisance (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:smcfac_polygon
+    Réglementation - navigation : zone de mouillage (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:achare_point
+    Réglementation - navigation : zone de mouillage (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:achare_polygon
+    Réglementation - navigation : poste de mouillage (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:achbrt_point
+    Réglementation - navigation : poste de mouillage (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:achbrt_polygon
+    Réglementation - navigation : zone administrative	REGLEMENTATION_NAVIGATION_BDD_WFS:admare_polygon
+    Réglementation - navigation : zone de câbles sous-marins	REGLEMENTATION_NAVIGATION_BDD_WFS:cblare_polygon
+    Réglementation - navigation : sémaphore, station de garde-côte	REGLEMENTATION_NAVIGATION_BDD_WFS:cgusta_point
+    Réglementation - navigation : zone de transbordement de cargaison	REGLEMENTATION_NAVIGATION_BDD_WFS:ctsare_polygon
+    Réglementation - navigation : marque de distance	REGLEMENTATION_NAVIGATION_BDD_WFS:dismar_point
+    Réglementation - navigation : zone de dépôt	REGLEMENTATION_NAVIGATION_BDD_WFS:dmpgrd_polygon
+    Réglementation - navigation : chenal	REGLEMENTATION_NAVIGATION_BDD_WFS:fairwy_polygon
+    Réglementation - navigation : zone de glace	REGLEMENTATION_NAVIGATION_BDD_WFS:iceare_polygon
+    Réglementation - navigation : anomalie magnétique local (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:locmag_point
+    Réglementation - navigation : anomalie magnétique local (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:locmag_polygon
+    Réglementation - navigation : ferme marine (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:marcul_point
+    Réglementation - navigation : ferme marine (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:marcul_polygon
+    Réglementation - navigation : alignement ou relèvement	REGLEMENTATION_NAVIGATION_BDD_WFS:navlne_line
+    Réglementation - navigation : zone de conduites sous-marines	REGLEMENTATION_NAVIGATION_BDD_WFS:pipare_polygon
+    Réglementation - navigation : voie recommandée	REGLEMENTATION_NAVIGATION_BDD_WFS:rectrc_line
+    Réglementation - navigation : zone de restriction	REGLEMENTATION_NAVIGATION_BDD_WFS:resare_polygon
+    Réglementation - navigation : zone d'amerrissage pour hydravions (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:splare_point
+    Réglementation - navigation : zone d'amerrissage pour hydravions (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:splare_polygon
+    Toponymie marine : points	TOPONYMIE_BDD_WFS:toponymes_points__3857_2013
+    Toponymie marine : centroïde	TOPONYMIE_BDD_WFS:toponymes_centro_3857
+    Zones d'exercices	ZONEX_BDD_WFS:mipare
+  réf:
+    Références Verticales
+    Références Altimétriques Maritimes	RAM_BDD_WLD_WGS84G_WFS:ram_3857
+  Sédimentologie:
+    Carte sédimentaire mondiale	SEDIM_MONDIALE_BDD_4326_WFS:cartesedimmonde_3857
+    Natures des fonds métropole (50 000)	NDF_BDD_WLD_WGS84G_WFS:natures_fond_50000
+    Natures de fond au 150 000	NATURES_FOND_150_BDD_4326_WFS:ndf_150_2016_3857
+    Natures de fond au 500 000	NATURES_FOND_500_BDD_WFS:carte_nf500000_nov2013
+    Répartition des dunes du plateau continental français	DUNES_BDD_WFS:dunes_3857
+  Marée:
+    Types de marée	TYPE_MAREE_BDD_4326_WFS:type_maree
+    Zones de marée	ZONES_MAREE_BDD_4326_WFS:zone_maree_2014_polyline
+    Marnage coefficient 20	MARNAGE_INF_WFS:marnage_inf_poly_mga
+    Marnage coefficient 45	MARNAGE_ME_WFS:marnage_me_poly_mga
+    Marnage coefficient 95	MARNAGE_VE_WFS:marnage_ve_poly_mga
+    Marnage coefficient 120	MARNAGE_SUP_WFS:marnage_sup_poly_mga
+  histo:
+    Données historiques
+    Cartes marines anciennes : échelle inférieure à 30 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_30
+    Cartes marines anciennes : échelle entre 30 000 et 300 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_30_300
+    Cartes marines anciennes : échelle entre 300 000 et 800 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_300_800
+    Cartes marines anciennes : échelle supérieure à 800 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_800
+    Minutes hydrographiques anciennes : échelle inférieure à 30 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_30
+    Minutes hydrographiques anciennes : échelle entre 30 000 et 300 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_30_300
+    Minutes hydrographiques anciennes : échelle entre 300 000 et 800 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_300_800
+    Minutes hydrographiques anciennes : échelle supérieure à 800 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_800
+  obs:
+    Observations côtières
+    Séries temporelles de turbidité ROEC	ROEC_TURBI_3857_WFS:roec_turbi_3857
+
+schemaOfExtract:
+  $schema: 'http://json-schema.org/draft-07/schema#'
+  title: Données diffusées par le Shom sur son serveur WFS documentée
+  description: |
+    La documentation est issue de la page https://services.data.shom.fr/support/fr/geoservices/wfs et de l'étude des données.
+    Il reste à intégrer:
+    
+    lim:
+      Limites maritimes
+      Catégorie 2 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie2_lines_3857
+      Catégorie 3 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie3_lines_3857
+      Catégorie 4 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie4_lines_3857
+      Catégorie 5 de navigation par les navires professionnels	DAM_LIMIT_CAT_NAVIGATION_WFS:categorie5_lines_3857
+      Classe B des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classeb_lines_3857
+      Classe C des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classec_polygone_3857
+      Classe D des zones maritimes	DAM_CLASS_ZONES_MAR_WFS:classed_polygone_3857
+      Délimitations maritimes : lignes de base droites	DELMAR_BDD_WFS:au_baseline
+      Délimitations maritimes : délimitation établie par un accord entre Etats	DELMAR_BDD_WFS:au_maritimeboundary_agreedmaritimeboundary
+      Délimitations maritimes : limite extérieure de la zone contiguë	DELMAR_BDD_WFS:au_maritimeboundary_contiguouszone
+      Délimitations maritimes : limite extérieure du plateau continental	DELMAR_BDD_WFS:au_maritimeboundary_continentalshelf
+      Délimitations maritimes : limite extérieure de la ZEE	DELMAR_BDD_WFS:au_maritimeboundary_economicexclusivezone
+      Délimitations maritimes : limite d'espace maritime revendiqué par la France sans accord	DELMAR_BDD_WFS:au_maritimeboundary_nonagreedmaritimeboundary
+      Délimitations maritimes : limite extérieure de la mer territoriale	DELMAR_BDD_WFS:au_maritimeboundary_territorialsea
+      Espaces maritimes de souveraineté ou de juridiction : mer territoriale	ESPACES_MARITIMES_BDD_WFS:au_territorial_sea
+      Espaces maritimes de souveraineté ou de juridiction : zone contiguë	ESPACES_MARITIMES_BDD_WFS:au_contiguous_zone
+      Espaces maritimes de souveraineté ou de juridiction : ZEE	ESPACES_MARITIMES_BDD_WFS:au_exclusive_economic_zone
+      Espaces maritimes de souveraineté ou de juridiction : plateau continental	ESPACES_MARITIMES_BDD_WFS:au_continental_shelf
+      Dispositifs de séparation du trafic : Sections de routes en eau profonde	DST_BDD_WFS:dwrtpt
+      Dispositifs de séparation du trafic : Zones de navigation côtière	DST_BDD_WFS:istzne
+      Dispositifs de séparation du trafic : Zones de prudence	DST_BDD_WFS:prcare
+      Dispositifs de séparation du trafic : Lignes d’appel radio	DST_BDD_WFS:rdocal_lne
+      Dispositifs de séparation du trafic : Lignes de séparation du trafic	DST_BDD_WFS:tselne
+      Dispositifs de séparation du trafic : Zones de séparation du trafic	DST_BDD_WFS:tsezne
+      Dispositifs de séparation du trafic : Limites de dispositif de séparation du trafic	DST_BDD_WFS:tssbnd
+      Dispositifs de séparation du trafic : Couloirs de circulation	DST_BDD_WFS:tsslpt
+      Dispositifs de séparation du trafic : Routes à double sens de circulation	DST_BDD_WFS:twrtpt
+      Limites de salure des eaux (linéaire)	LIMITES_SALURE_EAUX_WFS:lse_3857_arc
+      Limites de salure des eaux (ponctuel)	LIMITES_SALURE_EAUX_WFS:lse_3857_point
+      Limites des affaires maritimes (linéaire)	LIMITE_INSCRIPTION_MARITIMES_WFS:lim_3857_arc
+      Limites des affaires maritimes (ponctuel)	LIMITE_INSCRIPTION_MARITIMES_WFS:lim_3857_point
+      Limites transversales de la mer (linéaire)	LIMITES_TRANSVERSALES_MER_WFS:ltm_3857_arc
+      Limites transversales de la mer (ponctuel)	LIMITES_TRANSVERSALES_MER_WFS:ltm_3857_point
+      Limite des 3 milles marins relative à la pêche	LIMITES_PECHE_BDD_WFS:limite_3milles_peche_wgs84_epsg4326
+      Limite intérieure de la bande côtière de pêche (6 M)	LIMITES_PECHE_BDD_WFS:limite_6milles_bande_cotiere_peche_wgs84_epsg4326
+      Limite de pêche en Outre-Mer (100 M)	LIMITES_PECHE_BDD_WFS:limite_100milles_peche_outre_mer_wgs84_epsg4326
+      Limite de la redevance d'archéologie préventive	RAP_BDD_WFS:limite_redevance_archeologie_preventive_wgs84_epsg4326
+      Limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_ligne
+      Emprise maximale de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_polygones
+      Segments fictifs de fermeture de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_fermetureslimar
+      Trait de côte DOM-COM	TCH-LINE_BDD_WLD_WGS84G_WFS:tch_complet_wfs
+      Trait de Côte Haute Résolution - Îles subantarctiques françaises	TCHR_3857_WFS:tchr_kerguelen_3857
+    BDML:
+      Base de données maritimes et littorales
+      Balisage : balises cardinales	BALISAGE_BDD_WFS:bcncar
+      Balisage : balises de danger isolé	BALISAGE_BDD_WFS:bcnisd
+      Balisage : balises latérales	BALISAGE_BDD_WFS:bcnlat
+      Balisage : balises spéciales	BALISAGE_BDD_WFS:bcnspp
+      Balisage : bouées cardinales	BALISAGE_BDD_WFS:boycar
+      Balisage : bouées de changement	BALISAGE_BDD_WFS:boyinb
+      Balisage : bouées de danger isolé	BALISAGE_BDD_WFS:boyisd
+      Balisage : bouées latérales	BALISAGE_BDD_WFS:boylat
+      Balisage : bouées d'eaux saines	BALISAGE_BDD_WFS:boysaw
+      Balisage : bouées spéciales	BALISAGE_BDD_WFS:boyspp
+      Balisage : marques de jour	BALISAGE_BDD_WFS:daymar
+      Balisage : signaux de brume	BALISAGE_BDD_WFS:fogsig
+      Balisage : forts	BALISAGE_BDD_WFS:forstc
+      Balisage : feux	BALISAGE_BDD_WFS:lights
+      Balisage : amers	BALISAGE_BDD_WFS:lndmrk
+      Balisage : dispositifs d'amarrage	BALISAGE_BDD_WFS:morfac
+      Balisage : objets virtuels	BALISAGE_BDD_WFS:newobj
+      Balisage : plateformes en mer	BALISAGE_BDD_WFS:ofsplf
+      Balisage : poteaux et pieux	BALISAGE_BDD_WFS:pilpnt
+      Balisage : pylônes et piles de pont	BALISAGE_BDD_WFS:pylons
+      Balisage : stations radar	BALISAGE_BDD_WFS:radsta
+      Balisage : statios radio, radiophares	BALISAGE_BDD_WFS:rdosta
+      Balisage : balises répondeuses radar	BALISAGE_BDD_WFS:rtpbcn
+      Balisage : réservoirs et silos	BALISAGE_BDD_WFS:siltnk
+      Balisage : stations de signaux de trafic	BALISAGE_BDD_WFS:sistat
+      Balisage : stations de signaux d'avertissements	BALISAGE_BDD_WFS:sistaw
+      Balisage : voyants	BALISAGE_BDD_WFS:topmar
+      Balisage : arbre isolé	BALISAGE_BDD_WFS:vegatn
+      Câbles sous-marins	CABLES_BDD_WFS:cblsub_lv
+      Conduites sous-marines	CABLES_BDD_WFS:pipsol_lv
+      Épaves sous-marines	EPAVES_BDD_WFS:wrecks
+      Obstructions sous-marines	EPAVES_BDD_WFS:obstrn
+      Informations portuaires : poste d'amarrage	INFORMATIONS_PORTUAIRES_BDD_WFS:berths_point
+      Informations portuaires : bâtiment isolé localisant un bureau	INFORMATIONS_PORTUAIRES_BDD_WFS:buisgl_point
+      Informations portuaires : poste de contrôle	INFORMATIONS_PORTUAIRES_BDD_WFS:chkpnt_point
+      Informations portuaires : grue (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:cranes_point
+      Informations portuaires : grue (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:cranes_polygon
+      Informations portuaires : dock flottant	INFORMATIONS_PORTUAIRES_BDD_WFS:flodoc_polygon
+      Informations portuaires : gril de carénage	INFORMATIONS_PORTUAIRES_BDD_WFS:gridrn_polygon
+      Informations portuaires : zone portuaire	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbare_polygon
+      Informations portuaires : fonction du port (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbfac_point
+      Informations portuaires : fonction du port (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:hrbfac_polygon
+      Informations portuaires : navire désarmé	INFORMATIONS_PORTUAIRES_BDD_WFS:hulkes_polygon
+      Informations portuaires : barrage anti-pollution	INFORMATIONS_PORTUAIRES_BDD_WFS:oilbar_line
+      Informations portuaires : lieu d'embarquement du pilote	INFORMATIONS_PORTUAIRES_BDD_WFS:pilbop_point
+      Informations portuaires : station de sauvetage	INFORMATIONS_PORTUAIRES_BDD_WFS:rscsta_point
+      Informations portuaires : installation pour embarcations de plaisance (ponctuel)	INFORMATIONS_PORTUAIRES_BDD_WFS:smcfac_point
+      Informations portuaires : installation pour embarcations de plaisance (surfacique)	INFORMATIONS_PORTUAIRES_BDD_WFS:smcfac_polygon
+      Réglementation - navigation : zone de mouillage (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:achare_point
+      Réglementation - navigation : zone de mouillage (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:achare_polygon
+      Réglementation - navigation : poste de mouillage (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:achbrt_point
+      Réglementation - navigation : poste de mouillage (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:achbrt_polygon
+      Réglementation - navigation : zone administrative	REGLEMENTATION_NAVIGATION_BDD_WFS:admare_polygon
+      Réglementation - navigation : zone de câbles sous-marins	REGLEMENTATION_NAVIGATION_BDD_WFS:cblare_polygon
+      Réglementation - navigation : sémaphore, station de garde-côte	REGLEMENTATION_NAVIGATION_BDD_WFS:cgusta_point
+      Réglementation - navigation : zone de transbordement de cargaison	REGLEMENTATION_NAVIGATION_BDD_WFS:ctsare_polygon
+      Réglementation - navigation : marque de distance	REGLEMENTATION_NAVIGATION_BDD_WFS:dismar_point
+      Réglementation - navigation : zone de dépôt	REGLEMENTATION_NAVIGATION_BDD_WFS:dmpgrd_polygon
+      Réglementation - navigation : chenal	REGLEMENTATION_NAVIGATION_BDD_WFS:fairwy_polygon
+      Réglementation - navigation : zone de glace	REGLEMENTATION_NAVIGATION_BDD_WFS:iceare_polygon
+      Réglementation - navigation : anomalie magnétique local (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:locmag_point
+      Réglementation - navigation : anomalie magnétique local (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:locmag_polygon
+      Réglementation - navigation : ferme marine (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:marcul_point
+      Réglementation - navigation : ferme marine (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:marcul_polygon
+      Réglementation - navigation : alignement ou relèvement	REGLEMENTATION_NAVIGATION_BDD_WFS:navlne_line
+      Réglementation - navigation : zone de conduites sous-marines	REGLEMENTATION_NAVIGATION_BDD_WFS:pipare_polygon
+      Réglementation - navigation : voie recommandée	REGLEMENTATION_NAVIGATION_BDD_WFS:rectrc_line
+      Réglementation - navigation : zone de restriction	REGLEMENTATION_NAVIGATION_BDD_WFS:resare_polygon
+      Réglementation - navigation : zone d'amerrissage pour hydravions (ponctuel)	REGLEMENTATION_NAVIGATION_BDD_WFS:splare_point
+      Réglementation - navigation : zone d'amerrissage pour hydravions (surfacique)	REGLEMENTATION_NAVIGATION_BDD_WFS:splare_polygon
+      Toponymie marine : points	TOPONYMIE_BDD_WFS:toponymes_points__3857_2013
+      Toponymie marine : centroïde	TOPONYMIE_BDD_WFS:toponymes_centro_3857
+      Zones d'exercices	ZONEX_BDD_WFS:mipare
+    réf:
+      Références Verticales
+      Références Altimétriques Maritimes	RAM_BDD_WLD_WGS84G_WFS:ram_3857
+    Sédimentologie:
+      Carte sédimentaire mondiale	SEDIM_MONDIALE_BDD_4326_WFS:cartesedimmonde_3857
+      Natures des fonds métropole (50 000)	NDF_BDD_WLD_WGS84G_WFS:natures_fond_50000
+      Natures de fond au 150 000	NATURES_FOND_150_BDD_4326_WFS:ndf_150_2016_3857
+      Natures de fond au 500 000	NATURES_FOND_500_BDD_WFS:carte_nf500000_nov2013
+      Répartition des dunes du plateau continental français	DUNES_BDD_WFS:dunes_3857
+    Marée:
+      Types de marée	TYPE_MAREE_BDD_4326_WFS:type_maree
+      Zones de marée	ZONES_MAREE_BDD_4326_WFS:zone_maree_2014_polyline
+      Marnage coefficient 20	MARNAGE_INF_WFS:marnage_inf_poly_mga
+      Marnage coefficient 45	MARNAGE_ME_WFS:marnage_me_poly_mga
+      Marnage coefficient 95	MARNAGE_VE_WFS:marnage_ve_poly_mga
+      Marnage coefficient 120	MARNAGE_SUP_WFS:marnage_sup_poly_mga
+    histo:
+      Données historiques
+      Cartes marines anciennes : échelle inférieure à 30 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_30
+      Cartes marines anciennes : échelle entre 30 000 et 300 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_30_300
+      Cartes marines anciennes : échelle entre 300 000 et 800 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_300_800
+      Cartes marines anciennes : échelle supérieure à 800 000	ARCHIVES_CARTES_MARINES_GRILLES:grilles_archipel_cm_800
+      Minutes hydrographiques anciennes : échelle inférieure à 30 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_30
+      Minutes hydrographiques anciennes : échelle entre 30 000 et 300 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_30_300
+      Minutes hydrographiques anciennes : échelle entre 300 000 et 800 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_300_800
+      Minutes hydrographiques anciennes : échelle supérieure à 800 000	ARCHIVES_MINUTES_ANCIENNES_GRILLES:archipel_min_800
+    obs:
+      Observations côtières
+      Séries temporelles de turbidité ROEC	ROEC_TURBI_3857_WFS:roec_turbi_3857
+    
+  type: object
+  required: [$schema]
+  additionalProperties: false
+  properties:
+    $schema:
+      description: La propriété schéma
+      type: object
+
+collections:
+  CARTES_MARINES_GRILLE:grille_geotiff_800:
+    source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_800
+    $schema:
+      title: "Catalogue des cartes marines numériques raster : Générales (échelle supérieure à 1:800 000)"
+      description: "Catalogue des cartes marines numériques raster : Générales (échelle supérieure à 1:800 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, id_md, scale, fid, carte_id, img, date, majsem, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son no au début
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            scale:
+              description: dénominateur de l'échelle
+              type: integer
+            fid:
+              description: identique à name ?
+              type: string
+            carte_id:
+              description: numéro de la carte sur 4 chiffres
+              type: string
+              pattern: '^\d{4}$'
+            img:
+              description: url de l'imagette
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            majsem:
+              description: GAN de la mise à jour
+              type: string
+              pattern: '^GAN +\d{4}$'
+            geometry:
+              description: géométrie MultiPolygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: MultiPolygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  CARTES_MARINES_GRILLE:grille_geotiff_300_800:
+    source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_300_800
+    $schema:
+      title: "Catalogue des cartes marines numériques raster : Océans & Traversées (échelle entre 1:300 000 et 1:800 000)"
+      description: "Catalogue des cartes marines numériques raster : Océans & Traversées (échelle entre 1:300 000 et 1:800 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, id_md, scale, fid, carte_id, img, date, majsem, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son no au début
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            scale:
+              description: dénominateur de l'échelle
+              type: integer
+            fid:
+              description: identique à name ?
+              type: string
+            carte_id:
+              description: numéro de la carte sur 4 chiffres
+              type: string
+              pattern: '^\d{4}$'
+            img:
+              description: url de l'imagette
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            majsem:
+              description: GAN de la mise à jour
+              type: string
+              pattern: '^GAN +\d{4}$'
+            geometry:
+              description: géométrie MultiPolygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: MultiPolygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  CARTES_MARINES_GRILLE:grille_geotiff_30_300:
+    source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_30_300
+    $schema:
+      title: "Catalogue des cartes marines numériques raster : Cartes côtières (échelle entre 1:30 000 et 1:300 000)"
+      description: "Catalogue des cartes marines numériques raster : Cartes côtières (échelle entre 1:30 000 et 1:300 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, id_md, scale, fid, carte_id, img, date, majsem, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son no au début
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            scale:
+              description: dénominateur de l'échelle
+              type: integer
+            fid:
+              description: identique à name ?
+              type: string
+            carte_id:
+              description: numéro de la carte sur 4 chiffres
+              type: string
+              pattern: '^\d{4}$'
+            img:
+              description: url de l'imagette
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            majsem:
+              description: GAN de la mise à jour
+              type: string
+              pattern: '^GAN +\d{4}$'
+            geometry:
+              description: géométrie MultiPolygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: MultiPolygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  CARTES_MARINES_GRILLE:grille_geotiff_30:
+    source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_30
+    $schema:
+      title: "Catalogue des cartes marines numériques raster : Ports & Mouillages (échelle inférieure à 1 :30 000)"
+      description: "Catalogue des cartes marines numériques raster : Ports & Mouillages (échelle inférieure à 1 :30 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, id_md, scale, fid, carte_id, img, date, majsem, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son no au début
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            scale:
+              description: dénominateur de l'échelle
+              type: integer
+            fid:
+              description: identique à name ?
+              type: string
+            carte_id:
+              description: numéro de la carte sur 4 chiffres
+              type: string
+              pattern: '^\d{4}$'
+            img:
+              description: url de l'imagette
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            majsem:
+              description: GAN de la mise à jour
+              type: string
+              pattern: '^GAN +\d{4}$'
+            geometry:
+              description: géométrie MultiPolygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: MultiPolygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_1:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_1
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Vue d'ensemble (échelle supérieure à 1:1 500 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Vue d'ensemble (échelle supérieure à 1:1 500 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_2:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_2
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Générale (échelle entre 1:350 000 et 1:1 500 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Générale (échelle entre 1:350 000 et 1:1 500 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_3:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_3
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Côtière (échelle entre 1:90 000 et 1:350 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Côtière (échelle entre 1:90 000 et 1:350 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_4:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_4
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Approches (échelle entre 1:22 000 et 1:90 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Approches (échelle entre 1:22 000 et 1:90 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_5:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_5
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Portuaire (échelle entre 1:4 000 et 1:22 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Portuaire (échelle entre 1:4 000 et 1:22 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLE_S57_WFSc:catalogues57_6:
+    source: ShomWfs.GRILLE_S57_WFSc:catalogues57_6
+    $schema:
+      title: "Catalogue cartes marines numériques vectorielles : Amarrage (échelle inférieure à 1:4 000)"
+      description: "Catalogue cartes marines numériques vectorielles : Amarrage (échelle inférieure à 1:4 000)"
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '':
+          type: object
+          additionalProperties: false
+          required: [name, carte_id, id_md, fid, date, geometry]
+          properties:
+            name:
+              description: titre de la carte avec son identifiant au début
+              type: string
+            carte_id:
+              description: identifiant de la carte
+              type: string
+            id_md:
+              description: identifiant des méta-données
+              type: string
+            fid:
+              description: identique à carte_id ?
+              type: string
+            date:
+              description: date de dernière mise à jour en format dd/mm/yyyy
+              type: string
+              pattern: '^\d{2}/\d{2}/\d{4}$'
+            geometry:
+              description: géométrie Polygon
+              type: object
+              required: [type, coordinates]
+              properties:
+                type:
+                  const: Polygon
+                bbox:
+                  type: array
+                  items:
+                    type: number
+                coordinates:
+                  type array
+  GRILLES_CARTES_PAPIER:grille_cartespapier_800:
+    source: ShomWfs.GRILLES_CARTES_PAPIER:grille_cartespapier_800
+    $schema:
+      title: "Catalogue des cartes marines papier : Générales (échelle supérieure à 1:800 000)"
+      description: "Catalogue des cartes marines papier : Générales (échelle supérieure à 1:800 000)"
+      type: object
+  GRILLES_CARTES_PAPIER:grille_cartespapier_300_800:
+    source: ShomWfs.GRILLES_CARTES_PAPIER:grille_cartespapier_300_800
+    $schema:
+      title: "Catalogue des cartes marines papier : Océans & Traversées (échelle entre 1:300 000 et 1:800 000)"
+      description: "Catalogue des cartes marines papier : Océans & Traversées (échelle entre 1:300 000 et 1:800 000)"
+      type: object
+  GRILLES_CARTES_PAPIER:grille_cartespapier_30_300:
+    source: ShomWfs.GRILLES_CARTES_PAPIER:grille_cartespapier_30_300
+    $schema:
+      title: "Catalogue des cartes marines papier : Côtières (échelles entre 1:30 000 et 1:300 000)"
+      description: "Catalogue des cartes marines papier : Côtières (échelles entre 1:30 000 et 1:300 000)"
+      type: object
+  GRILLES_CARTES_PAPIER:grille_cartespapier_30:
+    source: ShomWfs.GRILLES_CARTES_PAPIER:grille_cartespapier_30
+    $schema:
+      title: "Catalogue des cartes marines papier : Ports & Mouillages (échelle inférieure à 1 :30 000)"
+      description: "Catalogue des cartes marines papier : Ports & Mouillages (échelle inférieure à 1 :30 000)"
+      type: object
+  GRILLE_RASTER_MARINE:grille_assemblage_rm_1m:
+    source: ShomWfs.GRILLE_RASTER_MARINE:grille_assemblage_rm_1m
+    $schema:
+      title: "Assemblage des cartes marines (RasterMarine) au 1:1M"
+      description: "Assemblage des cartes marines (RasterMarine) au 1:1M"
+      type: object
+  GRILLE_RASTER_MARINE:grille_assemblage_rm_400:
+    source: ShomWfs.GRILLE_RASTER_MARINE:grille_assemblage_rm_400
+    $schema:
+      title: "Assemblage des cartes marines (RasterMarine) au 1:400k"
+      description: "Assemblage des cartes marines (RasterMarine) au 1:400k"
+      type: object
+  GRILLE_RASTER_MARINE:grille_assemblage_rm_150:
+    source: ShomWfs.GRILLE_RASTER_MARINE:grille_assemblage_rm_150
+    $schema:
+      title: "Assemblage des cartes marines (RasterMarine) au 1:150k"
+      description: "Assemblage des cartes marines (RasterMarine) au 1:150k"
+      type: object
+  GRILLE_RASTER_MARINE:grille_assemblage_rm_50:
+    source: ShomWfs.GRILLE_RASTER_MARINE:grille_assemblage_rm_50
+    $schema:
+      title: "Assemblage des cartes marines (RasterMarine) au 1:50k"
+      description: "Assemblage des cartes marines (RasterMarine) au 1:50k"
+      type: object
+  GRILLE_RASTER_MARINE:grille_assemblage_rm_20:
+    source: ShomWfs.GRILLE_RASTER_MARINE:grille_assemblage_rm_20
+    $schema:
+      title: "Assemblage des cartes marines (RasterMarine) au 1:20k"
+      description: "Assemblage des cartes marines (RasterMarine) au 1:20k"
+      type: object
+  #xxx:
+  #  source: ShomWfs.xxx
+  #  $schema:
+  #    title: "zzz"
+  #    description: "zzz"
+  #    type: object
+eof:
+

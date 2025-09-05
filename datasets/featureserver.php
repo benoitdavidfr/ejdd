@@ -1,8 +1,5 @@
 <?php
 /** FeatureServer - Catégorie des Dataset WFS.
- * Chaque JdD correspond à un serveur WFS.
- * Effectue si nécessaire la conversion des coordonnées en WGS84 LonLat.
- * Lorsqu'un filtre bbox est défini, ce bbox est intégré dans la requête au serveur WFS.
  *
  * @package Dataset
  */
@@ -10,16 +7,16 @@ namespace Dataset;
 
 require_once __DIR__.'/../dataset.inc.php';
 require_once __DIR__.'/../geojson.inc.php';
-require_once __DIR__.'/../lib/coordsys.inc.php';
 
 use GeoJSON\Geometry;
 use BBox\BBox;
-use CoordSys\Lambert93;
-use CoordSys\WebMercator;
-use CoordSys\UTM;
 
-/** Gère un cache d'appels Http. */
+/** Gère un cache des appels Http pour FeatureServer.
+ * Les fichiers sont stockés dans cache::PATH.
+ */
 class Cache {
+  const PATH = __DIR__.'/featureserver/';
+  
   /** Retourne le chemin du répertoire contenant le fichier. */
   static function dirPath(string $filePath): string {
     $exploded = explode('/', $filePath);
@@ -42,7 +39,7 @@ class Cache {
    * @param string $url - URL du flux à lire
    */
   static function get(string $filePath, string $url): string {
-    $filePath = __DIR__."/featureserver/$filePath";
+    $filePath = self::PATH.$filePath;
     if (is_file($filePath)) {
       return file_get_contents($filePath);
     }
@@ -55,70 +52,29 @@ class Cache {
       return $string;
     }
   }
-};
-
-/** Effectue les chgt de syst. de coord. */
-class Wgs84LonLat {
-  /** Fabrique une fonction de conversion en WGS84 LonLat en fonction du code CRS défini comme URN OGC.
-   * CRS utilisés dans wfs-fr-ign-gpf:
-   *   - EPSG:4326
-   *   - EPSG:2154 = Lambert93
-   *   - EPSG:3857 = WebMercator
-   *   - EPSG:4471 = RGM04 / UTM zone 38S (utilisé à Mayotte)
-   *   - EPSG:32620 = WGS 84 / UTM zone 20N (utilisé dans les Antilles)
-   *   - EPSG:2972 = RGFG95 / UTM zone 22N (utilisé en Guyane)
-   *   - EPSG:2975 = RGR92 / UTM zone 40S (utilisé à La Réunion)
-   *   - EPSG:5490 = RGAF09 / UTM zone 20N (utilisé dans les Antilles françaises)
-   *   - EPSG:3944 = RGF93 v1 / CC44 (utilisé pour le cadastre)
-   */
-  static function reproj(string $crs): callable {
-    if (!preg_match('!^urn:ogc:def:crs:EPSG::(\d+)$!', $crs, $matches)) {
-      throw new \Exception("CRS '$crs' non interprété");
-    }
-    $epsg = $matches[1];
-    return match ($epsg) {
-      // Si EPSG:4326 est utilisé, cela signifie que les coordonnées sont en WGS84 LonLat
-      '4326'=> function ($pos) { return $pos; },
-      // EPSG:2154 = Lambert93
-      '2154'=> function ($pos) { return Lambert93::geo($pos); },
-      // EPSG:3857 = WebMercator
-      '3857'=> function ($pos) { return WebMercator::geo($pos); },
-      // ESG:4471 = RGM04 / UTM zone 38S (utilisé à Mayotte)
-      '4471'=> function ($pos) { return UTM::geo($pos, '38S'); },
-      // ESG:32620 = WGS 84 / UTM zone 20N (utilisé dans les Antilles)
-      '32620'=> function ($pos) { return UTM::geo($pos, '20N'); },
-      // EPSG:2972 = RGFG95 / UTM zone 22N (utilisé en Guyane)
-      '2972'=> function ($pos) { return UTM::geo($pos, '22N'); },
-      // EPSG:2975 = RGR92 / UTM zone 40S (utilisé à La Réunion)
-      '2975'=> function ($pos) { return UTM::geo($pos, '40S'); },
-      // EPSG:5490 = RGAF09 / UTM zone 20N (utilisé dans les Antilles françaises)
-      '5490'=> function ($pos) { return UTM::geo($pos, '20N'); },
-      default=> throw new \Exception("EPSG:$epsg non traité"),
-    };
-    
-  }
   
-  /** Convertit une géométrie en $crs en WGS84 LonLat.
-   * @param array<mixed> $geometry
-   * @return array<mixed>
-   */
-  static function geom(string $crs, array $geometry): array {
-    return Geometry::create($geometry)->reproject(self::reproj($crs))->asArray();
-  }
-  
-  /** Convertit un bbox en $crs en WGS84 LonLat.
-   * @param array<float> $bbox
-   * @return array<float>
-   */
-  static function bbox(string $crs, array $bbox): array {
-    $reproj = self::reproj($crs);
-    $sw = $reproj([$bbox[0], $bbox[1]]);
-    $ne = $reproj([$bbox[2], $bbox[3]]);
-    return [$sw[0], $sw[1], $ne[0], $ne[1]];
+  /** Efface le contenu du répertoire dont le path est passé en paramètre. */
+  static function delete(string $dirPath): void {
+    $dir = dir(self::PATH.$dirPath);
+    while ($entry = $dir->read()){
+      if (in_array($entry, ['.','..'])) continue;
+      if (is_file(self::PATH."$dirPath/$entry")) {
+        echo "$entry is a file<br>\n";
+        unlink(self::PATH."$dirPath/$entry");
+      }
+      elseif (is_dir(self::PATH."$dirPath/$entry")) {
+        echo "$entry is a dir<br>\n";
+        self::delete("$dirPath/$entry");
+        rmdir(self::PATH."$dirPath/$entry");
+      }
+      else {
+        echo "$entry is neiher a dir nor a file<br>\n";
+      }
+    } 
   }
 };
 
-/** Gestion des Capabilities d'un serveur WFS.
+/** Gère les Capabilities d'un serveur WFS.
  * Construit notamment le schéma du JdD.
  */
 class WfsCap {
@@ -127,16 +83,17 @@ class WfsCap {
   
   /** Retourne le string correspondant aux capabilities */
   static function getCapabilities(string $name): string {
+    $registre = FeatureServer::REGISTRE[$name];
     return Cache::get(
-      "cap/$name.xml",
-      FeatureServer::REGISTRE[$name]['url'].'?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetCapabilities'
+      "$name/cap.xml",
+      $registre['url'].'?service=WFS&version=2.0.0&request=GetCapabilities'
     );
   }
   
   /** Convertit un coin d'un WGS84BoundingBox en Position.
    * @return TPos */
   static function corner2Pos(\SimpleXMLElement $corner): array {
-    if (!preg_match('!^([-\d\.]+) ([-\d\.]+)$!', $corner, $matches)) {
+    if (!preg_match('!^([-\d\.E]+) ([-\d\.E]+)$!', $corner, $matches)) {
       throw new \Exception("No match sur '$corner'");
     }
     return [floatval($matches[1]), floatval($matches[2])];
@@ -164,8 +121,7 @@ class WfsCap {
   /** Construit le schema JSON à partir des capacités.
    * @return array<mixed> */
   function jsonSchemaOfTheDs(string $fsName): array {
-    $requiredProps = ['$schema'];
-    $collectionProps = [
+    $collections = [
       '$schema'=> ['description'=> "Le schéma du JdD", 'type'=> 'object'],
     ];
     //echo '$elt='; print_r($this->elt);
@@ -173,43 +129,41 @@ class WfsCap {
     foreach ($this->elt->FeatureTypeList->FeatureType as $featureType) {
       //print_r($featureType);
       $ftname = str_replace('__', ':', (string)$featureType->Name);
-      $ftNames = [
+      /*$ftNames = [
         'ADMINEXPRESS-COG-CARTO-PE.2025:region', // polygones en EPSG:4326
         'ADMINEXPRESS-COG-CARTO-PE.2025:chef_lieu_de_region', // points en EPSG:4326
         'patrinat_pn:parc_national', // polygones en EPSG:3857
-      ]; // sélection de noms de FT 
-      if (!in_array($ftname, $ftNames)) continue;
-      $requiredProps[] = $ftname;
-      $collectionProps[$ftname] = [
-        'title'=> (string)$featureType->Title,
+      ];*/ // sélection de noms de FT 
+      //if (!in_array($ftname, $ftNames)) continue;
+      $collections[$ftname] = [
+        'title'=> (string)str_replace('__', ':', (string)$featureType->Title),
         'description'=> 'Abstract: '.(string)$featureType->Abstract
           ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
           ."\nWGS84BoundingBox:"
           ."\n&nbsp;&nbsp;&nbsp;&nbsp;LowerCorner:".$featureType->ows__WGS84BoundingBox->ows__LowerCorner
           ."\n&nbsp;&nbsp;&nbsp;&nbsp;UpperCorner:".$featureType->ows__WGS84BoundingBox->ows__UpperCorner,
-        'defaultCRS'=> str_replace('__',':', $featureType->DefaultCRS),
+        //'defaultCRS'=> str_replace('__',':', $featureType->DefaultCRS),
         'bbox'=> self::WGS84BoundingBox2BBox($featureType->ows__WGS84BoundingBox)->as4Coordinates(),
-        'type'=> 'array',
+        'type'=> 'object',
       ];
-      //if (count($requiredProps) > 15) break; // limitation du nbre de FeatureType pour le développement
+      //if (count($collections) > 15) break; // limitation du nbre de FeatureType pour le développement
     }
-    sort($requiredProps);
-    ksort($collectionProps);
+    ksort($collections);
     return [
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
       'title'=> FeatureServer::REGISTRE[$fsName]['title'],
       'description'=> FeatureServer::REGISTRE[$fsName]['description'],
       'type'=> 'object',
-      'required'=> $requiredProps,
+      'required'=> array_keys($collections),
       'additionalProperties'=> false,
-      'properties'=> $collectionProps,
+      'properties'=> $collections,
     ];
   }
   
   /** Utilisé en test. Apporte peu. */
   function describeFeatureType(string $fsname, string $ftname): string {
     return Cache::get(
-      "ft/$fsname-$ftname",
+      "$fsname/ft/$ftname.xml",
       FeatureServer::REGISTRE[$fsname]['url']
         ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAMES=$ftname"
         ."&OUTPUTFORMAT=".urlencode('application/gml+xml; version=3.2')
@@ -217,8 +171,12 @@ class WfsCap {
   }
 };
 
-/** FeatureServer - Catégorie des Dataset WFS. Chaque JdD correspond à une serveur WFS.
+/** FeatureServer - Catégorie des Dataset WFS, chaque JdD correspond à un serveur WFS.
  * Le mapping nom -> url est fait dans REGISTRE.
+ * Les coordonnées sont toujours retournées en WGS84 LonLat.
+ * Lorsqu'un filtre bbox est défini, ce bbox est passé au serveur WFS dans la requête.
+ * Pour chaque Feature, le serveur WFS retourne un id qui est utilisé comme clé de l'item.
+ * Utilisation d'une pagination pour requêter les features définie par COUNT.
  */
 class FeatureServer extends Dataset {
   /** Registre des serveurs WFS indexé par le nom du JdD. */
@@ -230,7 +188,16 @@ class FeatureServer extends Dataset {
       'type'=> 'WFS',
       'version'=> '2.0.0',
     ],
+    'ShomWfs' => [
+      'title'=> "Service WFS du Shom",
+      'description'=> "Service WFS du Shom",
+      'url'=> 'https://services.data.shom.fr/INSPIRE/wfs',
+      'type'=> 'WFS',
+      'version'=> '2.0.0',
+    ],
   ];
+  /** Nbre de features par page. */
+  const COUNT = 20;
   /** Les capacités du serveur WFS. */
   readonly WfsCap $cap;
   
@@ -256,8 +223,7 @@ class FeatureServer extends Dataset {
    * @return \Generator<int|string,array<mixed>>
    */
   function getItems(string $cName, array $filters=[]): \Generator {
-    echo "cName=$cName<br>\n";
-    $defaultCRS = $this->collections[$cName]->schema->schema['defaultCRS'];
+    //echo "cName=$cName<br>\n";
     $start = $filters['skip'] ?? 0;
     $qbboxLatLon = null;
     if ($qbbox = $filters['bbox'] ?? null) {
@@ -268,36 +234,71 @@ class FeatureServer extends Dataset {
     }
     while (true) {
       $url = self::REGISTRE[$this->name]['url']
-          ."?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=$cName"
+          ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$cName"
+          .'&srsName=urn:ogc:def:crs:EPSG::4326'
           .($qbboxLatLon ? "&bbox=".implode(',',$qbboxLatLon) : '')
           ."&outputFormat=".urlencode('application/json')
-          ."&startIndex=$start&count=1";
+          ."&startIndex=$start&count=".self::COUNT;
       //echo "url=$url<br>\n";
       $fcoll = Cache::get(
-        "features/$this->name/$cName".($qbbox?'-'.$qbbox:'')."/$start.json",
+        "$this->name/features/$cName".($qbbox?'-'.$qbbox:'')."/$start-".self::COUNT.".json",
         $url
       );
-      if ($fcoll == false)
-        throw new \Exception("Erreur sur $url");
       $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
       if ($fcoll['numberMatched'] == 0) {
         //echo "Aucun résultat retourné<br>\n";
         return;
       }
-      $geometry = Wgs84LonLat::geom($defaultCRS, $fcoll['features'][0]['geometry']);
-      if (isset($fcoll['features'][0]['bbox'])) {
-        $geometry['bbox'] = Wgs84LonLat::bbox($defaultCRS, $fcoll['features'][0]['bbox']);
+      //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
+      foreach ($fcoll['features'] as $feature) {
+        $id = $feature['id'];
+        $geometry = $feature['geometry'];
+        if (isset($feature['bbox'])) {
+          $geometry['bbox'] = $feature['bbox'];
+        }
+        $tuple = array_merge(
+          $feature['properties'],
+          ['geometry'=> $geometry]
+        );
+        yield $id => $tuple;
+        $start++;
       }
-      $tuple = array_merge(
-        $fcoll['features'][0]['properties'],
-        ['geometry'=> $geometry]
-      );
-      yield $start => $tuple;
+      unset($fcoll['features']);
+      //echo '<pre>$fcoll='; print_r($fcoll); echo "</pre>\n";
       $numberMatched = $fcoll['numberMatched'];
-      if ($start >= $numberMatched-1)
+      if ($start >= $numberMatched)
         return;
-      $start++;
     }
+  }
+  
+  /** Retourne l'item ayant l'id fourni.
+   * @return array<mixed>|null
+   */ 
+  function getOneItemByKey(string $cName, string|int $id): array|null {
+    $url = self::REGISTRE[$this->name]['url']
+        ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$cName"
+        .'&srsName=urn:ogc:def:crs:EPSG::4326'
+        ."&outputFormat=".urlencode('application/json')
+        ."&featureID=$id";
+    $fcoll = Cache::get(
+      "$this->name/features/$cName/id-$id.json",
+      $url
+    );
+    $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
+    if ($fcoll['numberMatched'] == 0) {
+      //echo "Aucun résultat retourné<br>\n";
+      return null;
+    }
+    //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
+    $geometry = $fcoll['features'][0]['geometry'];
+    if (isset($fcoll['features'][0]['bbox'])) {
+      $geometry['bbox'] = $fcoll['features'][0]['bbox'];
+    }
+    $tuple = array_merge(
+      $fcoll['features'][0]['properties'],
+      ['geometry'=> $geometry]
+    );
+    return $tuple;
   }
 };
 
@@ -305,22 +306,74 @@ class FeatureServer extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
+use Algebra\CollectionOfDs;
+
 class FeatureServerBuild {
   static function main(): void {
+    if (isset($_GET['dataset']))
+      echo "<title>$_GET[dataset]</title>\n";
     switch ($_GET['action'] ?? null) {
-      case null: {
+      case null: { // Menu 
+        echo "<a href='?dataset=$_GET[dataset]&action=namedSpaces'>Accès aux données par les espaces de noms</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=cap'>Affiche les capacités WFS de $_GET[dataset]</a><br>\n";
-        echo "<a href='?dataset=$_GET[dataset]&action=create'>Création de l'objet $_GET[dataset]</a><br>\n";
+        echo "<a href='?dataset=$_GET[dataset]&action=colls'>Affiche les collections de l'objet $_GET[dataset]</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=getItemsOnBbox'>Test getItems sur bbox</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=listCRS'>Liste les CRS</a><br>\n";
+        echo "<a href='?dataset=$_GET[dataset]&action=delCache'>Effacement du cache de $_GET[dataset]</a><br>\n";
         break;
       }
-      case 'cap': {
+      case 'namedSpaces': { // Accède aux données par les espaces de noms
+        $fs = Dataset::get($_GET['dataset']);
+        if (isset($_GET['ns'])) { // affiche les collections de l'espace de nom $_GET[ns]
+          echo "<h2>Liste des collections de l'espace $_GET[ns]</h2>\n";
+          foreach ($fs->schema['properties'] as $pname => $prop) {
+            if ($pname == '$schema') continue;
+            //echo "pname=$pname<br>\n";
+            if (!preg_match('!^([^:]+):(.*)$!', $pname, $matches)) {
+              throw new \Exception("No match on '$pname'");
+            }
+            if ($matches[1] == $_GET['ns']) {
+              echo "<a href='?action=display&collection=$_GET[dataset].$pname'>$matches[2]<br>\n";
+            }
+          }
+        }
+        else { // affiche les espaces de noms de $_GET['dataset']
+          echo "<h2>Liste des noms d'espaces</h2>\n";
+          $names = [];
+          foreach ($fs->schema['properties'] as $pname => $prop) {
+            if ($pname == '$schema') continue;
+            //echo "pname=$pname<br>\n";
+            if (!preg_match('!^([^:]+):!', $pname, $matches)) {
+              throw new \Exception("No match on '$pname'");
+            }
+            $names[$matches[1]] = 1;
+          }
+          echo "<table border=1>\n",
+               implode(array_map(
+                 function($name) {
+                   return "<tr><td><a href='?dataset=$_GET[dataset]&action=$_GET[action]&ns=$name'>$name</a></td></tr>\n";
+                 },
+                 array_keys($names)
+               )),
+               "</table>\n";
+        }
+        break;
+      }
+      case 'display': {
+        if (isset($_GET['key'])) {
+          CollectionOfDs::get($_GET['collection'])->displayItem($_GET['key']);
+        }
+        else {
+          CollectionOfDs::get($_GET['collection'])->display($_GET['skip'] ?? 0);
+        }
+        break;
+      }
+      case 'cap': { // Affiche les capacités WFS de $_GET[dataset]
         $fs = new FeatureServer($_GET['dataset']);
         echo '<pre>cap='; print_r($fs->cap->elt); echo "</pre>\n";
         break;
       }
-      case 'create': {
+      case 'colls': { // Affiche les collections de l'objet $_GET[dataset]
         $fs = Dataset::get($_GET['dataset']);
         //echo '<pre>$fs='; print_r($fs); echo "</pre>\n";
         echo "<h2>FeatureTypes</h2>\n";
@@ -408,6 +461,10 @@ class FeatureServerBuild {
           $crs[$defaultCRS][] = $ftName;
         }
         echo '<pre>'; print_r($crs);
+        break;
+      }
+      case 'delCache': {
+        Cache::delete($_GET['dataset']);
         break;
       }
       default: throw new \Exception("Action $_GET[action] inconnue");

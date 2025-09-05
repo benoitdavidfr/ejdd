@@ -60,7 +60,16 @@ abstract class Dataset {
     'NE10mCultural' => 'GeoDataset',
     'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
     'wfs-fr-ign-gpf'=> 'FeatureServer',
+    'AdminExpress-COG-Carto-PE'=> 'FeatureServerExtract',
+    'AdminExpress-COG-Carto-ME'=> 'FeatureServerExtract',
+    'LimitesAdminExpress'=> 'FeatureServerExtract',
+    'BDCarto'=> 'FeatureServerExtract',
+    'BDTopo'=> 'FeatureServerExtract',
     'Patnat'=> 'Extract',
+    'MesuresCompensatoires'=> 'FeatureServerExtract',
+    'RPG'=> 'FeatureServerExtract',
+    'ShomWfs'=> 'FeatureServer',
+    'Shom'=> 'Extract',
   ];
   const UNITS = [
     0 => 'octets',
@@ -252,7 +261,7 @@ abstract class Dataset {
   function displaySchemaErrors(): void { self::displaySchemaErrorsS($this->schema); }
   
   /** Vérifie la conformité du JdD par rapport à son schéma */
-  function isValid(bool $verbose): bool {
+  function isValid(bool $verbose, int $nbreItems=0): bool {
     // Validation des MD du jeu de données
     $validator = new Validator;
     $schema = [
@@ -288,7 +297,7 @@ abstract class Dataset {
     
     // Validation de chaque collection
     foreach ($this->collections as $collection) {
-      if (!$collection->isValid($verbose))
+      if (!$collection->isValid($verbose, $nbreItems))
         return false;
     }
     return true;
@@ -369,7 +378,7 @@ abstract class Dataset {
     echo "</table>\n";
   }
   
-  /** Affiche une sction du JdD JdD en Html. */
+  /** Affiche une collection du JdD en Html. */
   function displayCollection(string $cname): void { $this->collections[$cname]->display(); }
   
   /** Retourne le nbre de n-uplets. */

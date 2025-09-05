@@ -150,6 +150,9 @@ else {
 }
 
 
+if (!isset($data['schema2'])) return;
+
+
 $validator = new Validator;
 $stdObject = RecArray::toStdObject($data['schema']);
 $validator->validate($stdObject, $data['schema2']);
