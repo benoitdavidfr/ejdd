@@ -216,9 +216,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f 
-    
-    
+    ../phpDocumentor.phar -f *.php,datasets/*.php,algebra/*.php
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
