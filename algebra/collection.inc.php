@@ -8,9 +8,10 @@ require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
 require_once __DIR__.'/predicate.inc.php';
 require_once __DIR__.'/../geojson.inc.php';
+require_once __DIR__.'/../lib.php';
 
 use Dataset\Dataset;
-//use Algebra\DsParser;
+use Lib\RecArray;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;

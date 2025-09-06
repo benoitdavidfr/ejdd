@@ -159,7 +159,9 @@ class JoinF extends Collection {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
+require_once __DIR__.'/../lib.php';
 
+use Lib\HtmlForm;
 use Dataset\Dataset;
 
 ini_set('memory_limit', '10G');

@@ -8,7 +8,6 @@ namespace Dataset;
 
 require_once __DIR__.'/dataset.inc.php';
 
-use Algebra\RecArray;
 use JsonSchema\Validator;
 
 /** JdD des Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG (NomsCnig). */
@@ -58,6 +57,8 @@ class NomsCnig extends Dataset {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
+
+use Lib\RecArray;
 
 /** Construit NomsCnig. */
 class NomsCnigBuild {

@@ -18,8 +18,6 @@ EOT
 ]
 );
 
-ini_set('memory_limit', '10G');
-set_time_limit(5*60);
 
 /** L'optimiseur définit l'algorithme le plus optimisé pour effectuer la jointure sur prédicat.
  * Il a besoin de connaitre les propriétés du produit cartésien potentiel et c'est donc une sous-classe de ProductProperties.
@@ -171,7 +169,13 @@ class JoinP extends Collection {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Permet de construire une jointure
 
 
+require_once __DIR__.'/../lib.php';
+
 use Dataset\Dataset;
+use Lib\HtmlForm;
+
+ini_set('memory_limit', '10G');
+set_time_limit(5*60);
 
 /** Test de JoinP. */
 class JoinPTest {

@@ -3,9 +3,14 @@
  * M'a permis de tester join, count et size qui ont été transférés dans dataset.inc.php
  * PLUS MIS A JOUR
  *
- * @package Algebra
+ * @package Misc
  */
+namespace Misc;
 
+/** setop. Tests opérations ensemblistes.
+ * M'a permis de tester join, count et size qui ont été transférés dans dataset.inc.php
+ * PLUS MIS A JOUR
+ */
 class SetOp {
   /** Teste si un champ d'une collection est unique pour un éventuel prédicat. */
   static function fieldIsUniq(Dataset $dataset, string $sname, string $field, string $predicate): bool {

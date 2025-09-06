@@ -10,7 +10,7 @@ namespace Dataset;
 require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Algebra\RecArray;
+use Lib\RecArray;
 use Symfony\Component\Yaml\Yaml;
 use JsonSchema\Validator;
 

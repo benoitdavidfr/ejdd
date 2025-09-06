@@ -8,7 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Algebra\Collection;
 use Algebra\CollectionOfDs;
-use Algebra\RecArray;
+use Lib\RecArray;
 use Symfony\Component\Yaml\Yaml;
 use JsonSchema\Validator;
 

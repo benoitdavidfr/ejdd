@@ -20,18 +20,16 @@
  * @package Dataset
  */
 namespace Dataset;
-require_once __DIR__.'/../vendor/autoload.php';
+
 require_once __DIR__.'/../algebra/collection.inc.php';
 require_once __DIR__.'/../algebra/predicate.inc.php';
+require_once __DIR__.'/../lib.php';
 
-use Algebra\RecArray;
 use Algebra\CollectionOfDs;
 use Algebra\Predicate;
+use Lib\RecArray;
 use JsonSchema\Validator;
 use Symfony\Component\Yaml\Yaml;
-//use BBox\BBox;
-//use GeoJSON\Geometry;
-//use GeoJSON\Feature;
 
 /** Classe abstraite des JdD.
  * Une sous-classe concrète doit définir la méthode getItems().

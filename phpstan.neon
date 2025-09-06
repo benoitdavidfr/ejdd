@@ -45,6 +45,7 @@ parameters:
   paths:
     - index.php
     - install.php
+    - lib.php
     - geojson.inc.php
     - bbox.php
     - pos.inc.php

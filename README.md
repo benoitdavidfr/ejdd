@@ -34,9 +34,11 @@ Techno utilisées (JSON/Yaml/ODS/Php):
     - le format est assez standard
     - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
     - voir son efficacité
-  - Php est utilisé pour exécuter du code et j'évite de stocker des données en Php car
+  - Php en version 8.4 est utilisé pour exécuter du code et j'évite de stocker des données en Php car
     - c'est difficilement éditable
     - c'est moins performant que JSON
+  - PhpStan est utilisé au niveau 6 pour analyser le code
+  - phpDocumentor est utilisé pour documenter le code
 
 Solution.
 ---------
