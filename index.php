@@ -8,7 +8,7 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- dans FeatureServer lire plusieurs features à la fois
+- permettre de faire une carte d'une collection
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -214,7 +214,7 @@ Lignes de commandes utiles
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
     ../phpDocumentor.phar -f README.md,bbox.php,collection.inc.php,concatkeys.php,cproduct.php,dataset.inc.php,geojson.inc.php,geojson.php,index.php,joinf.php,joinp.php,onlinecoll.php,pos.inc.php,predicate.inc.php,proj.php,query.php,schema.inc.php,select.php,skipbracket.php,testschema.php,zoomlevel.php,\
-datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
+datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/featureserverextract.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
 
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash

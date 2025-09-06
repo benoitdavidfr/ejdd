@@ -1,32 +1,8 @@
 <?php
 /** Schéma JSON d'une Collection d'un JdD.
- * Le schéma JSON d'une collection documente la structure de cette collection. Il peut être plus ou moins complet.
- * A minima il doit contenir le titre et la description de la collection et doit indiquer si la collection comporte ou non
- * des clés.
- * Un 2nd niveau indique si les items sont des string, des tuples et des tuples hétérogènes (oneOf).
- * Un 3ème niveau fournit la liste des champs des tuples avec leur type.
- * Enfin un 4ème niveau fournit une description pour chaque champ.
- * La structuration du schéma d'une collection est défini par le schéma défini dans dataset.yaml
- *  
- * Le schéma d'une collection est créé par SchemaOfCollection::create() avec en paramètre l'array représentant ce schéma JSON.
- * Il existe plusieures sortes de collection:
- *   - listOfTuples
- *   - dictOfTuples
- *   - listOfValues
- *   - dictOfValues
- * kind() et skind() déterminent en fonction du schéma la sorte de collection et permet de créer un objet schéma adapté.
- * Un schéma sait renvoyer la liste des propriétés sous la forme [{name}=> {simplifiedType}] ; il s'agit dde ttes les prop.
- * potentielles et {simplifiedType} est une chaîne de caractères.
- * Les properties peuvent ne pas être définies dans le schéma et dans ce cas certaines opérations seront interdites.
+ * @package Algebra
  */
 namespace Algebra;
-
-/** Pour mettre du code Html dans un RecArray. */
-class HtmlCode {
-  readonly string $c;
-  function __construct(string $c) { $this->c = $c; }
-  function __toString(): string { return $this->c; }
-};
 
 /** Fonction facilitant la construction de formulaires Html. */
 class HtmlForm {
@@ -47,6 +23,13 @@ class HtmlForm {
     $select .= "</select>";
     return $select;
   }
+};
+
+/** Pour mettre du code Html dans un RecArray. */
+class HtmlCode {
+  readonly string $c;
+  function __construct(string $c) { $this->c = $c; }
+  function __toString(): string { return $this->c; }
 };
 
 /** Traitements d'un array recursif, cad une structure composée d'array, de valeurs et d'objets convertissables en string. */
@@ -197,7 +180,7 @@ class SimplifiedType {
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
    * Utilisé pour fabriquer des properties à partir du schéma.
    * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
-  static function simplifiedType2(?array $prop): string {
+  static function create2(?array $prop): string {
     // Les types simples
     if (in_array($prop['type'] ?? null, ['string','number','integer']))
       return $prop['type'];
@@ -222,7 +205,7 @@ class SimplifiedType {
   /** Crée un type simplifié d'un champ à partir de son type dans le schéma JSON.
    * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
   static function create(?array $prop): string {
-    $stype = self::simplifiedType2($prop);
+    $stype = self::create2($prop);
     //echo '<pre>simplifiedType('; print_r($prop); echo ") returns '$stype'</pre>";
     return $stype;
   }
@@ -266,7 +249,26 @@ class SimplifiedType {
 };
 
 
-/** Schéma JSON d'une Collection d'un JdD. */
+/** Schéma JSON d'une Collection d'un JdD.
+ * Le schéma JSON d'une collection documente la structure de cette collection. Il peut être plus ou moins complet.
+ * A minima il doit contenir le titre et la description de la collection et doit indiquer si la collection comporte ou non
+ * des clés.
+ * Un 2nd niveau indique si les items sont des string, des tuples et des tuples hétérogènes (oneOf).
+ * Un 3ème niveau fournit la liste des champs des tuples avec leur type.
+ * Enfin un 4ème niveau fournit une description pour chaque champ.
+ * La structuration du schéma d'une collection est défini par le schéma défini dans dataset.yaml
+ *  
+ * Le schéma d'une collection est créé par SchemaOfCollection::create() avec en paramètre l'array représentant ce schéma JSON.
+ * Il existe plusieures sortes de collection:
+ *   - listOfTuples
+ *   - dictOfTuples
+ *   - listOfValues
+ *   - dictOfValues
+ * kind() déterminent en fonction du schéma la sorte de collection et permet de créer un objet schéma adapté.
+ * Un schéma sait renvoyer la liste des propriétés sous la forme [{name}=> {simplifiedType}] ; il s'agit dde ttes les prop.
+ * potentielles et {simplifiedType} est une chaîne de caractères.
+ * Les properties peuvent ne pas être définies dans le schéma et dans ce cas certaines opérations seront interdites.
+ */
 abstract class SchemaOfCollection {
   /** @param array<mixed> $schema - le schéma JSON. */
   function __construct(readonly array $schema, readonly SchemaOfItem $schemaOfItem) {}
@@ -303,8 +305,8 @@ abstract class SchemaOfCollection {
     return $result;
   }
   
-  /** Création d'un SchemaOfCollection.
-   * @param array<mixed> $schema - le schéma
+  /** Création d'un SchemaOfCollection à partir d'un schéma JSON.
+   * @param array<mixed> $schema - le schéma JSON
    */
   static function create(array $schema): self {
     return match($type = $schema['type'] ?? null) {
@@ -319,6 +321,7 @@ abstract class SchemaOfCollection {
    */
   abstract function kind(?string $name=null): string;
   
+  /** Retourne une synthèse des classes concrètes utilisées. */
   abstract function classes(): string;
   
   /** Retourne la liste des propriétés potentielles des tuples définis par le schéma sous la forme [{nom}=>{jsonType}].
@@ -335,7 +338,7 @@ abstract class SchemaOfCollection {
   }
 };
 
-/** Schéma JSON d'une collection définie comme un dictionnaire. */
+/** Schéma JSON d'une collection définie comme un dictionnaire, cad que chaque Item à une clé de type string. */
 class SchemaOfDict extends SchemaOfCollection {
   function __construct(array $schema) {
     if (!isset($schema['patternProperties'])) { // A minima, l'item n'est pas défini
