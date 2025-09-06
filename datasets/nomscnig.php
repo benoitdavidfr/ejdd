@@ -19,8 +19,21 @@ class NomsCnig extends Dataset {
   protected array $data;
   
   function __construct(string $name) {
-    $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
-    parent::__construct($name, $this->data['$schema']);
+    if (is_file(self::JSON_FILE_NAME)) {
+      $this->data = json_decode(file_get_contents(self::JSON_FILE_NAME), true);
+      parent::__construct($name, $this->data['$schema']);
+    }
+    else {
+      parent::__construct($name, NomsCnigBuild::SCHEMA_JSON);
+    }
+  }
+  
+  function isAvailable(?string $condition=null): bool {
+    return match ($condition) {
+      null => is_file(self::JSON_FILE_NAME),
+      'forBuilding' => DeptRegBuild::isAvailable(),
+      default => throw new \Exception("condition '$condition' inconnue"),
+    };
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
@@ -756,6 +769,8 @@ Note 1: 1 Les usages séparés par une virgule dépendent du contexte. Dans le l
       ],
     ],
   ];
+  
+  static function isAvailable(): bool { return true; }
   
   /** Affichage pour vérification de la saisie ci-dessus */
   static function display(): void {

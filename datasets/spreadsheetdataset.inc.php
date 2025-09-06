@@ -94,6 +94,12 @@ abstract class SpreadSheetDataset extends Dataset {
   readonly array $docCollections;
 
   function __construct(string $name, string $filePath) {
+    if (!is_file($filePath)) {
+      $this->filePath = $filePath;
+      $this->docCollections = [];
+      parent::__construct($name, $this->jsonSchema("$filePath absent", "$filePath absent"));
+      return;
+    }
     $this->filePath = $filePath;
     $reader = new \PhpOffice\PhpSpreadsheet\Reader\Ods();
     $spreadsheet = $reader->load($filePath);
@@ -151,6 +157,8 @@ abstract class SpreadSheetDataset extends Dataset {
     $this->docCollections = $collections;
     parent::__construct($name, $this->jsonSchema($title, $description));
   }
+  
+  function isAvailable(?string $condition=null): bool { return is_file($this->filePath); }
   
   /** @return array<mixed> */
   function jsonSchema(string $title, string $description): array {

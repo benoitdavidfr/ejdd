@@ -212,6 +212,9 @@ Lignes de commandes utiles
     composer require justinrainbow/json-schema
     composer require symfony/yaml
     composer require phpoffice/phpspreadsheet
+    
+    composer outdated # pour connaitre les composants périmés
+    composer update   # pour mettre à jour les composants
   phpstan:
     ./vendor/bin/phpstan --memory-limit=1G --pro
   Fenêtre Php8.4:
@@ -230,6 +233,8 @@ Lignes de commandes utiles
     git merge hotfix  # fusion de la branche avec main
   Pour pousser sur github:
     git push -u origin main
+  Pour cloner:
+    git clone git@github.com:benoitdavidfr/datasets.git
     
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
@@ -247,6 +252,7 @@ J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 EOT
 ];
 
+require_once __DIR__.'/install.php';
 require_once __DIR__.'/datasets/dataset.inc.php';
 
 use Dataset\Dataset;
@@ -416,7 +422,7 @@ set_time_limit(5*60);
  * - Styler:
  *   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
  * - FeatureServer:
- *   - wfs-fr-ign-gpf (non opérationnel)
+ *   - IgnWfs
  * - Extract:
  *   - Patrinat
  */

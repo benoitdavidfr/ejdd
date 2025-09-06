@@ -44,6 +44,7 @@ parameters:
     TIntFun: 'Closure(Interpret, AbstractSyntaxTree, mixed ...): mixed'
   paths:
     - index.php
+    - install.php
     - geojson.inc.php
     - bbox.php
     - pos.inc.php
