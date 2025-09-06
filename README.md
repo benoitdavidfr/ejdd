@@ -41,10 +41,12 @@ Solution.
  - chaque **collection** est logiquement un **itérable d'items**, a priori homogènes mais pas forcément
    - la référence d'une collection est la notion de table de n-uplets, ou de collection d'OGC API Features
    - un item doit pouvoir tenir en mémoire Php alors qu'une collection peut ne pas y tenir
- - un JdD doit a minima définir les **3 MD suivantes**
+ - un JdD doit a minima définir les **MD suivantes**
    - title -> titre du JdD sur une ligne
    - description -> texte de présentation du JdD aussi longue qu'utile (il faudrait la mettre en Markdown)
-   - $schema -> schéma JSON listant les collections et décrivant la structure et la sémantique de chacune
+   - $schema -> schéma JSON listant les collections avec pour chacune
+     - a minima un nom, un titre et une description
+     - optionellement sa structure et la sémantique de chaque champ sous la forme d'un schéma JSON
  - le **schéma JSON** d'une collection définit son exposition en Php (en non son stockage)
    - en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
      est sigifiante ou n'est qu'un numéro d'ordre
@@ -58,15 +60,13 @@ Solution.
  - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
  - une catégorie de JdD correspond à
    - une classe Php héritant de Dataset et portant le nom de la catégorie
-   - un fichier Php qui
-     - porte comme comme nom celui de la classe en minuscules et suivi de '.php' et
-     - possède 2 parties
-       - le début du fichier inclus par un require_once définit la classe Php de la catégorie
-         - et est utilisée pour l'instantiation du JdD
-       - la fin du fichier correspond à une application de construction du JdD
-         - qui est exécutée en exécutant le fichier Php
-         - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
-         - qui définit une méthode statique main() qui est appelée à la fin du fichier
+   - un fichier Php ayant pour nom celui de la classe en minuscules et suivi de '.php' et comprenant 2 parties
+     - le début du fichier inclus par un require_once définit la classe Php de la catégorie
+       - et est utilisée pour l'instantiation du JdD
+     - la fin du fichier correspond à une application de construction du JdD
+       - qui est exécutée en exécutant le fichier Php
+       - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
+       - qui définit une méthode statique main() qui est appelée à la fin du fichier
  - la classe Collection représente un itérable d'items qui peut
      - soit appartenir à un JdD (CollectionOfDs),
      - soit être générée dynamiquement par une opération ensembliste (join, projection, ...)
@@ -80,10 +80,10 @@ Solution.
    - qui retourne un Generator sur les items de la collection satisfaisant le filtre
    - avec différents filtres
      - prédicat sur les items
-     - intersection avec un bbox
+     - intersection avec une bbox
      - niveau de zoom
      - nbre d'items à sauter en début de liste (skip)
- - un langage, défini par une BNF, permet de réaliser des requêtes sur les collections, fondées sur des opérateurs
+ - un langage, défini par une BNF, permet d'effectuer des requêtes sur les collections, fondées sur des opérateurs
    algébriques comme jointure, projection, ...
  - une requête peut être exécutée par Collection::query() -> ?Collection|Program
  - une collection peut être affichée pour obtenir ses MD avant d'être activée pour obtenir son contenu
@@ -103,7 +103,7 @@ Perspectives
  - de plus, cette solution pourrait être un client Php de services API Features, un point d'accès API Features serait vu
    comme un Dataset
  - un mécanisme de copie/synchronisation pourrait être mis en place
- - des premiers tests sont effectuées sur le serveur WFS de la GPF mais sans résultats probants
+ - une première approche est mise en oeuvre sur les serveurs WFS de la GPF IGN et du Shom
 
 Mise en oeuvre:
 ---------------
@@ -134,7 +134,7 @@ Mise en oeuvre:
 Jeux de données par catégorie
 -----------------------------
 - Sans catégorie:
-  - DatasetEg
+  - DebugScripts
   - InseeCog
   - DeptReg
   - NomsCnig
@@ -153,4 +153,16 @@ Jeux de données par catégorie
 - Styler:
   - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
 - FeatureServer:
-  - wfs-fr-ign-gpf (non opérationnel)
+  - IgnWfs
+  - ShomWfs
+- FeatureServerExtract
+  - AdminExpress-COG-Carto-PE
+  - AdminExpress-COG-Carto-ME
+  - LimitesAdminExpress
+  - BDCarto
+  - BDTopo
+  - MesuresCompensatoires
+  - RPG
+- Extract
+  - Patrinat
+  - Shom

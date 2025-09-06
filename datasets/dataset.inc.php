@@ -65,7 +65,7 @@ abstract class Dataset {
     'LimitesAdminExpress'=> 'FeatureServerExtract',
     'BDCarto'=> 'FeatureServerExtract',
     'BDTopo'=> 'FeatureServerExtract',
-    'Patnat'=> 'Extract',
+    'Patrinat'=> 'Extract',
     'MesuresCompensatoires'=> 'FeatureServerExtract',
     'RPG'=> 'FeatureServerExtract',
     'ShomWfs'=> 'FeatureServer',
