@@ -28,7 +28,7 @@
  */
 namespace BBox;
 
-require_once('pos.inc.php');
+require_once __DIR__.'/pos.inc.php';
 
 use Pos\Pos;
 

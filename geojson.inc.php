@@ -5,13 +5,14 @@
  * @package GeoJSON
  */
 namespace GeoJSON;
+
+require_once __DIR__.'/bbox.php';
+
 use Pos\Pos;
 use Pos\LPos;
 use Pos\LLPos;
 use Pos\LLLPos;
 use BBox\BBox;
-
-require_once('bbox.php');
 
 /** Les grandeurs kilo, Méga, Giga, ... */
 class U {

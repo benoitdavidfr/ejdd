@@ -4,8 +4,8 @@
  */
 namespace Algebra;
 
-require_once 'query.php';
-require_once 'skipbracket.php';
+require_once __DIR__.'/query.php';
+require_once __DIR__.'/skipbracket.php';
 
 //use GeoJSON\GeoJSON;
 use GeoJSON\Geometry;
@@ -516,7 +516,7 @@ EOT
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
-require_once 'collection.inc.php';
+require_once __DIR__.'/collection.inc.php';
 
 use Dataset\Dataset;
 

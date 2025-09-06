@@ -24,7 +24,7 @@ namespace Dataset;
 
 use JsonSchema\Validator;
 
-require_once __DIR__.'/../dataset.inc.php';
+require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/nomscnig.php';
 
 /** JdD des données des départements et régions. */

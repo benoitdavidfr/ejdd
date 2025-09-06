@@ -4,8 +4,8 @@
  */
 namespace Algebra;
 
-require_once 'collection.inc.php';
-require_once 'concatkeys.php';
+require_once __DIR__.'/collection.inc.php';
+require_once __DIR__.'/concatkeys.php';
 
 /** Construit la liste des propriétés du produit cartésien à partir de la méthode properties() des collections sources.
  * En cas de collision entre noms, génère un nom précédé du péfixe.

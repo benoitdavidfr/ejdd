@@ -4,7 +4,7 @@
  */
 namespace Dataset;
 
-require_once __DIR__.'/../dataset.inc.php';
+require_once __DIR__.'/dataset.inc.php';
 
 /** JdD destiné à debugger les scripts notamment sur les schemas et l'affichage. */
 class DebugScripts extends Dataset {
@@ -262,7 +262,7 @@ class DebugScripts extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
-require_once __DIR__.'/../collection.inc.php';
+require_once __DIR__.'/../algebra/collection.inc.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Algebra\CollectionOfDs as CollectionOfDs;

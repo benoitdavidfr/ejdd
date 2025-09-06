@@ -2,8 +2,8 @@
 /** Génère un flux GeoJSON pour une collection d'un JdD. */
 namespace Algebra;
 
-require_once 'dataset.inc.php';
-require_once 'bbox.php';
+require_once __DIR__.'/datasets/dataset.inc.php';
+require_once __DIR__.'/bbox.php';
 
 use Dataset\Dataset;
 use GeoJSON\Geometry;

@@ -5,8 +5,8 @@
  */
 namespace Algebra;
 
-require_once 'collection.inc.php';
-require_once 'concatkeys.php';
+require_once __DIR__.'/collection.inc.php';
+require_once __DIR__.'/concatkeys.php';
 
 define('A_FAIRE_JOINF', [
 <<<'EOT'

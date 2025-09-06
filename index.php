@@ -42,6 +42,9 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+6/9/2025:
+  - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
+  - déplacement du fichier dataset.inc.php dans le répertoire datasets
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS

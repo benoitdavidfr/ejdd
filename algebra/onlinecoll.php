@@ -2,7 +2,7 @@
 /** Collection définie à la volée utile pour des tests. */
 namespace Algebra;
 
-require_once 'collection.inc.php';
+require_once __DIR__.'/collection.inc.php';
 
 /** Collection définie à la volée utile pour des tests.
  * Collection définie dans l'expression par un contenu JSON.

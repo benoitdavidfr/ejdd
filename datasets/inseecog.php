@@ -4,8 +4,8 @@
  */
 namespace Dataset;
 
+require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/../vendor/autoload.php';
-require_once __DIR__.'/../dataset.inc.php';
 
 use Symfony\Component\Yaml\Yaml;
 

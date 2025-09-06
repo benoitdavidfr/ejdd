@@ -19,7 +19,7 @@ EOT
 ]
 );
 
-require_once __DIR__.'/../dataset.inc.php';
+require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/proj.php';
 require_once __DIR__.'/joinf.php';
 require_once __DIR__.'/predicate.inc.php';

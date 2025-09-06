@@ -4,7 +4,7 @@
  */
 namespace Algebra;
 
-require_once 'collection.inc.php';
+require_once __DIR__.'/collection.inc.php';
 
 /** L'opérateur de projection qui réduit le nombre de champs d'une Collection et les renomme. */
 class Proj extends Collection {
@@ -77,7 +77,7 @@ class Proj extends Collection {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
 
-require_once 'dataset.inc.php';
+require_once __DIR__.'/../datasets/dataset.inc.php';
 use Dataset\Dataset;
 
 /** Test de Proj. */

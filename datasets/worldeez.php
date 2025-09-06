@@ -4,8 +4,8 @@
  */
 namespace Dataset;
 
-require_once __DIR__.'/../dataset.inc.php';
 require_once __DIR__.'/../geojson.inc.php';
+require_once __DIR__.'/dataset.inc.php';
 
 use GeoJSON\Feature;
 use GeoJSON\Geometry;

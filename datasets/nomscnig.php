@@ -6,10 +6,10 @@
  */
 namespace Dataset;
 
+require_once __DIR__.'/dataset.inc.php';
+
 use Algebra\RecArray;
 use JsonSchema\Validator;
-
-require_once __DIR__.'/../dataset.inc.php';
 
 /** JdD des Noms des collectivités territoriales françaises définis par la Commission Nationale de Toponymie du CNIG (NomsCnig). */
 class NomsCnig extends Dataset {

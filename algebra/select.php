@@ -4,8 +4,8 @@
  */
 namespace Algebra;
 
-require_once 'collection.inc.php';
-require_once 'onlinecoll.php';
+require_once __DIR__.'/collection.inc.php';
+require_once __DIR__.'/onlinecoll.php';
 
 /** Opérateur de sélection des n-uplets sur un prédicat fournissant une collection.
  * Il y a une duplication entre l'opérateur Select et la possibilité pour une Collection de prendre en compte un filtre Predicate.

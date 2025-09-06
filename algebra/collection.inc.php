@@ -4,13 +4,13 @@
  */
 namespace Algebra;
 
-require_once __DIR__.'/dataset.inc.php';
+require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
-require_once __DIR__.'/algebra/predicate.inc.php';
-require_once __DIR__.'/geojson.inc.php';
+require_once __DIR__.'/predicate.inc.php';
+require_once __DIR__.'/../geojson.inc.php';
 
 use Dataset\Dataset;
-use Algebra\DsParser;
+//use Algebra\DsParser;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;

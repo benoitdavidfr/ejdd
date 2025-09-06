@@ -4,7 +4,7 @@
  */
 namespace Algebra;
 
-require_once 'skipbracket.php';
+require_once __DIR__.'/skipbracket.php';
 
 /** Concatène et déconcatène des clés lors d'un produit cartésien de Collections. */
 class Keys {
