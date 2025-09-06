@@ -19,12 +19,12 @@ EOT
 ]
 );
 
-require_once 'dataset.inc.php';
-require_once 'proj.php';
-require_once 'joinf.php';
-require_once 'predicate.inc.php';
-require_once 'joinp.php';
-require_once 'select.php';
+require_once __DIR__.'/../dataset.inc.php';
+require_once __DIR__.'/proj.php';
+require_once __DIR__.'/joinf.php';
+require_once __DIR__.'/predicate.inc.php';
+require_once __DIR__.'/joinp.php';
+require_once __DIR__.'/select.php';
 
 use Dataset\Dataset;
 

@@ -44,14 +44,13 @@ parameters:
     TIntFun: 'Closure(Interpret, AbstractSyntaxTree, mixed ...): mixed'
   paths:
     - index.php
-    - dataset.inc.php
-    - collection.inc.php
-    - schema.inc.php
     - geojson.inc.php
     - bbox.php
     - pos.inc.php
     - geojson.php
     #- map.php - n'est plus utile
+    - algebra/schema.inc.php
+    - algebra/collection.inc.php
     - algebra/predicate.inc.php
     - algebra/skipbracket.php
     - algebra/cproduct.php
@@ -62,6 +61,7 @@ parameters:
     - algebra/select.php
     - algebra/onlinecoll.php
     - algebra/query.php
+    - datasets/dataset.inc.php
     - datasets/debugscripts.php
     - datasets/inseecog.php
     - datasets/deptreg.php

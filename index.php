@@ -213,9 +213,9 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f README.md,bbox.php,collection.inc.php,concatkeys.php,cproduct.php,dataset.inc.php,geojson.inc.php,geojson.php,index.php,joinf.php,joinp.php,onlinecoll.php,pos.inc.php,predicate.inc.php,proj.php,query.php,schema.inc.php,select.php,skipbracket.php,testschema.php,zoomlevel.php,\
-datasets/aecogpe.php,datasets/debugscripts.php,datasets/deptreg.php,datasets/extract.php,datasets/featureserver.php,datasets/featureserverextract.php,datasets/geodataset.php,datasets/inseecog.php,datasets/mapdataset.php,datasets/nomscnig.php,datasets/nomsctcnigc.php,datasets/pays.php,datasets/spreadsheetdataset.inc.php,datasets/styler.php,datasets/worldeez.php
-
+    ../phpDocumentor.phar -f 
+    
+    
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -245,7 +245,7 @@ J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 EOT
 ];
 
-require_once 'dataset.inc.php';
+require_once __DIR__.'/datasets/dataset.inc.php';
 
 use Dataset\Dataset;
 use Algebra\CollectionOfDs;

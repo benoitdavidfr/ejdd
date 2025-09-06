@@ -6,7 +6,7 @@ namespace Algebra;
 
 require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
-require_once __DIR__.'/predicate.inc.php';
+require_once __DIR__.'/algebra/predicate.inc.php';
 require_once __DIR__.'/geojson.inc.php';
 
 use Dataset\Dataset;
