@@ -12,6 +12,10 @@ Cette démarche répond à 5 besoins:
    - cartographier les JdD en mode web
    - faire facilement des traitements ensemblistes comme des jointures et des projections
 
+Cette démarche propose un cadre extensible dans 2 directions:
+  - d'une part, on peut rajouter facilement de noveux jeux de données
+  - d'autre part, on peut rajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
+
 Techno utilisées (JSON/Yaml/ODS/Php):
 -------------------------------------
   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
