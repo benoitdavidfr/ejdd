@@ -436,11 +436,11 @@ switch ($_GET['action'] ?? null) {
     //  2) que la définition de la carte à dessiner ne présente pas d'erreurs d'intégrité
     $mapDataset = Dataset::get('MapDataset');
     
-    if (!$mapDataset->schemaIsValid() || !$mapDataset->isValid(false)) {
-      echo "Erreur, le schéma du JdD des cartes est invalide ou certaines cartes ne sont pas conformes au schéma du JdD.<br>\n",
+    if (!$mapDataset->isValid(false)) {
+      echo "Erreur, certaines cartes ne sont pas conformes au schéma du JdD.<br>\n",
            "Dessin de la carte impossible.<br>\n",
            "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";
-      die();
+      throw new \Exception("Cartes non valides");
     }
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
     foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
@@ -449,7 +449,7 @@ switch ($_GET['action'] ?? null) {
     if ($errors = $map->integrityErrors($_GET['map'])) {
       echo "Erreur, la définition de la carte $_GET[map] présente des erreurs d'intégrité. Dessin impossible.<br>\n";
       echo "<pre>errors="; print_r($errors); echo "</pre>\n";
-      die();
+      throw new \Exception("Carte '$_GET[map]' non valide");
     }
     //echo '<pre>$map='; print_r($map);
     echo $map->draw();

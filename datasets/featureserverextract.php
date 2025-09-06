@@ -32,7 +32,7 @@ La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris 
 Le produit ADMIN EXPRESS COG PE est de plus conforme au code officiel géographique publié chaque année par l’INSEE et est destiné à des usages statistiques.
 "
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'ADMINEXPRESS-COG-CARTO-PE.LATEST:',
     ],
     'AdminExpress-COG-Carto-ME' => [
@@ -55,13 +55,13 @@ Il contient les classes d'objets suivantes:
 La gamme ADMIN EXPRESS couvre l'ensemble des départements français, y compris les départements et régions d'outre-mer (DROM) mais pas les collectivités d'outre-mer (COM).
 Le produit ADMIN EXPRESS COG est de plus conforme au code officiel géographique publié chaque année par l’INSEE et correspond à cartographie moyenne échelle destiné à des usages cartographiques."
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'ADMINEXPRESS-COG-CARTO.LATEST:',
     ],
     'LimitesAdminExpress' => [
       'title'=> "Limites administratives Express (mise à jour en continu) de l'IGN",
       'description'=> ["Limites administratives Express (mise à jour en continu) de l'IGN"],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST:',
     ],
     'BDCarto' => [
@@ -75,7 +75,7 @@ La BD CARTO® est également un fond cartographique de référence, précis et h
 
 La BD CARTO® est publiée une fois par an, au 2ème trimestre. (https://geoservices.ign.fr/bdcarto)"
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'BDCARTO_V5:',
     ],
     'BDTopo'=> [
@@ -106,7 +106,7 @@ Le produit Différentiel BD TOPO® contient les différences géométriques et s
 
 Plus précisément, l'édition N du Différentiel BD TOPO® en vigueur contient tout objet de la BD TOPO® dont la date de modification, la date de création ou la date de suppression en base est postérieure à la date de prédiffusion de la précédente édition trimestrielle (N-1), équivalent à une activité de mise à jour par l'IGN d'une durée de 3 mois. (https://geoservices.ign.fr/bdtopo)"
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'BDTOPO_V3:',
     ],
     'MesuresCompensatoires'=> [
@@ -114,7 +114,7 @@ Plus précisément, l'édition N du Différentiel BD TOPO® en vigueur contient 
       'description'=> [
         "Mesure en faveur de l'environnement permettant de contrebalancer les dommages qui lui sont causés par un projet et qui n'ont pu être évités ou limités par d'autres moyens."
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'MESURES_COMPENSATOIRES:',
     ],
     'RPG'=> [
@@ -124,7 +124,7 @@ Plus précisément, l'édition N du Différentiel BD TOPO® en vigueur contient 
 
 La version anonymisée diffusée ici dans le cadre du service public de mise à disposition des données de référence contient les données graphiques des parcelles (unité foncière de base de la déclaration des agriculteurs) munis de leur culture principale. Ces données sont produites par l'Agence de Services et de Paiement (ASP) depuis 2007. (https://geoservices.ign.fr/rpg)."
       ],
-      'source'=> 'wfs-fr-ign-gpf',
+      'source'=> 'IgnWfs',
       'prefix'=> 'RPG.LATEST:',
     ],
   ];

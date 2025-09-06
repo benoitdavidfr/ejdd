@@ -45,6 +45,7 @@ Journal des modifications récentes du code
 6/9/2025:
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
+  - ajout de Dataset::isAvailable()
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS
@@ -430,17 +431,20 @@ class Application {
           foreach (Dataset::REGISTRE as $dsName=> $class) {
             $dataset = Dataset::get($dsName);
             //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
-            echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
+            if ($dataset->isAvailable())
+              echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
+            elseif ($dataset->isAvailable('forBuilding'))
+              echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a> disponible à la construction.<br>\n";
           }
           
           echo "<h2>Tests</h2><ul>\n";
-          echo "<li><a href='proj.php'>Projection d'une collection</a></li>\n";
-          echo "<li><a href='select.php'>Sélection d'une collection</a></li>\n";
-          echo "<li><a href='joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
-          echo "<li><a href='joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
-          echo "<li><a href='cproduct.php'>Produit cartésien entre 2 collections</a></li>\n";
+          echo "<li><a href='algebra/proj.php'>Projection d'une collection</a></li>\n";
+          echo "<li><a href='algebra/select.php'>Sélection d'une collection</a></li>\n";
+          echo "<li><a href='algebra/joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
+          echo "<li><a href='algebra/joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
+          echo "<li><a href='algebra/cproduct.php'>Produit cartésien entre 2 collections</a></li>\n";
           //echo "<li><a href='expparser.php'>expparser</a></li>\n";
-          echo "<li><a href='query.php'>Requêter les collections</a></li>\n";
+          echo "<li><a href='algebra/query.php'>Requêter les collections</a></li>\n";
           echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
           echo "</ul>\n";
 
@@ -458,14 +462,17 @@ class Application {
           $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
           echo "<a href='datasets/",strToLower($class),".php?dataset=$_GET[dataset]'>",
                 "Appli de construction du JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='geojson.php/$_GET[dataset]'>Affiche en GeoJSON les collections du JdD $_GET[dataset]</a><br>\n";
-          echo "<a href='?action=validate&dataset=$_GET[dataset]'>",
-                "Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
-          echo "<a href='?action=validate&dataset=$_GET[dataset]&nbreItems=10'>",
-                "Vérifie la conformité d'un extrait du JdD $_GET[dataset] / son schéma</a><br>\n";
-          echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
+          $dataset = Dataset::get($_GET['dataset']);
+          if ($dataset->isAvailable()) {
+            echo "<a href='?action=display&dataset=$_GET[dataset]'>Affiche en Html le JdD $_GET[dataset]</a><br>\n";
+            echo "<a href='?action=stats&dataset=$_GET[dataset]'>Affiche les stats du JdD $_GET[dataset]</a><br>\n";
+            echo "<a href='geojson.php/$_GET[dataset]'>Affiche en GeoJSON les collections du JdD $_GET[dataset]</a><br>\n";
+            echo "<a href='?action=validate&dataset=$_GET[dataset]'>",
+                  "Vérifie la conformité du JdD $_GET[dataset] / son schéma</a><br>\n";
+            echo "<a href='?action=validate&dataset=$_GET[dataset]&nbreItems=10'>",
+                  "Vérifie la conformité d'un extrait du JdD $_GET[dataset] / son schéma</a><br>\n";
+            echo "<a href='?action=json&dataset=$_GET[dataset]'>Affiche le JSON du JdD $_GET[dataset]</a><br>\n";
+          }
         }
         break;
       }

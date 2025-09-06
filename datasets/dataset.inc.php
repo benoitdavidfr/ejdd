@@ -59,7 +59,7 @@ abstract class Dataset {
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
     'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
-    'wfs-fr-ign-gpf'=> 'FeatureServer',
+    'IgnWfs'=> 'FeatureServer',
     'AdminExpress-COG-Carto-PE'=> 'FeatureServerExtract',
     'AdminExpress-COG-Carto-ME'=> 'FeatureServerExtract',
     'LimitesAdminExpress'=> 'FeatureServerExtract',
@@ -129,19 +129,14 @@ abstract class Dataset {
       $class = '\\Dataset\\'.$class;
       return new $class($dsName);
     }
-    /*elseif (preg_match('!^([^(]+)\(!', $dsName, $matches)) {
-      switch ($matches[1]) {
-        case 'InnerJoin':
-        case 'LeftJoin': {
-          require_once 'join.php';
-          return new Join($dsName);
-        }
-        default: throw new Exception("Motif non prévu dans Dataset::get($dsName)");
-      }
-    }*/
     else
       throw new \Exception("Erreur dataset $dsName inexistant");
   }
+  
+  /** Permet à un JdD d'indiquer qu'il n'est pas disponible ou qu'il est disponible pour construction.
+   * Peut permettre au même code de tourner dans des environnements où certains jeux ne sont pas disponibles.
+   */
+  function isAvailable(?string $condition=null): bool { return true; }
   
   /** Retourne les filtres implémentés par getTuples(). Peut être redéfinie par chaque Dataset.
    * Les filtres possibles sont:

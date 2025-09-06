@@ -83,7 +83,8 @@ class WfsCap {
   
   /** Retourne le string correspondant aux capabilities */
   static function getCapabilities(string $name): string {
-    $registre = FeatureServer::REGISTRE[$name];
+    if (!($registre = FeatureServer::REGISTRE[$name] ?? null))
+      throw new \Exception("Nom '$name' inconnu dans FeatureServer::REGISTRE");
     return Cache::get(
       "$name/cap.xml",
       $registre['url'].'?service=WFS&version=2.0.0&request=GetCapabilities'
@@ -181,9 +182,9 @@ class WfsCap {
 class FeatureServer extends Dataset {
   /** Registre des serveurs WFS indexé par le nom du JdD. */
   const REGISTRE = [
-    'wfs-fr-ign-gpf' => [
-      'title'=> "Service WFS de la Géoplateforme",
-      'description'=> "Service WFS de la Géoplateforme",
+    'IgnWfs' => [
+      'title'=> "Service WFS de la Géoplateforme IGN",
+      'description'=> "Service WFS de la Géoplateforme IGN",
       'url'=> 'https://data.geopf.fr/wfs/ows',
       'type'=> 'WFS',
       'version'=> '2.0.0',

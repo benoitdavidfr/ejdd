@@ -1,7 +1,9 @@
 <?php
 /** Gestion d'un JdD géographique générique, utilisé par exemple pour les JdD Natural Earth.
- * Les données sont stockées dans les fichiers GeoJSON stockés dans un répertoire ayant comme nom celui du JdD en miniscules,
+ * Les données sont stockées dans les fichiers GeoJSON stockés dans un répertoire ayant comme nom celui du JdD en minuscules,
  * et les MD sont dans le fichier Yaml utilisant le nom du JdD en minuscules.
+ * Un JdD peut se déclarer indisponible si le répertoire des fichiers GeoJSON n'existe pas.
+ * Il peut se déclarer indisponible mais disponible pour sa construction si le répertoire soure existe.
  *
  * @package Dataset
  */
@@ -31,7 +33,18 @@ class GeoDataset extends Dataset {
     parent::__construct($dsName, $md['$schema']);
     $this->params = $md['params'];
   }
-
+  
+  /** Permet à un JdD d'indiquer qu'il n'est pas disponible ou qu'il est disponible pour construction.
+   * Peut permettre au même code de tourner dans des environnements où certains jeux ne sont pas disponibles.
+   */
+  function isAvailable(?string $condition=null): bool {
+    return match ($condition) {
+      null => is_dir(__DIR__.strtolower('/'.$this->dsName)),
+      'forBuilding' => is_dir($this->params['SHP_DIR']),
+      default => throw new \Exception("Condition '$condition' non comprise"),
+    };
+  }
+  
   /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $cName nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les items à renvoyer
