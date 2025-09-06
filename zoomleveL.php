@@ -1,9 +1,10 @@
 <?php
-/** Autour des niveaux de zoom Leaflet;
+/** Autour des niveaux de zoom Leaflet.
  * @package Misc
  */
 namespace Misc;
 
+/** Autour des niveaux de zoom Leaflet. */
 class ZoomLevel {
   /** Demi grand axe de l'ellipsoide IAG_GRS_1980 - en anglais Equatorial radius - en mètres */
   const IAG_GRS_1980_A = 6378137.0;

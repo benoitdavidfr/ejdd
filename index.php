@@ -1,7 +1,6 @@
 <?php
 /** Fichier racine de dataset.
- * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte la documentation générale de l'application
- * ainsi que le code de bootstrap de l'application.
+ * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte le code de bootstrap de l'IHM.
  */
 
 /** Actions à réaliser. */
@@ -46,6 +45,7 @@ Journal des modifications récentes du code
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
   - ajout de Dataset::isAvailable()
+  - ajout d'un fichier lib.php, amélioration de la doc
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS
@@ -220,7 +220,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -261,11 +261,9 @@ use Algebra\CollectionOfDs;
 ini_set('memory_limit', '10G');
 set_time_limit(5*60);
 
-/** Documentation générale de l'application.
- * Voir le README.
- */
+/** Documentation générale de l'application -> voir le README. */
 class Application {
-  /** Code initial de l'application. */
+  /** Bootstrap de l'IHM. */
   static function main(): void {
     switch ($_GET['action'] ?? null) {
       case null: {
