@@ -24,12 +24,8 @@ class MapDataset extends Dataset {
   function __construct(string $name) {
     $dataset = Yaml::parseFile(self::YAML_FILE_PATH);
     parent::__construct($name, $dataset['$schema']);
-    $data = [];
-    foreach ($dataset as $key => $value) {
-      if (!in_array($key, ['$schema']))
-        $data[$key] = $value;
-    }
-    $this->data = $data;
+    unset($dataset['$schema']);
+    $this->data = $dataset;
   }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
@@ -107,7 +103,8 @@ switch ($_GET['action'] ?? null) {
     echo "<h2>Liste des cartes à dessiner</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
     foreach ($mapDataset->getItems('maps') as $mapKey => $map)
-      echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a><br>\n";
+      echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a>, ",
+           "<a href='?action=show&map=$mapKey'>l'afficher</a>.<br>\n";
     break;
   }
   case 'draw': {
@@ -132,7 +129,17 @@ switch ($_GET['action'] ?? null) {
       throw new \Exception("Carte '$_GET[map]' non valide");
     }
     //echo '<pre>$map='; print_r($map);
-    echo $map->draw();
+    echo $map->draw(Layer::$all);
+    break;
+  }
+  case 'show': {
+    echo "<title>$_GET[map]</title>\n";
+    $mapDataset = Dataset::get('MapDataset');;
+    $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
+    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
+      Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
+    }
+    $map->display(Layer::$all);
     break;
   }
   default: {

@@ -179,7 +179,7 @@ class CollectionOfDs extends Collection {
     $this->dsName = $dsName;
     $this->name = $name;
     $this->schema = SchemaOfCollection::create($schema);
-    $this->title = $schema['title'];
+    $this->title = $this->schema->schema['title'];
     parent::__construct($this->schema->kind("$dsName.$name"));
   }
   

@@ -158,10 +158,11 @@ abstract class SchemaOfCollection {
    * @param array<mixed> $schema - le schéma JSON
    */
   static function create(array $schema): self {
+    $schema = self::defReplace($schema);
     return match($type = $schema['type'] ?? null) {
-      'object'=> new SchemaOfDict(self::defReplace($schema)),
-      'array' => new SchemaOfList(self::defReplace($schema)),
-      default => throw new \Exception("type = '$type' inconnu"),
+      'object'=> new SchemaOfDict($schema),
+      'array' => new SchemaOfList($schema),
+      default => throw new \Exception("type = '$type' inconnu sur schema=".json_encode($schema).""),
     };
   }
 

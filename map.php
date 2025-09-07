@@ -13,8 +13,12 @@
 namespace Map;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
+require_once __DIR__.'/vendor/autoload.php';
 
 use Dataset\Dataset;
+use Lib\RecArray;
+use Symfony\Component\Yaml\Yaml;
+use JsonSchema\Validator;
 
 /** Classe abstraite des couches pour générer le code JS correspondant à la couche */
 abstract class Layer {
@@ -28,7 +32,7 @@ abstract class Layer {
   
   /** Création d'une couche dans la bonne classe en fonction des paramètres.
    * L'intégrité des couches est vérifiée par checkIntegrity().
-   * @param array<mixed> $def La définition de la couche
+   * @param array<mixed> $def La définition de la couche respectant le schéma de la couche
    */
   static function create(string $lyrId, array $def): self {
     $title = $def['title'];
@@ -57,7 +61,20 @@ abstract class Layer {
   /** Les erreurs d'intégité soulèvent des exceptions. */
   abstract function checkIntegrity(): void;
   
+  /** Retourne le code JS pour afficher la couche. */
   abstract function toJS(): string;
+  
+  /** Retourne une Layer comme un array avec son id pour affichage avec Yaml::dump().
+   * @return array<string,mixed>
+   */
+  function asArray(): array {
+    return [$this->lyrId => [
+      substr(get_class($this), 4) => [
+        'title'=> $this->title,
+        'params'=> $this->params,
+      ]
+    ]];
+  }
 };
 
 /** Classe concrète des couches L_TileLayer*/
@@ -246,13 +263,11 @@ EOT
 ]
 );
 
-/** Prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet la dessinant. */
+/** Prend une carte définie de mapdataset.yaml et génère le code JS Leaflet la dessinant.
+ */
 class Map {
-  /** @var array<mixed> $def La définition de la carte issue du JdD. */
-  readonly array $def;
-  
-  /** @param array<mixed> $def La définition de la carte issue du JdD. */
-  function __construct(array $def) { $this->def = $def; }
+  /** @param array<mixed> $def La définition de la carte respectant le schéma de la carte. */
+  function __construct(readonly array $def) {}
   
   /** Retourne la liste des erreurs d'intégrité de la définition de la carte.
    * @return list<string>
@@ -282,10 +297,11 @@ class Map {
   }
   
   /** Génère le code JS pour les couches.
+   * @param array<string,Layer> $layers - le dict. des Layers qui doit au moins contenir les Layer citées dans la carte
    * @param list<string> $layerNames La liste des noms des couches. */
-  function drawLayers(string $pattern, array $layerNames, string $jsCode): string {
+  function drawLayers(array $layers, string $pattern, array $layerNames, string $jsCode): string {
     foreach ($layerNames as $layerName) {
-      if (!($layer = Layer::$all[$layerName] ?? null))
+      if (!($layer = $layers[$layerName] ?? null))
         throw new \Exception("Erreur baseLayer '$layerName' non définie");
       $jsCode = str_replace(
         $pattern,
@@ -305,8 +321,10 @@ class Map {
     return $url;
   }
   
-  /** génère le code JS de dessin de la carte. */
-  function draw(): string {
+  /** Génère le code JS de dessin de la carte.
+   * @param array<string,Layer> $layers - le dict. des Layers qui doit au moins contenir les Layer citées dans la carte
+   */
+  function draw(array $layers): string {
     //echo "urlOftheDir()=",self::urlOftheDir(),"<br>\n";
     $urlOftheDir = self::urlOftheDir();
     // le chemin du répertoire leaflet doit être défini indépendamment du script appelant cette méthode
@@ -323,20 +341,20 @@ class Map {
     $jsCode = str_replace("    var {varName} = {varValue};\n", '', $jsCode );
       
     // les baseLeyrs
-    $jsCode = $this->drawLayers("  {baseLayers}\n", $this->def['baseLayers'], $jsCode);
+    $jsCode = $this->drawLayers($layers, "  {baseLayers}\n", $this->def['baseLayers'], $jsCode);
     
     // affichage par défaut de la baseLayer
     $defaultBaseLayer = $this->def['defaultBaseLayer'];
-    if (!(Layer::$all[$defaultBaseLayer] ?? null))
+    if (!($layers[$defaultBaseLayer] ?? null))
       throw new \Exception("Erreur defaultBaseLayer '$defaultBaseLayer' non définie");
     $jsCode = str_replace('{defaultBaseLayer}', $defaultBaseLayer, $jsCode);
     
     // la déf. des overlays
-    $jsCode = $this->drawLayers("  {overlays}\n", $this->def['overlays'], $jsCode);
+    $jsCode = $this->drawLayers($layers, "  {overlays}\n", $this->def['overlays'], $jsCode);
     
     // les affichage par défaut des overlays
     foreach ($this->def['defaultOverlays'] as $defaultOverlay) {
-      if (!(Layer::$all[$defaultOverlay] ?? null))
+      if (!($layers[$defaultOverlay] ?? null))
         throw new \Exception("Erreur defaultOverlay '$defaultOverlay' non définie");
       $jsCode = str_replace(
         "map.addLayer(overlays[\"{defaultOverlay}\"]);\n",
@@ -355,126 +373,232 @@ class Map {
       
     return $jsCode;
   }
+  
+  /** Affiche une carte.
+   * @param array<string,Layer> $layers - le dict. des Layers qui doit au moins contenir les Layer citées dans la carte
+   */
+  function display(array $layers): void {
+    echo "<h2>",$this->def['title'],"</h2>\n";
+    echo '<pre>',Yaml::dump($this->def, 9, 2),"</pre>\n";
+    $layersAsArray = [];
+    foreach (['baseLayers','overlays'] as $lyrKind) {
+      foreach ($this->def[$lyrKind] as $lyrId) {
+        $layersAsArray[$lyrKind] = array_merge($layersAsArray[$lyrKind] ?? [], $layers[$lyrId]->asArray());
+      }
+    }
+    echo "<h3>Couches</h3>\n";
+    echo '<pre>',Yaml::dump($layersAsArray, 5, 2),"</pre>\n";
+  }
+};
+
+class SchemaOfAMapAndItsLayers {
+  /** Chemin du JdD MapDataset. */
+  const YAML_FILE_PATH = __DIR__.'/datasets/mapdataset.yaml';
+  
+  /** @var array<mixed> $def - définition du schéma de AMapAndItsLayers construit à partir de celui de MapDataset. */
+  readonly array $def;
+  
+  /** Construit la définition du schéma de AMapAndItsLayers construit à partir de celui de MapDataset. */
+  function __construct() {
+    $mapdataset = Yaml::parseFile(self::YAML_FILE_PATH);
+    $schemaOfMapDataset = $mapdataset['$schema'];
+    $this->def = [
+      '$schema'=> 'http://json-schema.org/draft-07/schema#',
+      'definitions'=> $schemaOfMapDataset['definitions'],
+      'type'=> 'object',
+      'required'=> ['map','layers'],
+      'additionalProperties'=> false,
+      'properties'=> [
+        'map'=> ['$ref'=> '#/definitions/schemaOfAMap'],
+        'layers'=> ['$ref'=> '#/definitions/schemaOfLayers'],
+      ],
+    ];
+  }
+  
+  /** Retourne le validateur de la déf d'une AMapAndItsLayers / son schéma.
+   * @param array<mixed> $mapAndItsLayers - déf. de la AMapAndItsLayers */
+  function validator(array $mapAndItsLayers): Validator {
+    $validator = new Validator;
+    $mapAndItsLayers = RecArray::toStdObject($mapAndItsLayers);
+    $validator->validate($mapAndItsLayers, $this->def);
+    return $validator;
+  }
+};
+
+/** Prend la déf. d'une carte et de ses couches et construit un objet Map et un ens. d'objets Layer.
+ */
+class AMapAndItsLayers {
+  readonly Map $map;
+  /** @var array<string,Layer> $layers */
+  readonly array $layers; 
+  
+  /** Valide la déf d'une AMapAndItsLayers / son schéma, renvoie null si Ok et sinon le Validator.
+   * @param array<mixed> $def - déf. de la AMapAndItsLayers */
+  static function isInValid(array $def): ?Validator {
+    $schemaOfAMapAndItsLayers = new SchemaOfAMapAndItsLayers;
+    $validator = $schemaOfAMapAndItsLayers->validator($def);
+    return $validator->isValid() ? null : $validator;
+  }
+  
+  /** Affiche les erreurs de non conformité de la définition / son schéma. */
+  static function displayErrors(Validator $validator): void {
+    if (!($errors = $validator->getErrors())) {
+      echo "La définition est conforme à son schéma.<br>\n";
+    }
+    else {
+      echo "<pre>La définition n'est pas conforme à son schéma. Violations:<br>\n";
+      foreach ($errors as $error) {
+        printf("[%s] %s\n", $error['property'], $error['message']);
+      }
+      echo "</pre>\n";
+    }
+  }
+  
+  /** @param array<mixed> $def La définition de la carte et des layers. */
+  function __construct(readonly array $def) {
+    if ($validator = self::isInValid($def)) {
+      self::displayErrors($validator);
+      throw new \Exception("La définition de AMapAndItsLayers n'est pas conforme à son schéma");
+    }
+    
+    $layers = [];
+    foreach ($def['layers'] as $lyrId => $lyrDef) {
+      $layers[$lyrId] = Layer::create($lyrId, $lyrDef);
+    }
+    $this->layers = $layers;
+    $this->map = new Map($def['map']);
+  }
+  
+  function draw(): string { return $this->map->draw($this->layers); }
+
+  function display(): void { $this->map->display($this->layers); }
 };
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // séparateur
 
 
-require_once __DIR__.'/vendor/autoload.php';
-
-use Symfony\Component\Yaml\Yaml;
-
-$yamlDefs = [
-  'map' => <<<'EOT'
-title: Carte NaturalEarth stylée
-vars:
-  userverdir: 'http://localhost/gexplor/visu/'
-baseLayers:
-  - OSM
-  - FondBlanc
-defaultBaseLayer: OSM
-overlays:
-  - NECoastlinesAndBoundaries
-  - NEMappingUnits
-  - NEMappingSubUnits
-  - antimeridien
-  - debug
-defaultOverlays:
-  - NECoastlinesAndBoundaries
-  - antimeridien
-EOT,
-  'layers'=> <<<'EOT'
-OSM:
-  title: OSM
-  L.TileLayer:
-    - 'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-    - attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank'>les contributeurs d’OpenStreetMap</a>"
-FondBlanc:
-  title: 'Fond blanc'
-  L.TileLayer:
-    - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
-    - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
-NECoastlinesAndBoundaries:
-  title: Couche NaturalEarth côtes et limites de pays stylée
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}NaturalEarth/collections/coastlinesAndBoundaries/items'
-    minZoom: 0
-    maxZoom: 18
-    usebbox: true
-    onEachFeature: onEachFeature
-    style: 'function(feature) { return feature.style; }'
-NEMappingUnits:
-  title: Couche NaturalEarth unités carto. stylée
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
-    minZoom: 0
-    maxZoom: 18
-    usebbox: true
-    onEachFeature: onEachFeature
-    style: 'function(feature) { return feature.style; }'
-NEMappingSubUnits:
-  title: Couche NaturalEarth sous-unités carto. stylée
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}NaturalEarth/collections/mappingSubUnits/items'
-    minZoom: 0
-    maxZoom: 18
-    usebbox: true
-    onEachFeature: onEachFeature
-    style: 'function(feature) { return feature.style; }'
-Région:
-  title: 'Région de AE COG PE'
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}AeCogPe/collections/region/items'
-    minZoom: 0
-    maxZoom: 7
-    usebbox: true
-    onEachFeature: onEachFeature
-Département:
-  title: 'Département de AE COG PE'
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}AeCogPe/collections/departement/items'
-    minZoom: 7
-    maxZoom: 8
-    usebbox: true
-    onEachFeature: onEachFeature
-EPCI:
-  title: 'EPCI de AE COG PE'
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}AeCogPe/collections/epci/items'
-    minZoom: 8
-    maxZoom: 10
-    usebbox: true
-    onEachFeature: onEachFeature
-Commune:
-  title: 'Commune de AE COG PE'
-  L.UGeoJSONLayer:
-    endpoint: '{gjsurl}AeCogPe/collections/commune/items'
-    minZoom: 10
-    maxZoom: 18
-    usebbox: true
-    onEachFeature: onEachFeature
-antimeridien:
-  title: antimeridien
-  L.geoJSON:
-    - type: MultiPolygon
-      coordinates:
-        - [[[ 180.0,-90.0],[ 180.1,-90.0],[ 180.1,90.0],[ 180.0,90.0],[ 180.0,-90.0]]]
-        - [[[-180.0,-90.0],[-180.1,-90.0],[-180.1,90.0],[-180.0,90.0],[-180.0,-90.0]]]
-    - style:
-        color: red
-        weight: 2
-        opacity: 0.65
-debug:
-  title: debug
-  L.TileLayer:
-    - '{userverdir}utilityserver.php/debug/{z}/{x}/{y}.png'
-    - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+$mapAilYamlDef = [
+  <<<'EOT'
+map:
+  title: Carte NaturalEarth stylée
+  vars:
+    userverdir: 'http://localhost/gexplor/visu/'
+  baseLayers:
+    - OSM
+    - FondBlanc
+  defaultBaseLayer: OSM
+  overlays:
+    - NECoastlinesAndBoundaries
+    - NEMappingUnits
+    - NEMappingSubUnits
+    - antimeridien
+    - debug
+  defaultOverlays:
+    - NECoastlinesAndBoundaries
+    - antimeridien
+layers:
+  OSM:
+    title: OSM
+    L.TileLayer:
+      - 'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+      - attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank'>les contributeurs d’OpenStreetMap</a>"
+  FondBlanc:
+    title: 'Fond blanc'
+    L.TileLayer:
+      - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
+      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
+  NECoastlinesAndBoundaries:
+    title: Couche NaturalEarth côtes et limites de pays stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/coastlinesAndBoundaries/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingUnits:
+    title: Couche NaturalEarth unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  NEMappingSubUnits:
+    title: Couche NaturalEarth sous-unités carto. stylée
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}NaturalEarth/collections/mappingSubUnits/items'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+      style: 'function(feature) { return feature.style; }'
+  Région:
+    title: 'Région de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/region/items'
+      minZoom: 0
+      maxZoom: 7
+      usebbox: true
+      onEachFeature: onEachFeature
+  Département:
+    title: 'Département de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/departement/items'
+      minZoom: 7
+      maxZoom: 8
+      usebbox: true
+      onEachFeature: onEachFeature
+  EPCI:
+    title: 'EPCI de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/epci/items'
+      minZoom: 8
+      maxZoom: 10
+      usebbox: true
+      onEachFeature: onEachFeature
+  Commune:
+    title: 'Commune de AE COG PE'
+    L.UGeoJSONLayer:
+      endpoint: '{gjsurl}AeCogPe/collections/commune/items'
+      minZoom: 10
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+  antimeridien:
+    title: antimeridien
+    L.geoJSON:
+      - type: MultiPolygon
+        coordinates:
+          - [[[ 180.0,-90.0],[ 180.1,-90.0],[ 180.1,90.0],[ 180.0,90.0],[ 180.0,-90.0]]]
+          - [[[-180.0,-90.0],[-180.1,-90.0],[-180.1,90.0],[-180.0,90.0],[-180.0,-90.0]]]
+      - style:
+          color: red
+          weight: 2
+          opacity: 0.65
+  debug:
+    title: debug
+    L.TileLayer:
+      - '{userverdir}utilityserver.php/debug/{z}/{x}/{y}.png'
+      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
 EOT
 ];
+$mapAil = new AMapAndItsLayers(Yaml::parse($mapAilYamlDef[0]));
 
-foreach (Yaml::parse($yamlDefs['layers']) as $lyrId => $lyrDef) {
-  Layer::$all[$lyrId] = Layer::create($lyrId, $lyrDef);
+switch ($action = $_GET['action'] ?? null) {
+  case null: {
+    echo "<a href='?action=display'>display</a><br>\n";
+    echo "<a href='?action=draw'>draw</a><br>\n";
+    break;
+  }
+  case 'display': {
+    $mapAil->display();
+    break;
+  }
+  case 'draw': {
+    echo $mapAil->draw();
+    break;
+  }
 }
-$map = new Map(Yaml::parse($yamlDefs['map']));
-echo $map->draw();
