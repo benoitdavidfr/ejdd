@@ -7,13 +7,14 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- permettre de faire une carte d'une collection
+- mettre en MD les description dans les schémas
+- permettre de consulter une carte d'une collection ou d'un n-uplet
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d'un prédicat plus complexe dans JoinP
-- prévoir un mécanisme de stockage des vues
+- prévoir un mécanisme de stockage des vues, évolution d'extract ?
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
     - des données utilisées
@@ -41,11 +42,15 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+7/9/2025:
+  - séparation du code dessinant une carte de MapDataset pour le mettre dans map.php
+    - pour pouvoir l'utiliser sans créer de carte dans MapDataset
 6/9/2025:
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
   - ajout de Dataset::isAvailable()
   - ajout d'un fichier lib.php, amélioration de la doc
+  - génération de la doc dans docs, intégration dans git, config. de GitHub Pages pour l'afficher, lien dans le README
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS
@@ -231,10 +236,6 @@ Lignes de commandes utiles
     git commit # dans la branche
     git checkout main # bascule sur main
     git merge hotfix  # fusion de la branche avec main
-  Pour pousser sur github:
-    git push -u origin main
-  Pour cloner:
-    git clone git@github.com:benoitdavidfr/datasets.git
     
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
@@ -248,6 +249,17 @@ GitHub
 ------
 Le 25/8/2025, j'ai réussi à synchroniser le dépôt avec gitbub.
 J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
+
+Le lien avec le dépôt GitHub:
+  Pour définir ce lien:
+    git remote add origin git@github.com:benoitdavidfr/dataset.git
+  Pour effacer ce lien: (par ex. pour le changer)
+    git remote remove origin
+
+Pour pousser sur github:
+  git push -u origin main
+Pour cloner:
+  git clone git@github.com:benoitdavidfr/dataset.git
 
 EOT
 ];
@@ -291,7 +303,7 @@ class Application {
           echo "</ul>\n";
 
           echo "<h2>Autres</h2><ul>\n";
-          echo "<li><a href='.phpdoc/build/' target='_blank'>Doc de l'appli</a></li>\n";
+          echo "<li><a href='docs/' target='_blank'>Doc de l'appli</a></li>\n";
           echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
           echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
                 "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
