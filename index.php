@@ -43,7 +43,7 @@ const JOURNAL = [
 Journal des modifications récentes du code
 ------------------------------------------
 7/9/2025:
-  - séparation du code dessinant une carte de MapDataset pour le mettre dans map.php
+  - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l'utiliser sans créer de carte dans MapDataset
 6/9/2025:
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra

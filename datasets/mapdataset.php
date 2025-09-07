@@ -51,10 +51,10 @@ class MapDataset extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
-require_once __DIR__.'/../map.php';
+require_once __DIR__.'/../llmap.php';
 
-use Map\Map;
-use Map\Layer;
+use LLMap\Map;
+use LLMap\Layer;
 
 switch ($_GET['action'] ?? null) {
   case null: {

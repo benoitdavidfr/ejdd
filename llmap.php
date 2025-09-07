@@ -10,7 +10,7 @@
  * Attention l'appel de draw() modifie le dossier de travail courant
  * @package Map
  */
-namespace Map;
+namespace LLMap;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
 require_once __DIR__.'/vendor/autoload.php';
@@ -263,7 +263,7 @@ EOT
 ]
 );
 
-/** Prend une carte définie de mapdataset.yaml et génère le code JS Leaflet la dessinant.
+/** Prend une carte définie conformément au schéma d'une carte et génère le code JS Leaflet la dessinant.
  */
 class Map {
   /** @param array<mixed> $def La définition de la carte respectant le schéma de la carte. */

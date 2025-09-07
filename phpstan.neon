@@ -50,7 +50,7 @@ parameters:
     - bbox.php
     - pos.inc.php
     - geojson.php
-    - map.php
+    - llmap.php
     - algebra/schema.inc.php
     - algebra/collection.inc.php
     - algebra/predicate.inc.php
