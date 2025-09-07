@@ -54,6 +54,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISAT
 require_once __DIR__.'/../llmap.php';
 
 use LLMap\Map;
+use LLMap\View;
 use LLMap\Layer;
 
 switch ($_GET['action'] ?? null) {
@@ -120,6 +121,10 @@ switch ($_GET['action'] ?? null) {
       throw new \Exception("Cartes non valides");
     }
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
+    $views = [];
+    foreach ($mapDataset->getItems('views') as $viewId => $view) {
+      $views[$viewId] = new View($view);
+    }
     foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
@@ -129,7 +134,10 @@ switch ($_GET['action'] ?? null) {
       throw new \Exception("Carte '$_GET[map]' non valide");
     }
     //echo '<pre>$map='; print_r($map);
-    echo $map->draw(Layer::$all);
+    $viewId = $map->def['view'];
+    if (!($view = $views[$viewId] ?? null))
+      throw new \Exception("Vue $viewId non définie");
+    echo $map->draw($view, Layer::$all);
     break;
   }
   case 'show': {

@@ -24,6 +24,7 @@ namespace Dataset;
 require_once __DIR__.'/../algebra/collection.inc.php';
 require_once __DIR__.'/../algebra/predicate.inc.php';
 require_once __DIR__.'/../lib.php';
+require_once __DIR__.'/../vendor/autoload.php';
 
 use Algebra\CollectionOfDs;
 use Algebra\Predicate;

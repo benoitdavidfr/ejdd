@@ -194,15 +194,31 @@ $schema:
       patternProperties:
         '^[-A-Za-zéè0-9_/]+$':
           $ref: '#/definitions/schemaOfALayer'
+    schemaOfAView:
+      description: Description d'une vue définie par une position et un niveau de zoom
+      type: object
+      required: [latLon, zoomLevel]
+      additionalProperties: false
+      properties:
+        latLon:
+          description: position définie en latitude, longitude en degrés décimaux
+          type: array
+          items:
+            type: number
+        zoomLevel:
+          description: un niveau de zoom
+          type: integer
+    schemaOfViews:
+      description: Description des vues permettant de définir la vue initiale de la carte
+      title: Description des vues permettant de définir la vue initiale de la carte
+      type: object
+      additionalProperties: false
+      patternProperties:
+        '^[-A-Za-zéèàîôù0-9_]+$':
+          $ref: '#/definitions/schemaOfAView'
     schemaOfAMap:
       type: object
-      required:
-        - title
-        - vars
-        - baseLayers
-        - defaultBaseLayer
-        - overlays
-        - defaultOverlays
+      required: [title, vars, view, baseLayers, defaultBaseLayer, overlays, defaultOverlays]
       additionalProperties: false
       properties:
         title:
@@ -216,6 +232,9 @@ $schema:
             '^[A-Za-z0-9]+$':
               description: valeur prise par la variable
               type: string
+        view:
+          description: nom identifiant une vue
+          type: string
         baseLayers:
           description: liste de couches de base définies par leur nom court
           $ref: '#/definitions/layerList'
@@ -248,6 +267,8 @@ $schema:
       type: object
     maps:
       $ref: '#/definitions/schemaOfMaps'
+    views:
+      $ref: '#/definitions/schemaOfViews'
     layers:
       $ref: '#/definitions/schemaOfLayers'
 
@@ -256,6 +277,7 @@ maps:
     title: Carte par défaut avec des limites administratives françaises et mondiales
     vars:
       userverdir: 'http://localhost/gexplor/visu/'
+    view: métropole
     baseLayers:
       - OSM
       - FondBlanc
@@ -281,6 +303,7 @@ maps:
     title: Carte NaturalEarth stylée
     vars:
       userverdir: 'http://localhost/gexplor/visu/'
+    view: métropole
     baseLayers:
       - OSM
       - FondBlanc
@@ -298,6 +321,7 @@ maps:
     title: Carte de test
     vars:
       userverdir: 'http://localhost/gexplor/visu/'
+    view: métropole
     baseLayers:
       - OSM
     defaultBaseLayer: OSM
@@ -306,6 +330,16 @@ maps:
       - antimeridien
     defaultOverlays:
       - antimeridien
+views:
+  métropole:
+    latLon: [46.5, 3]
+    zoomLevel: 6
+  LaRéunion:
+    latLon: [-21.1, 55.5]
+    zoomLevel: 10
+  AntillesFr:
+    latLon: [15.5, -61]
+    zoomLevel: 8
 layers:
   OSM:
     title: OSM

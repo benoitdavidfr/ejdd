@@ -1,13 +1,12 @@
 <?php
-/** Dessin d'une carte avec Leaflet.
- * Ce package a été conçu pour exploiter des données stockées dans le JdD MapDataset.
- * Il peut être utilisé avec des cartes créées à la volée en fournissant des données conformes au schéma du JdD.
- * Pour dessiner une carte, il faut:
- *  - créer un objet Map avec sa définition respectant le schéma de Map
- *  - créer les couches constituant la carte et les stocker dans Layer::$all en les créant avec Layer::create()
- *  - appeler Map::draw() qui génère le code JS adhoc et afficher ce code dans le navigateur
+/** Dessine une carte avec Leaflet.
+ * Ce package a été conçu pour exploiter les données du JdD MapDataset.
+ * Il peut aussi être utilisé avec des cartes créées à la volée en fournissant des données conformes au schéma aodhoc.
+ * Pour dessiner une carte, il faut :
+ *   - créer un objet AMapAndItsLayers en lui fournissant une définition conforme au schéma SchemaOfAMapAndItsLayers
+ *   - appeler dessus la méthode draw()
+ * Si la définition n'est pas conforme au schéma, une exception est levée.
  * Un exemple est fourni ci-dessous.
- * Attention l'appel de draw() modifie le dossier de travail courant
  * @package Map
  */
 namespace LLMap;
@@ -61,7 +60,7 @@ abstract class Layer {
   /** Les erreurs d'intégité soulèvent des exceptions. */
   abstract function checkIntegrity(): void;
   
-  /** Retourne le code JS pour afficher la couche. */
+  /** Retourne le code JS affichant la couche. */
   abstract function toJS(): string;
   
   /** Retourne une Layer comme un array avec son id pour affichage avec Yaml::dump().
@@ -183,6 +182,15 @@ class L_geoJSON extends Layer {
   }
 };
 
+/** Génère le JS correspondant à une vue définie conformément à son schéma. */
+class View {
+  /** @param array<mixed> $def - définition de la vue conforme à son schema */
+  function __construct(readonly array $def) {}
+  
+  /** Retourne le code JS correspondant à la vue attendu par LL. */
+  function toJS(): string { return json_encode($this->def['latLon']).','.strval($this->def['zoomLevel']); }
+};
+
 /** Le code JavaScript paramétré de la carte utilisé par Map::draw(). */
 define('JS_SRCE', [
 <<<'EOT'
@@ -237,7 +245,7 @@ var onEachFeature = function (feature, layer) {
   layer.bindTooltip(name);
 }
 
-var map = L.map('map').setView([46.5,3],6);  // view pour la zone
+var map = L.map('map').setView({view});  // view pour la zone
 L.control.scale({position:'bottomleft', metric:true, imperial:false}).addTo(map);
 
 // activation du plug-in Control.Coordinates
@@ -263,8 +271,7 @@ EOT
 ]
 );
 
-/** Prend une carte définie conformément au schéma d'une carte et génère le code JS Leaflet la dessinant.
- */
+/** Dessine une carte définie conformément à son schéma. */
 class Map {
   /** @param array<mixed> $def La définition de la carte respectant le schéma de la carte. */
   function __construct(readonly array $def) {}
@@ -324,12 +331,13 @@ class Map {
   /** Génère le code JS de dessin de la carte.
    * @param array<string,Layer> $layers - le dict. des Layers qui doit au moins contenir les Layer citées dans la carte
    */
-  function draw(array $layers): string {
+  function draw(View $view, array $layers): string {
     //echo "urlOftheDir()=",self::urlOftheDir(),"<br>\n";
     $urlOftheDir = self::urlOftheDir();
     // le chemin du répertoire leaflet doit être défini indépendamment du script appelant cette méthode
     $jsCode = str_replace('{leaflet}', "$urlOftheDir/leaflet", JS_SRCE[0]);
     $jsCode = str_replace('{title}', $this->def['title'], $jsCode);
+    $jsCode = str_replace('{view}', $view->toJS(), $jsCode);
 
     // les variables
     foreach ($this->def['vars'] as $varName => $varValue) {
@@ -391,6 +399,7 @@ class Map {
   }
 };
 
+/** Construit la définition du schéma de AMapAndItsLayers à partir de celui de MapDataset. */
 class SchemaOfAMapAndItsLayers {
   /** Chemin du JdD MapDataset. */
   const YAML_FILE_PATH = __DIR__.'/datasets/mapdataset.yaml';
@@ -398,7 +407,7 @@ class SchemaOfAMapAndItsLayers {
   /** @var array<mixed> $def - définition du schéma de AMapAndItsLayers construit à partir de celui de MapDataset. */
   readonly array $def;
   
-  /** Construit la définition du schéma de AMapAndItsLayers construit à partir de celui de MapDataset. */
+  /** Construit la définition du schéma de AMapAndItsLayers à partir de celui de MapDataset. */
   function __construct() {
     $mapdataset = Yaml::parseFile(self::YAML_FILE_PATH);
     $schemaOfMapDataset = $mapdataset['$schema'];
@@ -406,10 +415,11 @@ class SchemaOfAMapAndItsLayers {
       '$schema'=> 'http://json-schema.org/draft-07/schema#',
       'definitions'=> $schemaOfMapDataset['definitions'],
       'type'=> 'object',
-      'required'=> ['map','layers'],
+      'required'=> ['map'],
       'additionalProperties'=> false,
       'properties'=> [
         'map'=> ['$ref'=> '#/definitions/schemaOfAMap'],
+        'views'=> ['$ref'=> '#/definitions/schemaOfViews'],
         'layers'=> ['$ref'=> '#/definitions/schemaOfLayers'],
       ],
     ];
@@ -425,14 +435,20 @@ class SchemaOfAMapAndItsLayers {
   }
 };
 
-/** Prend la déf. d'une carte et de ses couches et construit un objet Map et un ens. d'objets Layer.
+/** Dessine une carte définie conformément à son schéma.
+ * Pour dessiner une carte, il faut :
+ *   - créer un objet AMapAndItsLayers en lui fournissant une définition conforme au schéma SchemaOfAMapAndItsLayers
+ *   - appeler dessus la méthode draw()
+ * Si la définition n'est pas conforme au schéma alors une exception est levée.
+ * Une vue ou une couche non définie dans la carte est recherchée dans le JdD MapDataset.
  */
 class AMapAndItsLayers {
   readonly Map $map;
-  /** @var array<string,Layer> $layers */
+  readonly View $view;
+  /** @var array<string,Layer> $layers - dictionnaire des couches définies dans la carte. */
   readonly array $layers; 
   
-  /** Valide la déf d'une AMapAndItsLayers / son schéma, renvoie null si Ok et sinon le Validator.
+  /** Valide la déf d'une AMapAndItsLayers / son schéma, renvoie null si valide et sinon le Validator.
    * @param array<mixed> $def - déf. de la AMapAndItsLayers */
   static function isInValid(array $def): ?Validator {
     $schemaOfAMapAndItsLayers = new SchemaOfAMapAndItsLayers;
@@ -454,6 +470,16 @@ class AMapAndItsLayers {
     }
   }
   
+  /** Retourne les vues définies dans le jeu MapDataset
+   * @return array<string,View> */
+  function datasetViews(): array {
+    $views = [];
+    foreach (Dataset::get('MapDataset')->getItems('views') as $id => $viewDef) {
+      $lyrs[$id] = new View($viewDef);
+    }
+    return $views;
+  }
+  
   /** @param array<mixed> $def La définition de la carte et des layers. */
   function __construct(readonly array $def) {
     if ($validator = self::isInValid($def)) {
@@ -461,16 +487,36 @@ class AMapAndItsLayers {
       throw new \Exception("La définition de AMapAndItsLayers n'est pas conforme à son schéma");
     }
     
+    $this->map = new Map($def['map']);
+    
+    $viewName = $def['map']['view']; // le nom de la vue définie dans la carte
+    if (!($viewDef = $def['views'][$viewName] ?? null)) {
+      if (!($viewDef = Dataset::get('MapDataset')->getOneItemByKey('views', $viewName)))
+        throw new \Exception("La vue '$viewName' n'est définie ni dans la carte ni dans le JdD");
+    }
+    $this->view = new View($viewDef);
+    
     $layers = [];
-    foreach ($def['layers'] as $lyrId => $lyrDef) {
+    foreach ($def['layers'] ?? [] as $lyrId => $lyrDef) {
       $layers[$lyrId] = Layer::create($lyrId, $lyrDef);
     }
     $this->layers = $layers;
-    $this->map = new Map($def['map']);
   }
   
-  function draw(): string { return $this->map->draw($this->layers); }
+  /** Retourne les couches définies dans le jeu MapDataset
+   * @return array<string,Layer> */
+  function datasetLayers(): array {
+    $lyrs = [];
+    foreach (Dataset::get('MapDataset')->getItems('layers') as $lyrId => $lyrDef) {
+      $lyrs[$lyrId] = Layer::create($lyrId, $lyrDef);
+    }
+    return $lyrs;
+  }
+  
+  /** Dessine la carte. */
+  function draw(): string { return $this->map->draw($this->view, array_merge($this->datasetLayers(), $this->layers)); }
 
+  /** Affiche la carte. */
   function display(): void { $this->map->display($this->layers); }
 };
 
@@ -478,12 +524,17 @@ class AMapAndItsLayers {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // séparateur
 
 
-$mapAilYamlDef = [
-  <<<'EOT'
+class AMapAndItsLayersTest {
+  /** Définition d'une carte en Yaml. */
+  const YAML_DEF = [
+    <<<'EOT'
 map:
   title: Carte NaturalEarth stylée
   vars:
     userverdir: 'http://localhost/gexplor/visu/'
+  #view: métropole
+  #view: LaRéunion
+  view: AntillesFr
   baseLayers:
     - OSM
     - FondBlanc
@@ -497,108 +548,35 @@ map:
   defaultOverlays:
     - NECoastlinesAndBoundaries
     - antimeridien
-layers:
-  OSM:
-    title: OSM
-    L.TileLayer:
-      - 'https://{s}.tile.osm.org/{z}/{x}/{y}.png'
-      - attribution: "© <a href='https://www.openstreetmap.org/copyright' target='_blank'>les contributeurs d’OpenStreetMap</a>"
-  FondBlanc:
-    title: 'Fond blanc'
-    L.TileLayer:
-      - '{userverdir}utilityserver.php/whiteimg/{z}/{x}/{y}.jpg'
-      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
-  NECoastlinesAndBoundaries:
-    title: Couche NaturalEarth côtes et limites de pays stylée
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}NaturalEarth/collections/coastlinesAndBoundaries/items'
-      minZoom: 0
-      maxZoom: 18
-      usebbox: true
-      onEachFeature: onEachFeature
-      style: 'function(feature) { return feature.style; }'
-  NEMappingUnits:
-    title: Couche NaturalEarth unités carto. stylée
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}NaturalEarth/collections/mappingUnits/items'
-      minZoom: 0
-      maxZoom: 18
-      usebbox: true
-      onEachFeature: onEachFeature
-      style: 'function(feature) { return feature.style; }'
-  NEMappingSubUnits:
-    title: Couche NaturalEarth sous-unités carto. stylée
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}NaturalEarth/collections/mappingSubUnits/items'
-      minZoom: 0
-      maxZoom: 18
-      usebbox: true
-      onEachFeature: onEachFeature
-      style: 'function(feature) { return feature.style; }'
-  Région:
-    title: 'Région de AE COG PE'
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}AeCogPe/collections/region/items'
-      minZoom: 0
-      maxZoom: 7
-      usebbox: true
-      onEachFeature: onEachFeature
-  Département:
-    title: 'Département de AE COG PE'
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}AeCogPe/collections/departement/items'
-      minZoom: 7
-      maxZoom: 8
-      usebbox: true
-      onEachFeature: onEachFeature
-  EPCI:
-    title: 'EPCI de AE COG PE'
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}AeCogPe/collections/epci/items'
-      minZoom: 8
-      maxZoom: 10
-      usebbox: true
-      onEachFeature: onEachFeature
-  Commune:
-    title: 'Commune de AE COG PE'
-    L.UGeoJSONLayer:
-      endpoint: '{gjsurl}AeCogPe/collections/commune/items'
-      minZoom: 10
-      maxZoom: 18
-      usebbox: true
-      onEachFeature: onEachFeature
-  antimeridien:
-    title: antimeridien
-    L.geoJSON:
-      - type: MultiPolygon
-        coordinates:
-          - [[[ 180.0,-90.0],[ 180.1,-90.0],[ 180.1,90.0],[ 180.0,90.0],[ 180.0,-90.0]]]
-          - [[[-180.0,-90.0],[-180.1,-90.0],[-180.1,90.0],[-180.0,90.0],[-180.0,-90.0]]]
-      - style:
-          color: red
-          weight: 2
-          opacity: 0.65
-  debug:
-    title: debug
-    L.TileLayer:
-      - '{userverdir}utilityserver.php/debug/{z}/{x}/{y}.png'
-      - { format: image/png, minZoom: 0, maxZoom: 21, detectRetina: false}
 EOT
-];
-$mapAil = new AMapAndItsLayers(Yaml::parse($mapAilYamlDef[0]));
+  ];
 
-switch ($action = $_GET['action'] ?? null) {
-  case null: {
-    echo "<a href='?action=display'>display</a><br>\n";
-    echo "<a href='?action=draw'>draw</a><br>\n";
-    break;
+  static function main(): void {
+    $mapAil = new AMapAndItsLayers(Yaml::parse(self::YAML_DEF[0]));
+
+    switch ($action = $_GET['action'] ?? null) {
+      case null: {
+        echo "<a href='?action=schema'>schéma</a><br>\n";
+        echo "<a href='?action=display'>display</a><br>\n";
+        echo "<a href='?action=draw'>draw</a><br>\n";
+        break;
+      }
+      case 'schema': {
+        $schema = new SchemaOfAMapAndItsLayers;
+        //echo '<pre>',Yaml::dump($schema->def, 9);
+        header('Content-Type: application/json');
+        echo json_encode($schema->def);
+        break;
+      }
+      case 'display': {
+        $mapAil->display();
+        break;
+      }
+      case 'draw': {
+        echo $mapAil->draw();
+        break;
+      }
+    }
   }
-  case 'display': {
-    $mapAil->display();
-    break;
-  }
-  case 'draw': {
-    echo $mapAil->draw();
-    break;
-  }
-}
+};
+AMapAndItsLayersTest::main();
