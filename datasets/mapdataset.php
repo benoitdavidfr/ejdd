@@ -105,7 +105,7 @@ switch ($_GET['action'] ?? null) {
     $mapDataset = Dataset::get('MapDataset');
     foreach ($mapDataset->getItems('maps') as $mapKey => $map)
       echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a>, ",
-           "<a href='?action=show&map=$mapKey'>l'afficher</a>.<br>\n";
+           "<a href='?action=display&map=$mapKey'>l'afficher</a>.<br>\n";
     break;
   }
   case 'draw': {
@@ -121,10 +121,6 @@ switch ($_GET['action'] ?? null) {
       throw new \Exception("Cartes non valides");
     }
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
-    $views = [];
-    foreach ($mapDataset->getItems('views') as $viewId => $view) {
-      $views[$viewId] = new View($view);
-    }
     foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
@@ -135,19 +131,22 @@ switch ($_GET['action'] ?? null) {
     }
     //echo '<pre>$map='; print_r($map);
     $viewId = $map->def['view'];
-    if (!($view = $views[$viewId] ?? null))
+    if (!($view = $mapDataset->getOneItemByKey('views', $viewId)))
       throw new \Exception("Vue $viewId non définie");
-    echo $map->draw($view, Layer::$all);
+    echo $map->draw(new View($view), Layer::$all);
     break;
   }
-  case 'show': {
+  case 'display': {
     echo "<title>$_GET[map]</title>\n";
     $mapDataset = Dataset::get('MapDataset');;
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
     foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
-    $map->display(Layer::$all);
+    $viewId = $map->def['view'];
+    if (!($view = $mapDataset->getOneItemByKey('views', $viewId)))
+      throw new \Exception("Vue $viewId non définie");
+    $map->display(new View($view), Layer::$all);
     break;
   }
   default: {

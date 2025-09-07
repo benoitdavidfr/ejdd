@@ -12,9 +12,12 @@
 namespace LLMap;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
+require_once __DIR__.'/zoomlevel.php';
 require_once __DIR__.'/vendor/autoload.php';
 
 use Dataset\Dataset;
+use BBox\BBox;
+use ZoomLevel\ZoomLevel;
 use Lib\RecArray;
 use Symfony\Component\Yaml\Yaml;
 use JsonSchema\Validator;
@@ -68,7 +71,7 @@ abstract class Layer {
    */
   function asArray(): array {
     return [$this->lyrId => [
-      substr(get_class($this), 4) => [
+      substr(get_class($this), 6) => [
         'title'=> $this->title,
         'params'=> $this->params,
       ]
@@ -123,8 +126,8 @@ class L_UGeoJSONLayer extends Layer {
   function checkIntegrity(): void {
     // Le paramètre endpoint doit correspondre à un JdD et une collection de ce JdD
     // ex:       endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
-    if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items$!', $this->params['endpoint'], $matches)) {
-      throw new \Exception("params[endpoint]=".$this->params['endpoint']." don't match");
+    if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items(/(.*))?$!', $this->params['endpoint'], $matches)) {
+      throw new \Exception("params[endpoint]='".$this->params['endpoint']."' don't match");
     }
     $dsName = $matches[1];
     $cName = $matches[2];
@@ -184,8 +187,19 @@ class L_geoJSON extends Layer {
 
 /** Génère le JS correspondant à une vue définie conformément à son schéma. */
 class View {
+  /** @var array<string,self> $all - dict. des vues. */
+  static array $all;
+  
   /** @param array<mixed> $def - définition de la vue conforme à son schema */
   function __construct(readonly array $def) {}
+
+  static function createFromBBox(BBox $bbox): self {
+    $center = $bbox->center();
+    return new self([
+      'latLon'=> [$center[1], $center[0]],
+      'zoomLevel'=> ZoomLevel::fromBBox($bbox),
+    ]);
+  }
   
   /** Retourne le code JS correspondant à la vue attendu par LL. */
   function toJS(): string { return json_encode($this->def['latLon']).','.strval($this->def['zoomLevel']); }
@@ -276,7 +290,7 @@ class Map {
   /** @param array<mixed> $def La définition de la carte respectant le schéma de la carte. */
   function __construct(readonly array $def) {}
   
-  /** Retourne la liste des erreurs d'intégrité de la définition de la carte.
+  /** NON ADAPTE AUX CAS HORS MAPDATASET. NE PREND PAS EN COMPTE VIEW. Retourne la liste des erreurs d'intégrité de la définition de la carte.
    * @return list<string>
    */
   function integrityErrors(string $mapId): array {
@@ -385,12 +399,17 @@ class Map {
   /** Affiche une carte.
    * @param array<string,Layer> $layers - le dict. des Layers qui doit au moins contenir les Layer citées dans la carte
    */
-  function display(array $layers): void {
+  function display(View $view, array $layers): void {
     echo "<h2>",$this->def['title'],"</h2>\n";
-    echo '<pre>',Yaml::dump($this->def, 9, 2),"</pre>\n";
+    $def = $this->def;
+    $def['view'] = $view->def;
+    echo '<pre>',Yaml::dump($def, 9, 2),"</pre>\n";
     $layersAsArray = [];
     foreach (['baseLayers','overlays'] as $lyrKind) {
       foreach ($this->def[$lyrKind] as $lyrId) {
+        if (!isset($layers[$lyrId])) {
+          throw new \Exception("Layer '$lyrId' non définie");
+        }
         $layersAsArray[$lyrKind] = array_merge($layersAsArray[$lyrKind] ?? [], $layers[$lyrId]->asArray());
       }
     }
@@ -430,7 +449,15 @@ class SchemaOfAMapAndItsLayers {
   function validator(array $mapAndItsLayers): Validator {
     $validator = new Validator;
     $mapAndItsLayers = RecArray::toStdObject($mapAndItsLayers);
-    $validator->validate($mapAndItsLayers, $this->def);
+    try {
+      $validator->validate($mapAndItsLayers, $this->def);
+    }
+    catch (\Error $e) {
+      echo '<pre>';
+      print_r($mapAndItsLayers);
+      print_r($this->def);
+      throw new \Exception("Erreur dans Validator::validate()");
+    }
     return $validator;
   }
 };
@@ -517,7 +544,7 @@ class AMapAndItsLayers {
   function draw(): string { return $this->map->draw($this->view, array_merge($this->datasetLayers(), $this->layers)); }
 
   /** Affiche la carte. */
-  function display(): void { $this->map->display($this->layers); }
+  function display(): void { $this->map->display($this->view, array_merge($this->datasetLayers(), $this->layers)); }
 };
 
 

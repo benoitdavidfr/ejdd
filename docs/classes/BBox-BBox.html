@@ -77,11 +77,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/llmap.html" class="">LLMap</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -112,11 +120,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Map.html" class="">Map</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -266,6 +282,13 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
 <dd>Génère un array de 4 coordonnées LatLon utilisé par WFS.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_center">center()</a>
+    <span>
+                                &nbsp;: <abbr title="\BBox\TPos">TPos</abbr>    </span>
+</dt>
+<dd>Retourne le centre de la BBox.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_extends">extends()</a>
     <span>
                                 &nbsp;: self    </span>
@@ -326,6 +349,13 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <span>
                                 &nbsp;: bool    </span>
 </dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_size">size()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
+<dd>Taille du bbox en degrés.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_union">union()</a>
@@ -616,6 +646,45 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_center">
+        center()
+        <a href="classes/BBox-BBox.html#method_center" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">201</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le centre de la BBox.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">center</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\BBox\TPos">TPos</abbr></span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\BBox\TPos">TPos</abbr></span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_extends">
         extends()
         <a href="classes/BBox-BBox.html#method_extends" class="headerlink"><i class="fas fa-link"></i></a>
@@ -624,7 +693,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">235</span>
+    <span class="phpdocumentor-element-found-in__line">247</span>
 
     </aside>
 
@@ -922,7 +991,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">200</span>
+    <span class="phpdocumentor-element-found-in__line">212</span>
 
     </aside>
 
@@ -971,7 +1040,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">210</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 
     </aside>
 
@@ -1050,6 +1119,45 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_size">
+        size()
+        <a href="classes/BBox-BBox.html#method_size" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">204</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Taille du bbox en degrés.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">size</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_union">
         union()
         <a href="classes/BBox-BBox.html#method_union" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1058,7 +1166,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">222</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 
     </aside>
 
@@ -1220,6 +1328,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
                                             <li class=""><a href="classes/BBox-BBox.html#method___toString">__toString()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_as4Coordinates">as4Coordinates()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_as4CoordsLatLon">as4CoordsLatLon()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_center">center()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_extends">extends()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_from4Coords">from4Coords()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_fromLLPos">fromLLPos()</a></li>
@@ -1229,6 +1338,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
                                             <li class=""><a href="classes/BBox-BBox.html#method_includes">includes()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_inters">inters()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_isEmpty">isEmpty()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_size">size()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_union">union()</a></li>
                                     </ul>
             </li>

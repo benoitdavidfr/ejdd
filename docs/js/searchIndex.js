@@ -61,6 +61,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Algebra-Collection.html#method_displayItem"
         },                {
+            "fqsen": "\\Algebra\\Collection\u003A\u003AdrawValue\u0028\u0029",
+            "name": "drawValue",
+            "summary": "Dessine\u0020une\u0020carte\u0020\u00E0\u0020partir\u0020de\u0020la\u0020g\u00E9om\u00E9trie\u0020fournie\u0020dans\u0020\u0024value.",
+            "url": "classes/Algebra-Collection.html#method_drawValue"
+        },                {
+            "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayValue\u0028\u0029",
+            "name": "displayValue",
+            "summary": "",
+            "url": "classes/Algebra-Collection.html#method_displayValue"
+        },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
             "summary": "Affiche\u0020les\u0020properties\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection",
@@ -1506,6 +1516,16 @@ Search.appendIndex(
             "summary": "Affiche\u0020dans\u0020le\u0020m\u00EAme\u0020format\u0020que\u0020celui\u0020de\u0020la\u0020construction\u0020sauf\u0020pour\u0020l\u0027espace\u0020vide\u0020qui\u0020est\u0020affich\u00E9\u0020par\u0020\u0027NONE\u0027.",
             "url": "classes/BBox-BBox.html#method___toString"
         },                {
+            "fqsen": "\\BBox\\BBox\u003A\u003Acenter\u0028\u0029",
+            "name": "center",
+            "summary": "Retourne\u0020le\u0020centre\u0020de\u0020la\u0020BBox.",
+            "url": "classes/BBox-BBox.html#method_center"
+        },                {
+            "fqsen": "\\BBox\\BBox\u003A\u003Asize\u0028\u0029",
+            "name": "size",
+            "summary": "Taille\u0020du\u0020bbox\u0020en\u0020degr\u00E9s.",
+            "url": "classes/BBox-BBox.html#method_size"
+        },                {
             "fqsen": "\\BBox\\BBox\u003A\u003Aincludes\u0028\u0029",
             "name": "includes",
             "summary": "\u0024this\u0020inclus\u0020\u0024b\u0020au\u0020sens\u0020large,\u0020cad\u0020que\u0020\u0024a\u002D\u003Eincludes\u0028\u0024a\u0029\u0020est\u0020vrai.",
@@ -2151,11 +2171,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-InseeCogBuild.html#constant_SRCE_PATH"
         },                {
-            "fqsen": "\\JS_SRCE",
-            "name": "JS_SRCE",
-            "summary": "Le\u0020code\u0020JavaScript\u0020param\u00E9tr\u00E9\u0020de\u0020la\u0020carte\u0020utilis\u00E9\u0020par\u0020Map\u003A\u003Adraw\u0028\u0029.",
-            "url": "namespaces/default.html#constant_JS_SRCE"
-        },                {
             "fqsen": "\\Dataset\\MapDataset",
             "name": "MapDataset",
             "summary": "JdD\u0020des\u0020cartes\u0020dessinables\u0020en\u0020Leaflet\u0020sans\u0020avoir\u0020\u00E0\u0020\u00E9diter\u0020le\u0020code\u0020JS\u0020correspondant.",
@@ -2180,156 +2195,6 @@ Search.appendIndex(
             "name": "data",
             "summary": "",
             "url": "classes/Dataset-MapDataset.html#property_data"
-        },                {
-            "fqsen": "\\Dataset\\Layer",
-            "name": "Layer",
-            "summary": "Classe\u0020abstraite\u0020des\u0020couches\u0020pour\u0020g\u00E9n\u00E9rer\u0020le\u0020code\u0020JS\u0020correspondant\u0020\u00E0\u0020la\u0020couche",
-            "url": "classes/Dataset-Layer.html"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003Acreate\u0028\u0029",
-            "name": "create",
-            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche\u0020dans\u0020la\u0020bonne\u0020classe\u0020en\u0020fonction\u0020des\u0020param\u00E8tres.",
-            "url": "classes/Dataset-Layer.html#method_create"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
-            "url": "classes/Dataset-Layer.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003AcheckIntegrity\u0028\u0029",
-            "name": "checkIntegrity",
-            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
-            "url": "classes/Dataset-Layer.html#method_checkIntegrity"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003AtoJS\u0028\u0029",
-            "name": "toJS",
-            "summary": "",
-            "url": "classes/Dataset-Layer.html#method_toJS"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003A\u0024lyrId",
-            "name": "lyrId",
-            "summary": "",
-            "url": "classes/Dataset-Layer.html#property_lyrId"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003A\u0024title",
-            "name": "title",
-            "summary": "",
-            "url": "classes/Dataset-Layer.html#property_title"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003A\u0024params",
-            "name": "params",
-            "summary": "",
-            "url": "classes/Dataset-Layer.html#property_params"
-        },                {
-            "fqsen": "\\Dataset\\Layer\u003A\u003A\u0024all",
-            "name": "all",
-            "summary": "",
-            "url": "classes/Dataset-Layer.html#property_all"
-        },                {
-            "fqsen": "\\Dataset\\L_TileLayer",
-            "name": "L_TileLayer",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_TileLayer",
-            "url": "classes/Dataset-L-TileLayer.html"
-        },                {
-            "fqsen": "\\Dataset\\L_TileLayer\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
-            "url": "classes/Dataset-L-TileLayer.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\L_TileLayer\u003A\u003AcheckIntegrity\u0028\u0029",
-            "name": "checkIntegrity",
-            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
-            "url": "classes/Dataset-L-TileLayer.html#method_checkIntegrity"
-        },                {
-            "fqsen": "\\Dataset\\L_TileLayer\u003A\u003AtoJS\u0028\u0029",
-            "name": "toJS",
-            "summary": "",
-            "url": "classes/Dataset-L-TileLayer.html#method_toJS"
-        },                {
-            "fqsen": "\\Dataset\\L_TileLayer\u003A\u003AJS_CODE",
-            "name": "JS_CODE",
-            "summary": "",
-            "url": "classes/Dataset-L-TileLayer.html#constant_JS_CODE"
-        },                {
-            "fqsen": "\\Dataset\\L_UGeoJSONLayer",
-            "name": "L_UGeoJSONLayer",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_UGeoJSONLayer",
-            "url": "classes/Dataset-L-UGeoJSONLayer.html"
-        },                {
-            "fqsen": "\\Dataset\\L_UGeoJSONLayer\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
-            "url": "classes/Dataset-L-UGeoJSONLayer.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\L_UGeoJSONLayer\u003A\u003AcheckIntegrity\u0028\u0029",
-            "name": "checkIntegrity",
-            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
-            "url": "classes/Dataset-L-UGeoJSONLayer.html#method_checkIntegrity"
-        },                {
-            "fqsen": "\\Dataset\\L_UGeoJSONLayer\u003A\u003AtoJS\u0028\u0029",
-            "name": "toJS",
-            "summary": "",
-            "url": "classes/Dataset-L-UGeoJSONLayer.html#method_toJS"
-        },                {
-            "fqsen": "\\Dataset\\L_UGeoJSONLayer\u003A\u003AJS_CODE",
-            "name": "JS_CODE",
-            "summary": "",
-            "url": "classes/Dataset-L-UGeoJSONLayer.html#constant_JS_CODE"
-        },                {
-            "fqsen": "\\Dataset\\L_geoJSON",
-            "name": "L_geoJSON",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_geoJSON",
-            "url": "classes/Dataset-L-geoJSON.html"
-        },                {
-            "fqsen": "\\Dataset\\L_geoJSON\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
-            "url": "classes/Dataset-L-geoJSON.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\L_geoJSON\u003A\u003AcheckIntegrity\u0028\u0029",
-            "name": "checkIntegrity",
-            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
-            "url": "classes/Dataset-L-geoJSON.html#method_checkIntegrity"
-        },                {
-            "fqsen": "\\Dataset\\L_geoJSON\u003A\u003AtoJS\u0028\u0029",
-            "name": "toJS",
-            "summary": "",
-            "url": "classes/Dataset-L-geoJSON.html#method_toJS"
-        },                {
-            "fqsen": "\\Dataset\\L_geoJSON\u003A\u003AJS_CODE",
-            "name": "JS_CODE",
-            "summary": "",
-            "url": "classes/Dataset-L-geoJSON.html#constant_JS_CODE"
-        },                {
-            "fqsen": "\\Dataset\\Map",
-            "name": "Map",
-            "summary": "Prend\u0020une\u0020carte\u0020d\u00E9finie\u0020dans\u0020mapdataset.yaml\u0020et\u0020g\u00E9n\u00E8re\u0020le\u0020code\u0020JS\u0020Leaflet\u0020la\u0020dessinant.",
-            "url": "classes/Dataset-Map.html"
-        },                {
-            "fqsen": "\\Dataset\\Map\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Dataset-Map.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\Map\u003A\u003AintegrityErrors\u0028\u0029",
-            "name": "integrityErrors",
-            "summary": "Retourne\u0020la\u0020liste\u0020des\u0020erreurs\u0020d\u0027int\u00E9grit\u00E9\u0020de\u0020la\u0020d\u00E9finition\u0020de\u0020la\u0020carte.",
-            "url": "classes/Dataset-Map.html#method_integrityErrors"
-        },                {
-            "fqsen": "\\Dataset\\Map\u003A\u003AdrawLayers\u0028\u0029",
-            "name": "drawLayers",
-            "summary": "G\u00E9n\u00E8re\u0020le\u0020code\u0020JS\u0020pour\u0020les\u0020couches.",
-            "url": "classes/Dataset-Map.html#method_drawLayers"
-        },                {
-            "fqsen": "\\Dataset\\Map\u003A\u003Adraw\u0028\u0029",
-            "name": "draw",
-            "summary": "g\u00E9n\u00E8re\u0020le\u0020code\u0020JS\u0020de\u0020dessin\u0020de\u0020la\u0020carte.",
-            "url": "classes/Dataset-Map.html#method_draw"
-        },                {
-            "fqsen": "\\Dataset\\Map\u003A\u003A\u0024def",
-            "name": "def",
-            "summary": "",
-            "url": "classes/Dataset-Map.html#property_def"
         },                {
             "fqsen": "\\Dataset\\NomsCnig",
             "name": "NomsCnig",
@@ -3041,6 +2906,306 @@ Search.appendIndex(
             "summary": "Teste\u0020la\u0020classe",
             "url": "classes/Lib-RecArray.html#method_test"
         },                {
+            "fqsen": "\\JS_SRCE",
+            "name": "JS_SRCE",
+            "summary": "Le\u0020code\u0020JavaScript\u0020param\u00E9tr\u00E9\u0020de\u0020la\u0020carte\u0020utilis\u00E9\u0020par\u0020Map\u003A\u003Adraw\u0028\u0029.",
+            "url": "namespaces/default.html#constant_JS_SRCE"
+        },                {
+            "fqsen": "\\LLMap\\Layer",
+            "name": "Layer",
+            "summary": "Classe\u0020abstraite\u0020des\u0020couches\u0020pour\u0020g\u00E9n\u00E9rer\u0020le\u0020code\u0020JS\u0020correspondant\u0020\u00E0\u0020la\u0020couche",
+            "url": "classes/LLMap-Layer.html"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche\u0020dans\u0020la\u0020bonne\u0020classe\u0020en\u0020fonction\u0020des\u0020param\u00E8tres.",
+            "url": "classes/LLMap-Layer.html#method_create"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
+            "url": "classes/LLMap-Layer.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003AcheckIntegrity\u0028\u0029",
+            "name": "checkIntegrity",
+            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
+            "url": "classes/LLMap-Layer.html#method_checkIntegrity"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003AtoJS\u0028\u0029",
+            "name": "toJS",
+            "summary": "Retourne\u0020le\u0020code\u0020JS\u0020affichant\u0020la\u0020couche.",
+            "url": "classes/LLMap-Layer.html#method_toJS"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003AasArray\u0028\u0029",
+            "name": "asArray",
+            "summary": "Retourne\u0020une\u0020Layer\u0020comme\u0020un\u0020array\u0020avec\u0020son\u0020id\u0020pour\u0020affichage\u0020avec\u0020Yaml\u003A\u003Adump\u0028\u0029.",
+            "url": "classes/LLMap-Layer.html#method_asArray"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003A\u0024lyrId",
+            "name": "lyrId",
+            "summary": "",
+            "url": "classes/LLMap-Layer.html#property_lyrId"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003A\u0024title",
+            "name": "title",
+            "summary": "",
+            "url": "classes/LLMap-Layer.html#property_title"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003A\u0024params",
+            "name": "params",
+            "summary": "",
+            "url": "classes/LLMap-Layer.html#property_params"
+        },                {
+            "fqsen": "\\LLMap\\Layer\u003A\u003A\u0024all",
+            "name": "all",
+            "summary": "",
+            "url": "classes/LLMap-Layer.html#property_all"
+        },                {
+            "fqsen": "\\LLMap\\L_TileLayer",
+            "name": "L_TileLayer",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_TileLayer",
+            "url": "classes/LLMap-L-TileLayer.html"
+        },                {
+            "fqsen": "\\LLMap\\L_TileLayer\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
+            "url": "classes/LLMap-L-TileLayer.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\L_TileLayer\u003A\u003AcheckIntegrity\u0028\u0029",
+            "name": "checkIntegrity",
+            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
+            "url": "classes/LLMap-L-TileLayer.html#method_checkIntegrity"
+        },                {
+            "fqsen": "\\LLMap\\L_TileLayer\u003A\u003AtoJS\u0028\u0029",
+            "name": "toJS",
+            "summary": "Retourne\u0020le\u0020code\u0020JS\u0020affichant\u0020la\u0020couche.",
+            "url": "classes/LLMap-L-TileLayer.html#method_toJS"
+        },                {
+            "fqsen": "\\LLMap\\L_TileLayer\u003A\u003AJS_CODE",
+            "name": "JS_CODE",
+            "summary": "",
+            "url": "classes/LLMap-L-TileLayer.html#constant_JS_CODE"
+        },                {
+            "fqsen": "\\LLMap\\L_UGeoJSONLayer",
+            "name": "L_UGeoJSONLayer",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_UGeoJSONLayer",
+            "url": "classes/LLMap-L-UGeoJSONLayer.html"
+        },                {
+            "fqsen": "\\LLMap\\L_UGeoJSONLayer\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
+            "url": "classes/LLMap-L-UGeoJSONLayer.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\L_UGeoJSONLayer\u003A\u003AcheckIntegrity\u0028\u0029",
+            "name": "checkIntegrity",
+            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
+            "url": "classes/LLMap-L-UGeoJSONLayer.html#method_checkIntegrity"
+        },                {
+            "fqsen": "\\LLMap\\L_UGeoJSONLayer\u003A\u003AtoJS\u0028\u0029",
+            "name": "toJS",
+            "summary": "Retourne\u0020le\u0020code\u0020JS\u0020affichant\u0020la\u0020couche.",
+            "url": "classes/LLMap-L-UGeoJSONLayer.html#method_toJS"
+        },                {
+            "fqsen": "\\LLMap\\L_UGeoJSONLayer\u003A\u003AJS_CODE",
+            "name": "JS_CODE",
+            "summary": "",
+            "url": "classes/LLMap-L-UGeoJSONLayer.html#constant_JS_CODE"
+        },                {
+            "fqsen": "\\LLMap\\L_geoJSON",
+            "name": "L_geoJSON",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_geoJSON",
+            "url": "classes/LLMap-L-geoJSON.html"
+        },                {
+            "fqsen": "\\LLMap\\L_geoJSON\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020couche.",
+            "url": "classes/LLMap-L-geoJSON.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\L_geoJSON\u003A\u003AcheckIntegrity\u0028\u0029",
+            "name": "checkIntegrity",
+            "summary": "Les\u0020erreurs\u0020d\u0027int\u00E9git\u00E9\u0020soul\u00E8vent\u0020des\u0020exceptions.",
+            "url": "classes/LLMap-L-geoJSON.html#method_checkIntegrity"
+        },                {
+            "fqsen": "\\LLMap\\L_geoJSON\u003A\u003AtoJS\u0028\u0029",
+            "name": "toJS",
+            "summary": "Retourne\u0020le\u0020code\u0020JS\u0020affichant\u0020la\u0020couche.",
+            "url": "classes/LLMap-L-geoJSON.html#method_toJS"
+        },                {
+            "fqsen": "\\LLMap\\L_geoJSON\u003A\u003AJS_CODE",
+            "name": "JS_CODE",
+            "summary": "",
+            "url": "classes/LLMap-L-geoJSON.html#constant_JS_CODE"
+        },                {
+            "fqsen": "\\LLMap\\View",
+            "name": "View",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020JS\u0020correspondant\u0020\u00E0\u0020une\u0020vue\u0020d\u00E9finie\u0020conform\u00E9ment\u0020\u00E0\u0020son\u0020sch\u00E9ma.",
+            "url": "classes/LLMap-View.html"
+        },                {
+            "fqsen": "\\LLMap\\View\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/LLMap-View.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\View\u003A\u003AcreateFromBBox\u0028\u0029",
+            "name": "createFromBBox",
+            "summary": "",
+            "url": "classes/LLMap-View.html#method_createFromBBox"
+        },                {
+            "fqsen": "\\LLMap\\View\u003A\u003AtoJS\u0028\u0029",
+            "name": "toJS",
+            "summary": "Retourne\u0020le\u0020code\u0020JS\u0020correspondant\u0020\u00E0\u0020la\u0020vue\u0020attendu\u0020par\u0020LL.",
+            "url": "classes/LLMap-View.html#method_toJS"
+        },                {
+            "fqsen": "\\LLMap\\View\u003A\u003A\u0024all",
+            "name": "all",
+            "summary": "",
+            "url": "classes/LLMap-View.html#property_all"
+        },                {
+            "fqsen": "\\LLMap\\View\u003A\u003A\u0024def",
+            "name": "def",
+            "summary": "",
+            "url": "classes/LLMap-View.html#property_def"
+        },                {
+            "fqsen": "\\LLMap\\Map",
+            "name": "Map",
+            "summary": "Dessine\u0020une\u0020carte\u0020d\u00E9finie\u0020conform\u00E9ment\u0020\u00E0\u0020son\u0020sch\u00E9ma.",
+            "url": "classes/LLMap-Map.html"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/LLMap-Map.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003AintegrityErrors\u0028\u0029",
+            "name": "integrityErrors",
+            "summary": "NON\u0020ADAPTE\u0020AUX\u0020CAS\u0020HORS\u0020MAPDATASET.\u0020NE\u0020PREND\u0020PAS\u0020EN\u0020COMPTE\u0020VIEW.\u0020Retourne\u0020la\u0020liste\u0020des\u0020erreurs\u0020d\u0027int\u00E9grit\u00E9\u0020de\u0020la\u0020d\u00E9finition\u0020de\u0020la\u0020carte.",
+            "url": "classes/LLMap-Map.html#method_integrityErrors"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003AdrawLayers\u0028\u0029",
+            "name": "drawLayers",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020code\u0020JS\u0020pour\u0020les\u0020couches.",
+            "url": "classes/LLMap-Map.html#method_drawLayers"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003AurlOftheDir\u0028\u0029",
+            "name": "urlOftheDir",
+            "summary": "Construit\u0020l\u0027URL\u0020du\u0020r\u00E9pertoire\u0020contenant\u0020ce\u0020fichier\u0020ind\u00E9pendamment\u0020de\u0020celle\u0020du\u0020script\u0020appelant.",
+            "url": "classes/LLMap-Map.html#method_urlOftheDir"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003Adraw\u0028\u0029",
+            "name": "draw",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020code\u0020JS\u0020de\u0020dessin\u0020de\u0020la\u0020carte.",
+            "url": "classes/LLMap-Map.html#method_draw"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003Adisplay\u0028\u0029",
+            "name": "display",
+            "summary": "Affiche\u0020une\u0020carte.",
+            "url": "classes/LLMap-Map.html#method_display"
+        },                {
+            "fqsen": "\\LLMap\\Map\u003A\u003A\u0024def",
+            "name": "def",
+            "summary": "",
+            "url": "classes/LLMap-Map.html#property_def"
+        },                {
+            "fqsen": "\\LLMap\\SchemaOfAMapAndItsLayers",
+            "name": "SchemaOfAMapAndItsLayers",
+            "summary": "Construit\u0020la\u0020d\u00E9finition\u0020du\u0020sch\u00E9ma\u0020de\u0020AMapAndItsLayers\u0020\u00E0\u0020partir\u0020de\u0020celui\u0020de\u0020MapDataset.",
+            "url": "classes/LLMap-SchemaOfAMapAndItsLayers.html"
+        },                {
+            "fqsen": "\\LLMap\\SchemaOfAMapAndItsLayers\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Construit\u0020la\u0020d\u00E9finition\u0020du\u0020sch\u00E9ma\u0020de\u0020AMapAndItsLayers\u0020\u00E0\u0020partir\u0020de\u0020celui\u0020de\u0020MapDataset.",
+            "url": "classes/LLMap-SchemaOfAMapAndItsLayers.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\SchemaOfAMapAndItsLayers\u003A\u003Avalidator\u0028\u0029",
+            "name": "validator",
+            "summary": "Retourne\u0020le\u0020validateur\u0020de\u0020la\u0020d\u00E9f\u0020d\u0027une\u0020AMapAndItsLayers\u0020\/\u0020son\u0020sch\u00E9ma.",
+            "url": "classes/LLMap-SchemaOfAMapAndItsLayers.html#method_validator"
+        },                {
+            "fqsen": "\\LLMap\\SchemaOfAMapAndItsLayers\u003A\u003AYAML_FILE_PATH",
+            "name": "YAML_FILE_PATH",
+            "summary": "Chemin\u0020du\u0020JdD\u0020MapDataset.",
+            "url": "classes/LLMap-SchemaOfAMapAndItsLayers.html#constant_YAML_FILE_PATH"
+        },                {
+            "fqsen": "\\LLMap\\SchemaOfAMapAndItsLayers\u003A\u003A\u0024def",
+            "name": "def",
+            "summary": "",
+            "url": "classes/LLMap-SchemaOfAMapAndItsLayers.html#property_def"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers",
+            "name": "AMapAndItsLayers",
+            "summary": "Dessine\u0020une\u0020carte\u0020d\u00E9finie\u0020conform\u00E9ment\u0020\u00E0\u0020son\u0020sch\u00E9ma.",
+            "url": "classes/LLMap-AMapAndItsLayers.html"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003AisInValid\u0028\u0029",
+            "name": "isInValid",
+            "summary": "Valide\u0020la\u0020d\u00E9f\u0020d\u0027une\u0020AMapAndItsLayers\u0020\/\u0020son\u0020sch\u00E9ma,\u0020renvoie\u0020null\u0020si\u0020valide\u0020et\u0020sinon\u0020le\u0020Validator.",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_isInValid"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003AdisplayErrors\u0028\u0029",
+            "name": "displayErrors",
+            "summary": "Affiche\u0020les\u0020erreurs\u0020de\u0020non\u0020conformit\u00E9\u0020de\u0020la\u0020d\u00E9finition\u0020\/\u0020son\u0020sch\u00E9ma.",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_displayErrors"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003AdatasetViews\u0028\u0029",
+            "name": "datasetViews",
+            "summary": "Retourne\u0020les\u0020vues\u0020d\u00E9finies\u0020dans\u0020le\u0020jeu\u0020MapDataset",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_datasetViews"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method___construct"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003AdatasetLayers\u0028\u0029",
+            "name": "datasetLayers",
+            "summary": "Retourne\u0020les\u0020couches\u0020d\u00E9finies\u0020dans\u0020le\u0020jeu\u0020MapDataset",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_datasetLayers"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003Adraw\u0028\u0029",
+            "name": "draw",
+            "summary": "Dessine\u0020la\u0020carte.",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_draw"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003Adisplay\u0028\u0029",
+            "name": "display",
+            "summary": "Affiche\u0020la\u0020carte.",
+            "url": "classes/LLMap-AMapAndItsLayers.html#method_display"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003A\u0024map",
+            "name": "map",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayers.html#property_map"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003A\u0024view",
+            "name": "view",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayers.html#property_view"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003A\u0024layers",
+            "name": "layers",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayers.html#property_layers"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayers\u003A\u003A\u0024def",
+            "name": "def",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayers.html#property_def"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayersTest",
+            "name": "AMapAndItsLayersTest",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayersTest.html"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayersTest\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "",
+            "url": "classes/LLMap-AMapAndItsLayersTest.html#method_main"
+        },                {
+            "fqsen": "\\LLMap\\AMapAndItsLayersTest\u003A\u003AYAML_DEF",
+            "name": "YAML_DEF",
+            "summary": "D\u00E9finition\u0020d\u0027une\u0020carte\u0020en\u0020Yaml.",
+            "url": "classes/LLMap-AMapAndItsLayersTest.html#constant_YAML_DEF"
+        },                {
             "fqsen": "\\Pos\\Pos",
             "name": "Pos",
             "summary": "Fonctions\u0020sur\u0020les\u0020positions\u0020\u0028TPos\u0029\u0020d\u00E9finies\u0020comme\u0020une\u0020liste\u0020de\u00202\u0020nombres.",
@@ -3126,35 +3291,40 @@ Search.appendIndex(
             "summary": "Formatte\u0020une\u0020valeur\u0020pour\u0020affichage",
             "url": "classes/Misc-SetOp.html#method_formatForPrint"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel",
+            "fqsen": "\\ZoomLevel\\ZoomLevel",
             "name": "ZoomLevel",
             "summary": "Autour\u0020des\u0020niveaux\u0020de\u0020zoom\u0020Leaflet.",
-            "url": "classes/Misc-ZoomLevel.html"
+            "url": "classes/ZoomLevel-ZoomLevel.html"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel\u003A\u003AWebMercatorExtension\u0028\u0029",
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AWebMercatorExtension\u0028\u0029",
             "name": "WebMercatorExtension",
             "summary": "extension\u0020des\u0020coordonn\u00E9es\u0020WebMercator",
-            "url": "classes/Misc-ZoomLevel.html#method_WebMercatorExtension"
+            "url": "classes/ZoomLevel-ZoomLevel.html#method_WebMercatorExtension"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel\u003A\u003AscaleDenLevel0\u0028\u0029",
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AscaleDenLevel0\u0028\u0029",
             "name": "scaleDenLevel0",
             "summary": "D\u00E9nominateur\u0020de\u0020l\u0027\u00E9chelle\u0020de\u0020la\u0020tuile\u00200\u0020de\u0020Leaflet.",
-            "url": "classes/Misc-ZoomLevel.html#method_scaleDenLevel0"
+            "url": "classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel0"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel\u003A\u003AscaleDenLevel\u0028\u0029",
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AscaleDenLevel\u0028\u0029",
             "name": "scaleDenLevel",
-            "summary": "",
-            "url": "classes/Misc-ZoomLevel.html#method_scaleDenLevel"
+            "summary": "Calcule\u0020le\u0020d\u00E9nominateur\u0020de\u0020l\u0027\u00E9chelle\u0020pour\u0020le\u0020niveau\u0020\u0024level.",
+            "url": "classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel\u003A\u003AIAG_GRS_1980_A",
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AfromBBox\u0028\u0029",
+            "name": "fromBBox",
+            "summary": "Calcule\u0020de\u0020niveau\u0020de\u0020zoom\u0020adapt\u00E9\u0020pour\u0020visualiser\u0020un\u0020BBox\u0020\u003B\u0020le\u0020calcul\u0020est\u0020effectu\u00E9\u0020en\u0020degr\u00E9s.",
+            "url": "classes/ZoomLevel-ZoomLevel.html#method_fromBBox"
+        },                {
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AIAG_GRS_1980_A",
             "name": "IAG_GRS_1980_A",
             "summary": "Demi\u0020grand\u0020axe\u0020de\u0020l\u0027ellipsoide\u0020IAG_GRS_1980\u0020\u002D\u0020en\u0020anglais\u0020Equatorial\u0020radius\u0020\u002D\u0020en\u0020m\u00E8tres",
-            "url": "classes/Misc-ZoomLevel.html#constant_IAG_GRS_1980_A"
+            "url": "classes/ZoomLevel-ZoomLevel.html#constant_IAG_GRS_1980_A"
         },                {
-            "fqsen": "\\Misc\\ZoomLevel\u003A\u003ASTD_PIXEL_SIZE_IN_METERS",
+            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003ASTD_PIXEL_SIZE_IN_METERS",
             "name": "STD_PIXEL_SIZE_IN_METERS",
             "summary": "R\u00E9solution\u0020std\u0020d\u0027un\u0020pixel\u0020d\u00E9fini\u0020dans\u0020le\u0020standard\u0020WMS,\u0020en\u0020m\u00E8tres.",
-            "url": "classes/Misc-ZoomLevel.html#constant_STD_PIXEL_SIZE_IN_METERS"
+            "url": "classes/ZoomLevel-ZoomLevel.html#constant_STD_PIXEL_SIZE_IN_METERS"
         },                {
             "fqsen": "\\",
             "name": "\\",
@@ -3186,6 +3356,11 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/lib.html"
         },                {
+            "fqsen": "\\LLMap",
+            "name": "LLMap",
+            "summary": "",
+            "url": "namespaces/llmap.html"
+        },                {
             "fqsen": "\\Misc",
             "name": "Misc",
             "summary": "",
@@ -3195,5 +3370,10 @@ Search.appendIndex(
             "name": "Pos",
             "summary": "",
             "url": "namespaces/pos.html"
+        },                {
+            "fqsen": "\\ZoomLevel",
+            "name": "ZoomLevel",
+            "summary": "",
+            "url": "namespaces/zoomlevel.html"
         }            ]
 );

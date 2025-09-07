@@ -77,11 +77,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/llmap.html" class="">LLMap</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -112,11 +120,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Map.html" class="">Map</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -165,98 +181,10 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-MapDataset.html"><abbr title="\Dataset\MapDataset">MapDataset</abbr></a></dt><dd>JdD des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Layer.html"><abbr title="\Dataset\Layer">Layer</abbr></a></dt><dd>Classe abstraite des couches pour générer le code JS correspondant à la couche</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-L-TileLayer.html"><abbr title="\Dataset\L_TileLayer">L_TileLayer</abbr></a></dt><dd>Classe concrète des couches L_TileLayer</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-L-UGeoJSONLayer.html"><abbr title="\Dataset\L_UGeoJSONLayer">L_UGeoJSONLayer</abbr></a></dt><dd>Classe concrète des couches L_UGeoJSONLayer</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-L-geoJSON.html"><abbr title="\Dataset\L_geoJSON">L_geoJSON</abbr></a></dt><dd>Classe concrète des couches L_geoJSON</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Map.html"><abbr title="\Dataset\Map">Map</abbr></a></dt><dd>Prend une carte définie dans mapdataset.yaml et génère le code JS Leaflet la dessinant.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-MapDataset.html"><abbr title="\Dataset\MapDataset">MapDataset</abbr></a></dt><dd>JdD des cartes dessinables en Leaflet sans avoir à éditer le code JS correspondant.</dd>    </dl>
 
 
 
-<h4 id="toc-constants">
-    Constants
-    <a href="files/datasets-mapdataset.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
-
-</h4>
-<dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/default.html#constant_JS_SRCE">JS_SRCE</a>
-    <span>
-        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;&lt;head&gt;
-  &lt;title&gt;{title}&lt;/title&gt;
-  &lt;meta charset=&quot;UTF-8&quot;&gt;
-  &lt;!-- meta nécessaire pour le mobile --&gt;
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-  &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/llmap.css&#039;&gt;
-  &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;../leaflet/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;../leaflet/leaflet.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- chgt du curseur --&gt;
-  &lt;style&gt;
-  .leaflet-grab {
-     cursor: auto;
-  }
-  .leaflet-dragging .leaflet-grab{
-     cursor: move;
-  }
-  &lt;/style&gt; 
-  &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;../leaflet/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;../leaflet/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
-  &lt;script&gt;
-    var {varName} = {varValue};
-
-// affiche les caractéristiques de chaque feature
-var onEachFeature = function (feature, layer) {
-  layer.bindPopup(
-    &#039;&lt;b&gt;Feature&lt;/b&gt;&lt;br&gt;&#039;
-    +&#039;&lt;pre&gt;&#039;+JSON.stringify(feature.properties,null,&#039; &#039;)+&#039;&lt;/pre&gt;&#039;
-  );
-  var name = &#039;undef&#039;;
-  if (typeof feature.properties.nom !== &#039;undefined&#039;) {
-    name = feature.properties.nom;
-  }
-  else if (typeof feature.properties.name !== &#039;undefined&#039;) {
-    name = feature.properties.name;
-  }
-  layer.bindTooltip(name);
-}
-
-var map = L.map(&#039;map&#039;).setView([46.5,3],6);  // view pour la zone
-L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
-
-// activation du plug-in Control.Coordinates
-var c = new L.Control.Coordinates();
-c.addTo(map);
-map.on(&#039;click&#039;, function(e) { c.setCoordinates(e); });
-
-var baseLayers = {
-  {baseLayers}
-};
-map.addLayer(baseLayers[&quot;{defaultBaseLayer}&quot;]);
-
-var overlays = {
-  {overlays}
-};
-map.addLayer(overlays[&quot;{defaultOverlay}&quot;]);
-
-L.control.layers(baseLayers, overlays).addTo(map);
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-EOT]                            </span>
-</dt>
-<dd>Le code JavaScript paramétré de la carte utilisé par Map::draw().</dd>
-
-    </dl>
 
 
 
@@ -264,119 +192,6 @@ EOT]                            </span>
 
 
         
-    <section class="phpdocumentor-constants">
-        <h3 class="phpdocumentor-elements__header" id="constants">
-            Constants
-            <a href="files/datasets-mapdataset.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
-
-        </h3>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_JS_SRCE">
-        JS_SRCE
-        <a href="namespaces/default.html#constant_JS_SRCE" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/mapdataset.php"><a href="files/datasets-mapdataset.html"><abbr title="datasets/mapdataset.php">mapdataset.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">206</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Le code JavaScript paramétré de la carte utilisé par Map::draw().</p>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">JS_SRCE</span>
-    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;&lt;head&gt;
-  &lt;title&gt;{title}&lt;/title&gt;
-  &lt;meta charset=&quot;UTF-8&quot;&gt;
-  &lt;!-- meta nécessaire pour le mobile --&gt;
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-  &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/llmap.css&#039;&gt;
-  &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;../leaflet/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;../leaflet/leaflet.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- chgt du curseur --&gt;
-  &lt;style&gt;
-  .leaflet-grab {
-     cursor: auto;
-  }
-  .leaflet-dragging .leaflet-grab{
-     cursor: move;
-  }
-  &lt;/style&gt; 
-  &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;../leaflet/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;../leaflet/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
-  &lt;script&gt;
-    var {varName} = {varValue};
-
-// affiche les caractéristiques de chaque feature
-var onEachFeature = function (feature, layer) {
-  layer.bindPopup(
-    &#039;&lt;b&gt;Feature&lt;/b&gt;&lt;br&gt;&#039;
-    +&#039;&lt;pre&gt;&#039;+JSON.stringify(feature.properties,null,&#039; &#039;)+&#039;&lt;/pre&gt;&#039;
-  );
-  var name = &#039;undef&#039;;
-  if (typeof feature.properties.nom !== &#039;undefined&#039;) {
-    name = feature.properties.nom;
-  }
-  else if (typeof feature.properties.name !== &#039;undefined&#039;) {
-    name = feature.properties.name;
-  }
-  layer.bindTooltip(name);
-}
-
-var map = L.map(&#039;map&#039;).setView([46.5,3],6);  // view pour la zone
-L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
-
-// activation du plug-in Control.Coordinates
-var c = new L.Control.Coordinates();
-c.addTo(map);
-map.on(&#039;click&#039;, function(e) { c.setCoordinates(e); });
-
-var baseLayers = {
-  {baseLayers}
-};
-map.addLayer(baseLayers[&quot;{defaultBaseLayer}&quot;]);
-
-var overlays = {
-  {overlays}
-};
-map.addLayer(overlays[&quot;{defaultOverlay}&quot;]);
-
-L.control.layers(baseLayers, overlays).addTo(map);
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-EOT]</span>
-</code>
-
-
-    
-    
-    
-
-    
-
-</article>
-            </section>
 
         
         <div class="phpdocumentor-modal" id="source-view">
@@ -485,16 +300,9 @@ EOT]</span>
             <li>
                 <ul class="phpdocumentor-list -clean">
                                                                                                         <li><a href="files/datasets-mapdataset.html#toc-classes">Classes</a></li>
-                                                                                                        <li><a href="files/datasets-mapdataset.html#toc-constants">Constants</a></li>
-                                                        </ul>
+                                                                                                                    </ul>
             </li>
 
-                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
-                <li>
-                    <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/default.html#constant_JS_SRCE">JS_SRCE</a></li>
-                                            </ul>
-                </li>
             
                     </ul>
     </section>

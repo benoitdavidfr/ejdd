@@ -196,6 +196,18 @@ class BBox {
       return "[$this->sw,$this->ne]";
   }
   
+  /** Retourne le centre de la BBox.
+   * @return TPos */
+  function center(): array { return [($this->sw->x + $this->ne->x)/2, ($this->sw->y + $this->ne->y)/2]; }
+  
+  /** Taille du bbox en degrés. */
+  function size(): float {
+    $dLat = $this->ne->y - $this->sw->y;
+    $dLon = ($this->ne->x - $this->sw->x) * cos(($this->ne->y + $this->sw->y) * pi() / 2 / 180);
+    $dist = sqrt($dLat * $dLat + $dLon * $dLon) / sqrt(2);
+    return $dist;
+  }
+  
   /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
   function includes(self $b): bool {
     if ($b->isEmpty())

@@ -77,11 +77,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/llmap.html" class="">LLMap</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -112,11 +120,19 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Map.html" class="">Map</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -161,8 +177,10 @@
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/dataset.html"><abbr title="\Dataset">Dataset</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/geojson.html"><abbr title="\GeoJSON">GeoJSON</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/lib.html"><abbr title="\Lib">Lib</abbr></a></dt>
+            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/llmap.html"><abbr title="\LLMap">LLMap</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/misc.html"><abbr title="\Misc">Misc</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/pos.html"><abbr title="\Pos">Pos</abbr></a></dt>
+            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/zoomlevel.html"><abbr title="\ZoomLevel">ZoomLevel</abbr></a></dt>
     </dl>
 
 
@@ -187,13 +205,14 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- permettre de faire une carte d&#039;une collection
+- mettre en MD les description dans les schémas
+- permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d&#039;un prédicat plus complexe dans JoinP
-- prévoir un mécanisme de stockage des vues
+- prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
     - des données utilisées
@@ -256,6 +275,17 @@ GitHub
 Le 25/8/2025, j&#039;ai réussi à synchroniser le dépôt avec gitbub.
 J&#039;ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 
+Le lien avec le dépôt GitHub:
+  Pour définir ce lien:
+    git remote add origin git@github.com:benoitdavidfr/dataset.git
+  Pour effacer ce lien: (par ex. pour le changer)
+    git remote remove origin
+
+Pour pousser sur github:
+  git push -u origin main
+Pour cloner:
+  git clone git@github.com:benoitdavidfr/dataset.git
+
 EOT]                            </span>
 </dt>
 <dd>Utilisation de GitHub</dd>
@@ -266,11 +296,17 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+7/9/2025:
+  - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
+    - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (en cours)
+    - ne fonctionne que sur WorldEez/collections/eez_v11
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
   - ajout de Dataset::isAvailable()
   - ajout d&#039;un fichier lib.php, amélioration de la doc
+  - génération de la doc dans docs, intégration dans git, config. de GitHub Pages pour l&#039;afficher, lien dans le README
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS
@@ -430,10 +466,10 @@ EOT]]                            </span>
   &lt;!-- meta nécessaire pour le mobile --&gt;
   &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
   &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/llmap.css&#039;&gt;
+  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/llmap.css&#039;&gt;
   &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;../leaflet/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;../leaflet/leaflet.js&#039;&gt;&lt;/script&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&#039;{leaflet}/leaflet.css&#039;/&gt;
+  &lt;script src=&#039;{leaflet}/leaflet.js&#039;&gt;&lt;/script&gt;
   &lt;!-- chgt du curseur --&gt;
   &lt;style&gt;
   .leaflet-grab {
@@ -444,14 +480,14 @@ EOT]]                            </span>
   }
   &lt;/style&gt; 
   &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;{leaflet}/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
   &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;../leaflet/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
+  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/Control.Coordinates.css&#039;&gt;
+  &lt;script src=&#039;{leaflet}/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
   &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;{leaflet}/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
   &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;../leaflet/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
+  &lt;script src=&#039;{leaflet}/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
@@ -474,7 +510,7 @@ var onEachFeature = function (feature, layer) {
   layer.bindTooltip(name);
 }
 
-var map = L.map(&#039;map&#039;).setView([46.5,3],6);  // view pour la zone
+var map = L.map(&#039;map&#039;).setView({view});  // view pour la zone
 L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
 
 // activation du plug-in Control.Coordinates
@@ -519,7 +555,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -530,10 +566,6 @@ Lignes de commandes utiles
     git commit # dans la branche
     git checkout main # bascule sur main
     git merge hotfix  # fusion de la branche avec main
-  Pour pousser sur github:
-    git push -u origin main
-  Pour cloner:
-    git clone git@github.com:benoitdavidfr/datasets.git
     
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net
@@ -578,13 +610,14 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- permettre de faire une carte d&#039;une collection
+- mettre en MD les description dans les schémas
+- permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
   - quoi afficher ?
 - écrire le cas d&#039;un prédicat plus complexe dans JoinP
-- prévoir un mécanisme de stockage des vues
+- prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
   - documenter la vue
     - de la vue elle même, pourquoi elle a até conçue, ...
     - des données utilisées
@@ -730,7 +763,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">245</span>
+    <span class="phpdocumentor-element-found-in__line">248</span>
 
     </aside>
 
@@ -746,6 +779,17 @@ GitHub
 ------
 Le 25/8/2025, j&#039;ai réussi à synchroniser le dépôt avec gitbub.
 J&#039;ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
+
+Le lien avec le dépôt GitHub:
+  Pour définir ce lien:
+    git remote add origin git@github.com:benoitdavidfr/dataset.git
+  Pour effacer ce lien: (par ex. pour le changer)
+    git remote remove origin
+
+Pour pousser sur github:
+  git push -u origin main
+Pour cloner:
+  git clone git@github.com:benoitdavidfr/dataset.git
 
 EOT]</span>
 </code>
@@ -768,7 +812,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">39</span>
+    <span class="phpdocumentor-element-found-in__line">40</span>
 
     </aside>
 
@@ -782,11 +826,17 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+7/9/2025:
+  - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
+    - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (en cours)
+    - ne fonctionne que sur WorldEez/collections/eez_v11
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
   - ajout de Dataset::isAvailable()
   - ajout d&#039;un fichier lib.php, amélioration de la doc
+  - génération de la doc dans docs, intégration dans git, config. de GitHub Pages pour l&#039;afficher, lien dans le README
 5/9/2025:
   - dans FeatureServer
     - gestion de la projection en WGS84 par le serveur WFS
@@ -950,9 +1000,9 @@ EOT]]</span>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/mapdataset.php"><a href="files/datasets-mapdataset.html"><abbr title="datasets/mapdataset.php">mapdataset.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="llmap.php"><a href="files/llmap.html">llmap.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">206</span>
+    <span class="phpdocumentor-element-found-in__line">209</span>
 
     </aside>
 
@@ -971,10 +1021,10 @@ EOT]]</span>
   &lt;!-- meta nécessaire pour le mobile --&gt;
   &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
   &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/llmap.css&#039;&gt;
+  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/llmap.css&#039;&gt;
   &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;../leaflet/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;../leaflet/leaflet.js&#039;&gt;&lt;/script&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&#039;{leaflet}/leaflet.css&#039;/&gt;
+  &lt;script src=&#039;{leaflet}/leaflet.js&#039;&gt;&lt;/script&gt;
   &lt;!-- chgt du curseur --&gt;
   &lt;style&gt;
   .leaflet-grab {
@@ -985,14 +1035,14 @@ EOT]]</span>
   }
   &lt;/style&gt; 
   &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;{leaflet}/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
   &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;../leaflet/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;../leaflet/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
+  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/Control.Coordinates.css&#039;&gt;
+  &lt;script src=&#039;{leaflet}/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
   &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;../leaflet/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;{leaflet}/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
   &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;../leaflet/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
+  &lt;script src=&#039;{leaflet}/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
 &lt;/head&gt;
 &lt;body&gt;
   &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
@@ -1015,7 +1065,7 @@ var onEachFeature = function (feature, layer) {
   layer.bindTooltip(name);
 }
 
-var map = L.map(&#039;map&#039;).setView([46.5,3],6);  // view pour la zone
+var map = L.map(&#039;map&#039;).setView({view});  // view pour la zone
 L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
 
 // activation du plug-in Control.Coordinates
@@ -1058,7 +1108,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">206</span>
+    <span class="phpdocumentor-element-found-in__line">213</span>
 
     </aside>
 
@@ -1085,7 +1135,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -1096,10 +1146,6 @@ Lignes de commandes utiles
     git commit # dans la branche
     git checkout main # bascule sur main
     git merge hotfix  # fusion de la branche avec main
-  Pour pousser sur github:
-    git push -u origin main
-  Pour cloner:
-    git clone git@github.com:benoitdavidfr/datasets.git
     
   Pour se connecter sur Alwaysdata:
     ssh -lbdavid ssh-bdavid.alwaysdata.net

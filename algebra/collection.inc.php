@@ -8,6 +8,7 @@ require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
 require_once __DIR__.'/predicate.inc.php';
 require_once __DIR__.'/../geojson.inc.php';
+require_once __DIR__.'/../llmap.php';
 require_once __DIR__.'/../lib.php';
 
 use Dataset\Dataset;
@@ -15,6 +16,8 @@ use Lib\RecArray;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
 use BBox\BBox;
+use LLMap\AMapAndItsLayers;
+use LLMap\View;
 use Symfony\Component\Yaml\Yaml;
 use JsonSchema\Validator;
 
@@ -140,6 +143,7 @@ abstract class Collection {
   }
 
   function displayItem(string $key): void {
+    //echo $this->drawItem('key','field',[]); return;
     $item = $this->getOneItemByKey($key);
     $tuple = match ($this->kind) {
       'dictOfTuples', 'listOfTuples' => $item,
@@ -148,9 +152,78 @@ abstract class Collection {
     };
     //echo "<pre>"; print_r($tuple);
     echo "<h2>N-uplet de la collection ",$this->id()," ayant pour clé $key</h2>\n";
-    echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
+    //echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
+    $props = $this->properties();
+    echo "<table border=1>\n";
+    foreach ($tuple as $f => $v) {
+      echo "<tr><td>$f</td><td>",$props[$f] ?? '?',"</td>";
+      if (is_null($v))
+        echo '<td><i>null</i></td>';
+      elseif (is_string($v))
+        echo '<td>',htmlentities($v),'</td>';
+      elseif (is_numeric($v))
+        echo "<td align='right'>$v</td>";
+      elseif (preg_match('!^GeoJSON!', $props[$f] ?? ''))
+        echo "<td><a href='?action=$_GET[action]&collection=$_GET[collection]&key=$key&field=$f'>DrawMap</a></td>";
+      elseif (is_array($v))
+        echo '<td><pre>'.json_encode($v).'</pre></td>';
+      else {
+        echo '<td><pre>'; var_dump($v); echo '</pre></td>';
+      }
+      echo "</tr>\n";
+    }
+    echo "</table>\n";
   }
+  
+  /** Dessine une carte à partir de la géométrie fournie dans $value.
+   * @param array<mixed> $value - la géométrie. */
+  function drawValue(string $key, string $field, array $value): string {
+    $yamlDef = [
+      <<<'EOT'
+map:
+  title: Carte d'un n-uplet
+  vars:
+    userverdir: 'http://localhost/gexplor/visu/'
+  view: bbox
+  baseLayers:
+    - OSM
+    - FondBlanc
+  defaultBaseLayer: OSM
+  overlays:
+    - layerOfTheItem
+    - antimeridien
+    - debug
+  defaultOverlays:
+    - layerOfTheItem
+    - antimeridien
+views:
+  bbox: '{bbox}'
+layers:
+  layerOfTheItem:
+    title: n-upplet
+    L.UGeoJSONLayer:
+      endpoint: '{endpoint}'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
 
+EOT
+    ];
+    $def = Yaml::parse($yamlDef[0]);
+    $def['views']['bbox'] = View::createFromBBox(Geometry::create($value)->bbox())->def;
+    $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}WorldEez/collections/eez_v11/items/$key";
+    $map = new AMapAndItsLayers($def);
+    
+    //$map->display();
+    return $map->draw();
+  }
+  
+  function displayValue(string $key, string $field): void {
+    $item = $this->getOneItemByKey($key);
+    echo $this->drawValue($key, $field, $item[$field]);
+  }
+  
   /** Affiche les properties et données de la collection */
   function display(int $skip=0): void {
     echo '<h2>',$this->id(),"</h2>\n";

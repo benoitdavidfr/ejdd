@@ -99,4 +99,40 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   die("\n  ]\n}\n");
 }
 
+if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON d'un item
+  //echo '<pre>$matches='; print_r($matches);
+  $dsName = $matches[1];
+  $collName = $matches[2];
+  $key = $matches[3];
+
+  $dataset = Dataset::get($dsName);
+  $collectionMD = $dataset->collections[$collName]; // les MD de la collection
+  $kind = $collectionMD->kind;
+  //print_r($collectionMD);
+  
+  $tuple = $dataset->getOneItemByKey($collName, $key);
+  $geometry = $tuple['geometry'];
+  unset($tuple['geometry']);
+  
+  header('Access-Control-Allow-Origin: *');
+  if (!$tuple) {
+    header('HTTP/1.1 404 Not Found');
+    die("La clé $key ne correspond à aucun item");
+  }
+  header('Content-Type: application/json');
+  echo '{ "type": "FeatureCollection"',",\n",
+    '  "name": "',"$dsName/$collName/$key",'",',"\n",
+    '  "features":',"[\n";
+  $feature = array_merge(
+    ['type'=> 'Feature'],
+    //['kind'=> $kind],
+    ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
+    ['properties'=> $tuple],
+    $geometry ? [ 'geometry'=> $geometry] : [],
+  );
+  $json = json_encode($feature);
+  echo '    ',$json;
+  die("\n  ]\n}\n");
+}
+
 die("Path $path non traitée\n");
