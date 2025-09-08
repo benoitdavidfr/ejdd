@@ -42,6 +42,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+8/9/2025:
+  - correction du bug l'antiméridoien dans BBox
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l'utiliser sans créer de carte dans MapDataset
@@ -341,6 +343,17 @@ class Application {
           CollectionOfDs::get($_GET['collection'])->displayItem($_GET['key']);
         else
           CollectionOfDs::get($_GET['collection'])->displayValue($_GET['key'], $_GET['field']);
+        break;
+      }
+      case 'draw': {
+        if (!isset($_GET['collection']))
+          Dataset::get($_GET['dataset'])->display();
+        elseif (!isset($_GET['key']))
+          CollectionOfDs::get($_GET['collection'])->draw($_GET['skip'] ?? 0);
+        elseif (!isset($_GET['field']))
+          CollectionOfDs::get($_GET['collection'])->drawItem($_GET['key']);
+        else
+          CollectionOfDs::get($_GET['collection'])->drawValue($_GET['key'], $_GET['field']);
         break;
       }
       case 'stats': {

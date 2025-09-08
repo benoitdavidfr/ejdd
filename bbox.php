@@ -22,7 +22,9 @@
  *
  * Cette implémentation intègre des fonctionnalités nécessaires à geojson.inc.php sans connaitre les classes GeoJSON
  * en utilisant les types Pos, LPos et LLPos.
- * La classe Pt ne semble pas indispensable et pourrait être remplacée par des fonctions sur Pos.
+ *
+ * Pour gérer correctement les BBox à cheval sur l'antiméridien, les BBox sont limités à une largeur en longitude < 180°.
+ * En effet, la création d'un BBox avec 2 Pts aux antipodes est ambigüe car 2 BBox peuvent être définis.
  *
  * @package BBox
  */
@@ -41,8 +43,10 @@ class Pt {
   
   /** @param TPos $pos. */
   function __construct(array $pos) {
-    if (!Pos::is($pos))
+    if (!Pos::is($pos)) {
+      echo 'pos='; var_dump($pos);
       throw new \Exception("Un Pt se fabrique à partir d'un TPos");
+    }
     $this->x = $pos[0];
     $this->y = $pos[1];
   }
@@ -67,17 +71,48 @@ class Pt {
     return sprintf($format, $this->x, $this->y);
   }
   
-  /** $this est strictement au Sud-Ouest de $b. */
-  //function issSW(Pt $b): bool { return ($this->x < $b->x) && ($this->y < $b->y); }
-  
   /** $this est largement au Sud-Ouest de $b. */
-  function islSW(Pt $b): bool { return ($this->x <= $b->x) && ($this->y <= $b->y); }
+  function islSW(Pt $b): bool {
+    $xmin = min($this->x, $b->x);
+    $xmax = max($this->x, $b->x);
+    $delta = $xmax - $xmin;
+    if ($delta > 180) {
+     return ($this->y <= $b->y) && ($this->x >= $b->x);
+    }
+    else {
+      return ($this->y <= $b->y) && ($this->x <= $b->x);
+    }
+  }
   
-  /** Le point juste au SW des 2 points. */
-  function sw(self $b): self { return new self([min($this->x, $b->x), min($this->y, $b->y)]); }
+  /** Le point juste au SW des 2 points ; tient compte de la gestion de l'antiméridien */
+  function sw(self $b): self {
+    $xmin = min($this->x, $b->x);
+    $xmax = max($this->x, $b->x);
+    $delta = $xmax - $xmin;
+    //echo "xmin=$xmin, xmax=$xmax, delta=$delta, 360-delta=",360-$delta,"\n";
+    if ($delta > 180) {
+      //echo "delta > 180\n";
+      return new self([$xmax, min($this->y, $b->y)]);
+    }
+    else {
+      return new self([$xmin, min($this->y, $b->y)]);
+    }
+  }
   
   /** Le point juste au NE des 2 points. */
-  function ne(self $b): self { return new self([max($this->x, $b->x), max($this->y, $b->y)]); }
+  function ne(self $b): self {
+    $xmin = min($this->x, $b->x);
+    $xmax = max($this->x, $b->x);
+    $delta = $xmax - $xmin;
+    //echo "xmin=$xmin, xmax=$xmax, delta=$delta, 360-delta=",360-$delta,"\n";
+    if ($delta > 180) {
+      //echo "delta > 180\n";
+      return new self([$xmin, max($this->y, $b->y)]);
+    }
+    else {
+      return new self([$xmax, max($this->y, $b->y)]);
+    }
+  }
   
   /** Fabrique une liste de Pt à partir d'une TLPos.
    * @param TLPos $lpos - liste de positions
@@ -89,7 +124,7 @@ class Pt {
 };
 
 /**
- * Un rectangle englobant en coord. geo. pour le stoker et effectuer diverses opérations et tester des conditions.
+ * Un rectangle englobant en coord. geo. pour le stocker, effectuer diverses opérations et tester des conditions.
  * Les opérations sont l'intersection et l'union entre 2 BBox. Les tests sont ceux d'intersection et d'inclusion.
  * Dans l'intersection entre BBox, elles sont considérées comme topologiquement fermées.
  * Cela veut dire que 2 bbox qui se touchent sur un bord ont comme intersection le segment commun ;
@@ -102,10 +137,12 @@ class Pt {
  * Du point de vue implémentation:
  * Un BBox est défini par ses 2 coins SW et NE avec 2 contraintes d'intégrité:
  *  1) Si 1 des 2 coins est null alors l'autre doit aussi l'être.
- *  2) Si les coins sont non nuls alors le coin SW doit être au SW de coin NE.
+ *  2) Si les coins sont non nuls alors le coin SW doit être au SW du coin NE.
  *
  * Un point est représenté par 2 coins identiques. L'espace vide est représenté par 2 points null.
  *
+ * Lorsque le BBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est > 0 et celle du coin NE est < 0.
+ * 
  * Enfin le constructeur prend en paramètres des TPos et non des Pt pour qu'il soit appelable de l'extérieur
  * sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'avoir des Pt que des TPos.
  */
@@ -262,44 +299,100 @@ const NONE = new BBox(null, null);
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-echo "<title>bbox</title>\n",
-     "<h2>Test de BBox</h2><pre>\n";
-
-if (0) { // @phpstan-ignore if.alwaysFalse
-  $pt = Pt::fromText('1@4.56789'); echo "pt=$pt\n"; //die();
+/** Test de BBox. */
+class BBoxTest {
+  static function main(): void {
+    echo "<title>bbox</title>\n",
+         "<h2>Test de BBox</h2><pre>\n";
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        echo "<a href='?action=test1'>test1</a>\n";
+        echo "<a href='?action=test2'>test2</a>\n";
+        echo "<a href='?action=test3'>test3</a>\n";
+        echo "<a href='?action=testUnion'>testUnion</a>\n";
+        echo "<a href='?action=usa-rus'>test usa-rus</a>\n";
+        echo "<a href='?action=am'>test am</a>\n";
+        break;
+      }
+      case 'test1': {
+        $pt = Pt::fromText('1@4.56789'); echo "pt=$pt\n"; //die();
   
-  $pt = Pt::fromText('0@0'); echo "pt=$pt\n";
-  echo "$pt==NONE: ", ($pt == NONE) ? "vrai\n" : "faux\n";
+        $pt = Pt::fromText('0@0'); echo "pt=$pt\n";
+        echo "$pt==NONE: ", ($pt == NONE) ? "vrai\n" : "faux\n";
 
-  $bbox = BBox::fromText('[0@0,1@1]'); echo "bbox=$bbox\n";
+        $bbox = BBox::fromText('[0@0,1@1]'); echo "bbox=$bbox\n";
 
-  //print_r(NONE);
-  $emptySp2 = new BBox(null, null);
-  echo "$emptySp2==NONE: ", ($emptySp2 == NONE) ? "vrai\n" : "faux\n";
-  echo "$emptySp2===NONE: ", ($emptySp2 === NONE) ? "vrai\n" : "faux\n";
-}
-elseif (0) { // @phpstan-ignore elseif.alwaysFalse
-  $r0 = BBox::fromText('[0@0,1@1]');
-  $r1 = BBox::fromText('[1@1,2@2]');
-  $r2 = BBox::fromText('[1@1,3@3]');
-  echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
-  echo "$r1 * $r2 = ",$r1->inters($r2),"\n";
+        //print_r(NONE);
+        $emptySp2 = new BBox(null, null);
+        echo "$emptySp2==NONE: ", ($emptySp2 == NONE) ? "vrai\n" : "faux\n";
+        echo "$emptySp2===NONE: ", ($emptySp2 === NONE) ? "vrai\n" : "faux\n";
+        break;
+      }
+      case 'test2': {
+        $r0 = BBox::fromText('[0@0,1@1]');
+        $r1 = BBox::fromText('[1@1,2@2]');
+        $r2 = BBox::fromText('[1@1,3@3]');
+        echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
+        echo "$r1 * $r2 = ",$r1->inters($r2),"\n";
   
-  $r0 = BBox::fromText('[0@0,10@10]');
-  $r1 = BBox::fromText('[5@5,15@15]');
-  echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
+        $r0 = BBox::fromText('[0@0,10@10]');
+        $r1 = BBox::fromText('[5@5,15@15]');
+        echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
   
-  $r0 = BBox::fromText('[0@0,10@10]');
-  $r1 = BBox::fromText('[5@15,15@15]');
-  echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
-}
-elseif (0) { // @phpstan-ignore elseif.alwaysFalse
-  $lpts = [new Pt([0,0]), new Pt([4,5]), new Pt([-4, -5])];
-  echo NONE->extends($lpts);
-}
-elseif (1) {
-  echo "<h3>Test de l'union</h3>\n";
-  $r0 = BBox::fromText('[0@0,10@10]');
-  $r1 = BBox::fromText('[5@5,15@15]');
-  echo "$r0 + $r1 = ",$r0->union($r1),"\n";
-}
+        $r0 = BBox::fromText('[0@0,10@10]');
+        $r1 = BBox::fromText('[5@15,15@15]');
+        echo "$r0 * $r1 = ",$r0->inters($r1),"\n";
+        break;
+      }
+      case 'test3': {
+        $lpts = [new Pt([0,0]), new Pt([4,5]), new Pt([-4, -5])];
+        echo NONE->extends($lpts);
+        break;
+      }
+      case 'testUnion': {
+        echo "<h3>Test de l'union</h3>\n";
+        $r0 = BBox::fromText('[0@0,10@10]');
+        $r1 = BBox::fromText('[5@5,15@15]');
+        echo "$r0 + $r1 = ",$r0->union($r1),"\n";
+        break;
+      }
+      case 'usa-rus': {
+        $json = file_get_contents('geom-eez-usa-rus.json');
+        $json = json_decode($json, true);
+        $lExtRings = array_map(function(array $llpos) { return $llpos[0]; }, $json['coordinates']);
+        $bbox = BBox::fromLLPos($lExtRings);
+        echo $bbox;
+        break;
+      }
+      case 'am': {
+        $sw = new Pt([179,40]);
+        $ne = new Pt([-179,50]);
+        $swsw = $sw->sw($ne);
+        $swne = $sw->ne($ne);
+        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
+        echo "$sw au SW de $ne -> ",$sw->islSW($ne) ? 'vrai' : 'faux',"\n";
+        echo "$ne au SW de $sw -> ",$ne->islSW($sw) ? 'vrai' : 'faux',"\n";
+        echo "\n";
+    
+        $sw = new Pt([40,40]);
+        $ne = new Pt([50,50]);
+        $swsw = $sw->sw($ne);
+        $swne = $sw->ne($ne);
+        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
+        echo "$sw au SW de $ne -> ",$sw->islSW($ne) ? 'vrai' : 'faux',"\n";
+        echo "$ne au SW de $sw -> ",$ne->islSW($sw) ? 'vrai' : 'faux',"\n";
+    
+        /*$sw = new Pt([-180,-90]);
+        $ne = new Pt([+180,+90]);
+        $swsw = $sw->sw($ne);
+        $swne = $sw->ne($ne);
+        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
+        */
+        break;
+      }
+      default: throw new \Exception("Action $_GET[action] non définie");
+    }
+    
+  }
+};
+BBoxTest::main();

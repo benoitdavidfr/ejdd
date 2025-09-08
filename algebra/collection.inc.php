@@ -164,7 +164,8 @@ abstract class Collection {
       elseif (is_numeric($v))
         echo "<td align='right'>$v</td>";
       elseif (preg_match('!^GeoJSON!', $props[$f] ?? ''))
-        echo "<td><a href='?action=$_GET[action]&collection=$_GET[collection]&key=$key&field=$f'>DrawMap</a></td>";
+        echo "<td><a href='?action=draw&collection=$_GET[collection]&key=$key&field=$f'>DrawMap</a>, ",
+             "<a href='?action=display&collection=$_GET[collection]&key=$key&field=$f'>DisplayGeom</a></td>";
       elseif (is_array($v))
         echo '<td><pre>'.json_encode($v).'</pre></td>';
       else {
@@ -175,9 +176,20 @@ abstract class Collection {
     echo "</table>\n";
   }
   
+  function displayValue(string $key, string $field): void {
+    $item = $this->getOneItemByKey($key);
+    echo '<pre>'.json_encode($item).'</pre>';
+    $value = $item[$field];
+    echo '<pre>'.json_encode($value).'</pre>';
+  }
+  
   /** Dessine une carte à partir de la géométrie fournie dans $value.
    * @param array<mixed> $value - la géométrie. */
-  function drawValue(string $key, string $field, array $value): string {
+  function drawValue(string $key, string $field): string {
+    echo "drawValue<br>\n";
+    $item = $this->getOneItemByKey($key);
+    $value = $item[$field];
+    echo '<pre>'.json_encode($value).'</pre>';
     $yamlDef = [
       <<<'EOT'
 map:
@@ -215,13 +227,8 @@ EOT
     $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}WorldEez/collections/eez_v11/items/$key";
     $map = new AMapAndItsLayers($def);
     
-    //$map->display();
+    $map->display();
     return $map->draw();
-  }
-  
-  function displayValue(string $key, string $field): void {
-    $item = $this->getOneItemByKey($key);
-    echo $this->drawValue($key, $field, $item[$field]);
   }
   
   /** Affiche les properties et données de la collection */
