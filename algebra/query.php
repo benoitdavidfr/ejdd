@@ -208,7 +208,7 @@ EOT
         $text0 = $text;
         return new Program('display', $expCollection);
       }
-      self::addTrace($path, "Echec {program}#0", $text0);
+      self::addTrace($path, "Echec display", $text0);
     }
     
     // MANQUE {program}#1 : 'draw' '(' {expDataset} ')'
@@ -239,10 +239,10 @@ EOT
         $dataset = Dataset::get($name);
       }
       catch (\Exception $e) {
-        self::addTrace($path, "Echec {expDataset}", $text0);
+        self::addTrace($path, "Echec {expDataset} car '$name' ne correspond pas à un Dataset", $text0);
         return null;
       }
-      self::addTrace($path, "Succès {expDataset}", $text0);
+      self::addTrace($path, "Succès {expDataset}, '$name' correspond à un Dataset", $text0);
       $text0 = $text;
       return $dataset;
     }
@@ -262,11 +262,11 @@ EOT
         && self::token($path, '{point}', $text)
           && ($name = self::token($path, '{name}', $text))
       ) {
-        self::addTrace($path, "Succès expCollection#0", $text0);
+        self::addTrace($path, "Succès {expCollection} ::= {expDataset} {point} {name}", $text0);
         $text0 = $text;
         return $dataset->collections[$name];
       }
-      self::addTrace($path, "Echec expCollection#0", $text0);
+      self::addTrace($path, "Echec  {expCollection} ::= {expDataset} {point} {name}", $text0);
     }
     
     { // {expCollection}#1 : {joinType} 'F(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'

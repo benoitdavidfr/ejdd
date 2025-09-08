@@ -100,14 +100,16 @@ class WfsCap {
     return [floatval($matches[1]), floatval($matches[2])];
   }
   
-  /** Convertit un WGS84BoundingBox en BBox. */
-  static function WGS84BoundingBox2BBox(\SimpleXMLElement $WGS84BoundingBox): BBox {
-    $bbox = new BBox(
-      self::corner2Pos($WGS84BoundingBox->ows__LowerCorner),
-      self::corner2Pos($WGS84BoundingBox->ows__UpperCorner)
-    );
-    //echo '<pre>WGS84BoundingBox2BBox() returns '; print_r($bbox); echo "</pre>\n";
-    return $bbox;
+  /** Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.
+   * Attention, les WGS84BoundingBox sont souvent trop grands pour tenir dans un BBox.
+   * @return array<int,number>
+   */
+  static function WGS84BoundingBoxTo4Coordinates(\SimpleXMLElement $WGS84BoundingBox): array {
+    $lc = self::corner2Pos($WGS84BoundingBox->ows__LowerCorner);
+    $uc = self::corner2Pos($WGS84BoundingBox->ows__UpperCorner);
+    $coords = [$lc[0], $lc[1], $uc[0], $uc[1]];
+    //echo '<pre>WGS84BoundingBoxTo4Coordinates() returns '; print_r($coords); echo "</pre>\n";
+    return $coords;
   }
   
   /** Lit les capacités du serveur et les stoke dans l'objet. */
@@ -144,7 +146,7 @@ class WfsCap {
           ."\n&nbsp;&nbsp;&nbsp;&nbsp;LowerCorner:".$featureType->ows__WGS84BoundingBox->ows__LowerCorner
           ."\n&nbsp;&nbsp;&nbsp;&nbsp;UpperCorner:".$featureType->ows__WGS84BoundingBox->ows__UpperCorner,
         //'defaultCRS'=> str_replace('__',':', $featureType->DefaultCRS),
-        'bbox'=> self::WGS84BoundingBox2BBox($featureType->ows__WGS84BoundingBox)->as4Coordinates(),
+        'bbox'=> self::WGS84BoundingBoxTo4Coordinates($featureType->ows__WGS84BoundingBox),
         'type'=> 'object',
       ];
       //if (count($collections) > 15) break; // limitation du nbre de FeatureType pour le développement

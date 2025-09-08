@@ -266,11 +266,11 @@
 <dd>Construit le schema JSON à partir des capacités.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_WGS84BoundingBox2BBox">WGS84BoundingBox2BBox()</a>
+    <a class="" href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates">WGS84BoundingBoxTo4Coordinates()</a>
     <span>
-                                &nbsp;: <a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a>    </span>
+                                &nbsp;: array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;    </span>
 </dt>
-<dd>Convertit un WGS84BoundingBox en BBox.</dd>
+<dd>Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.</dd>
 
     </dl>
 
@@ -346,7 +346,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/featureserver.php"><a href="files/datasets-featureserver.html"><abbr title="datasets/featureserver.php">featureserver.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">114</span>
+    <span class="phpdocumentor-element-found-in__line">116</span>
 
     </aside>
 
@@ -440,7 +440,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/featureserver.php"><a href="files/datasets-featureserver.html"><abbr title="datasets/featureserver.php">featureserver.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">165</span>
+    <span class="phpdocumentor-element-found-in__line">167</span>
 
     </aside>
 
@@ -545,7 +545,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/featureserver.php"><a href="files/datasets-featureserver.html"><abbr title="datasets/featureserver.php">featureserver.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">124</span>
+    <span class="phpdocumentor-element-found-in__line">126</span>
 
     </aside>
 
@@ -586,28 +586,30 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_WGS84BoundingBox2BBox">
-        WGS84BoundingBox2BBox()
-        <a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBox2BBox" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_WGS84BoundingBoxTo4Coordinates">
+        WGS84BoundingBoxTo4Coordinates()
+        <a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/featureserver.php"><a href="files/datasets-featureserver.html"><abbr title="datasets/featureserver.php">featureserver.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">104</span>
+    <span class="phpdocumentor-element-found-in__line">107</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Convertit un WGS84BoundingBox en BBox.</p>
+        <p class="phpdocumentor-summary">Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">WGS84BoundingBox2BBox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$WGS84BoundingBox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">WGS84BoundingBoxTo4Coordinates</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$WGS84BoundingBox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Attention, les WGS84BoundingBox sont souvent trop grands pour tenir dans un BBox.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -625,7 +627,7 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></span>
+        <span class="phpdocumentor-signature__response_type">array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;</span>
             </section>
 
 </article>
@@ -756,7 +758,7 @@
                                             <li class=""><a href="classes/Dataset-WfsCap.html#method_describeFeatureType">describeFeatureType()</a></li>
                                             <li class=""><a href="classes/Dataset-WfsCap.html#method_getCapabilities">getCapabilities()</a></li>
                                             <li class=""><a href="classes/Dataset-WfsCap.html#method_jsonSchemaOfTheDs">jsonSchemaOfTheDs()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBox2BBox">WGS84BoundingBox2BBox()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates">WGS84BoundingBoxTo4Coordinates()</a></li>
                                     </ul>
             </li>
                     </ul>

@@ -58,23 +58,28 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayItem\u0028\u0029",
             "name": "displayItem",
-            "summary": "",
+            "summary": "Affiche\u0020l\u0027item\u0020de\u0020la\u0020collection\u0020ayant\u0020pour\u0020cl\u00E9\u0020\u0024key.",
             "url": "classes/Algebra-Collection.html#method_displayItem"
-        },                {
-            "fqsen": "\\Algebra\\Collection\u003A\u003AdrawValue\u0028\u0029",
-            "name": "drawValue",
-            "summary": "Dessine\u0020une\u0020carte\u0020\u00E0\u0020partir\u0020de\u0020la\u0020g\u00E9om\u00E9trie\u0020fournie\u0020dans\u0020\u0024value.",
-            "url": "classes/Algebra-Collection.html#method_drawValue"
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayValue\u0028\u0029",
             "name": "displayValue",
-            "summary": "",
+            "summary": "Affiche\u0020une\u0020valeur\u0020de\u0020la\u0020collection.",
             "url": "classes/Algebra-Collection.html#method_displayValue"
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
             "summary": "Affiche\u0020les\u0020properties\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection",
             "url": "classes/Algebra-Collection.html#method_display"
+        },                {
+            "fqsen": "\\Algebra\\Collection\u003A\u003Adraw\u0028\u0029",
+            "name": "draw",
+            "summary": "Dessine\u0020une\u0020carte\u0020de\u0020la\u0020collection\u0020ayant\u0020un\u0020champ\u0020g\u00E9om\u00E9trique\u0020nomm\u00E9\u0020geometry.",
+            "url": "classes/Algebra-Collection.html#method_draw"
+        },                {
+            "fqsen": "\\Algebra\\Collection\u003A\u003AdrawItem\u0028\u0029",
+            "name": "drawItem",
+            "summary": "Dessine\u0020une\u0020carte\u0020de\u0020l\u0027Item\u0020ayant\u0020un\u0020champ\u0020g\u00E9om\u00E9trique\u0020nomm\u00E9\u0020geometry.",
+            "url": "classes/Algebra-Collection.html#method_drawItem"
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003ANB_TUPLES_PER_PAGE",
             "name": "NB_TUPLES_PER_PAGE",
@@ -1433,13 +1438,23 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\Pt\u003A\u003Asw\u0028\u0029",
             "name": "sw",
-            "summary": "Le\u0020point\u0020juste\u0020au\u0020SW\u0020des\u00202\u0020points.",
+            "summary": "Le\u0020point\u0020juste\u0020au\u0020SW\u0020des\u00202\u0020points\u0020\u003B\u0020tient\u0020compte\u0020de\u0020la\u0020gestion\u0020de\u0020l\u0027antim\u00E9ridien",
             "url": "classes/BBox-Pt.html#method_sw"
         },                {
             "fqsen": "\\BBox\\Pt\u003A\u003Ane\u0028\u0029",
             "name": "ne",
             "summary": "Le\u0020point\u0020juste\u0020au\u0020NE\u0020des\u00202\u0020points.",
             "url": "classes/BBox-Pt.html#method_ne"
+        },                {
+            "fqsen": "\\BBox\\Pt\u003A\u003Adistance\u0028\u0029",
+            "name": "distance",
+            "summary": "Distance\u0020entre\u00202\u0020points\u003B\u0020calcul\u0020en\u0020degr\u00E9s,\u0020tient\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
+            "url": "classes/BBox-Pt.html#method_distance"
+        },                {
+            "fqsen": "\\BBox\\Pt\u003A\u003AmidPoint\u0028\u0029",
+            "name": "midPoint",
+            "summary": "Milieu\u0020entre\u00202\u0020points,\u0020tient\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
+            "url": "classes/BBox-Pt.html#method_midPoint"
         },                {
             "fqsen": "\\BBox\\Pt\u003A\u003AlPos2LPt\u0028\u0029",
             "name": "lPos2LPt",
@@ -1463,7 +1478,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\BBox",
             "name": "BBox",
-            "summary": "Un\u0020rectangle\u0020englobant\u0020en\u0020coord.\u0020geo.\u0020pour\u0020le\u0020stoker\u0020et\u0020effectuer\u0020diverses\u0020op\u00E9rations\u0020et\u0020tester\u0020des\u0020conditions.",
+            "summary": "Un\u0020rectangle\u0020englobant\u0020en\u0020coord.\u0020geo.\u0020pour\u0020le\u0020stocker,\u0020effectuer\u0020diverses\u0020op\u00E9rations\u0020et\u0020tester\u0020des\u0020conditions.",
             "url": "classes/BBox-BBox.html"
         },                {
             "fqsen": "\\BBox\\BBox\u003A\u003A__construct\u0028\u0029",
@@ -1526,6 +1541,11 @@ Search.appendIndex(
             "summary": "Taille\u0020du\u0020bbox\u0020en\u0020degr\u00E9s.",
             "url": "classes/BBox-BBox.html#method_size"
         },                {
+            "fqsen": "\\BBox\\BBox\u003A\u003AcrossesAntimeridian\u0028\u0029",
+            "name": "crossesAntimeridian",
+            "summary": "Le\u0020BBox\u0020intersecte\u0020t\u0027il\u0020l\u0027antim\u00E9rdien\u0020\u003F\nLorsque\u0020le\u0020BBox\u0020chevauche\u0020l\u0027antim\u00E9ridien\u0020\u0028antimeridian\u0029,\u0020la\u0020longitude\u0020du\u0020coin\u0020SW\u0020est\u0020\u003E\u00200\u0020et\u0020celle\u0020du\u0020coin\u0020NE\u0020est\u0020\u003C\u00200.",
+            "url": "classes/BBox-BBox.html#method_crossesAntimeridian"
+        },                {
             "fqsen": "\\BBox\\BBox\u003A\u003Aincludes\u0028\u0029",
             "name": "includes",
             "summary": "\u0024this\u0020inclus\u0020\u0024b\u0020au\u0020sens\u0020large,\u0020cad\u0020que\u0020\u0024a\u002D\u003Eincludes\u0028\u0024a\u0029\u0020est\u0020vrai.",
@@ -1555,6 +1575,16 @@ Search.appendIndex(
             "name": "ne",
             "summary": "Coin\u0020NE",
             "url": "classes/BBox-BBox.html#property_ne"
+        },                {
+            "fqsen": "\\BBox\\BBoxTest",
+            "name": "BBoxTest",
+            "summary": "Test\u0020de\u0020BBox.",
+            "url": "classes/BBox-BBoxTest.html"
+        },                {
+            "fqsen": "\\BBox\\BBoxTest\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "",
+            "url": "classes/BBox-BBoxTest.html#method_main"
         },                {
             "fqsen": "\\Dataset\\AeCogPe",
             "name": "AeCogPe",
@@ -1605,6 +1635,11 @@ Search.appendIndex(
             "name": "Dataset",
             "summary": "Classe\u0020abstraite\u0020des\u0020JdD.",
             "url": "classes/Dataset-Dataset.html"
+        },                {
+            "fqsen": "\\Dataset\\Dataset\u003A\u003Aexists\u0028\u0029",
+            "name": "exists",
+            "summary": "teste\u0020si\u0020le\u0020nom\u0020est\u0020celui\u0020d\u0027un\u0020JdD.",
+            "url": "classes/Dataset-Dataset.html#method_exists"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
@@ -1976,10 +2011,10 @@ Search.appendIndex(
             "summary": "Convertit\u0020un\u0020coin\u0020d\u0027un\u0020WGS84BoundingBox\u0020en\u0020Position.",
             "url": "classes/Dataset-WfsCap.html#method_corner2Pos"
         },                {
-            "fqsen": "\\Dataset\\WfsCap\u003A\u003AWGS84BoundingBox2BBox\u0028\u0029",
-            "name": "WGS84BoundingBox2BBox",
-            "summary": "Convertit\u0020un\u0020WGS84BoundingBox\u0020en\u0020BBox.",
-            "url": "classes/Dataset-WfsCap.html#method_WGS84BoundingBox2BBox"
+            "fqsen": "\\Dataset\\WfsCap\u003A\u003AWGS84BoundingBoxTo4Coordinates\u0028\u0029",
+            "name": "WGS84BoundingBoxTo4Coordinates",
+            "summary": "Convertit\u0020un\u0020WGS84BoundingBox\u0020en\u00204\u0020coordonn\u00E9es\u0020xmin,ymin,xmax,ymax.",
+            "url": "classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
@@ -2481,6 +2516,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-WorldEez.html#method___construct"
         },                {
+            "fqsen": "\\Dataset\\WorldEez\u003A\u003AimplementedFilters\u0028\u0029",
+            "name": "implementedFilters",
+            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getTuples\u0028\u0029.\u0020Peut\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020chaque\u0020Dataset.",
+            "url": "classes/Dataset-WorldEez.html#method_implementedFilters"
+        },                {
             "fqsen": "\\Dataset\\WorldEez\u003A\u003AgetItems\u0028\u0029",
             "name": "getItems",
             "summary": "L\u0027acc\u00E8s\u0020aux\u0020items\u0020d\u0027une\u0020collection\u0020du\u0020JdD\u0020par\u0020un\u0020Generator.",
@@ -2595,6 +2635,16 @@ Search.appendIndex(
             "name": "reproject",
             "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
             "url": "classes/GeoJSON-Geometry.html#method_reproject"
+        },                {
+            "fqsen": "\\GeoJSON\\Geometry\u003A\u003AcrossesAntimeridian\u0028\u0029",
+            "name": "crossesAntimeridian",
+            "summary": "",
+            "url": "classes/GeoJSON-Geometry.html#method_crossesAntimeridian"
+        },                {
+            "fqsen": "\\GeoJSON\\Geometry\u003A\u003Atranslate\u0028\u0029",
+            "name": "translate",
+            "summary": "Translate\u0020une\u0020g\u00E9om\u00E9trie\u0020en\u0020longitude\u0020de\u0020\u002D360\u00B0\u0020ou\u0020\u002B360\u00B0.",
+            "url": "classes/GeoJSON-Geometry.html#method_translate"
         },                {
             "fqsen": "\\GeoJSON\\Geometry\u003A\u003ASHORT_TYPES",
             "name": "SHORT_TYPES",
@@ -3216,10 +3266,10 @@ Search.appendIndex(
             "summary": "V\u00E9rifie\u0020que\u0020le\u0020param\u00E8tre\u0020est\u0020un\u0020TPos.",
             "url": "classes/Pos-Pos.html#method_is"
         },                {
-            "fqsen": "\\Pos\\Pos\u003A\u003Adist\u0028\u0029",
-            "name": "dist",
-            "summary": "distance\u0020entre\u00202\u0020positions.",
-            "url": "classes/Pos-Pos.html#method_dist"
+            "fqsen": "\\Pos\\Pos\u003A\u003AmanhattanDist\u0028\u0029",
+            "name": "manhattanDist",
+            "summary": "Distance\u0020de\u0020Manhattan\u0020entre\u00202\u0020positions,\u0020ne\u0020tient\u0020pas\u0020compte\u0020de\u0020l\u0027antim\u00E9rdien.",
+            "url": "classes/Pos-Pos.html#method_manhattanDist"
         },                {
             "fqsen": "\\Pos\\Pos\u003A\u003Areproj\u0028\u0029",
             "name": "reproj",

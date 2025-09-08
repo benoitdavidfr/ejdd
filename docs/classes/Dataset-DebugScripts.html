@@ -218,15 +218,204 @@
     <a class="" href="classes/Dataset-DebugScripts.html#constant_COLLECTIONS">COLLECTIONS</a>
     <span>
         &nbsp;= [
-    &#039;exDictOfTupleAvecSchemaComplet&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple avec schema complet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfTupleSsDefDeChamps&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple sans définition de champs&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple sans définition de champs.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfTupleAMinima&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple a minima&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple sans définition du fait qu&#039;il y ait des tuples.&quot;, &#039;type&#039; =&gt; &#039;object&#039;], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfValue&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de DictOfValue&quot;, &#039;description&#039; =&gt; &quot;Exemple de dictionnaire avec une erreur&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z0-9]{3}$&#039; =&gt; [&#039;description&#039; =&gt; &quot;La valeur définie par le dictionnaire&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; &quot;Valeur pour ABC&quot;, &#039;CDE&#039; =&gt; 123]],
-    &#039;tableOneOf&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de table avec un type de tuple oneOf&quot;, &#039;description&#039; =&gt; &quot;Un exemple de table avec un type de tuple oneOf.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;oneOf&#039; =&gt; [[&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]], [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ3&#039;, &#039;champ4&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ3&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ3&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;], &#039;CDE&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour CDE&quot;, &#039;champ3&#039; =&gt; &quot;champ3 pour CDE&quot;]]],
-    //
-    &#039;listOfTuples&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de n-uplets&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de n-uplets avec une erreur dans le 2nd n-uplet.&quot;, &#039;type&#039; =&gt; &#039;array&#039;, &#039;items&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]], &#039;items&#039; =&gt; [[&#039;champ1&#039; =&gt; &quot;première valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 1er tuple&quot;], [&#039;champ1&#039; =&gt; &quot;seconde valeur pour le champ 1&quot;]]],
-    &#039;listOfTuplesIncomplete&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de n-uplets&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de n-uplets avec un schéma ne définissant pas les champs.&quot;, &#039;type&#039; =&gt; &#039;array&#039;], &#039;items&#039; =&gt; [[&#039;champ1&#039; =&gt; &quot;première valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 1er tuple&quot;], [&#039;champ1&#039; =&gt; &quot;seconde valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 2nd tuple&quot;]]],
-    &#039;listOfValues&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de valeurs&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de valeurs.&quot;, &#039;type&#039; =&gt; &#039;array&#039;, &#039;items&#039; =&gt; [&#039;type&#039; =&gt; &#039;string&#039;]], &#039;items&#039; =&gt; [&quot;première valeur&quot;, &quot;seconde valeur&quot;]],
+    /*&#039;exDictOfTupleAvecSchemaComplet&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple avec schema complet&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple avec schema complet.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;type&#039;=&gt; &#039;object&#039;,
+              &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+              &#039;additionalProperties&#039;=&gt; false,
+              &#039;properties&#039;=&gt; [
+                &#039;champ1&#039;=&gt; [
+                  &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                  &#039;type&#039;=&gt; &#039;string&#039;,
+                ],
+                &#039;champ2&#039;=&gt; [
+                  &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                  &#039;type&#039;=&gt; &#039;string&#039;,
+                ],
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfTupleSsDefDeChamps&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple sans définition de champs&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple sans définition de champs.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;type&#039;=&gt; &#039;object&#039;,
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfTupleAMinima&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple a minima&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple sans définition du fait qu&#039;il y ait des tuples.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfValue&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de DictOfValue&quot;,
+          &#039;description&#039;=&gt; &quot;Exemple de dictionnaire avec une erreur&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z0-9]{3}$&#039;=&gt; [
+              &#039;description&#039;=&gt; &quot;La valeur définie par le dictionnaire&quot;,
+              &#039;type&#039;=&gt; &#039;string&#039;,
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; &quot;Valeur pour ABC&quot;,
+          &#039;CDE&#039;=&gt; 123, // Violation: Integer value found, but a string is required
+        ],
+      ],
+      &#039;tableOneOf&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de table avec un type de tuple oneOf&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple de table avec un type de tuple oneOf.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;oneOf&#039;=&gt; [
+                [
+                  &#039;type&#039;=&gt; &#039;object&#039;,
+                  &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+                  &#039;additionalProperties&#039;=&gt; false,
+                  &#039;properties&#039;=&gt; [
+                    &#039;champ1&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                    &#039;champ2&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                  ],
+                ],
+                [
+                  &#039;type&#039;=&gt; &#039;object&#039;,
+                  &#039;required&#039;=&gt; [&#039;champ3&#039;,&#039;champ4&#039;],
+                  &#039;additionalProperties&#039;=&gt; false,
+                  &#039;properties&#039;=&gt; [
+                    &#039;champ1&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                    &#039;champ3&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ3&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                  ],
+                ],
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+          &#039;CDE&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour CDE&quot;,
+            &#039;champ3&#039;=&gt; &quot;champ3 pour CDE&quot;,
+          ],
+        ],
+      ],
+      &#039;listOfTuples&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de n-uplets&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de n-uplets avec une erreur dans le 2nd n-uplet.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+          &#039;items&#039;=&gt; [
+            &#039;type&#039;=&gt; &#039;object&#039;,
+            &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+            &#039;additionalProperties&#039;=&gt; false,
+            &#039;properties&#039;=&gt; [
+              &#039;champ1&#039;=&gt; [
+                &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                &#039;type&#039;=&gt; &#039;string&#039;,
+              ],
+              &#039;champ2&#039;=&gt; [
+                &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                &#039;type&#039;=&gt; &#039;string&#039;,
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          [
+            &#039;champ1&#039;=&gt; &quot;première valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 1er tuple&quot;,
+          ],
+          [&#039;champ1&#039;=&gt; &quot;seconde valeur pour le champ 1&quot;], // Violation: The property champ2 is required
+        ],
+      ],
+      &#039;listOfTuplesIncomplete&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de n-uplets&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de n-uplets avec un schéma ne définissant pas les champs.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+        ],
+        &#039;items&#039;=&gt; [
+          [
+            &#039;champ1&#039;=&gt; &quot;première valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 1er tuple&quot;,
+          ],
+          [
+            &#039;champ1&#039;=&gt; &quot;seconde valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 2nd tuple&quot;,
+          ],
+        ],
+      ],
+      &#039;listOfValues&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de valeurs&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de valeurs.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+          &#039;items&#039;=&gt; [
+            &#039;type&#039;=&gt; &#039;string&#039;,
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &quot;première valeur&quot;,
+          &quot;seconde valeur&quot;,
+        ],
+      ],
+      */
+    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;rectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]]]],
+    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
 ]                            </span>
 </dt>
 <dd>Collections avec chacune son schéma et ses données.</dd>
@@ -383,6 +572,13 @@
 <dd>Affiche les erreurs de non conformité du schéma.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Dataset.html#method_exists">exists()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>teste si le nom est celui d&#039;un JdD.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_formatThousands">formatThousands()</a>
     <span>
                                 &nbsp;: string    </span>
@@ -513,15 +709,204 @@
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">COLLECTIONS</span>
     = <span class="phpdocumentor-signature__default-value">[
-    &#039;exDictOfTupleAvecSchemaComplet&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple avec schema complet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfTupleSsDefDeChamps&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple sans définition de champs&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple sans définition de champs.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfTupleAMinima&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple a minima&quot;, &#039;description&#039; =&gt; &quot;DictOfTuple sans définition du fait qu&#039;il y ait des tuples.&quot;, &#039;type&#039; =&gt; &#039;object&#039;], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;]]],
-    &#039;exDictOfValue&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de DictOfValue&quot;, &#039;description&#039; =&gt; &quot;Exemple de dictionnaire avec une erreur&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z0-9]{3}$&#039; =&gt; [&#039;description&#039; =&gt; &quot;La valeur définie par le dictionnaire&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; &quot;Valeur pour ABC&quot;, &#039;CDE&#039; =&gt; 123]],
-    &#039;tableOneOf&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de table avec un type de tuple oneOf&quot;, &#039;description&#039; =&gt; &quot;Un exemple de table avec un type de tuple oneOf.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;^[A-Z2][A-Z0][A-Z]$&#039; =&gt; [&#039;oneOf&#039; =&gt; [[&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]], [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ3&#039;, &#039;champ4&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ3&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ3&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;ABC&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour ABC&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour ABC&quot;], &#039;CDE&#039; =&gt; [&#039;champ1&#039; =&gt; &quot;champ1 pour CDE&quot;, &#039;champ3&#039; =&gt; &quot;champ3 pour CDE&quot;]]],
-    //
-    &#039;listOfTuples&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de n-uplets&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de n-uplets avec une erreur dans le 2nd n-uplet.&quot;, &#039;type&#039; =&gt; &#039;array&#039;, &#039;items&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ1&#039;, &#039;champ2&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ1&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ1&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;champ2&#039; =&gt; [&#039;description&#039; =&gt; &quot;Description du champ2&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]], &#039;items&#039; =&gt; [[&#039;champ1&#039; =&gt; &quot;première valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 1er tuple&quot;], [&#039;champ1&#039; =&gt; &quot;seconde valeur pour le champ 1&quot;]]],
-    &#039;listOfTuplesIncomplete&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de n-uplets&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de n-uplets avec un schéma ne définissant pas les champs.&quot;, &#039;type&#039; =&gt; &#039;array&#039;], &#039;items&#039; =&gt; [[&#039;champ1&#039; =&gt; &quot;première valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 1er tuple&quot;], [&#039;champ1&#039; =&gt; &quot;seconde valeur pour le champ 1&quot;, &#039;champ2&#039; =&gt; &quot;champ2 pour le 2nd tuple&quot;]]],
-    &#039;listOfValues&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Exemple de liste de valeurs&quot;, &#039;description&#039; =&gt; &quot;Un exemple très simple de liste de valeurs.&quot;, &#039;type&#039; =&gt; &#039;array&#039;, &#039;items&#039; =&gt; [&#039;type&#039; =&gt; &#039;string&#039;]], &#039;items&#039; =&gt; [&quot;première valeur&quot;, &quot;seconde valeur&quot;]],
+    /*&#039;exDictOfTupleAvecSchemaComplet&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple avec schema complet&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple avec schema complet.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;type&#039;=&gt; &#039;object&#039;,
+              &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+              &#039;additionalProperties&#039;=&gt; false,
+              &#039;properties&#039;=&gt; [
+                &#039;champ1&#039;=&gt; [
+                  &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                  &#039;type&#039;=&gt; &#039;string&#039;,
+                ],
+                &#039;champ2&#039;=&gt; [
+                  &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                  &#039;type&#039;=&gt; &#039;string&#039;,
+                ],
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfTupleSsDefDeChamps&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple sans définition de champs&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple sans définition de champs.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;type&#039;=&gt; &#039;object&#039;,
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfTupleAMinima&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;DictOfTuple a minima&quot;,
+          &#039;description&#039;=&gt; &quot;DictOfTuple sans définition du fait qu&#039;il y ait des tuples.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+        ],
+      ],
+      &#039;exDictOfValue&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de DictOfValue&quot;,
+          &#039;description&#039;=&gt; &quot;Exemple de dictionnaire avec une erreur&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z0-9]{3}$&#039;=&gt; [
+              &#039;description&#039;=&gt; &quot;La valeur définie par le dictionnaire&quot;,
+              &#039;type&#039;=&gt; &#039;string&#039;,
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; &quot;Valeur pour ABC&quot;,
+          &#039;CDE&#039;=&gt; 123, // Violation: Integer value found, but a string is required
+        ],
+      ],
+      &#039;tableOneOf&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de table avec un type de tuple oneOf&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple de table avec un type de tuple oneOf.&quot;,
+          &#039;type&#039;=&gt; &#039;object&#039;,
+          &#039;additionalProperties&#039;=&gt; false,
+          &#039;patternProperties&#039;=&gt; [
+            &#039;^[A-Z2][A-Z0][A-Z]$&#039;=&gt; [
+              &#039;oneOf&#039;=&gt; [
+                [
+                  &#039;type&#039;=&gt; &#039;object&#039;,
+                  &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+                  &#039;additionalProperties&#039;=&gt; false,
+                  &#039;properties&#039;=&gt; [
+                    &#039;champ1&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                    &#039;champ2&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                  ],
+                ],
+                [
+                  &#039;type&#039;=&gt; &#039;object&#039;,
+                  &#039;required&#039;=&gt; [&#039;champ3&#039;,&#039;champ4&#039;],
+                  &#039;additionalProperties&#039;=&gt; false,
+                  &#039;properties&#039;=&gt; [
+                    &#039;champ1&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                    &#039;champ3&#039;=&gt; [
+                      &#039;description&#039;=&gt; &quot;Description du champ3&quot;,
+                      &#039;type&#039;=&gt; &#039;string&#039;,
+                    ],
+                  ],
+                ],
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &#039;ABC&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour ABC&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour ABC&quot;,
+          ],
+          &#039;CDE&#039;=&gt; [
+            &#039;champ1&#039;=&gt; &quot;champ1 pour CDE&quot;,
+            &#039;champ3&#039;=&gt; &quot;champ3 pour CDE&quot;,
+          ],
+        ],
+      ],
+      &#039;listOfTuples&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de n-uplets&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de n-uplets avec une erreur dans le 2nd n-uplet.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+          &#039;items&#039;=&gt; [
+            &#039;type&#039;=&gt; &#039;object&#039;,
+            &#039;required&#039;=&gt; [&#039;champ1&#039;,&#039;champ2&#039;],
+            &#039;additionalProperties&#039;=&gt; false,
+            &#039;properties&#039;=&gt; [
+              &#039;champ1&#039;=&gt; [
+                &#039;description&#039;=&gt; &quot;Description du champ1&quot;,
+                &#039;type&#039;=&gt; &#039;string&#039;,
+              ],
+              &#039;champ2&#039;=&gt; [
+                &#039;description&#039;=&gt; &quot;Description du champ2&quot;,
+                &#039;type&#039;=&gt; &#039;string&#039;,
+              ],
+            ],
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          [
+            &#039;champ1&#039;=&gt; &quot;première valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 1er tuple&quot;,
+          ],
+          [&#039;champ1&#039;=&gt; &quot;seconde valeur pour le champ 1&quot;], // Violation: The property champ2 is required
+        ],
+      ],
+      &#039;listOfTuplesIncomplete&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de n-uplets&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de n-uplets avec un schéma ne définissant pas les champs.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+        ],
+        &#039;items&#039;=&gt; [
+          [
+            &#039;champ1&#039;=&gt; &quot;première valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 1er tuple&quot;,
+          ],
+          [
+            &#039;champ1&#039;=&gt; &quot;seconde valeur pour le champ 1&quot;,
+            &#039;champ2&#039;=&gt; &quot;champ2 pour le 2nd tuple&quot;,
+          ],
+        ],
+      ],
+      &#039;listOfValues&#039;=&gt; [
+        &#039;schema&#039;=&gt; [
+          &#039;title&#039;=&gt; &quot;Exemple de liste de valeurs&quot;,
+          &#039;description&#039;=&gt; &quot;Un exemple très simple de liste de valeurs.&quot;,
+          &#039;type&#039;=&gt; &#039;array&#039;,
+          &#039;items&#039;=&gt; [
+            &#039;type&#039;=&gt; &#039;string&#039;,
+          ],
+        ],
+        &#039;items&#039;=&gt; [
+          &quot;première valeur&quot;,
+          &quot;seconde valeur&quot;,
+        ],
+      ],
+      */
+    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;rectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]]]],
+    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
 ]</span>
 </code>
 
@@ -543,7 +928,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">212</span>
+    <span class="phpdocumentor-element-found-in__line">303</span>
 
     </aside>
 
@@ -636,7 +1021,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">73</span>
+    <span class="phpdocumentor-element-found-in__line">74</span>
 
     </aside>
 
@@ -683,7 +1068,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">87</span>
+    <span class="phpdocumentor-element-found-in__line">88</span>
 
     </aside>
 
@@ -723,7 +1108,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">83</span>
+    <span class="phpdocumentor-element-found-in__line">84</span>
 
     </aside>
 
@@ -761,7 +1146,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">81</span>
+    <span class="phpdocumentor-element-found-in__line">82</span>
 
     </aside>
 
@@ -799,7 +1184,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">85</span>
+    <span class="phpdocumentor-element-found-in__line">86</span>
 
     </aside>
 
@@ -839,7 +1224,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">82</span>
+    <span class="phpdocumentor-element-found-in__line">83</span>
 
     </aside>
 
@@ -882,7 +1267,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">227</span>
+    <span class="phpdocumentor-element-found-in__line">318</span>
 
     </aside>
 
@@ -926,7 +1311,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">181</span>
+    <span class="phpdocumentor-element-found-in__line">185</span>
 
     </aside>
 
@@ -965,7 +1350,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">379</span>
+    <span class="phpdocumentor-element-found-in__line">383</span>
 
     </aside>
 
@@ -1021,7 +1406,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">361</span>
+    <span class="phpdocumentor-element-found-in__line">365</span>
 
     </aside>
 
@@ -1056,7 +1441,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">376</span>
+    <span class="phpdocumentor-element-found-in__line">380</span>
 
     </aside>
 
@@ -1101,7 +1486,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">347</span>
+    <span class="phpdocumentor-element-found-in__line">351</span>
 
     </aside>
 
@@ -1136,7 +1521,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">255</span>
+    <span class="phpdocumentor-element-found-in__line">259</span>
 
     </aside>
 
@@ -1171,7 +1556,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">220</span>
+    <span class="phpdocumentor-element-found-in__line">224</span>
 
     </aside>
 
@@ -1212,6 +1597,55 @@
             -public
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_exists">
+        exists()
+        <a href="classes/Dataset-Dataset.html#method_exists" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">91</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">teste si le nom est celui d&#039;un JdD.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">exists</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dsName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dsName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_formatThousands">
         formatThousands()
         <a href="classes/Dataset-Dataset.html#method_formatThousands" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1220,7 +1654,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">400</span>
+    <span class="phpdocumentor-element-found-in__line">404</span>
 
     </aside>
 
@@ -1269,7 +1703,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">410</span>
+    <span class="phpdocumentor-element-found-in__line">414</span>
 
     </aside>
 
@@ -1318,7 +1752,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">118</span>
+    <span class="phpdocumentor-element-found-in__line">122</span>
 
     </aside>
 
@@ -1367,7 +1801,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">303</span>
+    <span class="phpdocumentor-element-found-in__line">307</span>
 
     </aside>
 
@@ -1406,7 +1840,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">245</span>
+    <span class="phpdocumentor-element-found-in__line">336</span>
 
     </aside>
 
@@ -1471,7 +1905,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">170</span>
+    <span class="phpdocumentor-element-found-in__line">174</span>
 
     </aside>
 
@@ -1536,7 +1970,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">257</span>
+    <span class="phpdocumentor-element-found-in__line">348</span>
 
     </aside>
 
@@ -1592,7 +2026,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">147</span>
+    <span class="phpdocumentor-element-found-in__line">151</span>
 
     </aside>
 
@@ -1648,7 +2082,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">138</span>
+    <span class="phpdocumentor-element-found-in__line">142</span>
 
     </aside>
 
@@ -1699,7 +2133,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">258</span>
+    <span class="phpdocumentor-element-found-in__line">262</span>
 
     </aside>
 
@@ -1755,7 +2189,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">215</span>
+    <span class="phpdocumentor-element-found-in__line">219</span>
 
     </aside>
 
@@ -1794,7 +2228,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">198</span>
+    <span class="phpdocumentor-element-found-in__line">202</span>
 
     </aside>
 
@@ -1847,7 +2281,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">390</span>
+    <span class="phpdocumentor-element-found-in__line">394</span>
 
     </aside>
 
@@ -1903,7 +2337,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">421</span>
+    <span class="phpdocumentor-element-found-in__line">425</span>
 
     </aside>
 
@@ -2068,6 +2502,7 @@ Les filtres possibles sont:</p>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_displayErrors">displayErrors()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_displaySchemaErrors">displaySchemaErrors()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_displaySchemaErrorsS">displaySchemaErrorsS()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_exists">exists()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_formatThousands">formatThousands()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_formatUnit">formatUnit()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_get">get()</a></li>

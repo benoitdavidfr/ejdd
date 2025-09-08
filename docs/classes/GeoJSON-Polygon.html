@@ -182,7 +182,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">155</span>
+    <span class="phpdocumentor-element-found-in__line">164</span>
 
     </aside>
 
@@ -277,6 +277,12 @@
 <dd>Crée un sous-objet concret de Geometry à partir d&#039;une géométrie simple GeoJSON.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/GeoJSON-Geometry.html#method_crossesAntimeridian">crossesAntimeridian()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/GeoJSON-Polygon.html#method_reproject">reproject()</a>
     <span>
                                 &nbsp;: self    </span>
@@ -296,6 +302,13 @@
                                 &nbsp;: string    </span>
 </dt>
 <dd>Retourne une représentation string de la géométrie.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/GeoJSON-Geometry.html#method_translate">translate()</a>
+    <span>
+                                &nbsp;: self    </span>
+</dt>
+<dd>Translate une géométrie en longitude de -360° ou +360°.</dd>
 
     </dl>
 
@@ -447,7 +460,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">156</span>
+    <span class="phpdocumentor-element-found-in__line">165</span>
 
     </aside>
 
@@ -533,7 +546,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">163</span>
+    <span class="phpdocumentor-element-found-in__line">172</span>
 
     </aside>
 
@@ -613,6 +626,44 @@
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_crossesAntimeridian">
+        crossesAntimeridian()
+        <a href="classes/GeoJSON-Geometry.html#method_crossesAntimeridian" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">77</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">crossesAntimeridian</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_reproject">
         reproject()
         <a href="classes/GeoJSON-Polygon.html#method_reproject" class="headerlink"><i class="fas fa-link"></i></a>
@@ -621,7 +672,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">171</span>
+    <span class="phpdocumentor-element-found-in__line">180</span>
 
     </aside>
 
@@ -670,7 +721,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">175</span>
 
     </aside>
 
@@ -741,6 +792,57 @@
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_translate">
+        translate()
+        <a href="classes/GeoJSON-Geometry.html#method_translate" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geojson.inc.php"><a href="files/geojson-inc.html">geojson.inc.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">82</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Translate une géométrie en longitude de -360° ou +360°.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">translate</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">float&nbsp;</span><span class="phpdocumentor-signature__argument__name">$translate</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>J'utilise une fonction de reprojection qui effectue la translation.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$translate</span>
+                : <span class="phpdocumentor-signature__argument__return-type">float</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">self</span>
             </section>
 
 </article>
@@ -878,9 +980,11 @@
                                             <li class=""><a href="classes/GeoJSON-Geometry.html#method_asArray">asArray()</a></li>
                                             <li class=""><a href="classes/GeoJSON-Polygon.html#method_bbox">bbox()</a></li>
                                             <li class=""><a href="classes/GeoJSON-Geometry.html#method_create">create()</a></li>
+                                            <li class=""><a href="classes/GeoJSON-Geometry.html#method_crossesAntimeridian">crossesAntimeridian()</a></li>
                                             <li class=""><a href="classes/GeoJSON-Polygon.html#method_reproject">reproject()</a></li>
                                             <li class=""><a href="classes/GeoJSON-Polygon.html#method_reso">reso()</a></li>
                                             <li class=""><a href="classes/GeoJSON-Geometry.html#method_toString">toString()</a></li>
+                                            <li class=""><a href="classes/GeoJSON-Geometry.html#method_translate">translate()</a></li>
                                     </ul>
             </li>
                     </ul>

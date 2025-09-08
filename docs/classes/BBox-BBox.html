@@ -179,11 +179,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">112</span>
+    <span class="phpdocumentor-element-found-in__line">176</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Un rectangle englobant en coord. geo. pour le stoker et effectuer diverses opérations et tester des conditions.</p>
+            <p class="phpdocumentor-summary">Un rectangle englobant en coord. geo. pour le stocker, effectuer diverses opérations et tester des conditions.</p>
 
 
     <section class="phpdocumentor-description"><p>Les opérations sont l'intersection et l'union entre 2 BBox. Les tests sont ceux d'intersection et d'inclusion.
@@ -198,9 +198,10 @@ Les BBox munies des opérations est une algèbre, cad que le résultat d'une op�
 Un BBox est défini par ses 2 coins SW et NE avec 2 contraintes d'intégrité:</p>
 <ol>
 <li>Si 1 des 2 coins est null alors l'autre doit aussi l'être.</li>
-<li>Si les coins sont non nuls alors le coin SW doit être au SW de coin NE.</li>
+<li>Si les coins sont non nuls alors le coin SW doit être au SW du coin NE.</li>
 </ol>
 <p>Un point est représenté par 2 coins identiques. L'espace vide est représenté par 2 points null.</p>
+<p>Lorsque le BBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</p>
 <p>Enfin le constructeur prend en paramètres des TPos et non des Pt pour qu'il soit appelable de l'extérieur
 sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'avoir des Pt que des TPos.</p>
 </section>
@@ -287,6 +288,14 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
                                 &nbsp;: <abbr title="\BBox\TPos">TPos</abbr>    </span>
 </dt>
 <dd>Retourne le centre de la BBox.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_crossesAntimeridian">crossesAntimeridian()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Le BBox intersecte t&#039;il l&#039;antimérdien ?
+Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_extends">extends()</a>
@@ -394,7 +403,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">116</span>
+    <span class="phpdocumentor-element-found-in__line">180</span>
 
     </aside>
 
@@ -433,7 +442,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">114</span>
+    <span class="phpdocumentor-element-found-in__line">178</span>
 
     </aside>
 
@@ -477,7 +486,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">122</span>
+    <span class="phpdocumentor-element-found-in__line">186</span>
 
     </aside>
 
@@ -537,7 +546,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">190</span>
+    <span class="phpdocumentor-element-found-in__line">254</span>
 
     </aside>
 
@@ -576,7 +585,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">156</span>
+    <span class="phpdocumentor-element-found-in__line">220</span>
 
     </aside>
 
@@ -615,7 +624,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">160</span>
+    <span class="phpdocumentor-element-found-in__line">224</span>
 
     </aside>
 
@@ -654,7 +663,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">201</span>
+    <span class="phpdocumentor-element-found-in__line">265</span>
 
     </aside>
 
@@ -685,6 +694,46 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_crossesAntimeridian">
+        crossesAntimeridian()
+        <a href="classes/BBox-BBox.html#method_crossesAntimeridian" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">273</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Le BBox intersecte t&#039;il l&#039;antimérdien ?
+Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">crossesAntimeridian</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_extends">
         extends()
         <a href="classes/BBox-BBox.html#method_extends" class="headerlink"><i class="fas fa-link"></i></a>
@@ -693,7 +742,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">247</span>
+    <span class="phpdocumentor-element-found-in__line">311</span>
 
     </aside>
 
@@ -742,7 +791,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">145</span>
+    <span class="phpdocumentor-element-found-in__line">209</span>
 
     </aside>
 
@@ -795,7 +844,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">175</span>
+    <span class="phpdocumentor-element-found-in__line">239</span>
 
     </aside>
 
@@ -844,7 +893,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">170</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 
     </aside>
 
@@ -893,7 +942,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">165</span>
+    <span class="phpdocumentor-element-found-in__line">229</span>
 
     </aside>
 
@@ -942,7 +991,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">132</span>
+    <span class="phpdocumentor-element-found-in__line">196</span>
 
     </aside>
 
@@ -991,7 +1040,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">212</span>
+    <span class="phpdocumentor-element-found-in__line">276</span>
 
     </aside>
 
@@ -1040,7 +1089,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">222</span>
+    <span class="phpdocumentor-element-found-in__line">286</span>
 
     </aside>
 
@@ -1089,7 +1138,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">187</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 
     </aside>
 
@@ -1127,7 +1176,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">204</span>
+    <span class="phpdocumentor-element-found-in__line">268</span>
 
     </aside>
 
@@ -1166,7 +1215,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">234</span>
+    <span class="phpdocumentor-element-found-in__line">298</span>
 
     </aside>
 
@@ -1329,6 +1378,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
                                             <li class=""><a href="classes/BBox-BBox.html#method_as4Coordinates">as4Coordinates()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_as4CoordsLatLon">as4CoordsLatLon()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_center">center()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_crossesAntimeridian">crossesAntimeridian()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_extends">extends()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_from4Coords">from4Coords()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_fromLLPos">fromLLPos()</a></li>

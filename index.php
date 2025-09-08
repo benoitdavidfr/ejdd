@@ -43,12 +43,14 @@ const JOURNAL = [
 Journal des modifications récentes du code
 ------------------------------------------
 8/9/2025:
-  - correction du bug l'antiméridoien dans BBox
+  - correction du bug l'antiméridien dans BBox
+  - finalisation du dessin de la carte montrant la géométrie d'un n-uplet
+    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+  - modif FeatureServer pour qu'il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l'utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d'un n-uplet (en cours)
-    - ne fonctionne que sur WorldEez/collections/eez_v11
+  - ajout du dessin de la carte montrant la géométrie d'un n-uplet
 6/9/2025:
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -347,13 +349,11 @@ class Application {
       }
       case 'draw': {
         if (!isset($_GET['collection']))
-          Dataset::get($_GET['dataset'])->display();
+          throw new \Exception("Paramètre collection nécessaire");
         elseif (!isset($_GET['key']))
-          CollectionOfDs::get($_GET['collection'])->draw($_GET['skip'] ?? 0);
-        elseif (!isset($_GET['field']))
-          CollectionOfDs::get($_GET['collection'])->drawItem($_GET['key']);
+          echo CollectionOfDs::get($_GET['collection'])->draw();
         else
-          CollectionOfDs::get($_GET['collection'])->drawValue($_GET['key'], $_GET['field']);
+          echo CollectionOfDs::get($_GET['collection'])->drawItem($_GET['key']);
         break;
       }
       case 'stats': {

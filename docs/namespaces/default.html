@@ -296,11 +296,15 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+8/9/2025:
+  - correction du bug l&#039;antiméridien dans BBox
+  - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
+    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+  - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (en cours)
-    - ne fonctionne que sur WorldEez/collections/eez_v11
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -763,7 +767,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">248</span>
+    <span class="phpdocumentor-element-found-in__line">252</span>
 
     </aside>
 
@@ -826,11 +830,15 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+8/9/2025:
+  - correction du bug l&#039;antiméridien dans BBox
+  - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
+    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+  - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (en cours)
-    - ne fonctionne que sur WorldEez/collections/eez_v11
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -1108,7 +1116,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">213</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 
     </aside>
 

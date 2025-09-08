@@ -1,5 +1,7 @@
 <?php
-/** Génère un flux GeoJSON pour une collection d'un JdD. */
+/** Génère un flux GeoJSON pour une collection d'un JdD.
+ * Pour qu'un champ gémétrique soit considéré en geoJSON comme une géométrie, il doit s'appeler 'geometry'.
+ */
 namespace Algebra;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
@@ -23,7 +25,7 @@ if (!$path) { // menu, liste des datasets
   die();
 }
 
-if (preg_match('!^/([^/]+)$!', $path, $matches)) { // liste des parties du JdD  
+if (preg_match('!^/([^/]+)$!', $path, $matches)) { // liens HTML vers les collections du JdD  
   $dsname = $matches[1];
   $dataset = Dataset::get($dsname);
   foreach (array_keys($dataset->collections) as $cName) {
@@ -99,7 +101,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   die("\n  ]\n}\n");
 }
 
-if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON d'un item
+if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON de l'item défini par sa clé 
   //echo '<pre>$matches='; print_r($matches);
   $dsName = $matches[1];
   $collName = $matches[2];
@@ -111,14 +113,16 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) 
   //print_r($collectionMD);
   
   $tuple = $dataset->getOneItemByKey($collName, $key);
-  $geometry = $tuple['geometry'];
-  unset($tuple['geometry']);
-  
   header('Access-Control-Allow-Origin: *');
   if (!$tuple) {
     header('HTTP/1.1 404 Not Found');
     die("La clé $key ne correspond à aucun item");
   }
+  
+  if ($geometry = $tuple['geometry'] ?? null) {
+    unset($tuple['geometry']);
+  }
+  
   header('Content-Type: application/json');
   echo '{ "type": "FeatureCollection"',",\n",
     '  "name": "',"$dsName/$collName/$key",'",',"\n",
@@ -132,6 +136,30 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) 
   );
   $json = json_encode($feature);
   echo '    ',$json;
+  
+  // Si la géométrie chevauche l'antiméridien alors je duplique l'objet à +360 et -360
+  if (($geom = $geometry ? Geometry::create($geometry) : null) && $geom->crossesAntimeridian()) {
+    $feature = array_merge(
+      ['type'=> 'Feature'],
+      //['kind'=> $kind],
+      ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
+      ['properties'=> $tuple],
+      ['geometry'=> $geom->translate(+360)->asArray()],
+    );
+    $json = json_encode($feature);
+    echo ",\n    ",$json;
+
+    $feature = array_merge(
+      ['type'=> 'Feature'],
+      //['kind'=> $kind],
+      ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
+      ['properties'=> $tuple],
+      ['geometry'=> $geom->translate(-360)->asArray()],
+    );
+    $json = json_encode($feature);
+    echo ",\n    ",$json;
+  }
+  
   die("\n  ]\n}\n");
 }
 

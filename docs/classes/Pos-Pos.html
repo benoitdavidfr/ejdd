@@ -179,7 +179,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="pos.inc.php"><a href="files/pos-inc.html">pos.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10</span>
+    <span class="phpdocumentor-element-found-in__line">12</span>
 
     </aside>
 
@@ -215,18 +215,18 @@
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Pos-Pos.html#method_dist">dist()</a>
-    <span>
-                                &nbsp;: float    </span>
-</dt>
-<dd>distance entre 2 positions.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Pos-Pos.html#method_is">is()</a>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
 <dd>Vérifie que le paramètre est un TPos.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Pos-Pos.html#method_manhattanDist">manhattanDist()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
+<dd>Distance de Manhattan entre 2 positions, ne tient pas compte de l&#039;antimérdien.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Pos-Pos.html#method_reproj">reproj()</a>
@@ -255,62 +255,6 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_dist">
-        dist()
-        <a href="classes/Pos-Pos.html#method_dist" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="pos.inc.php"><a href="files/pos-inc.html">pos.inc.php</a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">30</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">distance entre 2 positions.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">dist</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pos1</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pos2</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$pos1</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$pos2</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">float</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                    -static                    "
->
     <h4 class="phpdocumentor-element__name" id="method_is">
         is()
         <a href="classes/Pos-Pos.html#method_is" class="headerlink"><i class="fas fa-link"></i></a>
@@ -319,7 +263,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="pos.inc.php"><a href="files/pos-inc.html">pos.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">16</span>
 
     </aside>
 
@@ -360,6 +304,64 @@
             -public
                                     -static                    "
 >
+    <h4 class="phpdocumentor-element__name" id="method_manhattanDist">
+        manhattanDist()
+        <a href="classes/Pos-Pos.html#method_manhattanDist" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="pos.inc.php"><a href="files/pos-inc.html">pos.inc.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">33</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Distance de Manhattan entre 2 positions, ne tient pas compte de l&#039;antimérdien.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">manhattanDist</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pos1</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pos2</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Voir https://fr.wikipedia.org/wiki/Distance_de_Manhattan</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$pos1</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$pos2</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Pos\TPos">TPos</abbr></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
     <h4 class="phpdocumentor-element__name" id="method_reproj">
         reproj()
         <a href="classes/Pos-Pos.html#method_reproj" class="headerlink"><i class="fas fa-link"></i></a>
@@ -368,7 +370,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="pos.inc.php"><a href="files/pos-inc.html">pos.inc.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">40</span>
 
     </aside>
 
@@ -525,8 +527,8 @@
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/Pos-Pos.html#method_dist">dist()</a></li>
                                             <li class=""><a href="classes/Pos-Pos.html#method_is">is()</a></li>
+                                            <li class=""><a href="classes/Pos-Pos.html#method_manhattanDist">manhattanDist()</a></li>
                                             <li class=""><a href="classes/Pos-Pos.html#method_reproj">reproj()</a></li>
                                     </ul>
             </li>

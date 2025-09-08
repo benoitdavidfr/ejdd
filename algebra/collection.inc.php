@@ -142,6 +142,7 @@ abstract class Collection {
     }
   }
 
+  /** Affiche l'item de la collection ayant pour clé $key. */
   function displayItem(string $key): void {
     //echo $this->drawItem('key','field',[]); return;
     $item = $this->getOneItemByKey($key);
@@ -155,17 +156,19 @@ abstract class Collection {
     //echo RecArray::toHtml(array_merge(['key'=> $key], $tuple));
     $props = $this->properties();
     echo "<table border=1>\n";
-    foreach ($tuple as $f => $v) {
-      echo "<tr><td>$f</td><td>",$props[$f] ?? '?',"</td>";
+    foreach ($tuple as $field => $v) {
+      echo "<tr><td>$field</td><td>",$props[$field] ?? '?',"</td>";
       if (is_null($v))
         echo '<td><i>null</i></td>';
       elseif (is_string($v))
         echo '<td>',htmlentities($v),'</td>';
       elseif (is_numeric($v))
         echo "<td align='right'>$v</td>";
-      elseif (preg_match('!^GeoJSON!', $props[$f] ?? ''))
-        echo "<td><a href='?action=draw&collection=$_GET[collection]&key=$key&field=$f'>DrawMap</a>, ",
-             "<a href='?action=display&collection=$_GET[collection]&key=$key&field=$f'>DisplayGeom</a></td>";
+      elseif (preg_match('!^GeoJSON!', $props[$field] ?? ''))
+        echo "<td>",
+             ($field == 'geometry') ? "<a href='?action=draw&collection=$_GET[collection]&key=$key'>DrawMap</a>, " : '',
+             "<a href='?action=display&collection=$_GET[collection]&key=$key&field=$field'>DisplayGeom</a><",
+             "/td>";
       elseif (is_array($v))
         echo '<td><pre>'.json_encode($v).'</pre></td>';
       else {
@@ -176,20 +179,45 @@ abstract class Collection {
     echo "</table>\n";
   }
   
+  /** Affiche une valeur de la collection. */
   function displayValue(string $key, string $field): void {
     $item = $this->getOneItemByKey($key);
-    echo '<pre>'.json_encode($item).'</pre>';
+    //echo '<pre>'.json_encode($item).'</pre>';
     $value = $item[$field];
     echo '<pre>'.json_encode($value).'</pre>';
   }
   
-  /** Dessine une carte à partir de la géométrie fournie dans $value.
-   * @param array<mixed> $value - la géométrie. */
-  function drawValue(string $key, string $field): string {
-    echo "drawValue<br>\n";
+  /** Affiche les properties et données de la collection */
+  function display(int $skip=0): void {
+    echo '<h2>',$this->id(),"</h2>\n";
+
+    echo "<h3>Propriétés</h3>\n";
+    $this->displayProperties();
+    
+    $this->displayItems($skip);
+  }
+  
+  /** Dessine une carte de la collection ayant un champ géométrique nommé geometry. */
+  function draw(): string {
+    throw new \Exception("TO BE IMPLEMENTED");
+  }
+  
+  /** Dessine une carte de l'Item ayant un champ géométrique nommé geometry.
+   * Ne fonctionne pour le momemnt que sur une CollectionOfDs.
+   */
+  function drawItem(string $key): string {
+    //echo $this->id(),"<br>\n";
+    $id = $this->id();
+    //echo "id=$id<br>\n";
+    $pos = strpos($id, '.');
+    $dsName = substr($id, 0, $pos);
+    $collName = substr($id, $pos+1);
+    //echo "$dsName/$collName\n";
+    if (!Dataset::exists($dsName)) {
+      throw new \Exception("DrawItem() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
+    }
     $item = $this->getOneItemByKey($key);
-    $value = $item[$field];
-    echo '<pre>'.json_encode($value).'</pre>';
+    $geometry = $item['geometry'];
     $yamlDef = [
       <<<'EOT'
 map:
@@ -223,22 +251,12 @@ layers:
 EOT
     ];
     $def = Yaml::parse($yamlDef[0]);
-    $def['views']['bbox'] = View::createFromBBox(Geometry::create($value)->bbox())->def;
-    $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}WorldEez/collections/eez_v11/items/$key";
+    $def['views']['bbox'] = View::createFromBBox(Geometry::create($geometry)->bbox())->def;
+    $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}$dsName/collections/$collName/items/$key";
+    
     $map = new AMapAndItsLayers($def);
-    
-    $map->display();
+    //$map->display();
     return $map->draw();
-  }
-  
-  /** Affiche les properties et données de la collection */
-  function display(int $skip=0): void {
-    echo '<h2>',$this->id(),"</h2>\n";
-
-    echo "<h3>Propriétés</h3>\n";
-    $this->displayProperties();
-    
-    $this->displayItems($skip);
   }
 };
 

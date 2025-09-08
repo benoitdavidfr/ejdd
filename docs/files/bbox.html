@@ -183,8 +183,9 @@ Sur l'espace vide (NONE):</p>
 <p>Cette implémentation définit une seule classe BBox dans laquelle l'info est évent. dégénérée,
 ce qui permet un code plus simple et plus compact.</p>
 <p>Cette implémentation intègre des fonctionnalités nécessaires à geojson.inc.php sans connaitre les classes GeoJSON
-en utilisant les types Pos, LPos et LLPos.
-La classe Pt ne semble pas indispensable et pourrait être remplacée par des fonctions sur Pos.</p>
+en utilisant les types Pos, LPos et LLPos.</p>
+<p>Pour gérer correctement les BBox à cheval sur l'antiméridien, les BBox sont limités à une largeur en longitude &lt; 180°.
+En effet, la création d'un BBox avec 2 Pts aux antipodes est ambigüe car 2 BBox peuvent être définis.</p>
 </section>
 
         
@@ -206,7 +207,7 @@ La classe Pt ne semble pas indispensable et pourrait être remplacée par des fo
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-Pt.html"><abbr title="\BBox\Pt">Pt</abbr></a></dt><dd>Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></dt><dd>Un rectangle englobant en coord. geo. pour le stoker et effectuer diverses opérations et tester des conditions.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-Pt.html"><abbr title="\BBox\Pt">Pt</abbr></a></dt><dd>Un Point en coord. géo. (degrés lon,lat). Classe interne à BBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></dt><dd>Un rectangle englobant en coord. geo. pour le stocker, effectuer diverses opérations et tester des conditions.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-BBoxTest.html"><abbr title="\BBox\BBoxTest">BBoxTest</abbr></a></dt><dd>Test de BBox.</dd>    </dl>
 
 
 
@@ -247,7 +248,7 @@ La classe Pt ne semble pas indispensable et pourrait être remplacée par des fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">259</span>
+    <span class="phpdocumentor-element-found-in__line">323</span>
 
     </aside>
 

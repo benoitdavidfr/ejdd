@@ -73,6 +73,15 @@ abstract class Geometry {
 
   /** reprojète une géométrie, prend en paramètre une fonction de reprojection d'une position, retourne un objet géométrie */
   abstract function reproject(callable $reprojPos): self;
+  
+  function crossesAntimeridian(): bool { return $this->bbox()->crossesAntimeridian(); }
+    
+  /** Translate une géométrie en longitude de -360° ou +360°.
+   * J'utilise une fonction de reprojection qui effectue la translation.
+   */
+  function translate(float $translate): self {
+    return $this->reproject(function(array $pos) use($translate): array { return [$pos[0]+$translate, $pos[1]]; });
+  }
 };
 
 /** Point GeoJSON ; coordinates est un TPos. */
@@ -120,7 +129,7 @@ class LineString extends Geometry {
     $precPos = null;
     foreach ($this->coordinates as $i => $pos) {
       if (!$precPos) {
-        $dists[] = Pos::dist($pos, $precPos);
+        $dists[] = Pos::manhattanDist($pos, $precPos);
       }
       $precPos = $pos;
     }

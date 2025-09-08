@@ -10,7 +10,7 @@ require_once __DIR__.'/dataset.inc.php';
 class DebugScripts extends Dataset {
   /** Collections avec chacune son schéma et ses données. */
   const COLLECTIONS = [
-    'exDictOfTupleAvecSchemaComplet'=> [
+    /*'exDictOfTupleAvecSchemaComplet'=> [
       'schema'=> [
         'title'=> "DictOfTuple avec schema complet",
         'description'=> "DictOfTuple avec schema complet.",
@@ -145,7 +145,6 @@ class DebugScripts extends Dataset {
         ],
       ],
     ],
-    //
     'listOfTuples'=> [
       'schema'=> [
         'title'=> "Exemple de liste de n-uplets",
@@ -206,7 +205,99 @@ class DebugScripts extends Dataset {
         "seconde valeur",
       ],
     ],
-    //*/
+    */
+    'geoCollection'=> [
+      'schema'=> [
+        'title'=> "DictOfTuple avec schema complet et avec un champ géo",
+        'description'=> "Tester l'affichage des géométries, notamment quand elles croisent l'AM",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          ''=> [
+            'type'=> 'object',
+            'required'=> ['nom','geometry'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'nom'=> [
+                'description'=> "Le nom",
+                'type'=> 'string',
+              ],
+              'geometry'=> [
+                'description'=> "Géométrie de type Polygon",
+                'type'=> 'object',
+                'properties'=> [
+                  'type'=> [
+                    'enum'=> ['MultiPolygon','Polygon'],
+                  ],
+                  'coordinates'=> [
+                    'type'=> 'array',
+                  ],
+                ],
+              ],
+            ],
+          ],
+        ],
+      ],
+      'items'=> [
+        'Bordeaux'=> [
+          'nom'=> "un triangle près de Bordeaux",
+          'geometry'=> [
+            'type'=> 'Polygon',
+            'coordinates'=> [[[0,45],[1,45],[1,44],[0,45]]],
+          ],
+        ],
+        'tr1WAM'=> [
+          'nom'=> "un triangle d'1° à l'ouest de l'AM",
+          'geometry'=> [
+            'type'=> 'Polygon',
+            'coordinates'=> [[[178,45],[179,45],[179,44],[178,45]]],
+          ],
+        ],
+        'tr1EAM'=> [
+          'nom'=> "un triangle d'1° à l'ouest de l'AM",
+          'geometry'=> [
+            'type'=> 'Polygon',
+            'coordinates'=> [[[-179,45],[-178,45],[-178,44],[-179,45]]],
+          ],
+        ],
+        'rectSAM'=> [
+          'nom'=> "un rectangle qui chevauche l'AM décomposé en 2",
+          'geometry'=> [
+            'type'=> 'MultiPolygon',
+            'coordinates'=> [
+              [[[-180,45],[-178,45],[-178,44],[-180,44],[-180,45]]],
+              [[[178,45],[180,45],[180,44],[178,45]]]
+            ],
+          ],
+        ],
+      ],
+    ],
+    'tableWithOneTuple'=> [
+      'schema'=> [
+        'title'=> "Une table avec un n-uplet",
+        'description'=> "Une table avec un n-uplet.",
+        'type'=> 'object',
+        'additionalProperties'=> false,
+        'patternProperties'=> [
+          ''=> [
+            'type'=> 'object',
+            'required'=> ['champ'],
+            'additionalProperties'=> false,
+            'properties'=> [
+              'champ'=> [
+                'description'=> "Le champ",
+                'type'=> 'string',
+              ],
+            ],
+          ],
+        ],
+      ],
+      'items'=> [
+        'leTuple'=> [
+          'champ'=> "Champ pour le tuple",
+        ],
+      ],
+    ],
   ];
   /** Squelette du schéma, doit être complété par les schémas des collections. */
   const JSON_SCHEMA = [
@@ -259,13 +350,16 @@ class DebugScripts extends Dataset {
   }
 };
 
+
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
 require_once __DIR__.'/../algebra/collection.inc.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Algebra\CollectionOfDs as CollectionOfDs;
+use Algebra\Collection;
+use Algebra\CollectionOfDs;
+use Algebra\Query;
 use Symfony\Component\Yaml\Yaml;
 
 echo "<title>DebugScripts</title>\n";
@@ -275,6 +369,7 @@ switch ($_GET['action'] ?? null) {
     echo "Rien à faire pour construire le JdD<br>\n";
     echo "<a href='?action=create&dataset=$_GET[dataset]'>créer l'objet</a><br>\n";
     echo "<a href='?action=yaml&dataset=$_GET[dataset]'>Affichage des collections en Yaml</a><br>\n";
+    echo "<a href='?action=CProduct'>Produit cartésien</a><br>\n";
     break;
   }
   case 'create': {
@@ -295,11 +390,40 @@ switch ($_GET['action'] ?? null) {
     }
     break;    
   }
-  case 'display': {
-    //action=display&collection=DebugScripts.exDictOfTupleAvecSchemaComplet
-    CollectionOfDs::get($_GET['collection'])->display();
+  case 'CProduct': {
+    //echo "CProduct";
+    $cproduct = Collection::query("CProduct(DebugScripts.geoCollection, DebugScripts.tableWithOneTuple)");
+    if (!$cproduct) {
+      Query::displayTrace();
+      break;
+    }
+    //print_r($cproduct);
+    $cproduct->display();
     break;
   }
+  case 'display': {
+    //action=display&collection=DebugScripts.exDictOfTupleAvecSchemaComplet
+    // ou action=display&collection=CProduct%28DebugScripts.geoCollection%2CDebugScripts.tableWithOneTuple%29&key={Bordeaux}{leTuple}
+    if (!isset($_GET['collection']))
+      throw new \Exception("Paramètre collection nécessaire");
+    if (!($key = $_GET['key'] ?? null))
+      Collection::query($_GET['collection'])->display();
+    elseif (!($field = $_GET['field'] ?? null))
+      Collection::query($_GET['collection'])->displayItem($key);
+    else
+      Collection::query($_GET['collection'])->displayValue($key, $field);
+    break;
+  }
+  case 'draw': {
+    if (!isset($_GET['collection']))
+      throw new \Exception("Paramètre collection nécessaire");
+    if (!($key = $_GET['key'] ?? null))
+      echo Collection::query($_GET['collection'])->draw();
+    else
+      echo Collection::query($_GET['collection'])->drawItem($key);
+    break;
+  }
+  default: throw new \Exception("Action $_GET[action] inconnue");
 }
 
 

@@ -2,6 +2,8 @@
 /** Fonctions sur des positions et des listes de positions.
  * Une position est une liste de 2 coordonnées. Le type est défini dans PhpStan. La classe Pos regroupe les fonctions sur Pos.
  * De même LPos est une liste de Position, LLPos une liste de LPos et LLLPos une liste de LLPos.
+ * Le type ne préjuge pas s'il s'agit de coordonnées géographiques ou cartésiennes, ainsi la distance ne tient pas compte de
+ * l'antiméridien.
  * @package Pos
  */
 namespace Pos;
@@ -23,11 +25,12 @@ class Pos {
     return true;
   }
   
-  /** distance entre 2 positions.
+  /** Distance de Manhattan entre 2 positions, ne tient pas compte de l'antimérdien.
+   * Voir https://fr.wikipedia.org/wiki/Distance_de_Manhattan
    * @param TPos $pos1
    * @param TPos $pos2
    */
-  static function dist(array $pos1, array $pos2): float {
+  static function manhattanDist(array $pos1, array $pos2): float {
     return abs($pos2[0]-$pos1[0]) + abs($pos2[1]-$pos1[1]);
   }
 

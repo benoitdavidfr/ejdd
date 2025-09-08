@@ -75,8 +75,7 @@ class Pt {
   function islSW(Pt $b): bool {
     $xmin = min($this->x, $b->x);
     $xmax = max($this->x, $b->x);
-    $delta = $xmax - $xmin;
-    if ($delta > 180) {
+    if (($xmax - $xmin) > 180) {
      return ($this->y <= $b->y) && ($this->x >= $b->x);
     }
     else {
@@ -88,9 +87,8 @@ class Pt {
   function sw(self $b): self {
     $xmin = min($this->x, $b->x);
     $xmax = max($this->x, $b->x);
-    $delta = $xmax - $xmin;
     //echo "xmin=$xmin, xmax=$xmax, delta=$delta, 360-delta=",360-$delta,"\n";
-    if ($delta > 180) {
+    if (($xmax - $xmin) > 180) {
       //echo "delta > 180\n";
       return new self([$xmax, min($this->y, $b->y)]);
     }
@@ -112,6 +110,35 @@ class Pt {
     else {
       return new self([$xmax, max($this->y, $b->y)]);
     }
+  }
+
+  /** Distance entre 2 points; calcul en degrés, tient compte de l'antiméridien. */
+  function distance(self $b): float {
+    $dx = max($this->x, $b->x) - min($this->x, $b->x);
+    //echo "dx=$dx\n";
+    // le delta en longitude tient compte de l'antiméridien
+    if ($dx > 180) {
+      $dx -= 360;
+      //echo "dx > 180 => dx = $dx\n";
+    }
+    // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
+    $dx *= cos(($this->y + $b->y) * pi() / 2 / 180);
+    $dy = $this->y - $b->y;
+    $dist = sqrt($dx * $dx + $dy * $dy) / sqrt(2);
+    return $dist;
+  }
+  
+  /** Milieu entre 2 points, tient compte de l'antiméridien. */
+  function midPoint(self $b): self {
+    $dx = max($this->x, $b->x) - min($this->x, $b->x);
+    $x = ($this->x + $b->x)/2;
+    if ($dx > 180) {
+      if ($x > 0)
+        $x -= 180;
+      else
+        $x += 180;
+    }
+    return new self([$x, ($this->y + $b->y)/2]);
   }
   
   /** Fabrique une liste de Pt à partir d'une TLPos.
@@ -235,15 +262,15 @@ class BBox {
   
   /** Retourne le centre de la BBox.
    * @return TPos */
-  function center(): array { return [($this->sw->x + $this->ne->x)/2, ($this->sw->y + $this->ne->y)/2]; }
+  function center(): array { return $this->sw->midPoint($this->ne)->pos(); }
   
   /** Taille du bbox en degrés. */
-  function size(): float {
-    $dLat = $this->ne->y - $this->sw->y;
-    $dLon = ($this->ne->x - $this->sw->x) * cos(($this->ne->y + $this->sw->y) * pi() / 2 / 180);
-    $dist = sqrt($dLat * $dLat + $dLon * $dLon) / sqrt(2);
-    return $dist;
-  }
+  function size(): float { return $this->sw->distance($this->ne); }
+  
+  /** Le BBox intersecte t'il l'antimérdien ?
+   * Lorsque le BBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est > 0 et celle du coin NE est < 0.
+   */
+  function crossesAntimeridian(): bool { return ($this->sw->x > 0) && ($this->ne->x < 0); }
   
   /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
   function includes(self $b): bool {
@@ -361,38 +388,41 @@ class BBoxTest {
         $json = json_decode($json, true);
         $lExtRings = array_map(function(array $llpos) { return $llpos[0]; }, $json['coordinates']);
         $bbox = BBox::fromLLPos($lExtRings);
-        echo $bbox;
+        echo "bbox=$bbox, size=",$bbox->size(),
+             ", centre=",new Pt($bbox->center()),
+             ", ",$bbox->crossesAntimeridian() ? 'franchit':'NE franchit PAS'," l'antiméridien\n";
         break;
       }
       case 'am': {
-        $sw = new Pt([179,40]);
-        $ne = new Pt([-179,50]);
-        $swsw = $sw->sw($ne);
-        $swne = $sw->ne($ne);
-        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
-        echo "$sw au SW de $ne -> ",$sw->islSW($ne) ? 'vrai' : 'faux',"\n";
-        echo "$ne au SW de $sw -> ",$ne->islSW($sw) ? 'vrai' : 'faux',"\n";
-        echo "\n";
-    
-        $sw = new Pt([40,40]);
-        $ne = new Pt([50,50]);
-        $swsw = $sw->sw($ne);
-        $swne = $sw->ne($ne);
-        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
-        echo "$sw au SW de $ne -> ",$sw->islSW($ne) ? 'vrai' : 'faux',"\n";
-        echo "$ne au SW de $sw -> ",$ne->islSW($sw) ? 'vrai' : 'faux',"\n";
-    
-        /*$sw = new Pt([-180,-90]);
-        $ne = new Pt([+180,+90]);
-        $swsw = $sw->sw($ne);
-        $swne = $sw->ne($ne);
-        echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
-        */
+        foreach ([
+          "BiPts sur l'AM"=> ['sw'=> new Pt([179,40]), 'ne'=> new Pt([-179,50])],
+          "BiPts loin de l'AM"=> ['sw'=> new Pt([40,40]), 'ne'=> new Pt([50,50])],
+          "Petit biPts près de l'AM"=> ['sw'=> new Pt([178,40]), 'ne'=> new Pt([179,41])],
+          "Grand biPts près de l'AM à l'Est du MG"=> ['sw'=> new Pt([0,40]), 'ne'=> new Pt([179,41])],
+          "Grand biPts près de l'AM à l'Ouest du MG"=> ['sw'=> new Pt([-179,40]), 'ne'=> new Pt([0,41])],
+          "Grand biPts sur l'AM à l'Est du MG mauvais BBox"=> ['sw'=> new Pt([0,40]), 'ne'=> new Pt([-179,41])],
+          "Grand biPts sur l'AM à l'Est du MG"=> ['sw'=> new Pt([2,40]), 'ne'=> new Pt([-179,41])],
+        ] as $title => $biPts) {
+          echo "</pre><h2>$title</h2><pre>\n";
+          $sw = $biPts['sw'];
+          $ne = $biPts['ne'];
+          $swsw = $sw->sw($ne);
+          $swne = $sw->ne($ne);
+          echo "sw($sw,$ne)->$swsw, ne($sw,$ne)->$swne\n";
+          echo "$sw au SW de $ne -> ",$sw->islSW($ne) ? 'vrai' : 'faux',"\n";
+          echo "$ne au SW de $sw -> ",$ne->islSW($sw) ? 'vrai' : 'faux',"\n";
+          printf("distance %s -> %s : %.2f\n", $sw, $ne, $sw->distance($ne));
+          try {
+            $bbox = new BBox($sw->pos(), $ne->pos());
+            echo "bbox=$bbox ",$bbox->crossesAntimeridian() ? 'franchit':'NE franchit PAS'," l'antiméridien\n";
+          } catch (\Exception $e) {
+            echo "Erreur: ",$e->getMessage();
+          }
+        }
         break;
       }
       default: throw new \Exception("Action $_GET[action] non définie");
     }
-    
   }
 };
 BBoxTest::main();

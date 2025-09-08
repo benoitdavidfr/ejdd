@@ -26,6 +26,15 @@ class WorldEez extends Dataset {
     parent::__construct($name, $schema);
   }
   
+  /** Retourne les filtres implémentés par getTuples(). Peut être redéfinie par chaque Dataset.
+   * Les filtres possibles sont:
+   *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
+   *  - rect: Rect - rectangle de sélection des n-uplets
+   *  - predicate: Predicate - prédicat à vérifier sur le n-uplet
+   * @return list<string>
+   */
+  function implementedFilters(string $collName): array { return ['skip']; }
+  
   /** L'accès aux items d'une collection du JdD par un Generator.
    * @param string $cname nom de la collection
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer

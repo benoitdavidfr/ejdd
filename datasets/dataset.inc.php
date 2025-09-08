@@ -69,6 +69,7 @@ abstract class Dataset {
     'RPG'=> 'FeatureServerExtract',
     'ShomWfs'=> 'FeatureServer',
     'Shom'=> 'Extract',
+    /**/
   ];
   const UNITS = [
     0 => 'octets',
@@ -85,6 +86,9 @@ abstract class Dataset {
   readonly array $schema;
   /** @var array<string,CollectionOfDs> $collections Le dict. des collections. */
   readonly array $collections;
+  
+  /** teste si le nom est celui d'un JdD. */
+  static function exists(string $dsName): bool { return array_key_exists($dsName, self::REGISTRE); }
   
   /** @param array<mixed> $schema Le schéma JSON du JdD */
   function __construct(string $dsName, array $schema, bool $validate=false) {
