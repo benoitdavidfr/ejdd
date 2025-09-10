@@ -113,9 +113,13 @@ Perspectives
 
 Mise en oeuvre:
 ---------------
-### Espaces de noms
+### Sous répertoires
+Les fichiers de code sont répartis dans les répertoires suivants:
+
+ - [les classes définissant l'algèbre des collections, y.c. les classes définissant le parser du langage](algebra)
+Les package 
  - Dataset: classe Dataset + classes représentant un Jeu de Données + classes de leur construction
- - Algebra: classes définissant l'algèbre des Collections, y.c. les classes définissant le parser du langage
+ - Algebra: classes définissant l'algèbre des Collections, 
  - GeoJSON: primitives géométriques GeoJSON
  - BBox: classe BBox définissant un rectangle englobant et les opérations d'intersection et d'union
  - Pos: classes sur les positions et ses listes
