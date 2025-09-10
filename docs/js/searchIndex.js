@@ -1396,196 +1396,6 @@ Search.appendIndex(
             "summary": "Test",
             "url": "classes/Algebra-SkipBracket.html#method_test"
         },                {
-            "fqsen": "\\BBox\\NONE",
-            "name": "NONE",
-            "summary": "Constante\u0020pour\u0020l\u0027espace\u0020vide.",
-            "url": "namespaces/bbox.html#constant_NONE"
-        },                {
-            "fqsen": "\\BBox\\Pt",
-            "name": "Pt",
-            "summary": "Un\u0020Point\u0020en\u0020coord.\u0020g\u00E9o.\u0020\u0028degr\u00E9s\u0020lon,lat\u0029.\u0020Classe\u0020interne\u0020\u00E0\u0020BBox.",
-            "url": "classes/BBox-Pt.html"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/BBox-Pt.html#method___construct"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003Apos\u0028\u0029",
-            "name": "pos",
-            "summary": "Un\u0020TPos\u0020\u00E0\u0020partir\u0020d\u0027un\u0020Pt.",
-            "url": "classes/BBox-Pt.html#method_pos"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003AfromText\u0028\u0029",
-            "name": "fromText",
-            "summary": "Construit\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u007Bnbre\u007D\u0040\u007Bnbre\u007D.",
-            "url": "classes/BBox-Pt.html#method_fromText"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003A__toString2\u0028\u0029",
-            "name": "__toString2",
-            "summary": "Affiche\u0020ss\u0020limiter\u0020le\u0020nmbre\u0020de\u0020chiffres\u0020significatifs.",
-            "url": "classes/BBox-Pt.html#method___toString2"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Affiche\u0020en\u0020fixant\u0020le\u0020nmbre\u0020de\u0020chiffres\u0020significatifs.",
-            "url": "classes/BBox-Pt.html#method___toString"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003AislSW\u0028\u0029",
-            "name": "islSW",
-            "summary": "\u0024this\u0020est\u0020largement\u0020au\u0020Sud\u002DOuest\u0020de\u0020\u0024b.",
-            "url": "classes/BBox-Pt.html#method_islSW"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003Asw\u0028\u0029",
-            "name": "sw",
-            "summary": "Le\u0020point\u0020juste\u0020au\u0020SW\u0020des\u00202\u0020points\u0020\u003B\u0020tient\u0020compte\u0020de\u0020la\u0020gestion\u0020de\u0020l\u0027antim\u00E9ridien",
-            "url": "classes/BBox-Pt.html#method_sw"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003Ane\u0028\u0029",
-            "name": "ne",
-            "summary": "Le\u0020point\u0020juste\u0020au\u0020NE\u0020des\u00202\u0020points.",
-            "url": "classes/BBox-Pt.html#method_ne"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003Adistance\u0028\u0029",
-            "name": "distance",
-            "summary": "Distance\u0020entre\u00202\u0020points\u003B\u0020calcul\u0020en\u0020degr\u00E9s,\u0020tient\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
-            "url": "classes/BBox-Pt.html#method_distance"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003AmidPoint\u0028\u0029",
-            "name": "midPoint",
-            "summary": "Milieu\u0020entre\u00202\u0020points,\u0020tient\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
-            "url": "classes/BBox-Pt.html#method_midPoint"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003AlPos2LPt\u0028\u0029",
-            "name": "lPos2LPt",
-            "summary": "Fabrique\u0020une\u0020liste\u0020de\u0020Pt\u0020\u00E0\u0020partir\u0020d\u0027une\u0020TLPos.",
-            "url": "classes/BBox-Pt.html#method_lPos2LPt"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003APRECISON",
-            "name": "PRECISON",
-            "summary": "Nombre\u0020de\u0020chiffres\u0020significatifs\u0020\u00E0\u0020l\u0027affichage.",
-            "url": "classes/BBox-Pt.html#constant_PRECISON"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003A\u0024x",
-            "name": "x",
-            "summary": "",
-            "url": "classes/BBox-Pt.html#property_x"
-        },                {
-            "fqsen": "\\BBox\\Pt\u003A\u003A\u0024y",
-            "name": "y",
-            "summary": "",
-            "url": "classes/BBox-Pt.html#property_y"
-        },                {
-            "fqsen": "\\BBox\\BBox",
-            "name": "BBox",
-            "summary": "Un\u0020rectangle\u0020englobant\u0020en\u0020coord.\u0020geo.\u0020pour\u0020le\u0020stocker,\u0020effectuer\u0020diverses\u0020op\u00E9rations\u0020et\u0020tester\u0020des\u0020conditions.",
-            "url": "classes/BBox-BBox.html"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Fabrique\u0020avec\u0020v\u00E9rification\u0020des\u0020contraintes\u0020d\u0027int\u00E9grit\u00E9.",
-            "url": "classes/BBox-BBox.html#method___construct"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AfromText\u0028\u0029",
-            "name": "fromText",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u005B\u007BPt\u007D,\u007BPt\u007D\u005D\u0020ou\u0020\u007BPt\u007D\u0020ou\u0020chaine\u0020vide.",
-            "url": "classes/BBox-BBox.html#method_fromText"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Afrom4Coords\u0028\u0029",
-            "name": "from4Coords",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020de\u00204\u0020coordonn\u00E9es\u0020\u005Bxmin,\u0020ymin,\u0020xmax,\u0020ymax\u005D.",
-            "url": "classes/BBox-BBox.html#method_from4Coords"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Aas4Coordinates\u0028\u0029",
-            "name": "as4Coordinates",
-            "summary": "G\u00E9n\u00E8re\u0020un\u0020array\u0020de\u00204\u0020coordonn\u00E9es\u0020utilis\u00E9\u0020en\u0020GeoJSON.",
-            "url": "classes/BBox-BBox.html#method_as4Coordinates"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Aas4CoordsLatLon\u0028\u0029",
-            "name": "as4CoordsLatLon",
-            "summary": "G\u00E9n\u00E8re\u0020un\u0020array\u0020de\u00204\u0020coordonn\u00E9es\u0020LatLon\u0020utilis\u00E9\u0020par\u0020WFS.",
-            "url": "classes/BBox-BBox.html#method_as4CoordsLatLon"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AfromPos\u0028\u0029",
-            "name": "fromPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020Pos.",
-            "url": "classes/BBox-BBox.html#method_fromPos"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AfromLPos\u0028\u0029",
-            "name": "fromLPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020LPos.",
-            "url": "classes/BBox-BBox.html#method_fromLPos"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AfromLLPos\u0028\u0029",
-            "name": "fromLLPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020LLPos.",
-            "url": "classes/BBox-BBox.html#method_fromLLPos"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AisEmpty\u0028\u0029",
-            "name": "isEmpty",
-            "summary": "",
-            "url": "classes/BBox-BBox.html#method_isEmpty"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Affiche\u0020dans\u0020le\u0020m\u00EAme\u0020format\u0020que\u0020celui\u0020de\u0020la\u0020construction\u0020sauf\u0020pour\u0020l\u0027espace\u0020vide\u0020qui\u0020est\u0020affich\u00E9\u0020par\u0020\u0027NONE\u0027.",
-            "url": "classes/BBox-BBox.html#method___toString"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Acenter\u0028\u0029",
-            "name": "center",
-            "summary": "Retourne\u0020le\u0020centre\u0020de\u0020la\u0020BBox.",
-            "url": "classes/BBox-BBox.html#method_center"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Asize\u0028\u0029",
-            "name": "size",
-            "summary": "Taille\u0020du\u0020bbox\u0020en\u0020degr\u00E9s.",
-            "url": "classes/BBox-BBox.html#method_size"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003AcrossesAntimeridian\u0028\u0029",
-            "name": "crossesAntimeridian",
-            "summary": "Le\u0020BBox\u0020intersecte\u0020t\u0027il\u0020l\u0027antim\u00E9rdien\u0020\u003F\nLorsque\u0020le\u0020BBox\u0020chevauche\u0020l\u0027antim\u00E9ridien\u0020\u0028antimeridian\u0029,\u0020la\u0020longitude\u0020du\u0020coin\u0020SW\u0020est\u0020\u003E\u00200\u0020et\u0020celle\u0020du\u0020coin\u0020NE\u0020est\u0020\u003C\u00200.",
-            "url": "classes/BBox-BBox.html#method_crossesAntimeridian"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Aincludes\u0028\u0029",
-            "name": "includes",
-            "summary": "\u0024this\u0020inclus\u0020\u0024b\u0020au\u0020sens\u0020large,\u0020cad\u0020que\u0020\u0024a\u002D\u003Eincludes\u0028\u0024a\u0029\u0020est\u0020vrai.",
-            "url": "classes/BBox-BBox.html#method_includes"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Ainters\u0028\u0029",
-            "name": "inters",
-            "summary": "Intersection\u0020g\u00E9om\u00E9trique\u0020de\u0020\u0024this\u0020avec\u0020\u0024b.\u0020Le\u0020r\u00E9sultat\u0020est\u0020toujours\u0020une\u0020BBox\u0020\u0021",
-            "url": "classes/BBox-BBox.html#method_inters"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Aunion\u0028\u0029",
-            "name": "union",
-            "summary": "Union\u0020g\u00E9om\u00E9trique\u0020de\u0020\u0024this\u0020et\u0020\u0024b.\u0020Le\u0020r\u00E9sultat\u0020est\u0020toujours\u0020une\u0020BBox.",
-            "url": "classes/BBox-BBox.html#method_union"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003Aextends\u0028\u0029",
-            "name": "extends",
-            "summary": "Agrandit\u0020la\u0020BBox\u0020au\u0020plus\u0020juste\u0020pour\u0020qu\u0027elle\u0020contienne\u0020la\u0020liste\u0020de\u0020points.",
-            "url": "classes/BBox-BBox.html#method_extends"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003A\u0024sw",
-            "name": "sw",
-            "summary": "Coin\u0020SW",
-            "url": "classes/BBox-BBox.html#property_sw"
-        },                {
-            "fqsen": "\\BBox\\BBox\u003A\u003A\u0024ne",
-            "name": "ne",
-            "summary": "Coin\u0020NE",
-            "url": "classes/BBox-BBox.html#property_ne"
-        },                {
-            "fqsen": "\\BBox\\BBoxTest",
-            "name": "BBoxTest",
-            "summary": "Test\u0020de\u0020BBox.",
-            "url": "classes/BBox-BBoxTest.html"
-        },                {
-            "fqsen": "\\BBox\\BBoxTest\u003A\u003Amain\u0028\u0029",
-            "name": "main",
-            "summary": "",
-            "url": "classes/BBox-BBoxTest.html#method_main"
-        },                {
             "fqsen": "\\Dataset\\AeCogPe",
             "name": "AeCogPe",
             "summary": "JdD\u0020Admin\u0020Express\u0020COG\u0020Carto\u0020petite\u0020\u00E9chelle\u00202025\u0020de\u0020l\u0027IGN\u0020\u0028AeCogPe\u0029.",
@@ -1965,6 +1775,11 @@ Search.appendIndex(
             "name": "main",
             "summary": "",
             "url": "classes/Dataset-ExtractBuild.html#method_main"
+        },                {
+            "fqsen": "\\Dataset\\A_FAIRE_FEATURESERVER",
+            "name": "A_FAIRE_FEATURESERVER",
+            "summary": "Actions\u0020\u00E0\u0020r\u00E9aliser.",
+            "url": "namespaces/dataset.html#constant_A_FAIRE_FEATURESERVER"
         },                {
             "fqsen": "\\Dataset\\Cache",
             "name": "Cache",
@@ -2581,290 +2396,10 @@ Search.appendIndex(
             "summary": "Chemin\u0020du\u0020r\u00E9pertoire\u0020contenant\u0020les\u0020fichiers\u0020SHP",
             "url": "classes/Dataset-WorldEezBuild.html#constant_SHP_DIR"
         },                {
-            "fqsen": "\\GeoJSON\\U",
-            "name": "U",
-            "summary": "Les\u0020grandeurs\u0020kilo,\u0020M\u00E9ga,\u0020Giga,\u0020.",
-            "url": "classes/GeoJSON-U.html"
-        },                {
-            "fqsen": "\\GeoJSON\\U\u003A\u003AK",
-            "name": "K",
+            "fqsen": "\\Algebra\\usage\u0028\u0029",
+            "name": "usage",
             "summary": "",
-            "url": "classes/GeoJSON-U.html#constant_K"
-        },                {
-            "fqsen": "\\GeoJSON\\U\u003A\u003AM",
-            "name": "M",
-            "summary": "",
-            "url": "classes/GeoJSON-U.html#constant_M"
-        },                {
-            "fqsen": "\\GeoJSON\\U\u003A\u003AG",
-            "name": "G",
-            "summary": "",
-            "url": "classes/GeoJSON-U.html#constant_G"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry",
-            "name": "Geometry",
-            "summary": "Classe\u0020abstraite\u0020de\u0020g\u00E9om\u00E9trie\u0020GeoJSON\u0020portant\u0020la\u0020m\u00E9thode\u0020create\u0028\u0029\u0020de\u0020cr\u00E9ation\u0020d\u0027une\u0020g\u00E9om\u00E9trie.",
-            "url": "classes/GeoJSON-Geometry.html"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003Acreate\u0028\u0029",
-            "name": "create",
-            "summary": "Cr\u00E9e\u0020un\u0020sous\u002Dobjet\u0020concret\u0020de\u0020Geometry\u0020\u00E0\u0020partir\u0020d\u0027une\u0020g\u00E9om\u00E9trie\u0020simple\u0020GeoJSON.",
-            "url": "classes/GeoJSON-Geometry.html#method_create"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-Geometry.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003AasArray\u0028\u0029",
-            "name": "asArray",
-            "summary": "",
-            "url": "classes/GeoJSON-Geometry.html#method_asArray"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-Geometry.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003AtoString\u0028\u0029",
-            "name": "toString",
-            "summary": "Retourne\u0020une\u0020repr\u00E9sentation\u0020string\u0020de\u0020la\u0020g\u00E9om\u00E9trie.",
-            "url": "classes/GeoJSON-Geometry.html#method_toString"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-Geometry.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003AcrossesAntimeridian\u0028\u0029",
-            "name": "crossesAntimeridian",
-            "summary": "",
-            "url": "classes/GeoJSON-Geometry.html#method_crossesAntimeridian"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003Atranslate\u0028\u0029",
-            "name": "translate",
-            "summary": "Translate\u0020une\u0020g\u00E9om\u00E9trie\u0020en\u0020longitude\u0020de\u0020\u002D360\u00B0\u0020ou\u0020\u002B360\u00B0.",
-            "url": "classes/GeoJSON-Geometry.html#method_translate"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003ASHORT_TYPES",
-            "name": "SHORT_TYPES",
-            "summary": "libell\u00E9\u0020court\u0020des\u0020types\u0020de\u0020g\u00E9om\u00E9trie\u0020pour\u0020affichage.",
-            "url": "classes/GeoJSON-Geometry.html#constant_SHORT_TYPES"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003A\u0024type",
-            "name": "type",
-            "summary": "",
-            "url": "classes/GeoJSON-Geometry.html#property_type"
-        },                {
-            "fqsen": "\\GeoJSON\\Geometry\u003A\u003A\u0024coordinates",
-            "name": "coordinates",
-            "summary": "",
-            "url": "classes/GeoJSON-Geometry.html#property_coordinates"
-        },                {
-            "fqsen": "\\GeoJSON\\Point",
-            "name": "Point",
-            "summary": "Point\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TPos.",
-            "url": "classes/GeoJSON-Point.html"
-        },                {
-            "fqsen": "\\GeoJSON\\Point\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-Point.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\Point\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-Point.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\Point\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-Point.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPoint",
-            "name": "MultiPoint",
-            "summary": "MultiPoint\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TLPos.",
-            "url": "classes/GeoJSON-MultiPoint.html"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPoint\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-MultiPoint.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPoint\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-MultiPoint.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPoint\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-MultiPoint.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\LineString",
-            "name": "LineString",
-            "summary": "Linestring\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TLPos.",
-            "url": "classes/GeoJSON-LineString.html"
-        },                {
-            "fqsen": "\\GeoJSON\\LineString\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-LineString.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\LineString\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-LineString.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\LineString\u003A\u003Areso\u0028\u0029",
-            "name": "reso",
-            "summary": "",
-            "url": "classes/GeoJSON-LineString.html#method_reso"
-        },                {
-            "fqsen": "\\GeoJSON\\LineString\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-LineString.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiLineString",
-            "name": "MultiLineString",
-            "summary": "MultiLineString\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TLLPos.",
-            "url": "classes/GeoJSON-MultiLineString.html"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiLineString\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-MultiLineString.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiLineString\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-MultiLineString.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiLineString\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-MultiLineString.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\Polygon",
-            "name": "Polygon",
-            "summary": "Polygon\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TLLPos.",
-            "url": "classes/GeoJSON-Polygon.html"
-        },                {
-            "fqsen": "\\GeoJSON\\Polygon\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-Polygon.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\Polygon\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "Calcule\u0020la\u0020bbox\u0020sur\u0020l\u0027ext\u00E9rieur\u0020du\u0020polygone,\u0020cad\u0020le\u0020ring\u00200.",
-            "url": "classes/GeoJSON-Polygon.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\Polygon\u003A\u003Areso\u0028\u0029",
-            "name": "reso",
-            "summary": "Estimation\u0020de\u0020la\u0020r\u00E9solution",
-            "url": "classes/GeoJSON-Polygon.html#method_reso"
-        },                {
-            "fqsen": "\\GeoJSON\\Polygon\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-Polygon.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPolygon",
-            "name": "MultiPolygon",
-            "summary": "MultiPolygon\u0020GeoJSON\u0020\u003B\u0020coordinates\u0020est\u0020un\u0020TLLLPos.",
-            "url": "classes/GeoJSON-MultiPolygon.html"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPolygon\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-MultiPolygon.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPolygon\u003A\u003Abbox\u0028\u0029",
-            "name": "bbox",
-            "summary": "calcule\u0020le\u0020BBox\u0020\u00E0\u0020partir\u0020des\u0020coordonn\u00E9es.",
-            "url": "classes/GeoJSON-MultiPolygon.html#method_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPolygon\u003A\u003Areso\u0028\u0029",
-            "name": "reso",
-            "summary": "Estimation\u0020de\u0020la\u0020r\u00E9solution",
-            "url": "classes/GeoJSON-MultiPolygon.html#method_reso"
-        },                {
-            "fqsen": "\\GeoJSON\\MultiPolygon\u003A\u003Areproject\u0028\u0029",
-            "name": "reproject",
-            "summary": "reproj\u00E8te\u0020une\u0020g\u00E9om\u00E9trie,\u0020prend\u0020en\u0020param\u00E8tre\u0020une\u0020fonction\u0020de\u0020reprojection\u0020d\u0027une\u0020position,\u0020retourne\u0020un\u0020objet\u0020g\u00E9om\u00E9trie",
-            "url": "classes/GeoJSON-MultiPolygon.html#method_reproject"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature",
-            "name": "Feature",
-            "summary": "Feature\u0020GeoJSON.",
-            "url": "classes/GeoJSON-Feature.html"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Fabrique\u0020un\u0020Feature\u0020\u00E0\u0020partir\u0020de\u0020sa\u0020repr\u00E9sentation\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
-            "url": "classes/GeoJSON-Feature.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003AasArray\u0028\u0029",
-            "name": "asArray",
-            "summary": "G\u00E9n\u00E8re\u0020la\u0020repr\u00E9sentation\u0020array\u0020du\u0020Feature\u0020qui\u0020peut\u0020\u00EAtre\u0020transform\u00E9\u0020en\u0020GeoJSON\u0020par\u0020un\u0020encodage\u0020en\u0020JSON.",
-            "url": "classes/GeoJSON-Feature.html#method_asArray"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A\u0024bbox",
-            "name": "bbox",
-            "summary": "",
-            "url": "classes/GeoJSON-Feature.html#property_bbox"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "G\u00E9n\u00E8re\u0020un\u0020affichage\u0020du\u0020Feature\u0020en\u0020\u00E9ludant\u0020les\u0020coordonn\u00E9es\u0020de\u0020la\u0020g\u00E9om\u00E9trie.",
-            "url": "classes/GeoJSON-Feature.html#method___toString"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003AfromFile\u0028\u0029",
-            "name": "fromFile",
-            "summary": "G\u00E9n\u00E8re\u0020les\u0020Feature\u0020d\u0027un\u0020fichier\u0020stockant\u0020une\u0020FeatureCollection,\u0020permettant\u0020ainsi\u0020de\u0020lire\u0020son\u0020contenu\u0020qui\u0020ne\u0020tient\u0020pas\u0020en\u0020m\u00E9moire.",
-            "url": "classes/GeoJSON-Feature.html#method_fromFile"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003AtoTuple\u0028\u0029",
-            "name": "toTuple",
-            "summary": "Transforme\u0020un\u0020Feature\u0020en\u0020tuple\u0020\u00E0\u0020retourner\u0020par\u0020Dataset\u003A\u003AgetItems\u0028\u0029.",
-            "url": "classes/GeoJSON-Feature.html#method_toTuple"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A\u0024id",
-            "name": "id",
-            "summary": "\u003Fint\u007Cstring\u0020\u0024id\u0020\u002D\u0020Eventuellement\u0020un\u0020identifiant\u0020du\u0020Feature,\u0020sinon\u0020null.",
-            "url": "classes/GeoJSON-Feature.html#property_id"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A\u0024properties",
-            "name": "properties",
-            "summary": "",
-            "url": "classes/GeoJSON-Feature.html#property_properties"
-        },                {
-            "fqsen": "\\GeoJSON\\Feature\u003A\u003A\u0024geometry",
-            "name": "geometry",
-            "summary": "",
-            "url": "classes/GeoJSON-Feature.html#property_geometry"
-        },                {
-            "fqsen": "\\GeoJSON\\FeatureCollection",
-            "name": "FeatureCollection",
-            "summary": "FeatureCollection\u0020GeoJSON.",
-            "url": "classes/GeoJSON-FeatureCollection.html"
-        },                {
-            "fqsen": "\\GeoJSON\\FeatureCollection\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/GeoJSON-FeatureCollection.html#method___construct"
-        },                {
-            "fqsen": "\\GeoJSON\\FeatureCollection\u003A\u003AfromFile\u0028\u0029",
-            "name": "fromFile",
-            "summary": "Lecture\u0020du\u0020fichier\u0020comme\u0020objet\u0020FeatureCollection\u0020qui\u0020en\u0020g\u00E9n\u00E9ral\u0020ne\u0020tient\u0020pas\u0020en\u0020m\u00E9moire.",
-            "url": "classes/GeoJSON-FeatureCollection.html#method_fromFile"
-        },                {
-            "fqsen": "\\GeoJSON\\FeatureCollection\u003A\u003A\u0024features",
-            "name": "features",
-            "summary": "",
-            "url": "classes/GeoJSON-FeatureCollection.html#property_features"
+            "url": "namespaces/algebra.html#function_usage"
         },                {
             "fqsen": "\\A_FAIRE",
             "name": "A_FAIRE",
@@ -3013,7 +2548,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\LLMap\\L_TileLayer",
             "name": "L_TileLayer",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_TileLayer",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L.TileLayer.",
             "url": "classes/LLMap-L-TileLayer.html"
         },                {
             "fqsen": "\\LLMap\\L_TileLayer\u003A\u003A__construct\u0028\u0029",
@@ -3038,7 +2573,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\LLMap\\L_UGeoJSONLayer",
             "name": "L_UGeoJSONLayer",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_UGeoJSONLayer",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L.UGeoJSONLayer.",
             "url": "classes/LLMap-L-UGeoJSONLayer.html"
         },                {
             "fqsen": "\\LLMap\\L_UGeoJSONLayer\u003A\u003A__construct\u0028\u0029",
@@ -3063,7 +2598,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\LLMap\\L_geoJSON",
             "name": "L_geoJSON",
-            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L_geoJSON",
+            "summary": "Classe\u0020concr\u00E8te\u0020des\u0020couches\u0020L.geoJSON.",
             "url": "classes/LLMap-L-geoJSON.html"
         },                {
             "fqsen": "\\LLMap\\L_geoJSON\u003A\u003A__construct\u0028\u0029",
@@ -3243,7 +2778,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\LLMap\\AMapAndItsLayersTest",
             "name": "AMapAndItsLayersTest",
-            "summary": "",
+            "summary": "Test\u0020de\u0020AMapAndItsLayers.",
             "url": "classes/LLMap-AMapAndItsLayersTest.html"
         },                {
             "fqsen": "\\LLMap\\AMapAndItsLayersTest\u003A\u003Amain\u0028\u0029",
@@ -3255,71 +2790,6 @@ Search.appendIndex(
             "name": "YAML_DEF",
             "summary": "D\u00E9finition\u0020d\u0027une\u0020carte\u0020en\u0020Yaml.",
             "url": "classes/LLMap-AMapAndItsLayersTest.html#constant_YAML_DEF"
-        },                {
-            "fqsen": "\\Pos\\Pos",
-            "name": "Pos",
-            "summary": "Fonctions\u0020sur\u0020les\u0020positions\u0020\u0028TPos\u0029\u0020d\u00E9finies\u0020comme\u0020une\u0020liste\u0020de\u00202\u0020nombres.",
-            "url": "classes/Pos-Pos.html"
-        },                {
-            "fqsen": "\\Pos\\Pos\u003A\u003Ais\u0028\u0029",
-            "name": "is",
-            "summary": "V\u00E9rifie\u0020que\u0020le\u0020param\u00E8tre\u0020est\u0020un\u0020TPos.",
-            "url": "classes/Pos-Pos.html#method_is"
-        },                {
-            "fqsen": "\\Pos\\Pos\u003A\u003AmanhattanDist\u0028\u0029",
-            "name": "manhattanDist",
-            "summary": "Distance\u0020de\u0020Manhattan\u0020entre\u00202\u0020positions,\u0020ne\u0020tient\u0020pas\u0020compte\u0020de\u0020l\u0027antim\u00E9rdien.",
-            "url": "classes/Pos-Pos.html#method_manhattanDist"
-        },                {
-            "fqsen": "\\Pos\\Pos\u003A\u003Areproj\u0028\u0029",
-            "name": "reproj",
-            "summary": "reproj\u00E8te\u0020une\u0020TPos",
-            "url": "classes/Pos-Pos.html#method_reproj"
-        },                {
-            "fqsen": "\\Pos\\LPos",
-            "name": "LPos",
-            "summary": "Fonction\u0020sur\u0020les\u0020TLPos,\u0020d\u00E9finies\u0020comme\u0020liste\u0020de\u0020TPos.",
-            "url": "classes/Pos-LPos.html"
-        },                {
-            "fqsen": "\\Pos\\LPos\u003A\u003Ais\u0028\u0029",
-            "name": "is",
-            "summary": "V\u00E9rifie\u0020que\u0020le\u0020param\u00E8tre\u0020est\u0020un\u0020TLPos.",
-            "url": "classes/Pos-LPos.html#method_is"
-        },                {
-            "fqsen": "\\Pos\\LPos\u003A\u003Areproj\u0028\u0029",
-            "name": "reproj",
-            "summary": "reproj\u00E8te\u0020une\u0020TLPos\u0020et\u0020la\u0020retourne",
-            "url": "classes/Pos-LPos.html#method_reproj"
-        },                {
-            "fqsen": "\\Pos\\LLPos",
-            "name": "LLPos",
-            "summary": "Fonction\u0020sur\u0020les\u0020TLLPos,\u0020d\u00E9finies\u0020comme\u0020liste\u0020de\u0020TLPos.",
-            "url": "classes/Pos-LLPos.html"
-        },                {
-            "fqsen": "\\Pos\\LLPos\u003A\u003Ais\u0028\u0029",
-            "name": "is",
-            "summary": "V\u00E9rifie\u0020que\u0020le\u0020param\u00E8tre\u0020est\u0020un\u0020TLLPos.",
-            "url": "classes/Pos-LLPos.html#method_is"
-        },                {
-            "fqsen": "\\Pos\\LLPos\u003A\u003Areproj\u0028\u0029",
-            "name": "reproj",
-            "summary": "reproj\u00E8te\u0020une\u0020TLLPos\u0020et\u0020la\u0020retourne",
-            "url": "classes/Pos-LLPos.html#method_reproj"
-        },                {
-            "fqsen": "\\Pos\\LLLPos",
-            "name": "LLLPos",
-            "summary": "Fonction\u0020sur\u0020les\u0020TLLLPos,\u0020d\u00E9finies\u0020comme\u0020liste\u0020de\u0020TLLPos.",
-            "url": "classes/Pos-LLLPos.html"
-        },                {
-            "fqsen": "\\Pos\\LLLPos\u003A\u003Ais\u0028\u0029",
-            "name": "is",
-            "summary": "V\u00E9rifie\u0020que\u0020le\u0020param\u00E8tre\u0020est\u0020un\u0020TLLLPos.",
-            "url": "classes/Pos-LLLPos.html#method_is"
-        },                {
-            "fqsen": "\\Pos\\LLLPos\u003A\u003Areproj\u0028\u0029",
-            "name": "reproj",
-            "summary": "reproj\u00E8te\u0020une\u0020TLLLPos\u0020et\u0020la\u0020retourne",
-            "url": "classes/Pos-LLLPos.html#method_reproj"
         },                {
             "fqsen": "\\Misc\\SetOp",
             "name": "SetOp",
@@ -3341,41 +2811,6 @@ Search.appendIndex(
             "summary": "Formatte\u0020une\u0020valeur\u0020pour\u0020affichage",
             "url": "classes/Misc-SetOp.html#method_formatForPrint"
         },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel",
-            "name": "ZoomLevel",
-            "summary": "Autour\u0020des\u0020niveaux\u0020de\u0020zoom\u0020Leaflet.",
-            "url": "classes/ZoomLevel-ZoomLevel.html"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AWebMercatorExtension\u0028\u0029",
-            "name": "WebMercatorExtension",
-            "summary": "extension\u0020des\u0020coordonn\u00E9es\u0020WebMercator",
-            "url": "classes/ZoomLevel-ZoomLevel.html#method_WebMercatorExtension"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AscaleDenLevel0\u0028\u0029",
-            "name": "scaleDenLevel0",
-            "summary": "D\u00E9nominateur\u0020de\u0020l\u0027\u00E9chelle\u0020de\u0020la\u0020tuile\u00200\u0020de\u0020Leaflet.",
-            "url": "classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel0"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AscaleDenLevel\u0028\u0029",
-            "name": "scaleDenLevel",
-            "summary": "Calcule\u0020le\u0020d\u00E9nominateur\u0020de\u0020l\u0027\u00E9chelle\u0020pour\u0020le\u0020niveau\u0020\u0024level.",
-            "url": "classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AfromBBox\u0028\u0029",
-            "name": "fromBBox",
-            "summary": "Calcule\u0020de\u0020niveau\u0020de\u0020zoom\u0020adapt\u00E9\u0020pour\u0020visualiser\u0020un\u0020BBox\u0020\u003B\u0020le\u0020calcul\u0020est\u0020effectu\u00E9\u0020en\u0020degr\u00E9s.",
-            "url": "classes/ZoomLevel-ZoomLevel.html#method_fromBBox"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003AIAG_GRS_1980_A",
-            "name": "IAG_GRS_1980_A",
-            "summary": "Demi\u0020grand\u0020axe\u0020de\u0020l\u0027ellipsoide\u0020IAG_GRS_1980\u0020\u002D\u0020en\u0020anglais\u0020Equatorial\u0020radius\u0020\u002D\u0020en\u0020m\u00E8tres",
-            "url": "classes/ZoomLevel-ZoomLevel.html#constant_IAG_GRS_1980_A"
-        },                {
-            "fqsen": "\\ZoomLevel\\ZoomLevel\u003A\u003ASTD_PIXEL_SIZE_IN_METERS",
-            "name": "STD_PIXEL_SIZE_IN_METERS",
-            "summary": "R\u00E9solution\u0020std\u0020d\u0027un\u0020pixel\u0020d\u00E9fini\u0020dans\u0020le\u0020standard\u0020WMS,\u0020en\u0020m\u00E8tres.",
-            "url": "classes/ZoomLevel-ZoomLevel.html#constant_STD_PIXEL_SIZE_IN_METERS"
-        },                {
             "fqsen": "\\",
             "name": "\\",
             "summary": "",
@@ -3386,20 +2821,10 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/algebra.html"
         },                {
-            "fqsen": "\\BBox",
-            "name": "BBox",
-            "summary": "",
-            "url": "namespaces/bbox.html"
-        },                {
             "fqsen": "\\Dataset",
             "name": "Dataset",
             "summary": "",
             "url": "namespaces/dataset.html"
-        },                {
-            "fqsen": "\\GeoJSON",
-            "name": "GeoJSON",
-            "summary": "",
-            "url": "namespaces/geojson.html"
         },                {
             "fqsen": "\\Lib",
             "name": "Lib",
@@ -3415,15 +2840,5 @@ Search.appendIndex(
             "name": "Misc",
             "summary": "",
             "url": "namespaces/misc.html"
-        },                {
-            "fqsen": "\\Pos",
-            "name": "Pos",
-            "summary": "",
-            "url": "namespaces/pos.html"
-        },                {
-            "fqsen": "\\ZoomLevel",
-            "name": "ZoomLevel",
-            "summary": "",
-            "url": "namespaces/zoomlevel.html"
         }            ]
 );

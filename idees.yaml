@@ -991,11 +991,228 @@ conceptionWxS:
     Un JdD tile-servers contient comme sections les serveurs WFS, TMS ou WMTS connus stockés dans un fichier Yaml.
     Chaque serveur contient comme n-uplets les couches exposées avec les infos associées.
     Chaque couche exposée correspond à une couche L.TileLayer dans MapDataset.
-jointureSpatiale:
-  - classe RectPt -> rect.php
-  - implémenter la jointure spatiale comme une jointure sur l'intersection des rectangles englobants
-  - afficher une géométrie par son rectangle englobant sous la forme "(sw,ne)" pour une ligne et "{sw,ne}" pour un Pol
-  - en arrondissant les coordonnées à 2 chiffres significatifs (résolution du km)
+bbox:
+  réflexion:
+    - est-ce que je peux trouver un moyen de gérer corrrectement les BBox de'objets ayants plus de 180° de large
+    - il faut que je distingue
+      - la création intiale d'un BBox à partir de 2 Pts
+      - l'extension d'un BBox existant avec un nv Pt
+    - dans le premier cas, il y a 2 BBox possibles et il faut en choisir un, par ex le plus petit
+      - sauf si à la création le SW et le NE sont explicitement définis
+    - dans le second cas, il faut que les pts qui étaient dans le BBox avant l'extension le soit toujours après
+    - je peux donc dans plusieurs cas avoir un BBox d'une largeur > 180°
+  nlleVersion:
+    - la notion de Pt à l'Ouest d'un autre n'a pas de sens car ca dépend de quel côté on tourne
+    - les contraintes sur un BBox sont:
+      - les 2 latitudes sont comprises entre -90 et +90
+      - le coin S a une latitude inférieure à celle du coin Nord
+      - les 2 longitudes sont comprises entre -180 et +180
+      - lon W < lon E <=> le BBox n'intersecte pas l'AM
+      - lon W > lon E (ex [170, -170]) <=> le BBox intersecte l'AM
+    
+reprise:
+  ~/html/geovect: |
+    # Gestion d'objets géographiques et de leur géométrie vecteur
+
+    Ce module est constitué de 4 sous-modules :
+
+      - gegeom gère la géométrie vecteur GeoJSON
+      - fcoll permet la lecture de FeatureCollection GeoJSON (périmé)
+      - coordsys gère différents systèmes de coordonnées
+      - features implémente un serveur conforme au standard OGC API Features
+
+  ~/html/geovect/gegeom: |
+    # Bibliothèque Php de gestion de la géométrie
+
+    ## 1. Généralités
+    Cette bibliothèque Php définit d'une part des fonctions géométriques et d'autre part des classes Php de gestion
+    des primitives géométriques [GeoJSON](https://tools.ietf.org/html/rfc7946)
+    et [OGC WKT](https://en.wikipedia.org/wiki/Well-known_text).  
+    Elle comprend tout d'abord des classes statiques dans lesquelles sont définies un certain nombre de fonctions géométriques,
+    d'autre part, les classes abstraites Geometry et Homeogeneous ainsi que les 7 sous-classes suivantes correspondant
+    aux différentes primitives géométriques :
+    Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon et GeometryCollection
+
+    Elle comprend en outre :
+
+      - la classe abstraite `BBox` définissant une boite englobante ainsi que 2 sous-classes concrètes `GBox` et `EBox`
+        définissant ces boites respectivement en coordonnées géographiques et euclidiennes,
+      - l'interface `Drawing` d'un dessin et la classe `GdDrawing` implémentant cette interface
+        avec [la bibliothèque GD](https://www.php.net/manual/fr/book.image.php).
+      - la classe `FeatureStream` permettant de lire un flux de Feature GeoJSON pour quelques types de couches particulières.
+
+    La bibliothèque est compatible avec Php 8.1, est documentée avec [PhpDocumentor](https://docs.phpdoc.org/3.0/)
+    et est testée avec [PhpStan](https://phpstan.org/) au niveau 6.
+    Cette documentation utilise donc les types de PhpDocumentor utilisés dans PhpStan.
+
+    ### 1.1. Le concept de position
+    La bibliothèque reprend de GeoJSON le concept de **position** constituée de 2 coordonnées éventuellement complétées
+    par une altitude.
+    En Php, une position est définie comme une liste de 2 ou 3 nombres et n'est pas un objet Php.
+    Une position indéfinie peut être représentée de manière standardisée par la liste vide mais n'est pas une position valide.
+    Dans cette bibliothèque une position peut être soit définie en coordonnées géographiques (longitude, latitude)
+    en degrés décimaux soit dans un système de coordonnées projeté.
+    Ainsi, les coordonnées des objets géométriques sont définies:
+
+      - pour un `Point`, par une position, notée `Pos` et dont le type PhpStan est `TPos`,
+      - pour une `LineString` ou un `MultiPoint`, par une liste de positions, notée `LPos` et dont le type PhpStan est `TLPos`,
+      - pour un Polygon ou un MultiLineString, par une liste de listes de positions, notée `LLPos`
+        et dont le type PhpStan est `TLLPos`,
+      - enfin, pour un MultiPolygon, par une liste de listes de listes de positions, notée `LLLPos`.
+
+    L'utilisation de ce concept de position et son implémentation en Php simplifie la création des objets correspondants
+    aux primitives.
+
+    ### 1.2. Les changements de systèmes de coordonnées
+    La bibliothèque est indépendante des systèmes de coordonnées.
+    Les coordonnées géographiques sont cependant distinguées des coordonnées euclidiennes lorsque les fonctionnalités
+    sont différentes.
+    Les changements de systèmes de coordonnées sont effectués en passant en paramètre aux méthodes proj() ou geo()
+    une fonction anonyme qui fait correspondre une position en coord. projetées à une position en coord. géo.
+    ou vice-versa.  
+    Cette bibliothèque a été conçue pour permettre d'utiliser facilement les fonctions définies
+    dans la [bibliothèque CoordSys](../coordsys).
+
+    ### 1.3. Dessin des primitives géométriques
+    Les primitives géométriques peuvent se dessiner dans un objet dessin.
+    Afin de rendre la bibliothèque indépendante des différentes techniques de dessin (GD, SVG, ...), elle utilise des primitives
+    génériques de dessin définies par l'interface `Drawing`.
+    Elles utilisent un style de dessin défini
+    par la [spec simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0).  
+    La classe `GdDrawing` implémente ces primitives au dessus de la [bibliothèque GD](https://www.php.net/manual/fr/ref.image.php). 
+
+    ### 1.4. Les types PhpDocumentor/PhpStan
+    Quelques types sont définis pour ce dépôt et pour PhpStan, ils sont listés dans [phpstan.neon](../phpstan.neon).
+
+    ### 1.5. Pourquoi une nouvelle bibliothèque ?
+    Cette bibliothèque redéfinit des fonctionnalités proches de [geometry](https://github.com/benoitdavidfr/geometry)
+    et de [geom2d](https://github.com/benoitdavidfr/geom2d).
+    Elle apporte principalement 4 spécificités :
+
+      - structuration des coordonnées des primitives comme listes de positions, très proche de l'approche GeoJSON,
+        et simplifiant plusieurs algorithmes,
+      - définition d'une classe abstraite BBox et de 2 classes concrètes GBox et EBox respt. pour les coord. géographiques
+        et euclidiennes ; permettant ainsi dans le code de mieux distinguer le type de BBox utilisé,
+      - indépendance par rapport aux changements de systèmes de coordonnées en utilisant en paramètre une fonction de changement
+        de coordonnées,
+      - indépendance par rapport aux techniques de dessin en définissant des primitives de dessin et une classe abstraite de dessin.
+
+    Les fonctionnalités de [geometry](https://github.com/benoitdavidfr/geometry) ont été largement reprises dans gegeom.  
+    Celles de [geom2d](https://github.com/benoitdavidfr/geom2d) ne l'ont été que partiellement,
+    notamment celles de tuilage.
+
+    ## 2. Les fonction géométriques
+    Les fonctions géométriques sont définies comme méthodes statiques dans les 4 classes statiques suivantes:
+
+      - la classe **Pos** pour les fonctions sur une position,
+      - la classe **LPos** pour les fonctions sur une liste de positions,
+      - la classe **LLPos** pour les fonctions sur une liste de listes de positions,
+      - la classe **LnPos** pour les fonctions sur une liste**n de positions,
+        caad soit une Pos, soit une LPos, soit une LLPos, soit une LLLPos.
+    
+    ## 3. Les boites englobantes
+    ### 3.1. La classe abstraite BBox
+    La classe BBox définit une boite englobante définie par 2 positions min et max.
+    Ces 2 positions peuvent ne pas être définies et dans ce cas la boite est dite **vide**.
+    Si une boite n'est pas vide alors min et max contiennent chacun une position définie.
+    
+    ### 3.2. La classe concrète GBox
+    La classe GBox définit des boites englobantes en coordonnées géographiques.
+    
+    ### 3.3. La classe concrète EBox
+    La classe EBox définit des boites englobantes en coordonnées euclidiennes.
+    
+    ## 4. Les 7 primitives géométriques et leur sur-classe abstraite
+    ### 4.1. La classe abstraite Geometry
+    La classe abstraite Geometry permet de gérer a minima une géométrie sans avoir à connaître son type
+    et porte aussi 2 méthodes statiques de construction d'objet à partir respectivement d'un GeoJSON ou d'un WKT. 
+    
+    ### 4.2. La classe Point
+    ### 4.3. La classe MultiPoint
+    ...
+    
+    ## 5. Le dessin des primitives géométriques
+    ### 5.1. L'interface Drawing
+    L'interface `Drawing` définit l'interface à respecter par une classe de dessin.  
+    Le paramètre `$style` reprend les principes définis
+    par la [spec simplestyle](https://github.com/mapbox/simplestyle-spec/tree/master/1.1.0), notamment:
+
+      - `stroke`: couleur RVB de dessin d'une ligne brisée ou d'un contour de polygone
+      - `stroke-opacity` : opacité entre 0 (transparent) et 1 (opaque)
+      - `fill`: couleur RVB de remplissage d'un polygone
+      - `fill-opacity` : opacité entre 0 (transparent) et 1 (opaque)
+
+    #### Méthodes
+    Elle spécifie les méthodes suivantes:
+
+      - `__construct(int $width, int $height, ?BBox $world=null, int $bgColor=0xFFFFFF, float $bgOpacity=1)` - initialisation du dessin  
+        - `$width` et $height indiquent la taille du dessin sur l'écran en nbre de pixels  
+        - `$world` défini le système de coordonnées utilisateur, par défaut [-180, -90, 180, 90]  
+        - `$bgColor` est la couleur de fond du dessin codé en RGB
+        - `$bgOpacity` est l'opacité du fond du dessin entre 0 (transparent) et 1 (opaque)
+      - `polyline(TLPos $lpos, TStyle $style): void` - dessine une ligne brisée
+        - `$lpos` est une liste de positions en coordonnées utilisateur
+        - `$style` est le style de dessin
+      - `polygon(TLLPos $llpos, TStyle $style): void` - dessine un polygone
+        - `$llpos` est une liste de listes de positions en coordonnées utilisateur
+        - `$style` est le style de dessin
+      - `flush(string $format='', bool $noheader=false): void` - affiche l'image construite
+        - `$format` est le format MIME d'affichage
+        - si `$noheader` est vrai alors le header n'est pas transmis
+
+    ### 5.2. La classe concrète GdDrawing
+    La classe GdDrawing implémente les méthodes de dessin avec la [bibliothèque GD](https://www.php.net/manual/fr/ref.image.php).
+
+    
+  ~/html/geovect/geometry: |
+    # Package Php de gestion de la géométrie
+
+    Ce package Php implémente les primitives géométriques [GeoJSON](https://tools.ietf.org/html/rfc7946)
+    et [OGC WKT](https://en.wikipedia.org/wiki/Well-known_text) sous la forme de classes Php.  
+    Il comprend une classe abstraite Geometry ainsi que les 7 sous-classes suivantes correspondant
+    aux différentes primitives géométriques :
+  
+      - 3 types géométriques élémentaires: Point, LineString et Polygon
+      - 3 types de collections homogènes de géométries élémentaires: MultiPoint, MultiLineString et MultiPolygon
+      - 1 type de collection hétérogène de géométries élémentaires: GeometryCollection
+
+    Il comprend en outre :
+
+      - la classe CoordSys qui implémente des changements de coordonnées simples,
+      - la classe BBox qui implémente les boites englobantes,
+      - la classe statique Wkt2GeoJson qui implémente une transformation optimisée d'une primitive WKT en GeoJSON.
+
+    ### La classe abstraite Geometry
+    La classe abstraite Geometry permet de gérer a minima une géométrie sans avoir à connaître son type.
+    Elle comporte les méthodes suivantes.
+
+    #### Méthodes
+  
+      - 2 méthodes statiques de construction d'objet à partir respectivement d'un WKT ou d'un GeoJSON :
+          - `static fromWkt(string $wkt, int $nbdigits=null): Geometry` - crée une géométrie à partir d'un WKT
+          - `static fromGeoJSON(array $geometry, int $nbdigits=null): Geometry` - crée une géométrie
+            à partir d'une géométrie GeoJSON
+      - la méthode générique `geojson(): array` qui génère comme Array Php qui, encodé en JSON,
+        correspondra à la geometry GeoJSON
+      - la méthode `wkt(): string` qui fabrique une représentation WKT
+      - la méthode `bbox(): BBox` qui fabrique le BBox de l'objet
+  
+    ### La classe CoordSys
+    La classe statique CoordSys implémente les changements simples entre coordonnées en projection et coordonnées
+    géographiques, et vice-versa, définis sur l'elliposide IAG_GRS_1980.
+    Les systèmes de coordonnées suivants sont gérés :
+
+      - 'geo' pour coordonnées géographiques WGS 84 en degrés décimaux dans l'ordre longitude, latitude
+      - 'L93' pour Lambert 93
+      - 'WM' pour web Mercator
+      - UTM-ddX où dd est le numéro de zone et X est soit 'N', soit 'S'
+
+    #### Méthodes
+
+      - `static detect($opengiswkt)` - detecte le système de coord exprimé en Well Known Text d'OpenGIS
+      - `static chg(string $src, string $dest, number $x, number $y): array` - chg de syst. de coord. de $src vers $dest
+        renvoie un tableau de 2 coordonnées. Les couples acceptés sont 'geo',proj et proj,'geo'
+
 historique:
   v3.1(19/8/25):
     - ajout parser d'expressions ensemblistes

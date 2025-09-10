@@ -8,7 +8,10 @@ const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
 - mettre en MD les description dans les schémas
+- il y a probablement un pb sur les requêtes bbox à cheval sur l'antiméridien
 - permettre de consulter une carte d'une collection ou d'un n-uplet
+  - étendre la carte d'un n-uplet aux colections issues de requêtes
+    - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -42,15 +45,21 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+10/9/2025:
+  - essai d'améliorer bbox.php -> échec, chgt de stratégie
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - gbox.php n'est pas finalisé
+  - déplacement des fichiers sur la geom dans un répertoire geom
+  - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
 8/9/2025:
-  - correction du bug l'antiméridien dans BBox
+  - correction du bug l'antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d'un n-uplet
-    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+    - ne fonctionne pour le moment que sur une CollectionOfDs
   - modif FeatureServer pour qu'il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l'utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d'un n-uplet
+  - ajout du dessin de la carte montrant la géométrie d'un n-uplet (début)
 6/9/2025:
   - création d'un répertoire algebra pour contenir les fichiers Php dans l'espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets

@@ -7,7 +7,7 @@ namespace Algebra;
 require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
 require_once __DIR__.'/predicate.inc.php';
-require_once __DIR__.'/../geojson.inc.php';
+require_once __DIR__.'/../geom/geojson.inc.php';
 require_once __DIR__.'/../llmap.php';
 require_once __DIR__.'/../lib.php';
 
@@ -95,6 +95,7 @@ abstract class Collection {
 
   /** Affiche les données de la collection */
   function displayItems(int $skip=0): void {
+    $nbPerPage = $_GET['nbPerPage'] ?? self::NB_TUPLES_PER_PAGE;
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
     $cols_prec = [];
@@ -129,15 +130,17 @@ abstract class Collection {
         echo "<td>$v</td>";
       }
       echo "</tr>\n";
-      if (in_array('skip', $this->implementedFilters()) && (++$i >= self::NB_TUPLES_PER_PAGE))
+      if (in_array('skip', $this->implementedFilters()) && (++$i >= $nbPerPage))
         break;
     }
     echo "</table>\n";
-    if (in_array('skip', $this->implementedFilters()) && ($i >= self::NB_TUPLES_PER_PAGE)) {
+    if (in_array('skip', $this->implementedFilters()) && ($i >= $nbPerPage)) {
       $skip += $i;
       echo "<a href='?action=display&collection=",urlencode($this->id()),
              isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
-             "&skip=$skip'>",
+             "&skip=$skip",
+             isset($_GET['nbPerPage']) ? "&nbPerPage=$nbPerPage" : '',
+             "'>",
            "Suivants (skip=$skip)</a><br>\n";
     }
   }
@@ -199,7 +202,56 @@ abstract class Collection {
   
   /** Dessine une carte de la collection ayant un champ géométrique nommé geometry. */
   function draw(): string {
-    throw new \Exception("TO BE IMPLEMENTED");
+    //echo $this->id(),"<br>\n";
+    $id = $this->id();
+    //echo "id=$id<br>\n";
+    $pos = strpos($id, '.');
+    $dsName = substr($id, 0, $pos);
+    $collName = substr($id, $pos+1);
+    //echo "$dsName/$collName\n";
+    if (!Dataset::exists($dsName)) {
+      throw new \Exception("Collection::draw() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
+    }
+    $yamlDef = [
+      <<<'EOT'
+map:
+  title: Carte d'une collection
+  vars:
+    userverdir: 'http://localhost/gexplor/visu/'
+  view: bbox
+  baseLayers:
+    - OSM
+    - FondBlanc
+  defaultBaseLayer: OSM
+  overlays:
+    - layerOfTheCollection
+    - antimeridien
+    - debug
+  defaultOverlays:
+    - layerOfTheCollection
+    - antimeridien
+views:
+  bbox: '{bbox}'
+layers:
+  layerOfTheCollection:
+    title: n-upplet
+    L.UGeoJSONLayer:
+      endpoint: '{endpoint}'
+      minZoom: 0
+      maxZoom: 18
+      usebbox: true
+      onEachFeature: onEachFeature
+
+EOT
+    ];
+    $def = Yaml::parse($yamlDef[0]);
+    // A améliorer
+    $def['views']['bbox'] = ['latLon'=> [0, 0], 'zoomLevel'=> 2];
+    $def['layers']['layerOfTheCollection']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}$dsName/collections/$collName/items";
+    
+    $map = new AMapAndItsLayers($def);
+    //$map->display();
+    return $map->draw();
   }
   
   /** Dessine une carte de l'Item ayant un champ géométrique nommé geometry.
@@ -214,7 +266,7 @@ abstract class Collection {
     $collName = substr($id, $pos+1);
     //echo "$dsName/$collName\n";
     if (!Dataset::exists($dsName)) {
-      throw new \Exception("DrawItem() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
+      throw new \Exception("Collection::drawItem() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
     }
     $item = $this->getOneItemByKey($key);
     $geometry = $item['geometry'];
@@ -324,7 +376,7 @@ class CollectionOfDs extends Collection {
 
   /** Affiche les MD et données de la collection */
   function display(int $skip=0): void {
-    echo '<h2>',$this->title,"</h2>\n";
+    echo '<h2>',$this->title," (<a href='?action=draw&collection=",$this->id(),"'>Carte</a>)</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->schema['description']);
     

@@ -5,6 +5,7 @@
  * Pour dessiner une carte, il faut :
  *   - créer un objet AMapAndItsLayers en lui fournissant une définition conforme au schéma SchemaOfAMapAndItsLayers
  *   - appeler dessus la méthode draw()
+ *
  * Si la définition n'est pas conforme au schéma, une exception est levée.
  * Un exemple est fourni ci-dessous.
  * @package Map
@@ -12,7 +13,7 @@
 namespace LLMap;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
-require_once __DIR__.'/zoomlevel.php';
+require_once __DIR__.'/geom/zoomlevel.php';
 require_once __DIR__.'/vendor/autoload.php';
 
 use Dataset\Dataset;
@@ -79,7 +80,7 @@ abstract class Layer {
   }
 };
 
-/** Classe concrète des couches L_TileLayer*/
+/** Classe concrète des couches L.TileLayer. */
 class L_TileLayer extends Layer {
   const JS_CODE = "  // affichage de la couche {id}\n"
                  ."    '{id}' : new L.TileLayer(\n"
@@ -110,7 +111,7 @@ class L_TileLayer extends Layer {
   }
 };
 
-/** Classe concrète des couches L_UGeoJSONLayer*/
+/** Classe concrète des couches L.UGeoJSONLayer. */
 class L_UGeoJSONLayer extends Layer {
   const JS_CODE = "  // affichage de la couche {id}\n"
                  ."    '{id}' : new L.UGeoJSONLayer({params}),\n";
@@ -154,7 +155,7 @@ class L_UGeoJSONLayer extends Layer {
   }
 };
 
-/** Classe concrète des couches L_geoJSON*/
+/** Classe concrète des couches L.geoJSON. */
 class L_geoJSON extends Layer {
   const JS_CODE = "  // affichage de {id}\n"
                  ."    '{id}' : L.geoJSON(\n"
@@ -197,7 +198,7 @@ class View {
     $center = $bbox->center();
     return new self([
       'latLon'=> [$center[1], $center[0]],
-      'zoomLevel'=> ZoomLevel::fromBBox($bbox),
+      'zoomLevel'=> ZoomLevel::fromBBoxSize($bbox->sizeInDegree()),
     ]);
   }
   
@@ -550,7 +551,7 @@ class AMapAndItsLayers {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // séparateur
 
-
+/** Test de AMapAndItsLayers. */
 class AMapAndItsLayersTest {
   /** Définition d'une carte en Yaml. */
   const YAML_DEF = [

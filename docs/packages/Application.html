@@ -61,15 +61,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bbox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -84,14 +76,6 @@
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
                         </section>
                 <section class="phpdocumentor-sidebar__category -packages">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
@@ -104,15 +88,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -125,14 +101,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -190,7 +158,10 @@
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
 - mettre en MD les description dans les schémas
+- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
+  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+    - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -251,14 +222,14 @@ EOT]                            </span>
 Journal des modifications récentes du code
 ------------------------------------------
 8/9/2025:
-  - correction du bug l&#039;antiméridien dans BBox
+  - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
-    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+    - ne fonctionne pour le moment que sur une CollectionOfDs
   - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (début)
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -456,6 +427,19 @@ EOT]                            </span>
 
 
 
+<h4 id="toc-functions">
+    Functions
+    <a href="packages/Application.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/algebra.html#function_usage">usage()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+    </dl>
 
         
     <section class="phpdocumentor-constants">
@@ -488,7 +472,10 @@ EOT]                            </span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
 - mettre en MD les description dans les schémas
+- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
+  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+    - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -535,7 +522,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">252</span>
+    <span class="phpdocumentor-element-found-in__line">255</span>
 
     </aside>
 
@@ -584,7 +571,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">40</span>
+    <span class="phpdocumentor-element-found-in__line">43</span>
 
     </aside>
 
@@ -599,14 +586,14 @@ EOT]</span>
 Journal des modifications récentes du code
 ------------------------------------------
 8/9/2025:
-  - correction du bug l&#039;antiméridien dans BBox
+  - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
-    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+    - ne fonctionne pour le moment que sur une CollectionOfDs
   - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (début)
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -778,7 +765,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">217</span>
+    <span class="phpdocumentor-element-found-in__line">220</span>
 
     </aside>
 
@@ -833,7 +820,49 @@ EOT]</span>
 </article>
             </section>
 
-        
+            <section class="phpdocumentor-functions">
+        <h3 class="phpdocumentor-elements__header" id="functions">
+            Functions
+            <a href="packages/Application.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_usage">
+        usage()
+        <a href="namespaces/algebra.html#function_usage" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geojson.php"><a href="files/geojson.html">geojson.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">19</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">usage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$argv</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$argv</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+</article>
+            </section>
+
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
@@ -941,7 +970,8 @@ EOT]</span>
                 <ul class="phpdocumentor-list -clean">
                                                                                                         <li><a href="packages/Application.html#toc-classes">Classes</a></li>
                                                                                                         <li><a href="packages/Application.html#toc-constants">Constants</a></li>
-                                                        </ul>
+                                                                <li><a href="packages/Application.html#toc-functions">Functions</a></li>
+                                    </ul>
             </li>
 
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
@@ -954,6 +984,12 @@ EOT]</span>
                                             </ul>
                 </li>
             
+                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="namespaces/algebra.html#function_usage">usage()</a></li>
+                                            </ul>
+                </li>
                     </ul>
     </section>
 

@@ -46,9 +46,6 @@ parameters:
     - index.php
     - install.php
     - lib.php
-    - geojson.inc.php
-    - bbox.php
-    - pos.inc.php
     - geojson.php
     - llmap.php
     - algebra/schema.inc.php
@@ -79,11 +76,21 @@ parameters:
     - datasets/featureserver.php
     - datasets/featureserverextract.php
     - datasets/extract.php
-    - zoomleveL.php
-    #- lib/coordsys.inc.php
-    #- lib/gebox.inc.php
-    #- lib/gegeom.inc.php
-    #- lib/pos.inc.php
-    #- lib/sexcept.inc.php
-    #- lib/zoom.inc.php
+    - drawing/drawing.php
+    - drawing/gddrawing.php
+    - geom/pos.inc.php
+    - geom/bbox.php
+    #- geom/gbox.php
+    - geom/ebox.php
+    - geom/geojson.inc.php
+    - geom/zoomlevel.php
+    - lib/sexcept.inc.php
+  excludePaths:
+    analyse:
+      #- lib/coordsys.inc.php
+      #- lib/gebox.inc.php
+      #- lib/gegeom.inc.php
+      #- lib/pos.inc.php
+      #- lib/zoom.inc.php
+        
   treatPhpDocTypesAsCertain: false

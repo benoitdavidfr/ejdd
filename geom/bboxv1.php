@@ -1,5 +1,5 @@
 <?php
-/** Définition d'une algèbre sur les rectangles englobants y.c. les points.
+/** VERSION PEFIMEE BBoxV1. Définition d'une algèbre sur les rectangles englobants y.c. les points.
  *  opérations
  *    - a * b est l'intersection entre a et b qui est un rect, un point ou 0
  *    - a * b = NONE <=> intersection vide
@@ -26,9 +26,11 @@
  * Pour gérer correctement les BBox à cheval sur l'antiméridien, les BBox sont limités à une largeur en longitude < 180°.
  * En effet, la création d'un BBox avec 2 Pts aux antipodes est ambigüe car 2 BBox peuvent être définis.
  *
- * @package BBox
+ * Dans certains cas, il serait utile de gérer des BBox plus grand, éventuellement écrire une classe BigBBox
+ *
+ * @package BBoxV1
  */
-namespace BBox;
+namespace BBoxV1;
 
 require_once __DIR__.'/pos.inc.php';
 
@@ -112,7 +114,9 @@ class Pt {
     }
   }
 
-  /** Distance entre 2 points; calcul en degrés, tient compte de l'antiméridien. */
+  /** Distance entre 2 points; calcul et résultat en degrés tenant compte de l'antiméridien.
+   * Il pourrait être préférable de calculer une distance en WebMercator.
+   */
   function distance(self $b): float {
     $dx = max($this->x, $b->x) - min($this->x, $b->x);
     //echo "dx=$dx\n";
@@ -124,11 +128,11 @@ class Pt {
     // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
     $dx *= cos(($this->y + $b->y) * pi() / 2 / 180);
     $dy = $this->y - $b->y;
-    $dist = sqrt($dx * $dx + $dy * $dy) / sqrt(2);
+    $dist = sqrt($dx * $dx + $dy * $dy);
     return $dist;
   }
   
-  /** Milieu entre 2 points, tient compte de l'antiméridien. */
+  /** Milieu entre 2 points tenant compte de l'antiméridien. */
   function midPoint(self $b): self {
     $dx = max($this->x, $b->x) - min($this->x, $b->x);
     $x = ($this->x + $b->x)/2;

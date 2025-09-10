@@ -5,8 +5,21 @@
  */
 namespace Dataset;
 
+/** Actions à réaliser. */
+const A_FAIRE_FEATURESERVER = [
+<<<'EOT'
+Actions à réaliser:
+- accès aux FeatureType par espace de nom
+- voir les WFS
+  - Atlas Sandre - https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/home
+  - Sextant - https://sextant.ifremer.fr/Services/Inspire/Services-WFS
+  - GéoLittoral - https://geolittoral.din.developpement-durable.gouv.fr/wxs
+  
+EOT
+];
+
 require_once __DIR__.'/dataset.inc.php';
-require_once __DIR__.'/../geojson.inc.php';
+require_once __DIR__.'/../geom/geojson.inc.php';
 
 use GeoJSON\Geometry;
 use BBox\BBox;

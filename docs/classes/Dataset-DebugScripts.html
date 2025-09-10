@@ -61,15 +61,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bbox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -84,14 +76,6 @@
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
                         </section>
                 <section class="phpdocumentor-sidebar__category -packages">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
@@ -104,15 +88,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -125,14 +101,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -414,8 +382,8 @@
         ],
       ],
       */
-    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;rectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]]]],
-    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
+    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;prectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un petit rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]], &#039;grect&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un grand rectangle de plus de 180° de large et qui ne chevauche PAS l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-170, 45], [-170, 44], [170, 44], [170, 45], [-170, 45]]]]]]],
+    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet utile pour faire un produit cartésien avec geoCollection.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
 ]                            </span>
 </dt>
 <dd>Collections avec chacune son schéma et ses données.</dd>
@@ -905,8 +873,8 @@
         ],
       ],
       */
-    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;rectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]]]],
-    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
+    &#039;geoCollection&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;DictOfTuple avec schema complet et avec un champ géo&quot;, &#039;description&#039; =&gt; &quot;Tester l&#039;affichage des géométries, notamment quand elles croisent l&#039;AM&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;nom&#039;, &#039;geometry&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;nom&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le nom&quot;, &#039;type&#039; =&gt; &#039;string&#039;], &#039;geometry&#039; =&gt; [&#039;description&#039; =&gt; &quot;Géométrie de type Polygon&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;properties&#039; =&gt; [&#039;type&#039; =&gt; [&#039;enum&#039; =&gt; [&#039;MultiPolygon&#039;, &#039;Polygon&#039;]], &#039;coordinates&#039; =&gt; [&#039;type&#039; =&gt; &#039;array&#039;]]]]]]], &#039;items&#039; =&gt; [&#039;Bordeaux&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle près de Bordeaux&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[0, 45], [1, 45], [1, 44], [0, 45]]]]], &#039;tr1WAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[178, 45], [179, 45], [179, 44], [178, 45]]]]], &#039;tr1EAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un triangle d&#039;1° à l&#039;ouest de l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-179, 45], [-178, 45], [-178, 44], [-179, 45]]]]], &#039;prectSAM&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un petit rectangle qui chevauche l&#039;AM décomposé en 2&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;MultiPolygon&#039;, &#039;coordinates&#039; =&gt; [[[[-180, 45], [-178, 45], [-178, 44], [-180, 44], [-180, 45]]], [[[178, 45], [180, 45], [180, 44], [178, 45]]]]]], &#039;grect&#039; =&gt; [&#039;nom&#039; =&gt; &quot;un grand rectangle de plus de 180° de large et qui ne chevauche PAS l&#039;AM&quot;, &#039;geometry&#039; =&gt; [&#039;type&#039; =&gt; &#039;Polygon&#039;, &#039;coordinates&#039; =&gt; [[[-170, 45], [-170, 44], [170, 44], [170, 45], [-170, 45]]]]]]],
+    &#039;tableWithOneTuple&#039; =&gt; [&#039;schema&#039; =&gt; [&#039;title&#039; =&gt; &quot;Une table avec un n-uplet&quot;, &#039;description&#039; =&gt; &quot;Une table avec un n-uplet utile pour faire un produit cartésien avec geoCollection.&quot;, &#039;type&#039; =&gt; &#039;object&#039;, &#039;additionalProperties&#039; =&gt; false, &#039;patternProperties&#039; =&gt; [&#039;&#039; =&gt; [&#039;type&#039; =&gt; &#039;object&#039;, &#039;required&#039; =&gt; [&#039;champ&#039;], &#039;additionalProperties&#039; =&gt; false, &#039;properties&#039; =&gt; [&#039;champ&#039; =&gt; [&#039;description&#039; =&gt; &quot;Le champ&quot;, &#039;type&#039; =&gt; &#039;string&#039;]]]]], &#039;items&#039; =&gt; [&#039;leTuple&#039; =&gt; [&#039;champ&#039; =&gt; &quot;Champ pour le tuple&quot;]]],
 ]</span>
 </code>
 
@@ -928,7 +896,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">303</span>
+    <span class="phpdocumentor-element-found-in__line">310</span>
 
     </aside>
 
@@ -1267,7 +1235,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">318</span>
+    <span class="phpdocumentor-element-found-in__line">325</span>
 
     </aside>
 
@@ -1840,7 +1808,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">336</span>
+    <span class="phpdocumentor-element-found-in__line">343</span>
 
     </aside>
 
@@ -1970,7 +1938,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/debugscripts.php"><a href="files/datasets-debugscripts.html"><abbr title="datasets/debugscripts.php">debugscripts.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">348</span>
+    <span class="phpdocumentor-element-found-in__line">355</span>
 
     </aside>
 

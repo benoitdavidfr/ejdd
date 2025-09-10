@@ -5,7 +5,7 @@
 namespace Algebra;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
-require_once __DIR__.'/bbox.php';
+require_once __DIR__.'/geom/bbox.php';
 
 use Dataset\Dataset;
 use GeoJSON\Geometry;
@@ -15,8 +15,58 @@ use BBox\NONE;
 ini_set('memory_limit', '10G');
 //echo "<pre>"; print_r($_SERVER);
 
-$path = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['SCRIPT_NAME']));
-$script_name = $_SERVER['SCRIPT_NAME'];
+/** @param list<string> $argv */
+function usage(array $argv): void {
+  echo "usage:\n",
+       " - $argv[0] - fournit cette aide et liste les jeux de données\n",
+       " - $argv[0] {dataset} - liste les collections du dataset\n",
+       " - $argv[0] [-g] {dataset} {collection} - génère le fichier GeoJSON des items de la collection\n",
+       " - $argv[0] [-g] {dataset} {collection} {key} - génère le fichier GeoJSON de l'item de la collection\n";
+}
+
+$options = [];
+if (php_sapi_name() == 'cli') {
+  //echo "argc=$argc\n";
+  //print_r($argv);
+  if ($argc == 1) {
+    usage($argv);
+    echo "Jeux de données:\n",
+         " - php $argv[0] ",implode("\n - php $argv[0] ", array_keys(Dataset::REGISTRE)),"\n";
+    die();
+  }
+  elseif ($argc == 2) {
+    $dsName = $argv[1];
+    $ds = Dataset::get($dsName);
+    foreach (array_keys($ds->collections) as $collName) {
+      echo " - php $argv[0] $argv[1] $collName\n";
+    }
+    die();
+  }
+  elseif ($argc == 3) {
+    $path = "/$argv[1]/collections/$argv[2]/items";
+  }
+  elseif (($argc == 4) && ($argv[1] == '-g')) {
+    $path = "/$argv[2]/collections/$argv[3]/items";
+    $options['noGeometry'] = 1;
+  }
+  elseif ($argc == 4) {
+    $path = "/$argv[1]/collections/$argv[2]/items/$argv[3]";
+  }
+  elseif (($argc == 5) && ($argv[1] == '-g')) {
+    $path = "/$argv[2]/collections/$argv[3]/items/$argv[4]";
+    $options['noGeometry'] = 1;
+  }
+  else {
+    echo "Erreur de nombre d'arguments\n";
+    usage($argv);
+    die();
+  }
+  $script_name = '';
+}
+else {
+  $path = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['SCRIPT_NAME']));
+  $script_name = $_SERVER['SCRIPT_NAME'];
+}
 //echo "path=$path<br>\n";
 
 if (!$path) { // menu, liste des datasets 
@@ -51,24 +101,30 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
   $kind = $collectionMD->kind;
   //print_r($collectionMD);
   
-  header('Access-Control-Allow-Origin: *');
-  header('Content-Type: application/json');
+  if (php_sapi_name() <> 'cli') {
+    header('Access-Control-Allow-Origin: *');
+    header('Content-Type: application/json');
+  }
   echo '{ "type": "FeatureCollection"',",\n",
     '  "name": "',"$dsName/$cName",'",',"\n",
     '  "features":',"[\n";
+
   $first = true;
+
   foreach ($dataset->getItems($cName, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
     $tuple = is_array($item) ? $item : ['value'=> $item];
-    if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si le tuple comporte une géométrie et bbox est défini
-      if ($gbox = $geometry['bbox'] ?? null) { // Si la bbox de la géométrie est définie
-        $gbox = BBox::from4Coords($gbox); // je la convertit en BBox
-      }
-      else { // Sinon je la calcule à partir de la géométrie
-        $gbox = Geometry::create($geometry)->bbox();
-      }
-      // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
-      if ($bbox->inters($gbox) == \BBox\NONE) {
-        continue;
+    if ($geometry = $tuple['geometry'] ?? null) { // Si le tuple comporte une géométrie
+      if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si bbox est défini
+        if ($gbox = $geometry['bbox'] ?? null) { // Si la bbox de la géométrie est définie
+          $gbox = BBox::from4Coords($gbox); // je la convertit en BBox
+        }
+        else { // Sinon je la calcule à partir de la géométrie
+          $gbox = Geometry::create($geometry)->bbox();
+        }
+        // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
+        if ($bbox->inters($gbox) == \BBox\NONE) {
+          continue;
+        }
       }
       unset($tuple['geometry']);
     }
@@ -85,18 +141,28 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
       //print_r($tuple2);
       $tuple = $tuple2;
     }
-    $feature = array_merge(
-      ['type'=> 'Feature'],
-      //['kind'=> $kind],
-      ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
-      ['properties'=> $tuple],
-      $style ? ['style'=> $style] : [],
-      $geometry ? [ 'geometry'=> $geometry] : [],
-    );
-    $json = json_encode($feature);
-    echo ($first ? '' : ",\n"),
-         '    ',$json;
-    $first = false;
+    
+    $crossesAntimeridian = ($geom = $geometry ? Geometry::create($geometry) : null) && $geom->crossesAntimeridian();
+
+    // Je génère le GeoJSON de l'item au moins 1 fois et 3 fois si la géométrie chevauhe l'anti-méridien
+    for ($i=0; $i<=2; $i++) {
+      $feature = array_merge(
+        ['type'=> 'Feature'],
+        //['kind'=> $kind],
+        ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
+        ['properties'=> $tuple],
+        $style ? ['style'=> $style] : [],
+        ($i==0) ? (($geometry && !($options['noGeometry'] ?? null)) ? [ 'geometry'=> $geometry] : [])
+          : (($options['noGeometry'] ?? null) ? [] : ['geometry'=> $geom->translate($i==1?+360:-360)->asArray()]),
+      );
+      echo ($first ? '' : ",\n"),
+           '    ',json_encode($feature, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+      $first = false;
+      // Si la géométrie NE chevauche PAS l'antiméridien
+      if (!$crossesAntimeridian) {
+        break; // arrêt
+      }
+    }
   }
   die("\n  ]\n}\n");
 }
@@ -127,37 +193,29 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) 
   echo '{ "type": "FeatureCollection"',",\n",
     '  "name": "',"$dsName/$collName/$key",'",',"\n",
     '  "features":',"[\n";
-  $feature = array_merge(
-    ['type'=> 'Feature'],
-    //['kind'=> $kind],
-    ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
-    ['properties'=> $tuple],
-    $geometry ? [ 'geometry'=> $geometry] : [],
-  );
-  $json = json_encode($feature);
-  echo '    ',$json;
   
-  // Si la géométrie chevauche l'antiméridien alors je duplique l'objet à +360 et -360
-  if (($geom = $geometry ? Geometry::create($geometry) : null) && $geom->crossesAntimeridian()) {
+  $crossesAntimeridian = ($geom = $geometry ? Geometry::create($geometry) : null) && $geom->crossesAntimeridian();
+  //echo "crossesAntimeridian=",$crossesAntimeridian?'vrai':'faux',"\n";
+  //echo "bbox=",$geom->bbox(),"\n";
+  $first = true;
+  
+  // Je génère le GeoJSON de l'item 1 fois si la géométrie NE chevauhe PAS l'anti-méridien et 3 fois si elle la chevauche
+  for ($i=0; $i<=2; $i++) {
     $feature = array_merge(
       ['type'=> 'Feature'],
       //['kind'=> $kind],
       ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
       ['properties'=> $tuple],
-      ['geometry'=> $geom->translate(+360)->asArray()],
+      ($i==0) ? (($geometry && !($options['noGeometry'] ?? null)) ? [ 'geometry'=> $geometry] : [])
+        : (($options['noGeometry'] ?? null) ? [] : ['geometry'=> $geom->translate($i==1?+360:-360)->asArray()]),
     );
-    $json = json_encode($feature);
-    echo ",\n    ",$json;
-
-    $feature = array_merge(
-      ['type'=> 'Feature'],
-      //['kind'=> $kind],
-      ($kind == 'dictOfTuples') ? ['id'=> $key] : [], // dans un 'dictOfTuples' la clé est significative et conservée
-      ['properties'=> $tuple],
-      ['geometry'=> $geom->translate(-360)->asArray()],
-    );
-    $json = json_encode($feature);
-    echo ",\n    ",$json;
+    echo ($first ? '' : ",\n"),
+         '    ',json_encode($feature, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+    $first = false;
+    // Si la géométrie NE chevauche PAS l'antiméridien
+    if (!$crossesAntimeridian) {
+      break; // arrêt
+    }
   }
   
   die("\n  ]\n}\n");

@@ -4,13 +4,14 @@
  */
 namespace ZoomLevel;
 
-require_once __DIR__.'/bbox.php';
 #require_once __DIR__.'/lib/coordsys.php';
 
-use BBox\BBox;
 #use CoordSys\CoordSys;
 
-/** Autour des niveaux de zoom Leaflet. */
+/** Autour des niveaux de zoom Leaflet.
+ * La classe permet d'une part de calculer les échelles des différents niveaux Leaflet et,
+ * d'autre part de calculer le niveau de zoom adapté pour visualiser un BBox.
+ */
 class ZoomLevel {
   /** Demi grand axe de l'ellipsoide IAG_GRS_1980 - en anglais Equatorial radius - en mètres */
   const IAG_GRS_1980_A = 6378137.0;
@@ -31,13 +32,17 @@ class ZoomLevel {
     return self::scaleDenLevel0() / (2**$level);
   }
   
-  /** Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué en degrés. */
-  static function fromBBox(BBox $bbox): int {
-    $size = $bbox->size();
+  /** Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué sur la taille du BBox calculée en degrés.
+   * Il pourrait être préférable de prendre une distance en WebMercator.
+   */
+  static function fromBBoxSize(float $size): int {
     //echo "size=$size<br>\n";
-    $maxSize = sqrt(360*360 + 180*180)/sqrt(2);
+    // le niveau 0 correspond à la visualisation de l'espace de largeur 360° et de hauteur 180°
+    $maxSize = sqrt(360*360 + 180*180);
     $level = - log($size/$maxSize, 2);
     //echo "level=$level<br>\n";
+    if ($level < 0)
+      $level = 0;
     if ($level > 18)
       $level = 18;
     return (int)round($level);
@@ -47,6 +52,10 @@ class ZoomLevel {
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // séparateur
 
+
+require_once __DIR__.'/bbox.php';
+
+use BBox\BBox;
 
 //echo "maxSize=", sqrt(360*360 + 180*180)/sqrt(2),"<br>\n";
 switch ($_GET['action'] ?? null) {
@@ -76,13 +85,13 @@ switch ($_GET['action'] ?? null) {
       'PfZee'=> [-158.13, -31.24, -131.98, -4.54],
       '1°'=> [-0.5, -0.5, 0.5, 0.5],
     ] as $t => $bbox) {
-      echo "$t -> deg->",ZoomLevel::fromBBox(BBox::from4Coords($bbox)),"<br>\n";
+      echo "$t -> deg->",ZoomLevel::fromBBoxSize(BBox::from4Coords($bbox)->sizeInDegree()),"<br>\n";
     }
     $unMetre = 1/ZoomLevel::WebMercatorExtension()*360;
     $dixMetre = 10 * $unMetre;
     echo "10m=$dixMetre<br>\n";
     $bbox = [-$dixMetre, -$dixMetre, $dixMetre, $dixMetre];
-    echo "10m-> deg->",ZoomLevel::fromBBox(BBox::from4Coords($bbox)),"<br>\n";
+    echo "10m-> deg->",ZoomLevel::fromBBoxSize(BBox::from4Coords($bbox)->sizeInDegree()),"<br>\n";
     break;
   }
 }

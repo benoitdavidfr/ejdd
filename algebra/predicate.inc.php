@@ -434,7 +434,7 @@ EOT
           && ($geojson = json_decode($json, true)))
       {
         Query::addTrace($path, "succès {geojson}", $text0);
-        $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coordinates();
+        $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coords();
         return new Constant('bboxInJSON', json_encode($bbox));
       }
     }

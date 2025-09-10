@@ -1,18 +1,26 @@
 <?php
-/** Package des primitives GeoJSON.
- * Chaque primitive GeoJSON correpond à une classes afin de définir les traitemments associées à ces primtives.
+/**
+ * Package des primitives GeoJSON.
+ *
+ * Chaque primitive GeoJSON correpond à une classe afin de définir les traitemments associées à ces primtives.
  * Ce package fonctionne en harmonie avec pos.inc.php et bbox.php
+ *
+ * Les coordonnées peuvent être en coordonnées géographiques ou cartésiennes mais certaines fonctionnalités nécessitent
+ * des coordonnées géographiques.
+ *
  * @package GeoJSON
  */
 namespace GeoJSON;
 
 require_once __DIR__.'/bbox.php';
+require_once __DIR__.'/../drawing/drawing.php';
 
 use Pos\Pos;
 use Pos\LPos;
 use Pos\LLPos;
 use Pos\LLLPos;
 use BBox\BBox;
+use Drawing\Drawing;
 
 /** Les grandeurs kilo, Méga, Giga, ... */
 class U {
@@ -43,12 +51,12 @@ abstract class Geometry {
    * @param TGJSimpleGeometry $geom */
   static function create(array $geom): self {
     return match ($type = $geom['type'] ?? null) {
-      'Point'=> new Point($geom),
-      'MultiPoint'=> new MultiPoint($geom),
-      'LineString'=> new LineString($geom),
-      'MultiLineString'=> new MultiLineString($geom),
-      'Polygon'=> new Polygon($geom),
-      'MultiPolygon'=> new MultiPolygon($geom),
+      'Point'=> new Point($geom['coordinates']),
+      'MultiPoint'=> new MultiPoint($geom['coordinates']),
+      'LineString'=> new LineString($geom['coordinates']),
+      'MultiLineString'=> new MultiLineString($geom['coordinates']),
+      'Polygon'=> new Polygon($geom['coordinates']),
+      'MultiPolygon'=> new MultiPolygon($geom['coordinates']),
       default=> throw new \Exception("Dans Geometry::create(), type=".($type?"'$type'":'null')." non reconnu"),
     };
   }
@@ -62,7 +70,7 @@ abstract class Geometry {
   /** @return TGJSimpleGeometry $geom */
   function asArray(): array { return ['type'=> $this->type, 'coordinates'=> $this->coordinates]; }
   
-  /** calcule le BBox à partir des coordonnées. */
+  /** calcule le GBox à partir des coordonnées. N'a de sens que si les coords sont des coords. géo. */
   abstract function bbox(): BBox;
 
   /** Retourne une représentation string de la géométrie. */
@@ -71,9 +79,14 @@ abstract class Geometry {
     return "{{$shortType}: $bbox}";
   }
 
+  /** Dessine la primitive dans un dessin.
+   * @param array<string,string|int> $style */
+  abstract function draw(Drawing $drawing, array $style=[]): void;
+
   /** reprojète une géométrie, prend en paramètre une fonction de reprojection d'une position, retourne un objet géométrie */
   abstract function reproject(callable $reprojPos): self;
   
+  /** La gémétrie chevauche t'elle l'antiméridien ? */
   function crossesAntimeridian(): bool { return $this->bbox()->crossesAntimeridian(); }
     
   /** Translate une géométrie en longitude de -360° ou +360°.
@@ -86,40 +99,43 @@ abstract class Geometry {
 
 /** Point GeoJSON ; coordinates est un TPos. */
 class Point extends Geometry {
-  function __construct(array $geom) {
-    if (!Pos::is($geom['coordinates']))
+  /** @param TPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!Pos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un Point doit être TPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'Point', 'coordinates'=> $coordinates]);
   }
 
   function bbox(): BBox { return BBox::fromPos($this->coordinates); }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'Point', 'coordinates'=> $reprojPos($this->coordinates)]);
-  }
+  function draw(Drawing $drawing, array $style=[]): void {}
+  
+  function reproject(callable $reprojPos): self { return new self($reprojPos($this->coordinates)); }
 };
 
 /** MultiPoint GeoJSON ; coordinates est un TLPos. */
 class MultiPoint extends Geometry {
-  function __construct(array $geom) {
-    if (!LPos::is($geom['coordinates']))
+  /** @param TLPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!LPos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un MultiPoint doit être TLPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'MultiPoint', 'coordinates'=> $coordinates]);
   }
 
   function bbox(): BBox { return BBox::fromLPos($this->coordinates); }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'MultiPoint', 'coordinates'=> LPos::reproj($reprojPos, $this->coordinates)]);
-  }
+  function draw(Drawing $drawing, array $style=[]): void {}
+  
+  function reproject(callable $reprojPos): self { return new self(LPos::reproj($reprojPos, $this->coordinates)); }
 };
 
 /** Linestring GeoJSON ; coordinates est un TLPos. */
 class LineString extends Geometry {
-  function __construct(array $geom) {
-    if (!LPos::is($geom['coordinates']))
+  /** @param TLPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!LPos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un LineString doit être TLPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'LineString', 'coordinates'=> $coordinates]);
   }
 
   function bbox(): BBox { return BBox::fromLPos($this->coordinates); }
@@ -140,54 +156,57 @@ class LineString extends Geometry {
     return $dist;
   }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'LineString', 'coordinates'=> LPos::reproj($reprojPos, $this->coordinates)]);
-  }
+  function draw(Drawing $drawing, array $style=[]): void { $drawing->polyline($this->coordinates, $style); }
+  
+  function reproject(callable $reprojPos): self { return new self(LPos::reproj($reprojPos, $this->coordinates)); }
 };
 
 /** MultiLineString GeoJSON ; coordinates est un TLLPos. */
 class MultiLineString extends Geometry {
-  function __construct(array $geom) {
-    if (!LLPos::is($geom['coordinates']))
+  /** @param TLLPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!LLPos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un MultiLineString doit être TLLPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'MultiLineString', 'coordinates'=> $coordinates]);
   }
 
   function bbox(): BBox { return BBox::fromLLPos($this->coordinates); }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'MultiLineString', 'coordinates'=> LLPos::reproj($reprojPos, $this->coordinates)]);
+  function draw(Drawing $drawing, array $style=[]): void {
+    foreach ($this->coordinates as $coords)
+      $drawing->polyline($coords, $style);
   }
+  
+  function reproject(callable $reprojPos): self { return new self(LLPos::reproj($reprojPos, $this->coordinates)); }
 };
 
 /** Polygon GeoJSON ; coordinates est un TLLPos. */
 class Polygon extends Geometry {
-  function __construct(array $geom) {
-    if (!LLPos::is($geom['coordinates']))
+  /** @param TLLPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!LLPos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un Polygon doit être TLLPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'Polygon', 'coordinates'=> $coordinates]);
   }
 
   /** Calcule la bbox sur l'extérieur du polygone, cad le ring 0. */
   function bbox(): BBox { return BBox::fromLPos($this->coordinates[0]); }
   
   /** Estimation de la résolution */
-  function reso(): float {
-    $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0]]);
-    return $ls->reso();
-  }
+  function reso(): float { return (new LineString($this->coordinates[0]))->reso(); }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'Polygon', 'coordinates'=> LLPos::reproj($reprojPos, $this->coordinates)]);
-  }
+  function draw(Drawing $drawing, array $style=[]): void { $drawing->polygon($this->coordinates, $style); }
+
+  function reproject(callable $reprojPos): self { return new self(LLPos::reproj($reprojPos, $this->coordinates)); }
 };
 
 /** MultiPolygon GeoJSON ; coordinates est un TLLLPos. */
 class MultiPolygon extends Geometry {
-  function __construct(array $geom) {
-    if (!LLLPos::is($geom['coordinates']))
+  /** @param TLLLPos $coordinates */
+  function __construct(array $coordinates) {
+    if (!LLLPos::is($coordinates))
       throw new \Exception("Le type des coordonnées d'un MultiPolygon doit être TLLLPos");
-    parent::__construct($geom);
+    parent::__construct(['type'=> 'MultiPolygon', 'coordinates'=> $coordinates]);
   }
 
   function bbox(): BBox {
@@ -198,14 +217,14 @@ class MultiPolygon extends Geometry {
   }
   
   /** Estimation de la résolution */
-  function reso(): float {
-    $ls = new LineString(['type'=> 'LineString', 'coordinates'=> $this->coordinates[0][0]]);
-    return $ls->reso();
+  function reso(): float { return (new LineString($this->coordinates[0][0]))->reso(); }
+  
+  function draw(Drawing $drawing, array $style=[]): void {
+    foreach ($this->coordinates as $coords)
+      $drawing->polygon($coords, $style);
   }
   
-  function reproject(callable $reprojPos): self {
-    return new self(['type'=> 'MultiPolygon', 'coordinates'=> LLLPos::reproj($reprojPos, $this->coordinates)]);
-  }
+  function reproject(callable $reprojPos): self { return new self(LLLPos::reproj($reprojPos, $this->coordinates)); }
 };
 
 /** Feature GeoJSON.
@@ -218,7 +237,7 @@ class Feature {
   readonly mixed $id;
   /** @var ?array<mixed> $properties  - les properties GeoJSON */
   readonly ?array $properties;
-  /* Si le bbox est présent dans le GeoJSON alors stockage comme BBox, sinon null. */
+  /* Si le bbox est présent dans le GeoJSON alors il est stocké comme BBox, sinon null. */
   readonly ?BBox $bbox;
   /* La géométrie GeoJSON, éventuellement nulle */
   readonly ?Geometry $geometry;
@@ -239,7 +258,7 @@ class Feature {
       ['type'=> 'Feature'],
       !is_null($this->id) ? ['id'=> $this->id] : [],
       ['properties'=> $this->properties],
-      !is_null($this->bbox) ? ['bbox'=> $this->bbox->as4Coordinates()] : [],
+      !is_null($this->bbox) ? ['bbox'=> $this->bbox->as4Coords()] : [],
       ['geometry'=> $this->geometry ? $this->geometry->asArray() : null]
     );
   }

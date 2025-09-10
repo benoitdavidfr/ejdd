@@ -260,8 +260,8 @@ class DebugScripts extends Dataset {
             'coordinates'=> [[[-179,45],[-178,45],[-178,44],[-179,45]]],
           ],
         ],
-        'rectSAM'=> [
-          'nom'=> "un rectangle qui chevauche l'AM décomposé en 2",
+        'prectSAM'=> [
+          'nom'=> "un petit rectangle qui chevauche l'AM décomposé en 2",
           'geometry'=> [
             'type'=> 'MultiPolygon',
             'coordinates'=> [
@@ -270,12 +270,19 @@ class DebugScripts extends Dataset {
             ],
           ],
         ],
+        'grect'=> [
+          'nom'=> "un grand rectangle de plus de 180° de large et qui ne chevauche PAS l'AM",
+          'geometry'=> [
+            'type'=> 'Polygon',
+            'coordinates'=> [[[-170,45],[-170,44],[170,44],[170,45],[-170,45]]],
+          ],
+        ],
       ],
     ],
     'tableWithOneTuple'=> [
       'schema'=> [
         'title'=> "Une table avec un n-uplet",
-        'description'=> "Une table avec un n-uplet.",
+        'description'=> "Une table avec un n-uplet utile pour faire un produit cartésien avec geoCollection.",
         'type'=> 'object',
         'additionalProperties'=> false,
         'patternProperties'=> [

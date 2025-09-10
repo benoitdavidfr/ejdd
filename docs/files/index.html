@@ -61,15 +61,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bbox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -84,14 +76,6 @@
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
                         </section>
                 <section class="phpdocumentor-sidebar__category -packages">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
@@ -104,15 +88,7 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -125,14 +101,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Misc.html" class="">Misc</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Pos.html" class="">Pos</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                         </section>
@@ -199,7 +167,10 @@
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
 - mettre en MD les description dans les schémas
+- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
+  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+    - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -260,14 +231,14 @@ EOT]                            </span>
 Journal des modifications récentes du code
 ------------------------------------------
 8/9/2025:
-  - correction du bug l&#039;antiméridien dans BBox
+  - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
-    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+    - ne fonctionne pour le moment que sur une CollectionOfDs
   - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (début)
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -498,7 +469,10 @@ EOT]                            </span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
 - mettre en MD les description dans les schémas
+- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
+  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+    - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -545,7 +519,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">252</span>
+    <span class="phpdocumentor-element-found-in__line">255</span>
 
     </aside>
 
@@ -594,7 +568,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">40</span>
+    <span class="phpdocumentor-element-found-in__line">43</span>
 
     </aside>
 
@@ -609,14 +583,14 @@ EOT]</span>
 Journal des modifications récentes du code
 ------------------------------------------
 8/9/2025:
-  - correction du bug l&#039;antiméridien dans BBox
+  - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
-    - ne fonctionne pour le momemnt que sur une CollectionOfDs
+    - ne fonctionne pour le moment que sur une CollectionOfDs
   - modif FeatureServer pour qu&#039;il ne crée pas de BBox trop grand
 7/9/2025:
   - séparation du code dessinant une carte de MapDataset pour le mettre dans llmap.php
     - pour pouvoir l&#039;utiliser sans créer de carte dans MapDataset
-  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet
+  - ajout du dessin de la carte montrant la géométrie d&#039;un n-uplet (début)
 6/9/2025:
   - création d&#039;un répertoire algebra pour contenir les fichiers Php dans l&#039;espace de noms Algebra
   - déplacement du fichier dataset.inc.php dans le répertoire datasets
@@ -788,7 +762,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">217</span>
+    <span class="phpdocumentor-element-found-in__line">220</span>
 
     </aside>
 
