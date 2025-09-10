@@ -1,7 +1,6 @@
 Réflexion sur l'utilisation de Jeux de données
 ==============================================
-Besoins:
---------
+## Besoins:
 Cette démarche répond à 5 besoins:
   - utiliser facilement en Php des JdD habituels
      - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
@@ -16,8 +15,7 @@ Cette démarche propose un cadre extensible dans 2 directions:
   - d'une part, on peut rajouter facilement de noveux jeux de données
   - d'autre part, on peut rajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
 
-Techno utilisées (JSON/Yaml/ODS/Php):
--------------------------------------
+## Techno utilisées (JSON/Yaml/ODS/Php):
   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
     - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
     - standard
@@ -40,8 +38,7 @@ Techno utilisées (JSON/Yaml/ODS/Php):
   - PhpStan est utilisé au niveau 6 pour analyser le code
   - phpDocumentor est utilisé pour documenter le code, [la consulter](https://benoitdavidfr.github.io/datasets/).
 
-Solution.
----------
+## Solution.
 ### Généralités:
  - un **JdD** agrège des **collections**, est documenté par des **MD** et identifié par un **nom court**, comme DeptReg
  - chaque **collection** est logiquement un **itérable d'items**, a priori homogènes mais pas forcément
@@ -100,8 +97,7 @@ Solution.
  - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
    - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
 
-Perspectives
-------------
+## Perspectives
 ### Interopérabilité 
  - le modèle de cette solution est très proche
    de celui d'[API Features de l'OGC](https://github.com/opengeospatial/ogcapi-features).
@@ -111,8 +107,7 @@ Perspectives
  - un mécanisme de copie/synchronisation pourrait être mis en place
  - une première approche est mise en oeuvre sur les serveurs WFS de la GPF IGN et du Shom
 
-Mise en oeuvre:
----------------
+## Mise en oeuvre:
 ### Sous répertoires et fichiers
 Les fichiers de code sont répartis dans les répertoires suivants:
 
@@ -125,4 +120,4 @@ De plus:
  - le répertoire `lib` contient des fichiers Php ajoutant des fonctionnalités
  - le répertoire `leaflet` contient des fichiers utilisés par Leaflet
  - le script `index.php` fournit l'IHM générale de l'appli
- - le script geojson.php expose en GeoJSON les JdD et leurs Collections
+ - le script `geojson.php` expose en GeoJSON les JdD et leurs Collections
