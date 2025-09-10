@@ -113,66 +113,16 @@ Perspectives
 
 Mise en oeuvre:
 ---------------
-### Sous répertoires
+### Sous répertoires et fichiers
 Les fichiers de code sont répartis dans les répertoires suivants:
 
  - [les classes définissant l'algèbre des collections, y.c. les classes définissant le parser du langage](algebra)
-Les package 
- - Dataset: classe Dataset + classes représentant un Jeu de Données + classes de leur construction
- - Algebra: classes définissant l'algèbre des Collections, 
- - GeoJSON: primitives géométriques GeoJSON
- - BBox: classe BBox définissant un rectangle englobant et les opérations d'intersection et d'union
- - Pos: classes sur les positions et ses listes
+ - [les classes définissant les jeux de données](datasets)
+ - [les classes définissant la géométrie](geom)
+ - [les classes permettant de dessiner des objets](drawing)
 
-### Fichiers Php
- - index.php fournit l'IHM générale de l'appli et contient cette doc
- - dataset.inc.php définit la classe Dataset
- - collection.inc.php définit les classes Collection, CollectionOfDs et qqs autres classes
- - join.php implémente une jointure entre Collections
- - proj.php implémente une projection sur une Collection
- - select.php implémente une sélection sur une Collection
- - predicate.inc.php définit la classe Predicate qui définit un prédicat sur n-uplet utilisé dans la sélection et la jointure
- - geojson.php expose en GeoJSON les Collections des JdD
- - un fichier Php par catégorie de jeux de données et par JdD sans catégorie
- - geojson.inc.php définit les classes correspondant aux primitives GeoJSON
- - spreadsheetdataset.inc.php définit un JdD générique fondé sur un fichier ODS utilisé par NomsCtCnigC et Pays,
-   il devrait être transformé en catégorie
- - zoomlevel.php permet de calculer les échelles correspondant aux niveaux de zoom Leaflet
- - map.php, script périmé générant une carte Leaflet, repris dans mapdataset.php
- - setop.php, tests d'opérations ensemblistes
-
-Jeux de données par catégorie
------------------------------
-- Sans catégorie:
-  - DebugScripts
-  - InseeCog
-  - DeptReg
-  - NomsCnig
-  - NomsCtCnigC
-  - Pays
-  - MapDataset
-  - AeCogPe
-  - WorldEez
-- GeoDataset:
-  - NE110mPhysical
-  - NE110mCultural
-  - NE50mPhysical
-  - NE50mCultural
-  - NE10mPhysical
-  - NE10mCultural
-- Styler:
-  - NaturalEarth -> NaturalEarth stylée avec la feuille de style naturalearth.yaml
-- FeatureServer:
-  - IgnWfs
-  - ShomWfs
-- FeatureServerExtract
-  - AdminExpress-COG-Carto-PE
-  - AdminExpress-COG-Carto-ME
-  - LimitesAdminExpress
-  - BDCarto
-  - BDTopo
-  - MesuresCompensatoires
-  - RPG
-- Extract
-  - Patrinat
-  - Shom
+De plus:
+ - le répertoire `lib` contient des fichiers Php ajoutant des fonctionnalités
+ - le répertoire `leaflet` contient des fichiers utilisés par Leaflet
+ - le script `index.php` fournit l'IHM générale de l'appli
+ - le script geojson.php expose en GeoJSON les JdD et leurs Collections

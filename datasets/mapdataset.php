@@ -51,7 +51,7 @@ class MapDataset extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // AVANT=UTILISATION, APRES=CONSTRUCTION 
 
 
-require_once __DIR__.'/../llmap.php';
+require_once __DIR__.'/../drawing/llmap.php';
 
 use LLMap\Map;
 use LLMap\View;

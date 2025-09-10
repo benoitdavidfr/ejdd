@@ -8,7 +8,7 @@ require_once __DIR__.'/../datasets/dataset.inc.php';
 require_once __DIR__.'/schema.inc.php';
 require_once __DIR__.'/predicate.inc.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
-require_once __DIR__.'/../llmap.php';
+require_once __DIR__.'/../drawing/llmap.php';
 require_once __DIR__.'/../lib.php';
 
 use Dataset\Dataset;
