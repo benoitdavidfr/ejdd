@@ -113,11 +113,23 @@ class BBox {
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
   }
 
+  /** Lève une exception si le paramètre n'est pas une liste de 4 nombres.
+   * @param (list<float>|list<string>) $coords - liste de 4 nombres. */
+  static function isAListOf4Numbers(array $coords): void {
+    if (count($coords) <> 4)
+      throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, ".count($coords)." fournies");
+    for ($i=0; $i<4; $i++) {
+      if (!isset($coords[$i])) // @phpstan-ignore isset.offset
+        throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, coords[$i] doit être défini");
+      if (!is_numeric($coords[$i]))
+        throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, coords[$i] doit être numérique");
+    }
+  }
+  
   /** Fabrique un BBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
    * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
   static function from4Coords(array $coords): self {
-    if (count($coords) <> 4)
-      throw new \Exception("Erreur, dans BBox::from4Coords(), coords doit comportar 4 coordonnées, ".count($coords)." fournies");
+    self::isAListOf4Numbers($coords);
     return new self(
       [floatval($coords[0]), floatval($coords[1])],
       [floatval($coords[2]), floatval($coords[3])]
@@ -131,7 +143,7 @@ class BBox {
 
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
-    if ($this == NONE)
+    if ($this == BNONE)
       return 'BBox\NONE';
     elseif ($this->sw == $this->ne)
       return "$this->sw";
@@ -147,11 +159,14 @@ class BBox {
    * @return array{0: float, 1:float, 2:float, 3:float} */
   function as4CoordsLatLon(): array { return [$this->sw->lat, $this->sw->lon, $this->ne->lat, $this->ne->lon]; }
   
+  /** Teste si le BBox correspond à l'espace vide, doit aussi fonctionner pour GBox. */
+  function isEmpty(): bool { return is_null($this->sw); }
+  
   /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
   function includes(self $b): bool {
-    if ($b == NONE)
+    if ($b->isEmpty())
       return true; // l'espace vide est inclus dans tout y.c. lui-même 
-    elseif ($this == NONE)
+    elseif ($this->isEmpty())
       return false; // l'espace vide n'inclut rien sauf lui-même
     else
       return $this->sw->isLess($b->sw) && $b->ne->isLess($this->ne);
@@ -159,9 +174,11 @@ class BBox {
   
   /** Retourne le centre de la BBox.
    * @return TPos */
-  function center(): array { return [($this->sw->lon + $this->ne->lon)/2, ($this->sw->lat + $this->ne->lat)/2]; }
+  function center(): array {
+    return $this->isEmpty() ? [] : [($this->sw->lon + $this->ne->lon)/2, ($this->sw->lat + $this->ne->lat)/2];
+  }
   
-  /** Taille du bbox en degrés pour de coords. en coords. géo.. */
+  /** Taille du bbox en degrés pour des coords. géo. */
   function sizeInDegree(): float {
     $dLat = $this->ne->lat - $this->sw->lat;
     // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
@@ -190,13 +207,13 @@ class BBox {
   /** Fabrique une BBox à partir d'une LPos.
    * @param TLPos $lpos
    */
-  static function fromLPos(array $lpos): self { return NONE->extends(Pt::lPos2LPt($lpos)); }
+  static function fromLPos(array $lpos): self { return BNONE->extends(Pt::lPos2LPt($lpos)); }
   
   /** Union géométrique de $this et $b. Le résultat est toujours une BBox. */
   function union(self $b): self {
-    if ($this == NONE)
+    if ($this->isEmpty())
       return $b;
-    if ($b == NONE)
+    if ($b->isEmpty())
       return $this;
     $sw = $this->sw->min($b->sw); // le SW de l'union est le pt juste au SW des 2 SW
     $ne = $this->ne->max($b->ne); // le NE de l'union est le pt juste au NE des 2 NE
@@ -210,9 +227,9 @@ class BBox {
     // Je transforme la LLPos en LLPt
     $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $llPos);
     // Tranforme la LLPt en LBBox
-    $lBBox = array_map(function(array $lPt) { return NONE->extends($lPt); }, $llPt);
+    $lBBox = array_map(function(array $lPt) { return BNONE->extends($lPt); }, $llPt);
     // Union des bbox de lBBox pour donner le résultat
-    $rbbox = NONE;
+    $rbbox = BNONE;
     foreach ($lBBox as $bbox)
       $rbbox = $rbbox->union($bbox);
     return $rbbox;
@@ -220,34 +237,53 @@ class BBox {
 
   /** Intersection géométrique de $this avec $b. Le résultat est toujours une BBox ! */
   function inters(self $b): self {
-    if (($this == NONE) || ($b == NONE))
-      return NONE;
+    if (($this->isEmpty()) || ($b->isEmpty()))
+      return BNONE;
     $sw = $this->sw->max($b->sw); // le SW du nv bbox est le pt juste au NE des 2 SW
     $ne = $this->ne->min($b->ne); // le NE du nv bbox est le pt juste au SW des 2 NE
     if ($sw->isLess($ne))         // si le coin SW est au SW du point NE
       return new self($sw->pos(), $ne->pos()); //  alors ils définissent un nouveau BBox
     else                         // sinon
-      return NONE;               //  l'intersection est vide
+      return BNONE;               //  l'intersection est vide
   }
 };
 
-/** Constante pour l'espace vide. */
-const NONE = new BBox(null, null);
+/** Constante pour le BBox correspondant à l'espace vide. */
+const BNONE = new BBox(null, null);
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+echo "<pre>";
 switch ($_GET['action'] ?? null) {
   case null: {
-    echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a><br>\n";
+    echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a>\n";
+    echo "<a href='?action=testFrom4Coords'>testFrom4Coords</a>\n";
     break;
   }
   case 'testPt::deltaLon': {
-    echo Pt::deltaLon(5, 10),"<br>\n";
-    echo Pt::deltaLon(10, 5),"<br>\n";
-    echo Pt::deltaLon(178, -178),"<br>\n";
-    echo Pt::deltaLon(-178, 178),"<br>\n";
+    echo Pt::deltaLon(5, 10),"\n";
+    echo Pt::deltaLon(10, 5),"\n";
+    echo Pt::deltaLon(178, -178),"\n";
+    echo Pt::deltaLon(-178, 178),"\n";
+    break;
+  }
+  case 'testFrom4Coords': {
+    foreach ([
+      [],
+      ['a'=>'b','b'=>'c','c'=>'d','d'=>'e'],
+      [0,1,2,'x'],
+      [0,'1e-2','2.5','4'],
+      [0, 1e-2, 2.5, 4],
+      [0,1,2,'4a'],
+    ] as $array) {
+      try {
+        echo BBox::from4Coords($array),"\n";
+      } catch (\Exception $e) {
+        echo "Exception ",$e->getMessage(),"\n";
+      }
+    }
     break;
   }
 }

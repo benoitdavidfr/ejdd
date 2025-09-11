@@ -12,7 +12,7 @@
  */
 namespace GeoJSON;
 
-require_once __DIR__.'/bbox.php';
+require_once __DIR__.'/gbox.php';
 require_once __DIR__.'/../drawing/drawing.php';
 
 use Pos\Pos;
@@ -20,6 +20,7 @@ use Pos\LPos;
 use Pos\LLPos;
 use Pos\LLLPos;
 use BBox\BBox;
+use BBox\GBox;
 use Drawing\Drawing;
 
 /** Les grandeurs kilo, Méga, Giga, ... */
@@ -189,8 +190,10 @@ class Polygon extends Geometry {
     parent::__construct(['type'=> 'Polygon', 'coordinates'=> $coordinates]);
   }
 
-  /** Calcule la bbox sur l'extérieur du polygone, cad le ring 0. */
-  function bbox(): BBox { return BBox::fromLPos($this->coordinates[0]); }
+  /** Calcule la bbox sur l'extérieur du polygone, cad le ring 0.
+   * TEST d'utilisation de GBox au lieu de BBox.
+   */
+  function bbox(): BBox { return GBox::fromLPos($this->coordinates[0]); }
   
   /** Estimation de la résolution */
   function reso(): float { return (new LineString($this->coordinates[0]))->reso(); }
@@ -213,7 +216,7 @@ class MultiPolygon extends Geometry {
     // Fabrique la liste des rings extérieurs des polygones en prenant dans chaque polygone son extérieur 
     $lExtRings = array_map(function(array $llpos) { return $llpos[0]; }, $this->coordinates);
     // Je peux fabriquer le BBox à partir de ce LLPos
-    return BBox::fromLLPos($lExtRings);
+    return GBox::fromLLPos($lExtRings);
   }
   
   /** Estimation de la résolution */
@@ -243,11 +246,12 @@ class Feature {
   readonly ?Geometry $geometry;
   
   /** Fabrique un Feature à partir de sa représentation GeoJSON décodée.
+   * TEST d'utilisation de GBox au lieu de BBox.
    * @param TGeoJsonFeature $feature */
   function __construct(array $feature) {
     $this->id = $feature['id'] ?? null;
     $this->properties = $feature['properties'] ?? null;
-    $this->bbox = ($bbox = $feature['bbox'] ?? null) ? BBox::from4Coords($bbox) : null;
+    $this->bbox = ($bbox = $feature['bbox'] ?? null) ? GBox::from4Coords($bbox) : null;
     $this->geometry = (isset($feature['geometry']) && $feature['geometry']) ? Geometry::create($feature['geometry']) : null;
   }
   
@@ -263,24 +267,26 @@ class Feature {
     );
   }
   
-  /** Retourne le BBox et s'il n'est pas stocké alors le calcule. Retourne null si aucune géométrie n'est définie. */
+  /** Retourne le BBox et s'il n'est pas stocké alors le calcule. Retourne null ssi aucune géométrie n'est définie. */
   function bbox(): ?BBox { return $this->bbox ?? ($this->geometry ? $this->geometry->bbox() : null); }
   
   /** Génère un affichage du Feature en éludant les coordonnées de la géométrie. */
   function __toString(): string {
     //var_dump($this);
     return
-       (!is_null($this->id) ? json_encode($this->id).'=> ' : '')
+       (!is_null($this->id) ? json_encode($this->id).': ' : '')
       .'{properties:'.json_encode($this->properties, JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR).', '
-      .'geom:'.$this->geometry->toString($this->bbox())
+      .'geom:'.($this->geometry ? $this->geometry->toString($this->bbox()) : 'null')
       .'}';
   }
 
   /** Génère les Feature d'un fichier stockant une FeatureCollection, permettant ainsi de lire son contenu qui ne tient pas en mémoire.
    * Le fichier doit être structuré avec 1 ligne par Feature comme le produit ogr2ogr.
-   * @return \Generator<int, Feature>
+   * L'option permet de générer des TGeoJsonFeature au lieu des Feature pour faire des tests.
+   * Attention, le bbox produit par ogr2ogr est faux lorsque le feature chevauche l'antiméridien.
+   * @return \Generator<int, Feature|TGeoJsonFeature>
    */
-  static function fromFile(string $filePath): \Generator {
+  static function fromFile(string $filePath, ?string $option=null): \Generator {
     if (!($fgjs = @fopen($filePath, 'r'))) {
       throw new \Exception("Ouverture de $filePath");
     }
@@ -302,12 +308,23 @@ class Feature {
       elseif (substr($buff, -2) == "}\n")
         $buff = substr($buff, 0, strlen($buff)-1);
       else
-        throw new \Exception("Aucun cas de fin de buffer sur '".substr($buff, -100)."', la longueur du buffer ($buffLen) est probablement trop courte");
+        throw new \Exception("Aucun cas de fin de buffer sur '".substr($buff, -100)
+          ."', la longueur du buffer ($buffLen) est probablement trop courte");
       $feature = json_decode($buff, true);
       if (!$feature)
         throw new \Exception("Erreur de json_decode() sur la ligne $nol (à partir de 1)");
       //$feature = new Feature($feature);
-      yield $noFeature++ => new self($feature);
+      if ($option == 'TGeoJsonFeature') {
+        /*if (($feature['bbox'][0] == -180) && ($feature['bbox'][2] == 180))
+          unset($feature['bbox']);*/
+        yield $noFeature++ => $feature;
+      }
+      else {
+        // J'efface les bbox faux de ogr2ogr
+        if (($feature['bbox'][0] == -180) && ($feature['bbox'][2] == 180))
+          unset($feature['bbox']);
+        yield $noFeature++ => new self($feature);
+      }
     }
     //echo "maxlen=$maxlen</p>\n"; // maxlen=75_343_092
   }
@@ -358,80 +375,112 @@ class FeatureCollection {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-ini_set('memory_limit', '10G');
-set_time_limit(5*60);
+class GeoJSONTest {
+  static function main(): void {
+    ini_set('memory_limit', '10G');
+    set_time_limit(5*60);
 
-echo "<title>geojson.inc.php</title><pre>\n";
-// Tests de base
-if (0) { // @phpstan-ignore if.alwaysFalse 
-  $point = Geometry::create(['type'=> 'Point', 'coordinates'=> [0,0]]);
-  echo '$point='; print_r($point);
-  $feature = new Feature([
-    'type'=> 'Feature',
-    'properties'=>[
-      'a'=> 'vala',
-    ],
-    'geometry'=> $point->asArray(),
-  ]);
-  echo '$feature='; print_r($feature);
-  $fc = new FeatureCollection(['type'=> 'FeatureCollection', 'features'=> [$feature->asArray()]]);
-  echo '$fc='; print_r($fc);
-}
-
-// Test de lecture d'un gros fichier GeoJSON
-elseif (0) { // @phpstan-ignore elseif.alwaysFalse 
-  foreach (Feature::fromFile('ne110mphysical/ne_110m_coastline.geojson') as $feature) {
-    echo '$feature='; print_r($feature);
-  }
-}
-
-// Test création et affichage Feature, y.c. cas limites
-elseif (0) { // @phpstan-ignore elseif.alwaysFalse
-  echo "<h2>Test création et affichage Feature, y.c. cas limites</h2>\n";
-  foreach ([
-    "minimal non conforme"=> ['type'=>'Feature'],
-    "minimal conforme"=> ['type'=>'Feature', 'geometry'=> null],
-    "minimal conforme2"=> ['type'=>'Feature', 'properties'=> null, 'geometry'=> null],
-    "uniq. prop."=> ['type'=>'Feature', 'properties'=> ['p'=>'v']],
-    "geom Pt"=> ['type'=>'Feature', 'properties'=> ['p'=>'v'], 'geometry'=> ['type'=> 'Point', 'coordinates'=> [12.23, 56.78]]],
-    "geom MPt"=> [
-      'type'=>'Feature',
-      'properties'=> ['p'=>'v'],
-      'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [[12.23, 56.78],[42.23, 56.78]]]
-    ],
-    "erroné sur type coordonnées"=> [
-      'type'=>'Feature',
-      'properties'=> ['p'=>'v'],
-      'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [12.23, 56.78]]
-    ],
-  ] as $title => $feature) {
-    echo "<h3>$title</h3>\n";
-    try {
-      $feature = new Feature($feature);
-      echo "feature: $feature<br>\n";
-      echo "GeoJSON: ",json_encode($feature->asArray()),"\n";
-    }
-    catch (\Exception $e) {
-      echo "Erreur sur le feature: "; print_r($feature); 
-      echo "Exception: ",$e->getMessage(),"<br>\n";
-    }
-  }
+    echo "<title>geojson.inc.php</title><pre>\n";
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        echo "<a href='?action=deBase'>Tests de base</a>\n";
+        echo "<a href='?action=lectureGrosFichier'>Test de lecture d'un gros fichier GeoJSON</a>\n";
+        echo "<a href='?action=feature'>Test création et affichage Feature, y.c. cas limites</a>\n";
+        echo "<a href='?action=aecogpe2025'>Lecture et affichage du fichier aecogpe2025/region.geojson</a>\n";
+        echo "<a href='?action=AlaskaEEZ'>AlaskaEEZ - lecture et affichage d'un feature à cheval sur l'antiméridien</a>\n";
+        break;
+      }
+      case 'deBase': { // Tests de base
+        $point = Geometry::create(['type'=> 'Point', 'coordinates'=> [0,0]]);
+        echo '$point='; print_r($point);
+        $feature = new Feature([
+          'type'=> 'Feature',
+          'properties'=>[
+            'a'=> 'vala',
+          ],
+          'geometry'=> $point->asArray(),
+        ]);
+        echo '$feature='; print_r($feature);
+        $fc = new FeatureCollection(['type'=> 'FeatureCollection', 'features'=> [$feature->asArray()]]);
+        echo '$fc='; print_r($fc);
+        break;
+      }
+      case 'lectureGrosFichier': { // Test de lecture d'un gros fichier GeoJSON
+        foreach (Feature::fromFile(__DIR__.'/../datasets/ne110mphysical/ne_110m_coastline.geojson') as $feature) {
+          echo '$feature='; print_r($feature);
+        }
+        break;
+      }
+      case 'feature': { // Test création et affichage Feature, y.c. cas limites
+        echo "<h2>Test création et affichage Feature, y.c. cas limites</h2>\n";
+        foreach ([
+          "minimal non conforme"=> [],
+          "minimal non conforme2"=> ['type'=>'Feature'],
+          "minimal conforme"=> ['type'=>'Feature', 'geometry'=> null],
+          "minimal avec properties null"=> ['type'=>'Feature', 'properties'=> null, 'geometry'=> null],
+          "uniq. prop."=> ['type'=>'Feature', 'properties'=> ['p'=>'v']],
+          "geom Pt"=> [
+            'type'=>'Feature',
+            'properties'=> ['p'=>'v'],
+            'geometry'=> ['type'=> 'Point', 'coordinates'=> [12.23, 56.78]]],
+          "geom MPt"=> [
+            'type'=>'Feature',
+            'properties'=> ['p'=>'v'],
+            'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [[12.23, 56.78],[42.23, 56.78]]]
+          ],
+          "erroné sur type coordonnées"=> [
+            'type'=>'Feature',
+            'properties'=> ['p'=>'v'],
+            'geometry'=> ['type'=> 'MultiPoint', 'coordinates'=> [12.23, 56.78]]
+          ],
+        ] as $title => $feature) {
+          echo "<h3>$title</h3>\n";
+          try {
+            $feature = new Feature($feature);
+            echo "feature: $feature<br>\n";
+            echo "asArray: ",json_encode($feature->asArray()),"\n";
+          }
+          catch (\Exception $e) {
+            echo "Erreur sur le feature: "; print_r($feature); 
+            echo "Exception: ",$e->getMessage(),"<br>\n";
+          }
+        }
   
-  echo "<h3>Test avec clé string</h3>\n";
-  $feature = ['type'=>'Feature', 'id'=>'id56', 'properties'=> ['p'=>'v'], 'geometry'=>null];
-  $feature = new Feature($feature);
-  echo "feature: $feature<br>\n";
+        echo "<h3>Test avec clé string</h3>\n";
+        $feature = ['type'=>'Feature', 'id'=>'id56', 'properties'=> ['p'=>'v'], 'geometry'=>null];
+        $feature = new Feature($feature);
+        echo "feature: $feature<br>\n";
 
-  echo "<h3>Test avec clé int</h3>\n";
-  $feature = ['type'=>'Feature', 'id'=>56, 'properties'=> ['p'=>'v'], 'geometry'=>null];
-  $feature = new Feature($feature);
-  echo "feature: $feature<br>\n";
-}
-
-// Test de lecture et affichage du fichier aecogpe2025/region.geojson
-elseif (1) {
-  echo "<h2>Lecture et affichage du fichier aecogpe2025/region.geojson</h2>\n";
-  foreach (Feature::fromFile('aecogpe2025/region.geojson') as $feature) {
-    echo "feature: $feature<br>\n";
+        echo "<h3>Test avec clé int</h3>\n";
+        $feature = ['type'=>'Feature', 'id'=>56, 'properties'=> ['p'=>'v'], 'geometry'=>null];
+        $feature = new Feature($feature);
+        echo "feature: $feature<br>\n";
+        break;
+      }
+      case 'aecogpe2025': { // Test de lecture et affichage du fichier aecogpe2025/region.geojson
+        echo "<h2>Lecture et affichage du fichier aecogpe2025/region.geojson</h2>\n";
+        foreach (Feature::fromFile(__DIR__.'/../datasets/aecogpe2025/region.geojson') as $feature) {
+          echo "feature: $feature<br>\n";
+          //print_r($feature);
+        }
+        break;
+      }
+      case 'AlaskaEEZ': { // Test de lecture et affichage d'un feature à cheval sur l'antiméridien
+        echo "<h2>Lecture et affichage la ZEE de l'Alaska</h2>\n";
+        echo "Cela montre que le calcul du BBox par ogr2ogr est faux<br>\n";
+        foreach (Feature::fromFile(__DIR__.'/../datasets/worldeez/eez_v11.geojson', 'TGeoJsonFeature') as $feature) {
+          if ($feature['properties']['MRGID'] == 8463) {
+            $f = $feature;
+            unset($f['bbox']);
+            $f = new Feature($f);
+            echo "feature: $f\n";
+            echo 'feature issu du fichier GeoJSON='; print_r($feature);
+            break;
+          }
+        }
+        break;
+      }
+    }
   }
-}
+};
+GeoJSONTest::main();

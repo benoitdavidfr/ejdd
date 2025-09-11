@@ -122,7 +122,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
           $gbox = Geometry::create($geometry)->bbox();
         }
         // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
-        if ($bbox->inters($gbox) == \BBox\NONE) {
+        if ($bbox->inters($gbox)->isEmpty()) {
           continue;
         }
       }

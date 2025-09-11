@@ -7,10 +7,12 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
+- finir la possibilité d'afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
+- finir gbox.php, notamment l'union
 - mettre en MD les description dans les schémas
 - il y a probablement un pb sur les requêtes bbox à cheval sur l'antiméridien
 - permettre de consulter une carte d'une collection ou d'un n-uplet
-  - étendre la carte d'un n-uplet aux colections issues de requêtes
+  - étendre la carte d'un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -45,6 +47,10 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+11/9/2025:
+  - ca marche avec bbox sauf pour les objets à cheval sur l'antiméridien
+  - déplacement de llmap.php dans drawing
+  - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d'améliorer bbox.php -> échec, chgt de stratégie
   - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes

@@ -253,30 +253,160 @@ if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return; // test élém
 
 
 require_once __DIR__.'/../geom/geojson.inc.php';
+require_once __DIR__.'/../lib.php';
 
 use GeoJSON\Polygon;
 use GeoJSON\LineString;
+use Lib\HtmlForm;
 
-$drawing = new GdDrawing(1315, 821, new EBox([0,0],[1000,800]), 0xFFFFFF);
+ini_set('memory_limit', '10G');
+set_time_limit(5*60);
 
-// planisphere2: image 1315 X 821
-$planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
-$drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
-
-//(new Polygon([[[0,0],[500,0],[500,500],[0,0]]]))->draw($drawing, ['fill'=> Drawing::COLORNAMES['DarkOrange']]);
-//(new Polygon([[[1000,800],[500,500],[1000,500],[1000,800]]]))->draw($drawing);
-//(new LineString([[50,500],[1000,800]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-
-/*(new Polygon([
-  [[100,100],[100,700],[900,700],[900,100],[100,100]],
-  //[[150,200],[300,200],[300,300],[150,200]],
-  [[110,110],[890,110],[890,300],[110,300],[110,110]],
-  //[[200,400],[500,400],[500,500],[200,400]],
-  [[200,400],[500,400],[500,500]],
-  [[890,690],[890,680],[880,680],[880,690],[890,690]]
-]))->draw($drawing, ['fill'=> 0xaaff, 'stroke'=> 0]);*/
+/** Contexte de l'appli de test transmis en cookie. */
+class Context {
+  protected $lpos=[];
   
-//(new Polygon([[[100,100],[100,200],[200,200],[300,300],[100,100]]]))->draw($drawing, ['fill'=> 0xaaff]);
+  function addPos(array $pos): void { $this->lpos[] = $pos; }
+  
+  function deleteLPos(): void { $this->lpos = []; }
+  
+  function displayLPos(): void {
+    echo 'lpos=',implode(', ', array_map(function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); }, $this->lpos));
+  }
+};
 
-$drawing->flush();
-//$drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
+class GdDrawingTest {
+  static Context $context;
+  
+  static function getContext(): void {
+    self::$context = unserialize($_COOKIE['contextGdDrawingTest']);
+  }
+  
+  static function setContext(): void {
+    setcookie('contextGdDrawingTest', serialize(self::$context), time()+60*60*24*30, '/');
+  }
+  
+  /** Gère un rect dans la Map. */
+  static function genRect(int $x, int $y, int $dx, int $dy, string $href, string $alt): string {
+    $x2 = $x + $dx;
+    $y2 = $y + $dy;
+    return "<area shape='rect' coords='$x, $y, $x2, $y2' href='$href' alt='$alt' />\n";
+  }
+  
+  /** Génère la Map Html et l'image de la carte */
+  static function genMapImage(int $width, int $height, int $delta): string {
+    $mapName = 'map';
+    $map = "<map name='$mapName'>\n";
+    for($x = 0; $x < $width; $x += $delta) {
+      for ($y=0 ;$y < $height; $y += $delta) {
+        $xc = $x + $delta/2;
+        $yc = $y + $delta/2;
+        $map .= self::genRect($x, $y, $delta, $delta, "?action=ihm&x=$xc&y=$yc", "image{$xc}X{$yc}");
+      }
+    }
+    $map .= "</map>\n";
+    $map .= "<img src='?action=image' alt='image' usemap='#$mapName' />\n";
+    return $map;
+  }
+  
+  /** Génère le menu. */
+  static function menu(): void {
+    echo "<table border=1><tr><form>\n",
+         //"<input type='hidden' name='action' value='ihm'>\n",
+         "<td>",HtmlForm::select('action', [
+           'deleteLPos'=> "deleteLPos",
+           'a2'=> "actionA2"
+          ]),"</td>",
+         "<td><input type='submit' value='ok'></td>\n",
+         "</form></tr></table>\n";
+  }
+  
+  static function main(): void {
+    self::$context = new Context;
+    $drawing = new GdDrawing(1315, 821, new EBox([- 1315/1025 * 180, -90],[1315/1025 * 180, +90]), 0xFFFFFF);
+    {/* planisphere2: image 1315 X 821 - -180° -> 145, +180° -> 1170
+     y = a * x + b / où y coord. image, x coord. uti. degré
+     145 = a * (-180) + b => a = (145 - b)/-180
+     1170 = a * 180 + b => 1170 = (145 - b) * 180 / -180 + b = 2*b - 145 => b = (1170 + 145)/2 = 1315/2
+    & a = (145 - b)/-180 = (145 - (1170 + 145)/2)/-180 = 512,5 / 180
+    --
+    je cherche x pour y=0 et x pour y=1315
+    y=0 -> x = -b/a = - 1315/2 /  (512,5 / 180) = - 1315/1025 * 180
+    y=1315 -> 1315 = (512,5 / 180) * x + 1315/2 => x=1315/2 / (512,5 / 180) = 1315/1025 * 180
+    */}
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        echo "<title>GdDrawing</title>\n";
+        echo "<a href='?action=test'>Test</a><br>\n";
+        echo "<a href='?action=image'>Générer une image</a><br>\n";
+        echo "<a href='?action=ihm'>IHM</a><br>\n";
+        break;
+      }
+      case 'test': {
+        $drawing = new GdDrawing(1315, 821, new EBox([0,0],[1315, 821]), 0xFFFFFF);
+
+        (new Polygon([
+          [[100,100],[100,700],[900,700],[900,100],[100,100]],
+          [[110,110],[890,110],[890,300],[110,300],[110,110]],
+          [[200,400],[500,400],[500,500]],
+          [[890,690],[890,680],[880,680],[880,690],[890,690]]
+        ]))->draw($drawing, ['fill'=> 0xaaff, 'stroke'=> 0]);
+  
+
+        $drawing->flush();
+        //$drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
+        break;
+      }
+      case 'image': { // Génération de l'image 
+        $planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
+        $drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
+
+        (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+        (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+        (new LineString([[-180, 0],[+180, 0]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+
+        $drawing->flush();
+        //$drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
+        break;
+      }
+      case 'ihm': { // Affichage de l'IHM 
+        if (isset($_GET['x'])) {
+          self::getContext();
+          $pos = $drawing->userCoord([$_GET['x'], $_GET['y']]);
+          self::$context->addPos($pos);
+          self::setContext();
+        }
+        echo "<title>GdDrawing</title>\n";
+        self::menu(); // affiche le formulaire de menu
+        if (isset($_GET['x'])) { // affichage avant la carte
+          $pos = [$_GET['x'], $_GET['y']];
+          //echo '$world='; print_r($drawing->world->as4Coords()); echo "<br>\n";
+          //echo "width=",$drawing->width,", height=",$drawing->height,"<br>\n";
+          
+          $pos = $drawing->userCoord($pos);
+          //print_r($pos);
+          printf("pos=%.0f@%.0f<br>\n", $pos[0], $pos[1]);
+          //echo 'context='; print_r(self::$context); echo "<br>\n";
+          self::$context->displayLPos();
+        }
+        // affichage de la HtmlMap et l'image de la carte
+        echo self::genMapImage($drawing->width, $drawing->height, 50);
+        break;
+      }
+      case 'deleteLPos': { // efface la liste de positions dans le contexte
+        self::getContext();
+        self::$context->deleteLPos();
+        self::setContext();
+        echo "<title>GdDrawing</title>\n";
+        self::menu(); // affiche le formulaire de menu
+        // affichage de la HtmlMap et l'image de la carte
+        echo self::genMapImage($drawing->width, $drawing->height, 50);
+        break;
+      }
+      default: throw new \Exception("Action $_GET[action] inconnue");
+    }
+  }
+};
+
+GdDrawingTest::main();
+

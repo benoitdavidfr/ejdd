@@ -128,7 +128,7 @@ class Comparator {
           echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
           throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
         }
-        $result = ($left->inters($right) <> \BBox\NONE);
+        $result = !$left->inters($right)->isEmpty();
         //echo "$left intersects $right -> ",$result?'vrai':'faux',"<br>\n";
         break;
       }

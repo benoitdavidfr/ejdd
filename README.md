@@ -12,7 +12,7 @@ Cette démarche répond à 5 besoins:
    - faire facilement des traitements ensemblistes comme des jointures et des projections
 
 Cette démarche propose un cadre extensible dans 2 directions:
-  - d'une part, on peut rajouter facilement de noveux jeux de données
+  - d'une part, on peut rajouter facilement de nouveaux jeux de données
   - d'autre part, on peut rajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
 
 ## Techno utilisées (JSON/Yaml/ODS/Php):
@@ -36,23 +36,23 @@ Cette démarche propose un cadre extensible dans 2 directions:
     - c'est difficilement éditable
     - c'est moins performant que JSON
   - PhpStan est utilisé au niveau 6 pour analyser le code
-  - phpDocumentor est utilisé pour documenter le code, [la consulter](https://benoitdavidfr.github.io/datasets/).
+  - phpDocumentor est utilisé pour documenter le code, [consulter cette doc](https://benoitdavidfr.github.io/datasets/).
 
 ## Solution.
 ### Généralités:
  - un **JdD** agrège des **collections**, est documenté par des **MD** et identifié par un **nom court**, comme DeptReg
- - chaque **collection** est logiquement un **itérable d'items**, a priori homogènes mais pas forcément
-   - la référence d'une collection est la notion de table de n-uplets, ou de collection d'OGC API Features
+ - chaque **collection** est logiquement un **itérable d'items**, de préférence homogènes mais pas forcément
+   - la référence d'une collection est la notion de table de n-uplets, ou celle de collection d'OGC API Features
    - un item doit pouvoir tenir en mémoire Php alors qu'une collection peut ne pas y tenir
  - un JdD doit a minima définir les **MD suivantes**
    - title -> titre du JdD sur une ligne
    - description -> texte de présentation du JdD aussi longue qu'utile (il faudrait la mettre en Markdown)
    - $schema -> schéma JSON listant les collections avec pour chacune
      - a minima un nom, un titre et une description
-     - optionellement sa structure et la sémantique de chaque champ sous la forme d'un schéma JSON
+     - optionellement sa structure et la sémantique de chaque champ
  - le **schéma JSON** d'une collection définit son exposition en Php (en non son stockage)
-   - en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
-     est sigifiante ou n'est qu'un numéro d'ordre
+   en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
+   est sigifiante ou n'est qu'un numéro d'ordre
  - la **catégorie d'un JdD** définit le comportement du JdD et finalement le code Php de sa manipulation,
    elle permet de mutualiser le code Php entre différents jeux ayant le même comportement 
  - je distingue

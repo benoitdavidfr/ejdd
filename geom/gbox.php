@@ -1,5 +1,5 @@
 <?php
-/** GBox - Définition d'une algèbre sur les rectangles englobants en coord. géo. avec des calculs tenant compte de l'antiméridiens.
+/** GBox - Définition d'une algèbre sur les rectangles englobants en coord. géo. avec des calculs tenant compte de l'antiméridien.
  *
  * @package BBox
  */
@@ -10,50 +10,41 @@ require_once __DIR__.'/bbox.php';
 use Pos\Pos;
 
 /**
- * Un rectangle englobant en coord. geo. pour le stocker, effectuer diverses opérations et tester des conditions.
- * Les opérations sont l'intersection et l'union entre 2 BBox. Les tests sont ceux d'intersection et d'inclusion.
- * Dans l'intersection entre BBox, elles sont considérées comme topologiquement fermées.
- * Cela veut dire que 2 bbox qui se touchent sur un bord ont comme intersection le segment commun ;
- * et que 2 bbox. qui se touchent dans un coin ont comme intersection le point correspondant à ce coin.
- * Un point, un segment vertical ou horizontal sont représentés comme des BBox dégénérés.
- * L'espace vide est représenté par un BBox particulier défini comme une constante nommée NONE,
- * permettant ainsi de tester si une intersection est vide ou non.
- * Les BBox munies des opérations est une algèbre, cad que le résultat d'une opération est toujours un BBox.
+ * Un rectangle englobant en coord. geo. gérant correctement les BBox à cheval sur l'antiméridien.
  *
- * Du point de vue implémentation:
- * Un BBox est défini par ses 2 coins SW et NE qui sont des Pt avec 2 contraintes d'intégrité:
- *  1) Si 1 des 2 coins est null alors l'autre doit aussi l'être et il s'agit de l'espace vide nommé NONE.
- *  2) Si les coins sont non nuls alors le coin SW doit être au Sud du coin NE.
- *
- * Un point est représenté par 2 coins identiques.
- *
- * La BBox chevauche l'antiméridien (antimeridian) <=> lonWest > lonEst.
- *
- * Les BBox qui couvrent tte la Terre correspondent à une seule représentation définie par convention à [-180@-90, 180@90]
+ * Les BBox qui couvrent tte la Terre correspondent à une seule représentation, définie par convention à [-180@-90, 180@90],
+ * et nommée WORLD.
  */
 class GBox extends BBox {
+  /** Fabrique un GBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
+   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
+  static function from4Coords(array $coords): self {
+    self::isAListOf4Numbers($coords);
+    return new self(
+      [floatval($coords[0]), floatval($coords[1])],
+      [floatval($coords[2]), floatval($coords[3])]
+    );
+  }
+  
+  /** Fabrique une GBox à partir d'une Pos.
+   * @param TPos $pos
+   */
+  static function fromPos(array $pos): self { return new self($pos, $pos); }
+
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
-    if ($this == NONE)
-      return 'BBox\NONE';
+    if ($this == GNONE)
+      return 'GBox\NONE';
     if ($this == WORLD)
       return 'BBox\WORLD';
     elseif ($this->sw == $this->ne)
       return "$this->sw";
     else
-      return "[$this->sw,$this->ne]";
+      return "G[$this->sw,$this->ne]";
   }
-
-  /** Génère un array de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth] utilisé en GeoJSON.
-   * @return array{0: float, 1:float, 2:float, 3:float} */
-  function as4Coords(): array { return [$this->sw->lon, $this->sw->lat, $this->ne->lon, $this->ne->lat]; }
   
-  /** Génère un array de 4 coordonnées LatLon dans l'ordre [latSouth, lonWest, latNorth, lonEst] utilisé par WFS.
-   * @return array{0: float, 1:float, 2:float, 3:float} */
-  function as4CoordsLatLon(): array { return [$this->sw->lat, $this->sw->lon, $this->ne->lat, $this->ne->lon]; }
-  
-  /** Le BBox intersecte t'il l'antimérdien ?
-   * Lorsque le BBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est > 0 et celle du coin NE est < 0.
+  /** Le GBox intersecte t'il l'antimérdien ?
+   * Lorsque le GBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est supérieure à celle du coin NE
    */
   function crossesAntimeridian(): bool { return ($this->sw->lon > $this->ne->lon); }
   
@@ -61,9 +52,9 @@ class GBox extends BBox {
    * @param list<Pt> $lpts
    */
   function extends(array $lpts): self {
-    if ($this == NONE) {     // Je commence par traiter le cas particulier où $this == NONE
+    if ($this->isEmpty()) {  // Je commence par traiter le cas particulier où $this == NONE
       if (count($lpts) == 0) // Si la liste des points est vide
-        return NONE;         // alors le résultat est NONE
+        return GNONE;        // alors le résultat est NONE
       else {                          // sinon
         $pt = array_shift($lpts);     // j'extraie le 1er point de la liste
         $bbox = self::fromPos($pt->pos()); // je crée un bbox avec ce 1er point
@@ -118,7 +109,7 @@ class GBox extends BBox {
   /** Fabrique une BBox à partir d'une LPos.
    * @param TLPos $lpos
    */
-  static function fromLPos(array $lpos): self { return NONE->extends(Pt::lPos2LPt($lpos)); }
+  static function fromLPos(array $lpos): GBox { return GNONE->extends(Pt::lPos2LPt($lpos)); }
   
   /** Le Pt $pt est-il inclus dans le BBox ? */
   function includesPt(Pt $pt): bool {
@@ -137,33 +128,36 @@ class GBox extends BBox {
   /** Union géométrique de $this et $b. Le résultat est toujours une BBox.
    * C'est très approximatif car l'extension aux 2 coins n'implique pas que les points inclus dans b seront dans $this !!!
    */
-  function union(self $b): self {
-    if ($this == NONE)
+  function union(BBox $b): BBox {
+    if ($this->isEmpty())
       return $b;
-    if ($b == NONE)
+    if ($b->isEmpty())
       return $this;
     if ($this->includesPt($b->sw) && $this->includesPt($b->ne))
       return $this;
     throw new \Exception("TO BE IMPLEMENTED");
   }
   
-  /** Fabrique une BBox à partir d'une LLPos.
+  /** Fabrique une GBox à partir d'une LLPos.
    * @param TLLPos $llPos
    */
   static function fromLLPos(array $llPos): self {
+    echo "Appel de GBox::fromLLPos()<br>\n";
     // Je transforme la LLPos en LLPt
     $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $llPos);
     // Tranforme la LLPt en LBBox
-    $lBBox = array_map(function(array $lPt) { return NONE->extends($lPt); }, $llPt);
+    $lBBox = array_map(function(array $lPt) { return GNONE->extends($lPt); }, $llPt);
     // Union des bbox de lBBox pour donner le résultat
-    $rbbox = NONE;
+    echo '<pre>$lBBox='; print_r($lBBox);
+    $rbbox = GNONE;
     foreach ($lBBox as $bbox)
       $rbbox = $rbbox->union($bbox);
     return $rbbox;
   }
-  
 };
 
+/** Constante pour le BBox correspondant à l'espace vide. */
+const GNONE = new GBox(null, null);
 /** Constante pour la Terre en coords géo. */
 const WORLD = new GBox([-180,-90], [180,90]);
 
@@ -171,10 +165,30 @@ const WORLD = new GBox([-180,-90], [180,90]);
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+echo "<pre>\n";
 switch ($_GET['action'] ?? null) {
   case null: {
-    echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a><br>\n";
-    echo "<a href='?action=testExtends'>testExtends</a><br>\n";
+    echo "<a href='?action=testFrom4Coords'>testFrom4Coords</a>\n";
+    echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a>\n";
+    echo "<a href='?action=testExtends'>testExtends</a>\n";
+    break;
+  }
+  case 'testFrom4Coords': {
+    foreach ([
+      [],
+      ['a'=>'b','b'=>'c','c'=>'d','d'=>'e'],
+      [0,1,2,'x'],
+      [0,'1e-2','2.5','4'],
+      [0, 1e-2, 2.5, 4],
+      [0,1,2,'4a'],
+    ] as $array) {
+      try {
+        echo GBox::from4Coords($array),"\n";
+        print_r(GBox::from4Coords($array));
+      } catch (\Exception $e) {
+        echo "Exception ",$e->getMessage(),"\n";
+      }
+    }
     break;
   }
   case 'testPt::deltaLon': {

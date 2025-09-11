@@ -47,7 +47,6 @@ parameters:
     - install.php
     - lib.php
     - geojson.php
-    - llmap.php
     - algebra/schema.inc.php
     - algebra/collection.inc.php
     - algebra/predicate.inc.php
@@ -76,14 +75,15 @@ parameters:
     - datasets/featureserver.php
     - datasets/featureserverextract.php
     - datasets/extract.php
-    - drawing/drawing.php
-    - drawing/gddrawing.php
     - geom/pos.inc.php
     - geom/bbox.php
-    #- geom/gbox.php
+    - geom/gbox.php
     - geom/ebox.php
     - geom/geojson.inc.php
     - geom/zoomlevel.php
+    - drawing/drawing.php
+    - drawing/gddrawing.php
+    - drawing/llmap.php
     - lib/sexcept.inc.php
   excludePaths:
     analyse:
