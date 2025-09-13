@@ -84,9 +84,9 @@ class Pt {
  * sans tenir compte de l'antiméridien.
  */
 class BBox {
-  /** Coin SW */
+  /** Coin SW comme Pt */
   readonly ?Pt $sw;
-  /** Coin NE */
+  /** Coin NE comme Pt */
   readonly ?Pt $ne;
   
   /** Fabrique un BBox avec vérification des contraintes d'intégrité.

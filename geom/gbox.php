@@ -8,6 +8,7 @@ namespace BBox;
 require_once __DIR__.'/bbox.php';
 
 use Pos\Pos;
+use Pos\BiPos;
 
 /**
  * Une boite englobante en coord. geo. gérant correctement les géométries chevauchant l'antiméridien.
@@ -27,10 +28,8 @@ use Pos\Pos;
  *
  * En conséquence la méthode extends() qui prend en paramètre une liste de Pt fait l'hypothèse que cette LineString ne chevauche pas l'AM.
  * Par contre la méthode union() qui agrège 2 GBox doit pouvoir prendre des GBox chevauchant l'AM et produire une GBox chevauchant l'AM.
- *
- * Cette classe n'hérite pas de BBox car un tel héritage est trop complexe à gérer pour les méthodes qui prennent un GBox en paramètre.
  */
-class GBox {
+class GBox extends BBox {
   /** Fabrique un GBox avec vérification des contraintes d'intégrité.
    * Les latitudes doivent être comprises entre -90 et +90.
    * Les longitudes sont ramenées entre -180 et +180 autorisant ainsi à calculer un GBox sur des géométries translatées de 360°.
@@ -38,9 +37,8 @@ class GBox {
    * @param ?TPos $ne - le coin NE comme TPos ou []
    */
   function __construct(?array $sw, ?array $ne) {
-    if (is_null($this->sw)) {
-      $this->sw = null;
-      $this->ne = null;
+    if (!$sw) {
+      parent::__construct($sw, $ne);
       return;
     }
     if (($sw[1] < -90) || ($sw[1] > 90) || ($ne[1] < -90) || ($ne[1] > 90))
@@ -57,8 +55,7 @@ class GBox {
       if ($ne[0] > 180)
         $ne[0] -= 360;
     }
-    $this->sw = new Pt($sw);
-    $this->ne = new Pt($ne);
+    parent::__construct($sw, $ne);
   }
   
   /** Fabrique un GBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
@@ -187,7 +184,9 @@ class GBox {
   /** Union géométrique de $this et $b. Le résultat est toujours une GBox.
    * C'est très approximatif car l'extension aux 2 coins n'implique pas que les points inclus dans b seront dans $this !!!
    */
-  function union(self $b): self {
+  function union(BBox $b): self {
+    if (get_class($b) <> __CLASS__)
+      throw new \Exception("Dans GBox::union(), b est un ".get_class($b)." et PAS un ".__CLASS__);
     if ($this->isEmpty())
       return $b;
     if ($b->isEmpty())
@@ -204,14 +203,16 @@ class GBox {
     // Tranforme la LLPt en LBBox
     $lBBox = array_map(function(array $lPt) { return BNONE->extends($lPt); }, $llPt);
     // Union des bbox de lBBox pour donner le résultat
-    $rbbox = BNONE;
+    $rbbox = GNONE;
     foreach ($lBBox as $bbox)
       $rbbox = $rbbox->union($bbox);
     return $rbbox;
   }
   
   /** Intersection géométrique de $this avec $b. Le résultat est toujours une GBox ! */
-  function inters(self $b): self {
+  function inters(BBox $b): self {
+    if (get_class($b) <> __CLASS__)
+      throw new \Exception("Dans GBox::union(), b est un ".get_class($b)." et PAS un ".__CLASS__);
     if (($this->isEmpty()) || ($b->isEmpty()))
       return GNONE;
     throw new \Exception("TO BE IMPLEMENTED");
