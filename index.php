@@ -47,6 +47,14 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+13/9/2025:
+  - chgt du nom du répertoire en jdd plus original que dataset
+  - modif de la sémantique de la création d'une BBox/GBox en prenant en compte les segments entre points
+  - modif en conséquence des méthodes fromLPos -> fromLineString et fromLLPos -> fromMultiLineString
+  - mise au point d'une solution pour
+    - définir GBox comme sous-classe de BBox qui est une classe concrète en interdisant des opérations binaires BBox/Gbox
+    - permettre de sélectionner simplement BBox ou GBox dans GeoJSON
+  - GBox n'est pas finalisé mais son périmètre est plus clair -> remplacer BBox une fois au point
 11/9/2025:
   - ca marche avec bbox sauf pour les objets à cheval sur l'antiméridien
   - déplacement de llmap.php dans drawing

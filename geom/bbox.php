@@ -8,11 +8,12 @@ namespace BBox;
 require_once __DIR__.'/pos.inc.php';
 
 use Pos\Pos;
+use Pos\BiPos;
 
 /** Un Point en coord. géo. (degrés lon,lat) ou cartésiennes. Classe interne à BBox.
- * Dans cette version, la notion de Pt à l'Ouest d'un autre n'a pas de sens car ca dépend de quel côté on tourne.
- * Normalement lon appartient à [-180,+180] et lat à [-90,+90] mais pour certains besoins algo. cette contrainte peut ne pas être
- * respectée, notamment sur les longitudes.
+ * Dans cette version, la notion de Pt à l'Ouest d'un autre n'a pas de sens car dépend de quel côté on tourne.
+ * Normalement lon appartient à [-180,+180] et lat à [-90,+90] mais pour certains besoins algo. cette contrainte peut ne pas être respectée,
+ * notamment sur les longitudes.
  */
 class Pt {
   /** Nombre de chiffres significatifs à l'affichage. */
@@ -55,10 +56,10 @@ class Pt {
   /** Teste si les 2 coord de $this sont inférieures ou égales à celles de $b. */ 
   function isLess(self $b): bool { return ($this->lon <= $b->lon) || ($this->lat <= $b->lat); }
   
-  /** Le point ayant comme coordonnées les min pour chaque coord. des pts en entrées. */
+  /** Le point ayant comme coordonnées les min pour chaque coord. des 2 pts en entrées. */
   function min(self $b): self { return new self([min($this->lon, $b->lon), min($this->lat, $b->lat)]); }
   
-  /** Le point ayant comme coordonnées les max pour chaque coord. des pts en entrées. */
+  /** Le point ayant comme coordonnées les max pour chaque coord. des 2 pts en entrées. */
   function max(self $b): self { return new self([max($this->lon, $b->lon), max($this->lat, $b->lat)]); }
   
   /** écart absolu en longitude, retourne une valeur entre 0 et 180. */
@@ -112,24 +113,12 @@ class BBox {
     else
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
   }
-
-  /** Lève une exception si le paramètre n'est pas une liste de 4 nombres.
-   * @param (list<float>|list<string>) $coords - liste de 4 nombres. */
-  static function isAListOf4Numbers(array $coords): void {
-    if (count($coords) <> 4)
-      throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, ".count($coords)." fournies");
-    for ($i=0; $i<4; $i++) {
-      if (!isset($coords[$i])) // @phpstan-ignore isset.offset
-        throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, coords[$i] doit être défini");
-      if (!is_numeric($coords[$i]))
-        throw new \Exception("Dans BBox::isAListOf4Numerics(), coords doit doit être une liste de 4 nombres, coords[$i] doit être numérique");
-    }
-  }
   
   /** Fabrique un BBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
    * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
   static function from4Coords(array $coords): self {
-    self::isAListOf4Numbers($coords);
+    if (!BiPos::is($coords))
+      throw new \Exception("Le paramètre n'est pas une liste de 4 nombres");
     return new self(
       [floatval($coords[0]), floatval($coords[1])],
       [floatval($coords[2]), floatval($coords[3])]
@@ -159,7 +148,7 @@ class BBox {
    * @return array{0: float, 1:float, 2:float, 3:float} */
   function as4CoordsLatLon(): array { return [$this->sw->lat, $this->sw->lon, $this->ne->lat, $this->ne->lon]; }
   
-  /** Teste si le BBox correspond à l'espace vide, doit aussi fonctionner pour GBox. */
+  /** Teste si le BBox correspond à l'espace vide, fonctionne aussi pour GBox. */
   function isEmpty(): bool { return is_null($this->sw); }
   
   /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
@@ -178,7 +167,7 @@ class BBox {
     return $this->isEmpty() ? [] : [($this->sw->lon + $this->ne->lon)/2, ($this->sw->lat + $this->ne->lat)/2];
   }
   
-  /** Taille du bbox en degrés pour des coords. géo. */
+  /** Taille de la bbox en degrés pour des coords. géo. */
   function sizeInDegree(): float {
     $dLat = $this->ne->lat - $this->sw->lat;
     // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
@@ -186,8 +175,8 @@ class BBox {
     return sqrt($dLon * $dLon + $dLat * $dLat);
   }
   
-  /** Le BBox intersecte t'il l'antimérdien ?
-   * Le BBox chevauche l'antiméridien ssi la longitude min est inférieure à -180 ou la logitude max est supérieure à 180.
+  /** La BBox intersecte t'il l'antimérdien ?
+   * La BBox chevauche l'antiméridien ssi la longitude min est inférieure à -180 ou la logitude max est supérieure à 180.
    */
   function crossesAntimeridian(): bool { return ($this->sw->lon <= -179.9999) || ($this->ne->lon >= +179.9999); }
   
@@ -204,10 +193,10 @@ class BBox {
     return new self($sw->pos(), $ne->pos());
   }
 
-  /** Fabrique une BBox à partir d'une LPos.
-   * @param TLPos $lpos
+  /** Fabrique une BBox à partir des coords d'une LineString ne chevauchant pas l'AM définis comme une LPos.
+   * @param TLPos $coords
    */
-  static function fromLPos(array $lpos): self { return BNONE->extends(Pt::lPos2LPt($lpos)); }
+  static function fromLineString(array $coords): self { return BNONE->extends(Pt::lPos2LPt($coords)); }
   
   /** Union géométrique de $this et $b. Le résultat est toujours une BBox. */
   function union(self $b): self {
@@ -220,12 +209,12 @@ class BBox {
     return new self($sw->pos(), $ne->pos());
   }
   
-  /** Fabrique une BBox à partir d'une LLPos.
-   * @param TLLPos $llPos
+  /** Fabrique une BBox à partir des coordonnées d'une MultiLineString définis comme LLPos.
+   * @param TLLPos $coords
    */
-  static function fromLLPos(array $llPos): self {
+  static function fromMultiLineString(array $coords): self {
     // Je transforme la LLPos en LLPt
-    $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $llPos);
+    $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $coords);
     // Tranforme la LLPt en LBBox
     $lBBox = array_map(function(array $lPt) { return BNONE->extends($lPt); }, $llPt);
     // Union des bbox de lBBox pour donner le résultat

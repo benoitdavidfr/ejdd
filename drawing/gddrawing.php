@@ -11,7 +11,7 @@ require_once __DIR__.'/../lib/sexcept.inc.php';
 use BBox\EBox;
 
 /**
- * class GdDrawing implements Drawing - classe implémentant un dessin utilisant les primitives GD + copie & rééchantillonnage d'image
+ * class GdDrawing implements Drawing - classe implémentant un dessin utilisant les primitives GD + copie d'image
  *
  * Un dessin définit un système de coord. utilisateurs, une taille d'image d'affichage et une couleur de fond.
  * Il définit des méthodes de dessin d'une ligne brisée et d'un polygone.
@@ -75,7 +75,7 @@ class GdDrawing implements Drawing {
     $color = imagecolorallocatealpha(
       $this->im, ($rgba >> 24) & 0xFF, ($rgba >> 16) & 0xFF, ($rgba >> 8) & 0xFF, $rgba & 0x7F);
     if ($color === FALSE)
-      throw new \Exception("Erreur imagecolorallocatealpha() ligne ".__LINE__);
+      throw new \Exception("Erreur imagecolorallocatealpha()");
     $this->colors[$rgba] = $color;
     return $color;
   }
@@ -122,7 +122,7 @@ class GdDrawing implements Drawing {
   }
   
   /**
-   * polyline(array $lpos, array $style=[]): void - dessine une ligne brisée
+   * dessine une ligne brisée
    *
    * @param TLPos $lpos liste de positions en coordonnées utilisateur
    * @param array<string, string> $style style de dessin
@@ -145,7 +145,7 @@ class GdDrawing implements Drawing {
   }
   
   /**
-   * polygon(array $llpos, array $style=[]): void - dessine un polygone
+   * dessine un polygone
    *
    * @param TLLPos $llpos liste de listes de positions en coordonnées utilisateur
    * @param array<string, string> $style style de dessin
@@ -252,38 +252,113 @@ class GdDrawing implements Drawing {
 if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return; // test élémentaire de GdDrawing
 
 
+require_once __DIR__.'/../geom/bbox.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
 require_once __DIR__.'/../lib.php';
 
 use GeoJSON\Polygon;
 use GeoJSON\LineString;
+// GeoBox est utilisé pour BBox ou GBox et permet ainsi de définir si BBox ou GBox est utilisé
+use BBox\BBox as GeoBox;
+#use BBox\GBox as GeoBox;
 use Lib\HtmlForm;
 
 ini_set('memory_limit', '10G');
 set_time_limit(5*60);
 
-/** Contexte de l'appli de test transmis en cookie. */
+/** Contexte de l'appli de test transmis en cookie entre les appels. */
 class Context {
-  protected $lpos=[];
+  /** @var TLPos $lstr - la LigneString courante */
+  protected array $lstr=[];
   
-  function addPos(array $pos): void { $this->lpos[] = $pos; }
+  /** Ajoute une position à $lstr, contraint la longitude dans [-180, +180].
+   * @param TPos $pos */
+  function addPos(array $pos): void {
+    if ($pos[0] > 180)
+      $pos[0] -= 360;
+    if ($pos[0] < -180)
+      $pos[0] += 360;
+    $this->lstr[] = [round($pos[0]), round($pos[1])];
+  }
   
-  function deleteLPos(): void { $this->lpos = []; }
+  /** Construit le "Polygone" correspondant à un GBox sous la forme d'une LPos, utilisé par gboxOfLPosAsLLPos
+   * @param TPos $sw
+   * @param TPos $ne
+   * @return TLPos
+   */
+  static function lposOfABox(array $sw, array $ne): array {
+    return [$sw, [$sw[0],$ne[1]], $ne, [$ne[0],$sw[1]], $sw];
+  }
   
-  function displayLPos(): void {
-    echo 'lpos=',implode(', ', array_map(function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); }, $this->lpos));
+  /** Retourne lecountour de la GeoBox de $lstr comme list<LineString> (LLPos).
+   * Si la GeoBox N'intersecte PAS l'antiméridien alors c'est le contour de la GeoBox.
+   * Si la GeoBox intersecte l'antiméridien alors les contours des 2 côtés
+   * @return TLLPos 
+   */
+  function geoboxOfLstrAsMultiLineString(): array {
+    if (!$this->lstr)
+      return [];
+    $bbox = GeoBox::fromLineString($this->lstr);
+    //print_r($bbox);
+    $sw = $bbox->sw->pos();
+    $ne = $bbox->ne->pos();
+    if ($bbox->crossesAntimeridian()) {
+      return [
+        self::lposOfABox($sw, [$ne[0]+360, $ne[1]]), // la LPos à l'West de l'AM
+        self::lposOfABox([$sw[0]-360,$sw[1]], $ne)   // la LPos à l'Est de l'AM
+      ];
+    }
+    else {
+      return [self::lposOfABox($sw, $ne)];
+    }
+  }
+  
+  /** Réinitialise la lstr */
+  function clearLS(): void { $this->lstr = []; }
+  
+  /** Affiche le contexte de l'appli. */
+  function display(): void {
+    echo 'lstr=[',implode(', ', array_map(function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); }, $this->lstr)),"]<br>\n";
+    echo "geoboxOfLs=",GeoBox::fromLineString($this->lstr),"<br>\n";
+  }
+  
+  function exportAsJSON(): string {
+    return json_encode(['lstr'=> $this->lstr, 'geobox'=> GeoBox::fromLineString($this->lstr)->as4Coords()]);
   }
 };
 
+/** Test de GdDrawing et une appli de debuggage des BBox.
+ * Le principe est de saisir soit un LPos soit un LLPos sur un planisphère
+ * puis de construire un BBox ou un GBox à partir de ces listes.
+ * Chaque interaction génère un nouvel affichage.
+ * Un cookie est utilisé pour conserver un contexte entre les appels.
+ */
 class GdDrawingTest {
   static Context $context;
   
-  static function getContext(): void {
-    self::$context = unserialize($_COOKIE['contextGdDrawingTest']);
-  }
+  /** Reconstitue le contexte à partir du cookie. */
+  static function getContext(): void { self::$context = unserialize($_COOKIE['contextGdDrawingTest']); }
   
-  static function setContext(): void {
-    setcookie('contextGdDrawingTest', serialize(self::$context), time()+60*60*24*30, '/');
+  /** Sauve le contexte dans le cookie, doit être appelé avant toute sortie de texte. */
+  static function setContext(): void { setcookie('contextGdDrawingTest', serialize(self::$context), time()+60*60*24*30, '/'); }
+  
+  /** Fabrique et transmet l'image au navigateur. */
+  static function sendImage(GdDrawing $drawing): void {
+    $planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
+    $drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
+
+    (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+    (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+    (new LineString([[-180, 0],[+180, 0]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+
+    // dessin du bbox défini par la lstr
+    self::getContext();
+    $bboxAsMLS = self::$context->geoboxOfLstrAsMultiLineString();
+    foreach ($bboxAsMLS as $ls)
+      (new LineString($ls))->draw($drawing, ['stroke'=> 0x888800]);
+    
+    //$drawing->flush();
+    $drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
   }
   
   /** Gère un rect dans la Map. */
@@ -309,18 +384,20 @@ class GdDrawingTest {
     return $map;
   }
   
-  /** Génère le menu. */
+  /** Génère le menu de l'appli. */
   static function menu(): void {
     echo "<table border=1><tr><form>\n",
          //"<input type='hidden' name='action' value='ihm'>\n",
          "<td>",HtmlForm::select('action', [
-           'deleteLPos'=> "deleteLPos",
-           'a2'=> "actionA2"
+           'clearLS'=> "Efface la LineString",
+           'export'=> "exporte le contexte",
+           'reinit'=> "Réinitialise le Cookie",
           ]),"</td>",
          "<td><input type='submit' value='ok'></td>\n",
          "</form></tr></table>\n";
   }
   
+  /** Fonction principale. */
   static function main(): void {
     self::$context = new Context;
     $drawing = new GdDrawing(1315, 821, new EBox([- 1315/1025 * 180, -90],[1315/1025 * 180, +90]), 0xFFFFFF);
@@ -357,16 +434,8 @@ class GdDrawingTest {
         //$drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
         break;
       }
-      case 'image': { // Génération de l'image 
-        $planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
-        $drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
-
-        (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-        (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-        (new LineString([[-180, 0],[+180, 0]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-
-        $drawing->flush();
-        //$drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
+      case 'image': { // Génération et sortie de l'image 
+        self::sendImage($drawing);
         break;
       }
       case 'ihm': { // Affichage de l'IHM 
@@ -387,20 +456,34 @@ class GdDrawingTest {
           //print_r($pos);
           printf("pos=%.0f@%.0f<br>\n", $pos[0], $pos[1]);
           //echo 'context='; print_r(self::$context); echo "<br>\n";
-          self::$context->displayLPos();
+          self::$context->display();
         }
         // affichage de la HtmlMap et l'image de la carte
         echo self::genMapImage($drawing->width, $drawing->height, 50);
         break;
       }
-      case 'deleteLPos': { // efface la liste de positions dans le contexte
+      case 'clearLS': { // efface la liste de positions dans le contexte
         self::getContext();
-        self::$context->deleteLPos();
+        self::$context->clearLS();
         self::setContext();
         echo "<title>GdDrawing</title>\n";
         self::menu(); // affiche le formulaire de menu
-        // affichage de la HtmlMap et l'image de la carte
-        echo self::genMapImage($drawing->width, $drawing->height, 50);
+        echo self::genMapImage($drawing->width, $drawing->height, 50); // affichage de la HtmlMap et l'image de la carte
+        break;
+      }
+      case 'export': { // exporte un cas considéré comme un bug
+        self::getContext();
+        $json = self::$context->exportAsJSON();
+        file_put_contents(__DIR__.'/gddrawingoutput.json', "$json\n",  FILE_APPEND);
+        echo "Export: $json<br>\n";
+        echo "<title>GdDrawing</title>\n";
+        self::menu(); // affiche le formulaire de menu
+        echo self::genMapImage($drawing->width, $drawing->height, 50); // affichage de la HtmlMap et l'image de la carte
+        break;
+      }
+      case 'reinit': { // stocke dans le cookie un nouveau contexte
+        self::$context = new Context;
+        self::setContext();
         break;
       }
       default: throw new \Exception("Action $_GET[action] inconnue");

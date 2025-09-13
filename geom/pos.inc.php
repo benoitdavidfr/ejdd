@@ -40,6 +40,21 @@ class Pos {
   static function reproj(callable $reprojPos, array $pos): array { return $reprojPos($pos); }
 };
 
+/** Un BiPos est une liste de 4 coordonnées dans l'ordre [westLon, southLat, eastLon, northLat] utilisée pour représenter un BBox en GeoJSON. */
+class BiPos {
+  /** Teste si le paramètre est un BiPos.
+   * @param (list<float>|list<string>) $coords - liste de 4 nombres. */
+  static function is(array $coords): bool {
+    if (count($coords) <> 4)
+      return false;
+    for ($i=0; $i<4; $i++) {
+      if (!is_numeric($coords[$i]))
+        return false;
+    }
+    return true;
+  }
+};
+
 /** Fonction sur les TLPos, définies comme liste de TPos. */
 class LPos {
   /** Vérifie que le paramètre est un TLPos.
