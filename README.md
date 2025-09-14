@@ -36,7 +36,7 @@ Cette démarche propose un cadre extensible dans 2 directions:
     - c'est difficilement éditable
     - c'est moins performant que JSON
   - PhpStan est utilisé au niveau 6 pour analyser le code
-  - phpDocumentor est utilisé pour documenter le code, [consulter cette doc](https://benoitdavidfr.github.io/datasets/).
+  - phpDocumentor est utilisé pour documenter le code, [consulter cette doc](https://benoitdavidfr.github.io/ejdd/).
 
 ## Solution.
 ### Généralités:

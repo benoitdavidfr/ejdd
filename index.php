@@ -285,7 +285,7 @@ J'ai changé ma clé publique dans Github on utilisant celle dans ~/.ssh
 
 Le lien avec le dépôt GitHub:
   Pour définir ce lien:
-    git remote add origin git@github.com:benoitdavidfr/dataset.git
+    git remote add origin git@github.com:benoitdavidfr/ejdd.git
   Pour effacer ce lien: (par ex. pour le changer)
     git remote remove origin
 
