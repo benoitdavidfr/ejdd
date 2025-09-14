@@ -15,7 +15,8 @@ use Dataset\Dataset;
 use Lib\RecArray;
 use GeoJSON\Feature;
 use GeoJSON\Geometry;
-use BBox\BBox;
+#use BBox\BBox as GeoBox;
+use BBox\GBox as GeoBox;
 use LLMap\AMapAndItsLayers;
 use LLMap\View;
 use Symfony\Component\Yaml\Yaml;
@@ -120,7 +121,7 @@ abstract class Collection {
           $v = '';
         elseif ($k == 'geometry') { // affichage particulier d'une géométrie détectée par le nom du champ (A REVOIR)
           $geom = Geometry::create($v);
-          $bbox = isset($v['bbox']) ? BBox::from4Coords($v['bbox']) : $geom->bbox();
+          $bbox = isset($v['bbox']) ? GeoBox::from4Coords($v['bbox']) : $geom->bbox();
           $v = '<pre>'.$geom->toString($bbox).'</pre>';
         }
         elseif (is_array($v))

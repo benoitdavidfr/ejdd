@@ -45,6 +45,7 @@ class BiPos {
   /** Teste si le paramètre est un BiPos.
    * @param (list<float>|list<string>) $coords - liste de 4 nombres. */
   static function is(array $coords): bool {
+    //print_r($coords);
     if (count($coords) <> 4)
       return false;
     for ($i=0; $i<4; $i++) {

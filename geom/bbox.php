@@ -102,16 +102,23 @@ class BBox {
       throw new \Exception("Dans la construction d'une BBox, le coin SW doit être au Sud du coin NE.");
   }
   
+  /** Retourne vrai ssi la classe de $b est celle utilisée pour l'appel statique ; fonctionne correctement avec GBox. */
+  static function is(self $b): bool {
+    //echo "get_class=",get_class($b)," , get_called_class()=",get_called_class();
+    return get_class($b) == get_called_class();
+  }
+  
   /** Fabrique un BBox à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou chaine vide. */
   static function fromText(string $text): self {
+    $class = get_called_class();
     if ($text == '')
-      return new self(null, null);
+      return new $class(null, null);
     if (preg_match('!^([.0-9@]+)$!', $text, $matches))
-      return new self($pos = Pt::fromText($matches[1])->pos(), $pos);
+      return new $class($pos = Pt::fromText($matches[1])->pos(), $pos);
     elseif (preg_match('!^\[([.0-9@]+),([.0-9@]+)\]$!', $text, $matches))
-      return new self(Pt::fromText($matches[1])->pos(), Pt::fromText($matches[2])->pos());
+      return new $class(Pt::fromText($matches[1])->pos(), Pt::fromText($matches[2])->pos());
     else
-      throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox");
+      throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox/GBox");
   }
   
   /** Fabrique un BBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
@@ -119,7 +126,8 @@ class BBox {
   static function from4Coords(array $coords): self {
     if (!BiPos::is($coords))
       throw new \Exception("Le paramètre n'est pas une liste de 4 nombres");
-    return new self(
+    $class = get_called_class();
+    return new $class(
       [floatval($coords[0]), floatval($coords[1])],
       [floatval($coords[2]), floatval($coords[3])]
     );
@@ -129,6 +137,11 @@ class BBox {
    * @param TPos $pos
    */
   static function fromPos(array $pos): self { return new self($pos, $pos); }
+
+  function west(): float { return $this->sw->lon; }
+  function south(): float { return $this->sw->lat; }
+  function east(): float { return $this->ne->lon; }
+  function north(): float { return $this->ne->lat; }
 
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
@@ -140,13 +153,13 @@ class BBox {
       return "[$this->sw,$this->ne]";
   }
 
-  /** Génère un array de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth] utilisé en GeoJSON.
+  /** Génère un array de 4 coordonnées dans l'ordre [west, south, east, north] utilisé en GeoJSON.
    * @return array{0: float, 1:float, 2:float, 3:float} */
-  function as4Coords(): array { return [$this->sw->lon, $this->sw->lat, $this->ne->lon, $this->ne->lat]; }
+  function as4Coords(): array { return $this->sw ? [$this->west(), $this->south(), $this->east(), $this->north()] : []; }
   
-  /** Génère un array de 4 coordonnées LatLon dans l'ordre [latSouth, lonWest, latNorth, lonEst] utilisé par WFS.
+  /** Génère un array de 4 coordonnées LatLon dans l'ordre [south, west, north, east] utilisé par WFS.
    * @return array{0: float, 1:float, 2:float, 3:float} */
-  function as4CoordsLatLon(): array { return [$this->sw->lat, $this->sw->lon, $this->ne->lat, $this->ne->lon]; }
+  function as4CoordsLatLon(): array { return [$this->south(), $this->west(), $this->north(), $this->east()]; }
   
   /** Teste si le BBox correspond à l'espace vide, fonctionne aussi pour GBox. */
   function isEmpty(): bool { return is_null($this->sw); }
@@ -164,18 +177,18 @@ class BBox {
   /** Retourne le centre de la BBox.
    * @return TPos */
   function center(): array {
-    return $this->isEmpty() ? [] : [($this->sw->lon + $this->ne->lon)/2, ($this->sw->lat + $this->ne->lat)/2];
+    return $this->isEmpty() ? [] : [($this->west() + $this->east())/2, ($this->south() + $this->north())/2];
   }
   
   /** Taille de la bbox en degrés pour des coords. géo. */
   function sizeInDegree(): float {
-    $dLat = $this->ne->lat - $this->sw->lat;
+    $dLat = $this->north() - $this->south();
     // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
-    $dLon = $this->ne->lon - $this->sw->lon * cos(($this->sw->lat + $this->ne->lat) * pi() / 2 / 180);
+    $dLon = $this->east() - $this->west() * cos(($this->south() + $this->north()) * pi() / 2 / 180);
     return sqrt($dLon * $dLon + $dLat * $dLat);
   }
   
-  /** La BBox intersecte t'il l'antimérdien ?
+  /** La BBox intersecte t'elle l'antimérdien ?
    * La BBox chevauche l'antiméridien ssi la longitude min est inférieure à -180 ou la logitude max est supérieure à 180.
    */
   function crossesAntimeridian(): bool { return ($this->sw->lon <= -179.9999) || ($this->ne->lon >= +179.9999); }
@@ -184,6 +197,8 @@ class BBox {
    * @param list<Pt> $lpts
    */
   function extends(array $lpts): self {
+    if (!$lpts)
+      return $this;
     $sw = $this->sw;
     $ne = $this->ne;
     foreach ($lpts as $pt) {
@@ -225,7 +240,7 @@ class BBox {
   }
 
   /** Intersection géométrique de $this avec $b. Le résultat est toujours une BBox ! */
-  function inters(self $b): self {
+  function intersection(self $b): self {
     if (($this->isEmpty()) || ($b->isEmpty()))
       return BNONE;
     $sw = $this->sw->max($b->sw); // le SW du nv bbox est le pt juste au NE des 2 SW
@@ -235,6 +250,9 @@ class BBox {
     else                         // sinon
       return BNONE;               //  l'intersection est vide
   }
+  
+  /** Les 2 GBox s'intersectent-elles ? */
+  function intersects(BBox $b): bool { return $this->intersection($b) <> BNONE; }
 };
 
 /** Constante pour le BBox correspondant à l'espace vide. */
@@ -249,6 +267,7 @@ switch ($_GET['action'] ?? null) {
   case null: {
     echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a>\n";
     echo "<a href='?action=testFrom4Coords'>testFrom4Coords</a>\n";
+    echo "<a href='?action=testIs'>testIs</a>\n";
     break;
   }
   case 'testPt::deltaLon': {
@@ -273,6 +292,10 @@ switch ($_GET['action'] ?? null) {
         echo "Exception ",$e->getMessage(),"\n";
       }
     }
+    break;
+  }
+  case 'testIs': {
+    echo "BNONE est-elle une BBox ? ",BBox::is(BNONE)?'oui':'non',"\n";
     break;
   }
 }

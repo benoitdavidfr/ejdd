@@ -12,8 +12,8 @@
  */
 namespace GeoJSON;
 
-require_once __DIR__.'/bbox.php';
-#require_once __DIR__.'/gbox.php';
+#require_once __DIR__.'/bbox.php';
+require_once __DIR__.'/gbox.php';
 require_once __DIR__.'/../drawing/drawing.php';
 
 use Pos\Pos;
@@ -21,8 +21,8 @@ use Pos\LPos;
 use Pos\LLPos;
 use Pos\LLLPos;
 // GeoBox est utilisé pour BBox ou GBox et permet ainsi de définir si GeoJSON utilise BBox ou GBox
-use BBox\BBox as GeoBox;
-#use BBox\GBox as GeoBox;
+#use BBox\BBox as GeoBox;
+use BBox\GBox as GeoBox;
 use Drawing\Drawing;
 
 /** Les grandeurs kilo, Méga, Giga, ... */
@@ -488,3 +488,4 @@ class GeoJSONTest {
     }
   }
 };
+GeoJSONTest::main();

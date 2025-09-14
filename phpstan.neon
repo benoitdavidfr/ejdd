@@ -77,6 +77,7 @@ parameters:
     - datasets/extract.php
     - geom/pos.inc.php
     - geom/bbox.php
+    - geom/longint.php
     - geom/gbox.php
     - geom/ebox.php
     - geom/tbox.php

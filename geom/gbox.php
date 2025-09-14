@@ -6,6 +6,7 @@
 namespace BBox;
 
 require_once __DIR__.'/bbox.php';
+require_once __DIR__.'/longint.php';
 
 use Pos\Pos;
 use Pos\BiPos;
@@ -28,6 +29,8 @@ use Pos\BiPos;
  *
  * En conséquence la méthode extends() qui prend en paramètre une liste de Pt fait l'hypothèse que cette LineString ne chevauche pas l'AM.
  * Par contre la méthode union() qui agrège 2 GBox doit pouvoir prendre des GBox chevauchant l'AM et produire une GBox chevauchant l'AM.
+ *
+ * Le calcul de l'union et de l'intersection utilise LongInterval.
  */
 class GBox extends BBox {
   /** Fabrique un GBox avec vérification des contraintes d'intégrité.
@@ -57,9 +60,9 @@ class GBox extends BBox {
     }
     parent::__construct($sw, $ne);
   }
-  
+
   /** Fabrique un GBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
-   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
+   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. * /
   static function from4Coords(array $coords): self {
     if (!BiPos::is($coords))
       throw new \Exception("Le paramètre n'est pas une liste de 4 nombres");
@@ -67,13 +70,19 @@ class GBox extends BBox {
       [floatval($coords[0]), floatval($coords[1])],
       [floatval($coords[2]), floatval($coords[3])]
     );
-  }
+  }*/
   
   /** Fabrique une GBox à partir d'une Pos.
    * @param TPos $pos
    */
   static function fromPos(array $pos): self { return new self($pos, $pos); }
 
+  /** Retourne le centre de la BBox.
+   * @return TPos */
+  function center(): array {
+    throw new \Exception("TO BE IMPLEMENTED");
+  }
+  
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
     if ($this == GNONE)
@@ -155,6 +164,8 @@ class GBox extends BBox {
    * @param list<Pt> $lpts
    */
   function extends(array $lpts): self {
+    if (!$lpts)
+      return $this;
     $sw = $this->sw;
     $ne = $this->ne;
     foreach ($lpts as $pt) {
@@ -181,17 +192,32 @@ class GBox extends BBox {
     }
   }
   
-  /** Union géométrique de $this et $b. Le résultat est toujours une GBox.
-   * C'est très approximatif car l'extension aux 2 coins n'implique pas que les points inclus dans b seront dans $this !!!
+  /** Retourne l'intervalle en longitudes de la GBox. */
+  private function longInterval(): LongInterval {
+    if (!$this->sw)
+      throw new \Exception("Impossible de créer un LongInterval sur GNONE");
+    return new LongInterval($this->west(), $this->east());
+  }
+  
+  /** Union de $this et $b. Le résultat est toujours une GBox.
    */
   function union(BBox $b): self {
     if (get_class($b) <> __CLASS__)
       throw new \Exception("Dans GBox::union(), b est un ".get_class($b)." et PAS un ".__CLASS__);
-    if ($this->isEmpty())
+    
+    if (!$this->sw)
       return $b;
-    if ($b->isEmpty())
+    if (!$b->sw)
       return $this;
-    throw new \Exception("TO BE IMPLEMENTED");
+    
+    // union en longitude
+    $lon = $this->longInterval()->union($b->longInterval());
+    
+    // union en latitude
+    $south = min($this->south(), $b->south());
+    $north = max($this->north(), $b->north());
+    
+    return self::from4Coords([$lon->west, $south, $lon->east, $north]);
   }
   
   /** Fabrique une GBox à partir des coordonnées d'une MultiLineString définis comme LLPos.
@@ -201,7 +227,7 @@ class GBox extends BBox {
     // Je transforme la LLPos en LLPt
     $llPt = array_map(function(array $lPos) { return Pt::lPos2LPt($lPos); }, $coords);
     // Tranforme la LLPt en LBBox
-    $lBBox = array_map(function(array $lPt) { return BNONE->extends($lPt); }, $llPt);
+    $lBBox = array_map(function(array $lPt) { return GNONE->extends($lPt); }, $llPt);
     // Union des bbox de lBBox pour donner le résultat
     $rbbox = GNONE;
     foreach ($lBBox as $bbox)
@@ -209,42 +235,58 @@ class GBox extends BBox {
     return $rbbox;
   }
   
-  /** Intersection géométrique de $this avec $b. Le résultat est toujours une GBox ! */
-  function inters(BBox $b): self {
+  /** Intersection de $this avec $b. Le résultat est toujours une GBox ! */
+  function intersection(BBox $b): self {
     if (get_class($b) <> __CLASS__)
       throw new \Exception("Dans GBox::union(), b est un ".get_class($b)." et PAS un ".__CLASS__);
-    if (($this->isEmpty()) || ($b->isEmpty()))
+    if (!$this->sw || !$b->sw)
       return GNONE;
-    throw new \Exception("TO BE IMPLEMENTED");
+    
+    // intersection en longitude
+    if (!($lon = $this->longInterval()->intersection($b->longInterval())))
+      return GNONE;
+    
+    // intersection en latitude
+    $south = max($this->south(), $b->south());
+    $north = min($this->north(), $b->north());
+    if ($south > $north)
+      return GNONE;
+    
+    return self::from4Coords([$lon->west, $south, $lon->east, $north]);
   }
+  
+  /** Les 2 GBox s'intersectent-elles ? */
+  function intersects(BBox $b): bool { return $this->intersection($b) <> GNONE; }
 };
 
-/** Constante pour le BBox correspondant à l'espace vide. */
+/** Constante pour la GBox correspondant à l'espace vide. */
 const GNONE = new GBox(null, null);
-/** Constante pour la Terre en coords géo. */
+/** Constante pour la Terre entière en coords géo. */
 const WORLD = new GBox([-180,-90], [180,90]);
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
-echo "<pre>\n";
+echo "<title>GBox</title><pre>\n";
 switch ($_GET['action'] ?? null) {
   case null: {
     echo "<a href='?action=testFrom4Coords'>testFrom4Coords</a>\n";
     echo "<a href='?action=testPt::deltaLon'>testPt::deltaLon</a>\n";
     echo "<a href='?action=testExtends'>testExtends</a>\n";
     echo "<a href='?action=testExtends2'>testExtends2</a>\n";
+    echo "<a href='?action=testIs'>testIs</a>\n";
     break;
   }
   case 'testFrom4Coords': {
     foreach ([
-      [],
+      /*[],
       ['a'=>'b','b'=>'c','c'=>'d','d'=>'e'],
       [0,1,2,'x'],
       [0,'1e-2','2.5','4'],
       [0, 1e-2, 2.5, 4],
-      [0,1,2,'4a'],
+      [0,1,2,'4a'],*/
+      [0,0,10,10],
     ] as $array) {
       try {
         echo GBox::from4Coords($array),"\n";
@@ -314,6 +356,11 @@ switch ($_GET['action'] ?? null) {
   }
   case 'testExtends2': {
 
+    break;
+  }
+  case 'testIs': {
+    echo "BNONE est-elle une GBox ? ",GBox::is(BNONE)?'oui':'non',"\n";
+    echo "GNONE est-elle une GBox ? ",GBox::is(GNONE)?'oui':'non',"\n";
     break;
   }
 }

@@ -1,5 +1,5 @@
 <?php
-/** Fichier racine de dataset.
+/** Fichier racine de ejdd.
  * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte le code de bootstrap de l'IHM.
  */
 
@@ -47,6 +47,10 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+14/9/2025:
+  - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
+  - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
+    - encore qqs pts secondaires à finaliser, notamment center() et size()
 13/9/2025:
   - chgt du nom du répertoire en jdd plus original que dataset
   - modif de la sémantique de la création d'une BBox/GBox en prenant en compte les segments entre points
@@ -299,17 +303,16 @@ require_once __DIR__.'/datasets/dataset.inc.php';
 use Dataset\Dataset;
 use Algebra\CollectionOfDs;
 
-ini_set('memory_limit', '10G');
-set_time_limit(5*60);
-
 /** Documentation générale de l'application -> voir le README. */
 class Application {
   /** Bootstrap de l'IHM. */
   static function main(): void {
+    ini_set('memory_limit', '10G');
+    set_time_limit(5*60);
     switch ($_GET['action'] ?? null) {
       case null: {
         if (!isset($_GET['dataset'])) {
-          echo "<title>dataset</title>\n";
+          echo "<title>ejdd</title>\n";
           echo "<h2>Choix d'un JdD</h2>\n";
           foreach (Dataset::REGISTRE as $dsName=> $class) {
             $dataset = Dataset::get($dsName);

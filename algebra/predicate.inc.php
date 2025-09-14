@@ -7,9 +7,10 @@ namespace Algebra;
 require_once __DIR__.'/query.php';
 require_once __DIR__.'/skipbracket.php';
 
-//use GeoJSON\GeoJSON;
 use GeoJSON\Geometry;
-use BBox\BBox;
+// Choisir BBox ou GBox
+use BBox\BBox as GeoBox;
+#use BBox\GBox as GeoBox;
 use BBox\NONE;
 
 /** Constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.
@@ -28,12 +29,12 @@ class Constant {
   }
 
   /** Conversion dans une valeur fonction du type. */
-  function value(): string|int|float|BBox {
+  function value(): string|int|float|GeoBox {
     return match ($this->type) {
       'string' => $this->value,
       'int'=> intval($this->value),
       'float'=> floatval($this->value),
-      'bboxInJSON'=> BBox::from4Coords(json_decode($this->value, true)),
+      'bboxInJSON'=> GeoBox::from4Coords(json_decode($this->value, true)),
     };
   }
 };
@@ -61,8 +62,8 @@ class Comparator {
   }
   
   /** évaluation du comparateu sur 2 valeurs, retourne un bouléen.
-   * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $left
-   * @param int|float|string|\BBox\BBox|TGJSimpleGeometry $right */
+   * @param int|float|string|GeoBox|TGJSimpleGeometry $left
+   * @param int|float|string|GeoBox|TGJSimpleGeometry $right */
   function eval(mixed $left, mixed $right): bool {
     switch ($this->compOp) {
       case '=': $result = ($left == $right); break;
@@ -101,14 +102,14 @@ class Comparator {
         // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
         // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
         if (is_array($left)) { // cas d'un GeoJSON décodé
-          $left = ($left['bbox'] ?? null) ? BBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
+          $left = ($left['bbox'] ?? null) ? GeoBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
         }
         if (is_array($right)) { // cas d'un GeoJSON décodé
-          $right = ($right['bbox'] ?? null) ? BBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
+          $right = ($right['bbox'] ?? null) ? GeoBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
         }
-        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) { // Si un des 2 params n'est pas un BBox
+        if (!GeoBox::is($left) || !GeoBox::is($right)) { // Si un des 2 params n'est pas un GeoBox
           echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
-          throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
+          throw new \Exception("intersects prend en paramètres 2 BBox/GBox ou GeoJSON");
         }
         $compOp = $this->compOp;
         $result = $left->includes($right);
@@ -119,16 +120,16 @@ class Comparator {
         // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
         // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
         if (is_array($left)) { // cas d'un GeoJSON décodé
-          $left = ($left['bbox'] ?? null) ? BBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
+          $left = ($left['bbox'] ?? null) ? GeoBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
         }
         if (is_array($right)) { // cas d'un GeoJSON décodé
-          $right = ($right['bbox'] ?? null) ? BBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
+          $right = ($right['bbox'] ?? null) ? GeoBox::from4Coords($right['bbox']) : Geometry::create($right)->bbox();
         }
-        if (!is_a($left, '\BBox\BBox') || !is_a($right, '\BBox\BBox')) { // Si un des 2 params n'est pas un BBox
+        if (!GeoBox::is($left) || !GeoBox::is($right)) { // Si un des 2 params n'est pas un BBox/GBox
           echo "<pre>params="; print_r(['left'=> $left, 'right'=>$right]);
-          throw new \Exception("intersects prend en paramètres 2 BBox ou GeoJSON");
+          throw new \Exception("intersects prend en paramètres 2 BBox/GBox ou GeoJSON");
         }
-        $result = !$left->inters($right)->isEmpty();
+        $result = $left->intersects($right);
         //echo "$left intersects $right -> ",$result?'vrai':'faux',"<br>\n";
         break;
       }

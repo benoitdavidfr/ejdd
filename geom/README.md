@@ -46,14 +46,16 @@ La classe BBox définit des calculs dans un plan cartésien et qui sont faux pou
 La classe BBox a l'avantage d'implémenter des algorithmes simples mais l'inconvénient qu'ils sont faux dans certains cas particuliers.
 Ainsi le rectangle englobant d'un feature à cheval sur l'antiméridien sera faux.
 
-La classe GBox définit des calculs prenant en compte l'antiméridien.
+La classe GBox définit des calculs prenant en compte l'antiméridien. Elle utilise LongInterval développé avec l'assistance de ChatGPT.
 
-### 2.3) La classe EBox
+### 2.3) La classe LongInterval
+LongInterval est un intervalle de longitudes sur la Terre pouvant chevaucher l'antiméridien.  
+Cette classe définit les méthodes intersection() et union().  
+L'union renvoie toujours l'arc connexe minimal (sur le cercle) contenant A ∪ B.  
+L'intersection renvoie null si vide.
+
+### 2.4) La classe EBox
 A voir
-
-### 2.4) Limites
-
-Dans tous les cas, la gestion des pôles Noord et Sud n'est pas satisfaisante.
 
 ## 3) Primitives GeoJSON (Package GeoJSON)
 Ce package définit une classe par primitive GeoJSON.
@@ -63,5 +65,5 @@ Ce package permet d'une part de calculer les échelles des différents niveaux d
 d'autre part, de calculer pour une taille de BBox le niveau de zoom adapté à sa visualisation.
 
 ## 5) Liens avec d'autres packages
-Drawing
+- GdDrawing permet de tester interactivement l'union de BBox ou GBox.
 

@@ -5,14 +5,16 @@
 namespace Algebra;
 
 require_once __DIR__.'/datasets/dataset.inc.php';
-require_once __DIR__.'/geom/bbox.php';
+require_once __DIR__.'/geom/gbox.php';
 
 use Dataset\Dataset;
 use GeoJSON\Geometry;
-use BBox\BBox;
-use BBox\NONE;
+#use BBox\BBox as GeoBox;
+use BBox\GBox as GeoBox;
+#use BBox\BNONE;
 
 ini_set('memory_limit', '10G');
+set_time_limit(5*60);
 //echo "<pre>"; print_r($_SERVER);
 
 /** @param list<string> $argv */
@@ -91,7 +93,7 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     //echo "<pre>bbox="; print_r($bbox); //die();
     $bbox = explode(',', $bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
-    $bbox =  BBox::from4Coords($bbox);
+    $bbox =  GeoBox::from4Coords($bbox);
     //echo "<pre>bbox="; print_r($bbox); //die();
   }
   $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
@@ -116,13 +118,13 @@ if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)
     if ($geometry = $tuple['geometry'] ?? null) { // Si le tuple comporte une géométrie
       if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si bbox est défini
         if ($gbox = $geometry['bbox'] ?? null) { // Si la bbox de la géométrie est définie
-          $gbox = BBox::from4Coords($gbox); // je la convertit en BBox
+          $gbox = GeoBox::from4Coords($gbox); // je la convertit en BBox
         }
         else { // Sinon je la calcule à partir de la géométrie
           $gbox = Geometry::create($geometry)->bbox();
         }
-        // Si la BBox de la reqête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
-        if ($bbox->inters($gbox)->isEmpty()) {
+        // Si la BBox de la requête n'intersecte pas la Box de la géométrie alors je ne transmet pas le n-uplet
+        if (!$bbox->intersects($gbox)) {
           continue;
         }
       }

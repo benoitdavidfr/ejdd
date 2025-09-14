@@ -249,18 +249,18 @@ class GdDrawing implements Drawing {
 };
 
 
-if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return; // test élémentaire de GdDrawing
+if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return; // test unitaire de GdDrawing
 
 
-require_once __DIR__.'/../geom/bbox.php';
+require_once __DIR__.'/../geom/gbox.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
 require_once __DIR__.'/../lib.php';
 
 use GeoJSON\Polygon;
 use GeoJSON\LineString;
 // GeoBox est utilisé pour BBox ou GBox et permet ainsi de définir si BBox ou GBox est utilisé
-use BBox\BBox as GeoBox;
-#use BBox\GBox as GeoBox;
+#use BBox\BBox as GeoBox;
+use BBox\GBox as GeoBox;
 use Lib\HtmlForm;
 
 ini_set('memory_limit', '10G');
@@ -270,15 +270,22 @@ set_time_limit(5*60);
 class Context {
   /** @var TLPos $lstr - la LigneString courante */
   protected array $lstr=[];
+  /** @var TLLPos $mlstr - la MultiLigneString courante */
+  protected array $mlstr=[];
   
   /** Ajoute une position à $lstr, contraint la longitude dans [-180, +180].
    * @param TPos $pos */
   function addPos(array $pos): void {
     if ($pos[0] > 180)
-      $pos[0] -= 360;
+      $pos[0] = 180;
     if ($pos[0] < -180)
-      $pos[0] += 360;
+      $pos[0] = -180;
     $this->lstr[] = [round($pos[0]), round($pos[1])];
+  }
+  
+  function addLsInMls(): void {
+    $this->mlstr[] = $this->lstr;
+    $this->lstr = [];
   }
   
   /** Construit le "Polygone" correspondant à un GBox sous la forme d'une LPos, utilisé par gboxOfLPosAsLLPos
@@ -290,15 +297,12 @@ class Context {
     return [$sw, [$sw[0],$ne[1]], $ne, [$ne[0],$sw[1]], $sw];
   }
   
-  /** Retourne lecountour de la GeoBox de $lstr comme list<LineString> (LLPos).
+  /** Retourne le countour de la GeoBox comme list<LineString> (LLPos).
    * Si la GeoBox N'intersecte PAS l'antiméridien alors c'est le contour de la GeoBox.
    * Si la GeoBox intersecte l'antiméridien alors les contours des 2 côtés
    * @return TLLPos 
    */
-  function geoboxOfLstrAsMultiLineString(): array {
-    if (!$this->lstr)
-      return [];
-    $bbox = GeoBox::fromLineString($this->lstr);
+  function contourOfGeoBox(GeoBox $bbox): array {
     //print_r($bbox);
     $sw = $bbox->sw->pos();
     $ne = $bbox->ne->pos();
@@ -313,62 +317,117 @@ class Context {
     }
   }
   
-  /** Réinitialise la lstr */
-  function clearLS(): void { $this->lstr = []; }
+  /** Retourne lecountour de la GeoBox de $lstr comme list<LineString> (LLPos).
+   * Si la GeoBox N'intersecte PAS l'antiméridien alors c'est le contour de la GeoBox.
+   * Si la GeoBox intersecte l'antiméridien alors les contours des 2 côtés
+   * @return TLLPos 
+   */
+  function contourOfGeoboxOfLstr(): array {
+    if (!$this->lstr)
+      return [];
+    return self::contourOfGeoBox(GeoBox::fromLineString($this->lstr));
+  }
+  
+  /** Retourne le countour de la GeoBox de $mlstr comme list<LineString> (LLPos).
+   * Si la GeoBox N'intersecte PAS l'antiméridien alors c'est le contour de la GeoBox.
+   * Si la GeoBox intersecte l'antiméridien alors les contours des 2 côtés
+   * @return TLLPos 
+   */
+  function contourOfGeoboxOfMLstr(): array {
+    if (!$this->mlstr)
+      return [];
+    return self::contourOfGeoBox(GeoBox::fromMultiLineString($this->mlstr));
+  }
+  
+  /** Réinitialise le contenu du contexte */
+  function clearContext(): void {
+    $this->lstr = [];
+    $this->mlstr = [];
+  }
   
   /** Affiche le contexte de l'appli. */
   function display(): void {
-    echo 'lstr=[',implode(', ', array_map(function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); }, $this->lstr)),"]<br>\n";
-    echo "geoboxOfLs=",GeoBox::fromLineString($this->lstr),"<br>\n";
+    echo 'lstr=[',implode(', ', array_map(function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); }, $this->lstr)),"] -> \n";
+    echo " geoboxOfLs=",GeoBox::fromLineString($this->lstr),"<br>\n";
+    echo 'mlstr=[',
+      implode(', ', array_map(
+        function($lpos): string {
+          return implode(',', array_map(
+            function($pos) { return sprintf("%.0f@%.0f", $pos[0], $pos[1]); },
+            $lpos));
+        },
+        $this->mlstr)),
+      "] -> \n";
+    echo "geoboxOfMLs=",GeoBox::fromMultiLineString($this->mlstr),"<br>\n";
   }
   
   function exportAsJSON(): string {
-    return json_encode(['lstr'=> $this->lstr, 'geobox'=> GeoBox::fromLineString($this->lstr)->as4Coords()]);
+    return json_encode([
+      'lstr'=> $this->lstr,
+      'geoboxOfLstr'=> GeoBox::fromLineString($this->lstr)->as4Coords(),
+      'mlstr'=> $this->mlstr,
+      'geoboxOfMlstr'=> GeoBox::fromMultiLineString($this->mlstr)->as4Coords(),
+    ]);
   }
 };
 
-/** Test de GdDrawing et une appli de debuggage des BBox.
+/** Test de GdDrawing et une appli de debuggage des BBox et GBox.
  * Le principe est de saisir soit un LPos soit un LLPos sur un planisphère
  * puis de construire un BBox ou un GBox à partir de ces listes.
  * Chaque interaction génère un nouvel affichage.
  * Un cookie est utilisé pour conserver un contexte entre les appels.
  */
 class GdDrawingTest {
+  /** Le menu de l'appli sous la forme [{code}=> [titre]]. */
+  const MENU = [
+   'addLsInMls'=> "Ajoute la LS dans la MLS",
+   'clearContext'=> "Efface le contenu du contexte",
+   'export'=> "Exporte le contexte",
+   'reinit'=> "Réinitialise le Cookie avec un nouveau contexte",
+  ];
+  /** Taille des rectangles de la Mpa Html en coord. écran. */
+  const SIZE_OF_RECT = 20;
+  /** Le context cad les données de l'appli */
   static Context $context;
   
-  /** Reconstitue le contexte à partir du cookie. */
+  /** Récupère le contexte à partir du cookie. */
   static function getContext(): void { self::$context = unserialize($_COOKIE['contextGdDrawingTest']); }
   
-  /** Sauve le contexte dans le cookie, doit être appelé avant toute sortie de texte. */
-  static function setContext(): void { setcookie('contextGdDrawingTest', serialize(self::$context), time()+60*60*24*30, '/'); }
+  /** Enregistre le contexte dans le cookie, doit être appelé avant toute sortie de texte. */
+  static function storeContext(): void { setcookie('contextGdDrawingTest', serialize(self::$context), time()+60*60*24*30, '/'); }
   
   /** Fabrique et transmet l'image au navigateur. */
   static function sendImage(GdDrawing $drawing): void {
     $planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
     $drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
 
-    (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-    (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]);
-    (new LineString([[-180, 0],[+180, 0]]))->draw($drawing, ['stroke'=> 0x0000FF]);
+    (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]); // dessin de l'AM West
+    (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]); // dessin de l'AM Est
+    (new LineString([[-180, 0],[+180, 0]]))->draw($drawing, ['stroke'=> 0x0000FF]); // dessin de l'Equateur
 
-    // dessin du bbox défini par la lstr
     self::getContext();
-    $bboxAsMLS = self::$context->geoboxOfLstrAsMultiLineString();
+    // dessin du bbox défini par la lstr
+    $bboxAsMLS = self::$context->contourOfGeoboxOfLstr();
     foreach ($bboxAsMLS as $ls)
       (new LineString($ls))->draw($drawing, ['stroke'=> 0x888800]);
+
+    // dessin du bbox défini par la mlstr
+    $bboxAsMLS = self::$context->contourOfGeoboxOfMLstr();
+    foreach ($bboxAsMLS as $ls)
+      (new LineString($ls))->draw($drawing, ['stroke'=> 0xFF0000]);
     
     //$drawing->flush();
     $drawing->flush('', true);  // Utiliser cette ligne pour ne pas transmettre le header en cas de bug
   }
   
-  /** Gère un rect dans la Map. */
+  /** Gère le Html du rect dans la Map. */
   static function genRect(int $x, int $y, int $dx, int $dy, string $href, string $alt): string {
     $x2 = $x + $dx;
     $y2 = $y + $dy;
     return "<area shape='rect' coords='$x, $y, $x2, $y2' href='$href' alt='$alt' />\n";
   }
   
-  /** Génère la Map Html et l'image de la carte */
+  /** Génère le Html de la Map et l'intégration de l'image de la carte */
   static function genMapImage(int $width, int $height, int $delta): string {
     $mapName = 'map';
     $map = "<map name='$mapName'>\n";
@@ -388,13 +447,17 @@ class GdDrawingTest {
   static function menu(): void {
     echo "<table border=1><tr><form>\n",
          //"<input type='hidden' name='action' value='ihm'>\n",
-         "<td>",HtmlForm::select('action', [
-           'clearLS'=> "Efface la LineString",
-           'export'=> "exporte le contexte",
-           'reinit'=> "Réinitialise le Cookie",
-          ]),"</td>",
+         "<td>",HtmlForm::select('action', self::MENU),"</td>",
          "<td><input type='submit' value='ok'></td>\n",
          "</form></tr></table>\n";
+  }
+  
+  static function display(GdDrawing $drawing): void {
+    echo "<title>GdDrawing</title>\n";
+    self::menu(); // affiche le formulaire de menu
+    self::$context->display();
+    echo self::genMapImage($drawing->width, $drawing->height, self::SIZE_OF_RECT); // affichage de la HtmlMap et l'image de la carte
+    echo "<a href='?action=image'>Affiche l'image directement en PNG</a><br>\n";
   }
   
   /** Fonction principale. */
@@ -439,36 +502,26 @@ class GdDrawingTest {
         break;
       }
       case 'ihm': { // Affichage de l'IHM 
-        if (isset($_GET['x'])) {
+        if ($pos = isset($_GET['x']) ? $drawing->userCoord([$_GET['x'], $_GET['y']]) : null) {
           self::getContext();
-          $pos = $drawing->userCoord([$_GET['x'], $_GET['y']]);
           self::$context->addPos($pos);
-          self::setContext();
+          self::storeContext();
         }
-        echo "<title>GdDrawing</title>\n";
-        self::menu(); // affiche le formulaire de menu
-        if (isset($_GET['x'])) { // affichage avant la carte
-          $pos = [$_GET['x'], $_GET['y']];
-          //echo '$world='; print_r($drawing->world->as4Coords()); echo "<br>\n";
-          //echo "width=",$drawing->width,", height=",$drawing->height,"<br>\n";
-          
-          $pos = $drawing->userCoord($pos);
-          //print_r($pos);
-          printf("pos=%.0f@%.0f<br>\n", $pos[0], $pos[1]);
-          //echo 'context='; print_r(self::$context); echo "<br>\n";
-          self::$context->display();
-        }
-        // affichage de la HtmlMap et l'image de la carte
-        echo self::genMapImage($drawing->width, $drawing->height, 50);
+        self::display($drawing);
         break;
       }
-      case 'clearLS': { // efface la liste de positions dans le contexte
+      case 'clearContext': { // efface le contenu du contexte
         self::getContext();
-        self::$context->clearLS();
-        self::setContext();
-        echo "<title>GdDrawing</title>\n";
-        self::menu(); // affiche le formulaire de menu
-        echo self::genMapImage($drawing->width, $drawing->height, 50); // affichage de la HtmlMap et l'image de la carte
+        self::$context->clearContext();
+        self::storeContext();
+        self::display($drawing);
+        break;
+      }
+      case 'addLsInMls': { // Ajoute la LS dans la MLS 
+        self::getContext();
+        self::$context->addLsInMls();
+        self::storeContext();
+        self::display($drawing);
         break;
       }
       case 'export': { // exporte un cas considéré comme un bug
@@ -476,14 +529,13 @@ class GdDrawingTest {
         $json = self::$context->exportAsJSON();
         file_put_contents(__DIR__.'/gddrawingoutput.json', "$json\n",  FILE_APPEND);
         echo "Export: $json<br>\n";
-        echo "<title>GdDrawing</title>\n";
-        self::menu(); // affiche le formulaire de menu
-        echo self::genMapImage($drawing->width, $drawing->height, 50); // affichage de la HtmlMap et l'image de la carte
+        self::display($drawing);
         break;
       }
       case 'reinit': { // stocke dans le cookie un nouveau contexte
         self::$context = new Context;
-        self::setContext();
+        self::storeContext();
+        self::display($drawing);
         break;
       }
       default: throw new \Exception("Action $_GET[action] inconnue");
