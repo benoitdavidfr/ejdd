@@ -69,10 +69,6 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/llmap.html" class="">LLMap</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
@@ -93,10 +89,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Lib.html" class="">Lib</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Map.html" class="">Map</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -140,7 +132,6 @@
             <dt class="phpdocumentor-table-of-contents__entry -package"><a href="packages/Application.html"><abbr title="\Application">Application</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -package"><a href="packages/Dataset.html"><abbr title="\Dataset">Dataset</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -package"><a href="packages/Lib.html"><abbr title="\Lib">Lib</abbr></a></dt>
-            <dt class="phpdocumentor-table-of-contents__entry -package"><a href="packages/Map.html"><abbr title="\Map">Map</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -package"><a href="packages/Misc.html"><abbr title="\Misc">Misc</abbr></a></dt>
     </dl>
 
@@ -153,7 +144,6 @@
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/algebra.html"><abbr title="\Algebra">Algebra</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/dataset.html"><abbr title="\Dataset">Dataset</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/lib.html"><abbr title="\Lib">Lib</abbr></a></dt>
-            <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/llmap.html"><abbr title="\LLMap">LLMap</abbr></a></dt>
             <dt class="phpdocumentor-table-of-contents__entry -namespace"><a href="namespaces/misc.html"><abbr title="\Misc">Misc</abbr></a></dt>
     </dl>
 
@@ -179,10 +169,12 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
+- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
+- finir gbox.php, notamment l&#039;union
 - mettre en MD les description dans les schémas
 - il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
-  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+  - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -273,6 +265,28 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+14/9/2025:
+  - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
+  - écriture de LongInterval avec l&#039;assistance de ChatGPT pour finaliser GBox
+    - encore qqs pts secondaires à finaliser, notamment center() et size()
+13/9/2025:
+  - chgt du nom du répertoire en jdd plus original que dataset
+  - modif de la sémantique de la création d&#039;une BBox/GBox en prenant en compte les segments entre points
+  - modif en conséquence des méthodes fromLPos -&gt; fromLineString et fromLLPos -&gt; fromMultiLineString
+  - mise au point d&#039;une solution pour
+    - définir GBox comme sous-classe de BBox qui est une classe concrète en interdisant des opérations binaires BBox/Gbox
+    - permettre de sélectionner simplement BBox ou GBox dans GeoJSON
+  - GBox n&#039;est pas finalisé mais son périmètre est plus clair -&gt; remplacer BBox une fois au point
+11/9/2025:
+  - ca marche avec bbox sauf pour les objets à cheval sur l&#039;antiméridien
+  - déplacement de llmap.php dans drawing
+  - petite appli avec GdDrawing pour commencer à debugger
+10/9/2025:
+  - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - gbox.php n&#039;est pas finalisé
+  - déplacement des fichiers sur la geom dans un répertoire geom
+  - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
 8/9/2025:
   - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
@@ -437,87 +451,6 @@ EOT]]                            </span>
 <dd>Journal des modifications du code.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/default.html#constant_JS_SRCE">JS_SRCE</a>
-    <span>
-        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;&lt;head&gt;
-  &lt;title&gt;{title}&lt;/title&gt;
-  &lt;meta charset=&quot;UTF-8&quot;&gt;
-  &lt;!-- meta nécessaire pour le mobile --&gt;
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-  &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/llmap.css&#039;&gt;
-  &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;{leaflet}/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;{leaflet}/leaflet.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- chgt du curseur --&gt;
-  &lt;style&gt;
-  .leaflet-grab {
-     cursor: auto;
-  }
-  .leaflet-dragging .leaflet-grab{
-     cursor: move;
-  }
-  &lt;/style&gt; 
-  &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;{leaflet}/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;{leaflet}/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;{leaflet}/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;{leaflet}/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
-  &lt;script&gt;
-    var {varName} = {varValue};
-
-// affiche les caractéristiques de chaque feature
-var onEachFeature = function (feature, layer) {
-  layer.bindPopup(
-    &#039;&lt;b&gt;Feature&lt;/b&gt;&lt;br&gt;&#039;
-    +&#039;&lt;pre&gt;&#039;+JSON.stringify(feature.properties,null,&#039; &#039;)+&#039;&lt;/pre&gt;&#039;
-  );
-  var name = &#039;undef&#039;;
-  if (typeof feature.properties.nom !== &#039;undefined&#039;) {
-    name = feature.properties.nom;
-  }
-  else if (typeof feature.properties.name !== &#039;undefined&#039;) {
-    name = feature.properties.name;
-  }
-  layer.bindTooltip(name);
-}
-
-var map = L.map(&#039;map&#039;).setView({view});  // view pour la zone
-L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
-
-// activation du plug-in Control.Coordinates
-var c = new L.Control.Coordinates();
-c.addTo(map);
-map.on(&#039;click&#039;, function(e) { c.setCoordinates(e); });
-
-var baseLayers = {
-  {baseLayers}
-};
-map.addLayer(baseLayers[&quot;{defaultBaseLayer}&quot;]);
-
-var overlays = {
-  {overlays}
-};
-map.addLayer(overlays[&quot;{defaultOverlay}&quot;]);
-
-L.control.layers(baseLayers, overlays).addTo(map);
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-EOT]                            </span>
-</dt>
-<dd>Le code JavaScript paramétré de la carte utilisé par Map::draw().</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="namespaces/default.html#constant_LIGNE_DE_COMMANDE">LIGNE_DE_COMMANDE</a>
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
@@ -591,10 +524,12 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
+- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
+- finir gbox.php, notamment l&#039;union
 - mettre en MD les description dans les schémas
 - il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
-  - étendre la carte d&#039;un n-uplet aux colections issues de requêtes
+  - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -747,7 +682,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">255</span>
+    <span class="phpdocumentor-element-found-in__line">279</span>
 
     </aside>
 
@@ -796,7 +731,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">45</span>
 
     </aside>
 
@@ -810,6 +745,28 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+14/9/2025:
+  - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
+  - écriture de LongInterval avec l&#039;assistance de ChatGPT pour finaliser GBox
+    - encore qqs pts secondaires à finaliser, notamment center() et size()
+13/9/2025:
+  - chgt du nom du répertoire en jdd plus original que dataset
+  - modif de la sémantique de la création d&#039;une BBox/GBox en prenant en compte les segments entre points
+  - modif en conséquence des méthodes fromLPos -&gt; fromLineString et fromLLPos -&gt; fromMultiLineString
+  - mise au point d&#039;une solution pour
+    - définir GBox comme sous-classe de BBox qui est une classe concrète en interdisant des opérations binaires BBox/Gbox
+    - permettre de sélectionner simplement BBox ou GBox dans GeoJSON
+  - GBox n&#039;est pas finalisé mais son périmètre est plus clair -&gt; remplacer BBox une fois au point
+11/9/2025:
+  - ca marche avec bbox sauf pour les objets à cheval sur l&#039;antiméridien
+  - déplacement de llmap.php dans drawing
+  - petite appli avec GdDrawing pour commencer à debugger
+10/9/2025:
+  - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - gbox.php n&#039;est pas finalisé
+  - déplacement des fichiers sur la geom dans un répertoire geom
+  - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
 8/9/2025:
   - correction du bug l&#039;antiméridien dans BBox, ce qui limite la taille des BBox
   - finalisation du dessin de la carte montrant la géométrie d&#039;un n-uplet
@@ -981,112 +938,6 @@ EOT]]</span>
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_JS_SRCE">
-        JS_SRCE
-        <a href="namespaces/default.html#constant_JS_SRCE" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="llmap.php"><a href="files/llmap.html">llmap.php</a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">210</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Le code JavaScript paramétré de la carte utilisé par Map::draw().</p>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">JS_SRCE</span>
-    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-&lt;!DOCTYPE HTML&gt;
-&lt;html&gt;&lt;head&gt;
-  &lt;title&gt;{title}&lt;/title&gt;
-  &lt;meta charset=&quot;UTF-8&quot;&gt;
-  &lt;!-- meta nécessaire pour le mobile --&gt;
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot; /&gt;
-  &lt;!-- styles nécessaires pour le mobile --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/llmap.css&#039;&gt;
-  &lt;!-- styles et src de Leaflet --&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&#039;{leaflet}/leaflet.css&#039;/&gt;
-  &lt;script src=&#039;{leaflet}/leaflet.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- chgt du curseur --&gt;
-  &lt;style&gt;
-  .leaflet-grab {
-     cursor: auto;
-  }
-  .leaflet-dragging .leaflet-grab{
-     cursor: move;
-  }
-  &lt;/style&gt; 
-  &lt;!-- Include the edgebuffer plugin --&gt;
-  &lt;script src=&quot;{leaflet}/leaflet.edgebuffer.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- Include the Control.Coordinates plugin --&gt;
-  &lt;link rel=&#039;stylesheet&#039; href=&#039;{leaflet}/Control.Coordinates.css&#039;&gt;
-  &lt;script src=&#039;{leaflet}/Control.Coordinates.js&#039;&gt;&lt;/script&gt;
-  &lt;!-- Include the uGeoJSON plugin --&gt;
-  &lt;script src=&quot;{leaflet}/leaflet.uGeoJSON.js&quot;&gt;&lt;/script&gt;
-  &lt;!-- plug-in d&#039;appel des GeoJSON en AJAX --&gt;
-  &lt;script src=&#039;{leaflet}/leaflet-ajax.js&#039;&gt;&lt;/script&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;div id=&quot;map&quot; style=&quot;height: 100%; width: 100%&quot;&gt;&lt;/div&gt;
-  &lt;script&gt;
-    var {varName} = {varValue};
-
-// affiche les caractéristiques de chaque feature
-var onEachFeature = function (feature, layer) {
-  layer.bindPopup(
-    &#039;&lt;b&gt;Feature&lt;/b&gt;&lt;br&gt;&#039;
-    +&#039;&lt;pre&gt;&#039;+JSON.stringify(feature.properties,null,&#039; &#039;)+&#039;&lt;/pre&gt;&#039;
-  );
-  var name = &#039;undef&#039;;
-  if (typeof feature.properties.nom !== &#039;undefined&#039;) {
-    name = feature.properties.nom;
-  }
-  else if (typeof feature.properties.name !== &#039;undefined&#039;) {
-    name = feature.properties.name;
-  }
-  layer.bindTooltip(name);
-}
-
-var map = L.map(&#039;map&#039;).setView({view});  // view pour la zone
-L.control.scale({position:&#039;bottomleft&#039;, metric:true, imperial:false}).addTo(map);
-
-// activation du plug-in Control.Coordinates
-var c = new L.Control.Coordinates();
-c.addTo(map);
-map.on(&#039;click&#039;, function(e) { c.setCoordinates(e); });
-
-var baseLayers = {
-  {baseLayers}
-};
-map.addLayer(baseLayers[&quot;{defaultBaseLayer}&quot;]);
-
-var overlays = {
-  {overlays}
-};
-map.addLayer(overlays[&quot;{defaultOverlay}&quot;]);
-
-L.control.layers(baseLayers, overlays).addTo(map);
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-EOT]</span>
-</code>
-
-
-    
-    
-    
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_LIGNE_DE_COMMANDE">
         LIGNE_DE_COMMANDE
         <a href="namespaces/default.html#constant_LIGNE_DE_COMMANDE" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1096,7 +947,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">220</span>
+    <span class="phpdocumentor-element-found-in__line">244</span>
 
     </aside>
 
