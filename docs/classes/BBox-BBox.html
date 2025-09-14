@@ -61,19 +61,11 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bbox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/lib.html" class="">Lib</a>
+    <a href="namespaces/drawing.html" class="">Drawing</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -81,15 +73,37 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/bbox.html" class="">BBox</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/bbox-tbox.html" class="">TBox</a>
+                
+            </li>
+            </ul>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/bboxv1.html" class="">BBoxV1</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/geojson.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/misc.html" class="">Misc</a>
+    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
+    <a href="namespaces/lib.html" class="">Lib</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
                         </section>
@@ -104,19 +118,11 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Lib.html" class="">Lib</a>
+    <a href="packages/Drawing.html" class="">Drawing</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -124,15 +130,31 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBox.html" class="">BBox</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBoxV1.html" class="">BBoxV1</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Misc.html" class="">Misc</a>
+    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
+    <a href="packages/Lib.html" class="">Lib</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Misc.html" class="">Misc</a>
 </h4>
 
                         </section>
@@ -177,33 +199,17 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">178</span>
+    <span class="phpdocumentor-element-found-in__line">86</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Un rectangle englobant en coord. geo. pour le stocker, effectuer diverses opérations et tester des conditions.</p>
+            <p class="phpdocumentor-summary">Un rectangle englobant générique avec calculs simples en coord. cartésiennes.</p>
 
 
-    <section class="phpdocumentor-description"><p>Les opérations sont l'intersection et l'union entre 2 BBox. Les tests sont ceux d'intersection et d'inclusion.
-Dans l'intersection entre BBox, elles sont considérées comme topologiquement fermées.
-Cela veut dire que 2 bbox qui se touchent sur un bord ont comme intersection le segment commun ;
-et que 2 bbox. qui se touchent dans un coin ont comme intersection le point correspondant à ce coin.
-Un point, un segment vertical ou horizontal sont représentés comme des BBox dégénérés.
-L'espace vide est représenté par un BBox particulier défini comme une constante,
-permettant ainsi de tester si une intersection est vide ou non.
-Les BBox munies des opérations est une algèbre, cad que le résultat d'une opération est toujours un BBox.</p>
-<p>Du point de vue implémentation:
-Un BBox est défini par ses 2 coins SW et NE avec 2 contraintes d'intégrité:</p>
-<ol>
-<li>Si 1 des 2 coins est null alors l'autre doit aussi l'être.</li>
-<li>Si les coins sont non nuls alors le coin SW doit être au SW du coin NE.</li>
-</ol>
-<p>Un point est représenté par 2 coins identiques. L'espace vide est représenté par 2 points null.</p>
-<p>Lorsque le BBox chevauche l'antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</p>
-<p>Enfin le constructeur prend en paramètres des TPos et non des Pt pour qu'il soit appelable de l'extérieur
-sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'avoir des Pt que des TPos.</p>
+    <section class="phpdocumentor-description"><p>Implémente le calcul de BBox sur des géométries de manière simple en calculant le min et max des coordonnées
+sans tenir compte de l'antiméridien.</p>
 </section>
 
 
@@ -237,14 +243,14 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <span>
                         &nbsp;: <a href="classes/BBox-Pt.html"><abbr title="\BBox\Pt">Pt</abbr></a>|null            </span>
 </dt>
-<dd>Coin NE</dd>
+<dd>Coin NE comme Pt</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a class="" href="classes/BBox-BBox.html#property_sw">$sw</a>
     <span>
                         &nbsp;: <a href="classes/BBox-Pt.html"><abbr title="\BBox\Pt">Pt</abbr></a>|null            </span>
 </dt>
-<dd>Coin SW</dd>
+<dd>Coin SW comme Pt</dd>
 
     </dl>
 
@@ -259,7 +265,7 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd>Fabrique avec vérification des contraintes d&#039;intégrité.</dd>
+<dd>Fabrique un BBox avec vérification des contraintes d&#039;intégrité.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method___toString">__toString()</a>
@@ -269,18 +275,18 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
 <dd>Affiche dans le même format que celui de la construction sauf pour l&#039;espace vide qui est affiché par &#039;NONE&#039;.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/BBox-BBox.html#method_as4Coordinates">as4Coordinates()</a>
+    <a class="" href="classes/BBox-BBox.html#method_as4Coords">as4Coords()</a>
     <span>
                                 &nbsp;: array{0: float, 1: float, 2: float, 3: float}    </span>
 </dt>
-<dd>Génère un array de 4 coordonnées utilisé en GeoJSON.</dd>
+<dd>Génère un array de 4 coordonnées dans l&#039;ordre [west, south, east, north] utilisé en GeoJSON.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_as4CoordsLatLon">as4CoordsLatLon()</a>
     <span>
                                 &nbsp;: array{0: float, 1: float, 2: float, 3: float}    </span>
 </dt>
-<dd>Génère un array de 4 coordonnées LatLon utilisé par WFS.</dd>
+<dd>Génère un array de 4 coordonnées LatLon dans l&#039;ordre [south, west, north, east] utilisé par WFS.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_center">center()</a>
@@ -294,8 +300,14 @@ sans avoir à utiliser la classe Pt. Par contre en interne c'est plus simple d'a
     <span>
                                 &nbsp;: bool    </span>
 </dt>
-<dd>Le BBox intersecte t&#039;il l&#039;antimérdien ?
-Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</dd>
+<dd>La BBox intersecte t&#039;elle l&#039;antimérdien ?
+La BBox chevauche l&#039;antiméridien ssi la longitude min est inférieure à -180 ou la logitude max est supérieure à 180.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_east">east()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_extends">extends()</a>
@@ -309,21 +321,21 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
     <span>
                                 &nbsp;: self    </span>
 </dt>
-<dd>Fabrique un BBox à partir de 4 coordonnées [xmin, ymin, xmax, ymax].</dd>
+<dd>Fabrique un BBox à partir de 4 coordonnées dans l&#039;ordre [lonWest, latSouth, lonEst, latNorth].</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/BBox-BBox.html#method_fromLLPos">fromLLPos()</a>
+    <a class="" href="classes/BBox-BBox.html#method_fromLineString">fromLineString()</a>
     <span>
                                 &nbsp;: self    </span>
 </dt>
-<dd>Fabrique une BBox à partir d&#039;une LLPos.</dd>
+<dd>Fabrique une BBox à partir des coords d&#039;une LineString ne chevauchant pas l&#039;AM définis comme une LPos.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/BBox-BBox.html#method_fromLPos">fromLPos()</a>
+    <a class="" href="classes/BBox-BBox.html#method_fromMultiLineString">fromMultiLineString()</a>
     <span>
                                 &nbsp;: self    </span>
 </dt>
-<dd>Fabrique une BBox à partir d&#039;une LPos.</dd>
+<dd>Fabrique une BBox à partir des coordonnées d&#039;une MultiLineString définis comme LLPos.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_fromPos">fromPos()</a>
@@ -347,24 +359,51 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 <dd>$this inclus $b au sens large, cad que $a-&gt;includes($a) est vrai.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/BBox-BBox.html#method_inters">inters()</a>
+    <a class="" href="classes/BBox-BBox.html#method_intersection">intersection()</a>
     <span>
                                 &nbsp;: self    </span>
 </dt>
 <dd>Intersection géométrique de $this avec $b. Le résultat est toujours une BBox !</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_intersects">intersects()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Les 2 GBox s&#039;intersectent-elles ?</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_is">is()</a>
+    <span>
+                                &nbsp;: bool    </span>
+</dt>
+<dd>Retourne vrai ssi la classe de $b est celle utilisée pour l&#039;appel statique ; fonctionne correctement avec GBox.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_isEmpty">isEmpty()</a>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
+<dd>Teste si le BBox correspond à l&#039;espace vide, fonctionne aussi pour GBox.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/BBox-BBox.html#method_size">size()</a>
+    <a class="" href="classes/BBox-BBox.html#method_north">north()</a>
     <span>
                                 &nbsp;: float    </span>
 </dt>
-<dd>Taille du bbox en degrés.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_sizeInDegree">sizeInDegree()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
+<dd>Taille de la bbox en degrés pour des coords. géo.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_south">south()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/BBox-BBox.html#method_union">union()</a>
@@ -372,6 +411,12 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
                                 &nbsp;: self    </span>
 </dt>
 <dd>Union géométrique de $this et $b. Le résultat est toujours une BBox.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/BBox-BBox.html#method_west">west()</a>
+    <span>
+                                &nbsp;: float    </span>
+</dt>
 
     </dl>
 
@@ -401,13 +446,13 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">182</span>
+    <span class="phpdocumentor-element-found-in__line">90</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Coin NE</p>
+        <p class="phpdocumentor-summary">Coin NE comme Pt</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
@@ -440,13 +485,13 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">180</span>
+    <span class="phpdocumentor-element-found-in__line">88</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Coin SW</p>
+        <p class="phpdocumentor-summary">Coin SW comme Pt</p>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
@@ -484,13 +529,13 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">188</span>
+    <span class="phpdocumentor-element-found-in__line">96</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Fabrique avec vérification des contraintes d&#039;intégrité.</p>
+        <p class="phpdocumentor-summary">Fabrique un BBox avec vérification des contraintes d&#039;intégrité.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -544,9 +589,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">256</span>
+    <span class="phpdocumentor-element-found-in__line">147</span>
 
     </aside>
 
@@ -577,23 +622,23 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_as4Coordinates">
-        as4Coordinates()
-        <a href="classes/BBox-BBox.html#method_as4Coordinates" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_as4Coords">
+        as4Coords()
+        <a href="classes/BBox-BBox.html#method_as4Coords" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">222</span>
+    <span class="phpdocumentor-element-found-in__line">158</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Génère un array de 4 coordonnées utilisé en GeoJSON.</p>
+        <p class="phpdocumentor-summary">Génère un array de 4 coordonnées dans l&#039;ordre [west, south, east, north] utilisé en GeoJSON.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">as4Coordinates</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array{0: float, 1: float, 2: float, 3: float}</span></code>
+                    <span class="phpdocumentor-signature__name">as4Coords</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array{0: float, 1: float, 2: float, 3: float}</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -622,13 +667,13 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">226</span>
+    <span class="phpdocumentor-element-found-in__line">162</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Génère un array de 4 coordonnées LatLon utilisé par WFS.</p>
+        <p class="phpdocumentor-summary">Génère un array de 4 coordonnées LatLon dans l&#039;ordre [south, west, north, east] utilisé par WFS.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -661,9 +706,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">267</span>
+    <span class="phpdocumentor-element-found-in__line">179</span>
 
     </aside>
 
@@ -700,14 +745,14 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">275</span>
+    <span class="phpdocumentor-element-found-in__line">194</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Le BBox intersecte t&#039;il l&#039;antimérdien ?
-Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du coin SW est &gt; 0 et celle du coin NE est &lt; 0.</p>
+        <p class="phpdocumentor-summary">La BBox intersecte t&#039;elle l&#039;antimérdien ?
+La BBox chevauche l&#039;antiméridien ssi la longitude min est inférieure à -180 ou la logitude max est supérieure à 180.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -734,15 +779,53 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_east">
+        east()
+        <a href="classes/BBox-BBox.html#method_east" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">143</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">east</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_extends">
         extends()
         <a href="classes/BBox-BBox.html#method_extends" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">313</span>
+    <span class="phpdocumentor-element-found-in__line">199</span>
 
     </aside>
 
@@ -789,13 +872,13 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">211</span>
+    <span class="phpdocumentor-element-found-in__line">126</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Fabrique un BBox à partir de 4 coordonnées [xmin, ymin, xmax, ymax].</p>
+        <p class="phpdocumentor-summary">Fabrique un BBox à partir de 4 coordonnées dans l&#039;ordre [lonWest, latSouth, lonEst, latNorth].</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -836,23 +919,23 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_fromLLPos">
-        fromLLPos()
-        <a href="classes/BBox-BBox.html#method_fromLLPos" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_fromLineString">
+        fromLineString()
+        <a href="classes/BBox-BBox.html#method_fromLineString" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">241</span>
+    <span class="phpdocumentor-element-found-in__line">214</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Fabrique une BBox à partir d&#039;une LLPos.</p>
+        <p class="phpdocumentor-summary">Fabrique une BBox à partir des coords d&#039;une LineString ne chevauchant pas l&#039;AM définis comme une LPos.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromLLPos</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLLPos">TLLPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$llPos</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromLineString</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLPos">TLPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$coords</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -861,8 +944,8 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$llPos</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLLPos">TLLPos</abbr></span>
+                <span class="phpdocumentor-signature__argument__name">$coords</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLPos">TLPos</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -885,23 +968,23 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_fromLPos">
-        fromLPos()
-        <a href="classes/BBox-BBox.html#method_fromLPos" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_fromMultiLineString">
+        fromMultiLineString()
+        <a href="classes/BBox-BBox.html#method_fromMultiLineString" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">236</span>
+    <span class="phpdocumentor-element-found-in__line">230</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Fabrique une BBox à partir d&#039;une LPos.</p>
+        <p class="phpdocumentor-summary">Fabrique une BBox à partir des coordonnées d&#039;une MultiLineString définis comme LLPos.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromLPos</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLPos">TLPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$lpos</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromMultiLineString</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLLPos">TLLPos</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$coords</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -910,8 +993,8 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$lpos</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLPos">TLPos</abbr></span>
+                <span class="phpdocumentor-signature__argument__name">$coords</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\BBox\TLLPos">TLLPos</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -940,9 +1023,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">231</span>
+    <span class="phpdocumentor-element-found-in__line">139</span>
 
     </aside>
 
@@ -989,9 +1072,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">198</span>
+    <span class="phpdocumentor-element-found-in__line">112</span>
 
     </aside>
 
@@ -1038,9 +1121,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">278</span>
+    <span class="phpdocumentor-element-found-in__line">168</span>
 
     </aside>
 
@@ -1081,15 +1164,15 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_inters">
-        inters()
-        <a href="classes/BBox-BBox.html#method_inters" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_intersection">
+        intersection()
+        <a href="classes/BBox-BBox.html#method_intersection" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">288</span>
+    <span class="phpdocumentor-element-found-in__line">243</span>
 
     </aside>
 
@@ -1097,7 +1180,7 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">inters</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">self&nbsp;</span><span class="phpdocumentor-signature__argument__name">$b</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+                    <span class="phpdocumentor-signature__name">intersection</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">self&nbsp;</span><span class="phpdocumentor-signature__argument__name">$b</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -1130,19 +1213,118 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_intersects">
+        intersects()
+        <a href="classes/BBox-BBox.html#method_intersects" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">255</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Les 2 GBox s&#039;intersectent-elles ?</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">intersects</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$b</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$b</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_is">
+        is()
+        <a href="classes/BBox-BBox.html#method_is" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">106</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne vrai ssi la classe de $b est celle utilisée pour l&#039;appel statique ; fonctionne correctement avec GBox.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">is</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">self&nbsp;</span><span class="phpdocumentor-signature__argument__name">$b</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$b</span>
+                : <span class="phpdocumentor-signature__argument__return-type">self</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_isEmpty">
         isEmpty()
         <a href="classes/BBox-BBox.html#method_isEmpty" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">253</span>
+    <span class="phpdocumentor-element-found-in__line">165</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Teste si le BBox correspond à l&#039;espace vide, fonctionne aussi pour GBox.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">isEmpty</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
@@ -1168,23 +1350,99 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_size">
-        size()
-        <a href="classes/BBox-BBox.html#method_size" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_north">
+        north()
+        <a href="classes/BBox-BBox.html#method_north" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">270</span>
+    <span class="phpdocumentor-element-found-in__line">144</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Taille du bbox en degrés.</p>
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">north</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_sizeInDegree">
+        sizeInDegree()
+        <a href="classes/BBox-BBox.html#method_sizeInDegree" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">184</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Taille de la bbox en degrés pour des coords. géo.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">size</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+                    <span class="phpdocumentor-signature__name">sizeInDegree</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_south">
+        south()
+        <a href="classes/BBox-BBox.html#method_south" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">142</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">south</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -1213,9 +1471,9 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="bbox.php"><a href="files/bbox.html">bbox.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">300</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 
     </aside>
 
@@ -1250,13 +1508,51 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
             </section>
 
 </article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_west">
+        west()
+        <a href="classes/BBox-BBox.html#method_west" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/bbox.php"><a href="files/geom-bbox.html"><abbr title="geom/bbox.php">bbox.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">141</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">west</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">float</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">float</span>
+            </section>
+
+</article>
             </section>
 
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/bbox.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/geom/bbox.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -1375,21 +1671,27 @@ Lorsque le BBox chevauche l&#039;antiméridien (antimeridian), la longitude du c
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/BBox-BBox.html#method___construct">__construct()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method___toString">__toString()</a></li>
-                                            <li class=""><a href="classes/BBox-BBox.html#method_as4Coordinates">as4Coordinates()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_as4Coords">as4Coords()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_as4CoordsLatLon">as4CoordsLatLon()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_center">center()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_crossesAntimeridian">crossesAntimeridian()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_east">east()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_extends">extends()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_from4Coords">from4Coords()</a></li>
-                                            <li class=""><a href="classes/BBox-BBox.html#method_fromLLPos">fromLLPos()</a></li>
-                                            <li class=""><a href="classes/BBox-BBox.html#method_fromLPos">fromLPos()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_fromLineString">fromLineString()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_fromMultiLineString">fromMultiLineString()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_fromPos">fromPos()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_fromText">fromText()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_includes">includes()</a></li>
-                                            <li class=""><a href="classes/BBox-BBox.html#method_inters">inters()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_intersection">intersection()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_intersects">intersects()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_is">is()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_isEmpty">isEmpty()</a></li>
-                                            <li class=""><a href="classes/BBox-BBox.html#method_size">size()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_north">north()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_sizeInDegree">sizeInDegree()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_south">south()</a></li>
                                             <li class=""><a href="classes/BBox-BBox.html#method_union">union()</a></li>
+                                            <li class=""><a href="classes/BBox-BBox.html#method_west">west()</a></li>
                                     </ul>
             </li>
                     </ul>

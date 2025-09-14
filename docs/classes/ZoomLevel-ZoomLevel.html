@@ -61,19 +61,11 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bbox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/lib.html" class="">Lib</a>
+    <a href="namespaces/drawing.html" class="">Drawing</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -81,15 +73,37 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/bbox.html" class="">BBox</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="namespaces/bbox-tbox.html" class="">TBox</a>
+                
+            </li>
+            </ul>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/bboxv1.html" class="">BBoxV1</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/geojson.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/misc.html" class="">Misc</a>
+    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
+    <a href="namespaces/lib.html" class="">Lib</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/misc.html" class="">Misc</a>
 </h4>
 
                         </section>
@@ -104,19 +118,11 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Lib.html" class="">Lib</a>
+    <a href="packages/Drawing.html" class="">Drawing</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -124,15 +130,31 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBox.html" class="">BBox</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBoxV1.html" class="">BBoxV1</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/GeoJSON.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Misc.html" class="">Misc</a>
+    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
+    <a href="packages/Lib.html" class="">Lib</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Misc.html" class="">Misc</a>
 </h4>
 
                         </section>
@@ -177,15 +199,18 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">15</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">Autour des niveaux de zoom Leaflet.</p>
 
 
+    <section class="phpdocumentor-description"><p>La classe permet d'une part de calculer les échelles des différents niveaux Leaflet et,
+d'autre part de calculer le niveau de zoom adapté pour visualiser un BBox.</p>
+</section>
 
 
 
@@ -236,11 +261,11 @@
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/ZoomLevel-ZoomLevel.html#method_fromBBox">fromBBox()</a>
+    <a class="" href="classes/ZoomLevel-ZoomLevel.html#method_fromBBoxSize">fromBBoxSize()</a>
     <span>
                                 &nbsp;: int    </span>
 </dt>
-<dd>Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué en degrés.</dd>
+<dd>Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué sur la taille du BBox calculée en degrés.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel">scaleDenLevel()</a>
@@ -282,9 +307,9 @@
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">16</span>
+    <span class="phpdocumentor-element-found-in__line">17</span>
 
     </aside>
 
@@ -314,9 +339,9 @@
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">18</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
@@ -354,33 +379,35 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_fromBBox">
-        fromBBox()
-        <a href="classes/ZoomLevel-ZoomLevel.html#method_fromBBox" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_fromBBoxSize">
+        fromBBoxSize()
+        <a href="classes/ZoomLevel-ZoomLevel.html#method_fromBBoxSize" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">35</span>
+    <span class="phpdocumentor-element-found-in__line">38</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué en degrés.</p>
+        <p class="phpdocumentor-summary">Calcule de niveau de zoom adapté pour visualiser un BBox ; le calcul est effectué sur la taille du BBox calculée en degrés.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromBBox</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bbox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromBBoxSize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">float&nbsp;</span><span class="phpdocumentor-signature__argument__name">$size</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Il pourrait être préférable de prendre une distance en WebMercator.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$bbox</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-BBox.html"><abbr title="\BBox\BBox">BBox</abbr></a></span>
+                <span class="phpdocumentor-signature__argument__name">$size</span>
+                : <span class="phpdocumentor-signature__argument__return-type">float</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -409,9 +436,9 @@
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">30</span>
+    <span class="phpdocumentor-element-found-in__line">31</span>
 
     </aside>
 
@@ -458,9 +485,9 @@
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
@@ -497,9 +524,9 @@
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="zoomlevel.php"><a href="files/zoomlevel.html">zoomlevel.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="geom/zoomlevel.php"><a href="files/geom-zoomlevel.html"><abbr title="geom/zoomlevel.php">zoomlevel.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">21</span>
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
     </aside>
 
@@ -530,7 +557,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/zoomlevel.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/geom/zoomlevel.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -647,7 +674,7 @@
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/ZoomLevel-ZoomLevel.html#method_fromBBox">fromBBox()</a></li>
+                                            <li class=""><a href="classes/ZoomLevel-ZoomLevel.html#method_fromBBoxSize">fromBBoxSize()</a></li>
                                             <li class=""><a href="classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel">scaleDenLevel()</a></li>
                                             <li class=""><a href="classes/ZoomLevel-ZoomLevel.html#method_scaleDenLevel0">scaleDenLevel0()</a></li>
                                             <li class=""><a href="classes/ZoomLevel-ZoomLevel.html#method_WebMercatorExtension">WebMercatorExtension()</a></li>
