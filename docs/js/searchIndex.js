@@ -3001,14 +3001,39 @@ Search.appendIndex(
             "summary": "G\u00E9n\u00E8re\u0020un\u0020flux\u0020GeoJSON\u0020pour\u0020une\u0020collection\u0020ou\u0020un\u0020item\u0020d\u0027une\u0020collection\u0020d\u0027un\u0020JdD\u0020\u003B\u0020peut\u0020\u00EAtre\u0020appel\u00E9\u0020en\u0020cli\u0020ou\u0020en\u0020mode\u0020web.",
             "url": "classes/GeoJSON-Feed.html"
         },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003ADOC\u0028\u0029",
+            "name": "DOC",
+            "summary": "Affiche\u0020la\u0020doc\u0020en\u0020mode\u0020web.",
+            "url": "classes/GeoJSON-Feed.html#method_DOC"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Alog\u0028\u0029",
+            "name": "log",
+            "summary": "Ecrit\u0020dans\u0020un\u0020fichier\u0020log.",
+            "url": "classes/GeoJSON-Feed.html#method_log"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003AhttpHeader\u0028\u0029",
+            "name": "httpHeader",
+            "summary": "G\u00E9n\u00E8re\u0020un\u0020header\u0020Http\u0020pour\u0020le\u0020code\u0020indiqu\u00E9.",
+            "url": "classes/GeoJSON-Feed.html#method_httpHeader"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Aerror\u0028\u0029",
+            "name": "error",
+            "summary": "G\u00E9n\u00E8re\u0020un\u0020message\u0020d\u0027erreur\u0020avec,\u0020en\u0020mode\u0020Web,\u0020un\u0020header\u0020400\u0020ou\u0020404.",
+            "url": "classes/GeoJSON-Feed.html#method_error"
+        },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Aitem\u0028\u0029",
             "name": "item",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020l\u0027item\u0020ayant\u0020pour\u0020cl\u00E9\u0020\u0024key\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName.",
             "url": "classes/GeoJSON-Feed.html#method_item"
         },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003AstdBBox\u0028\u0029",
+            "name": "stdBBox",
+            "summary": "Standardise\u0020le\u0020bbox\u0020envoy\u00E9\u0020par\u0020UGeoJSONLayer\u0020qui\u0020peut\u0020\u00EAtre\u0020plus\u0020large\u0020que\u0020\u005B\u002D180,\u0020\u002B180\u005D.",
+            "url": "classes/GeoJSON-Feed.html#method_stdBBox"
+        },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Acollection\u0028\u0029",
             "name": "collection",
-            "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName.",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName\u0020\u00E9ventuellement\u0020filtr\u00E9\u0020par\u0020un\u0020bbox.",
             "url": "classes/GeoJSON-Feed.html#method_collection"
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Arun\u0028\u0029",
@@ -3128,17 +3153,17 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\BBox\u003A\u003AfromText\u0028\u0029",
             "name": "fromText",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u005B\u007BPt\u007D,\u007BPt\u007D\u005D\u0020ou\u0020\u007BPt\u007D\u0020ou\u0020chaine\u0020vide.",
+            "summary": "Fabrique\u0020une\u0020BBox\/GBox\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u005B\u007BPt\u007D,\u007BPt\u007D\u005D\u0020ou\u0020\u007BPt\u007D\u0020ou\u0020chaine\u0020vide.",
             "url": "classes/BBox-BBox.html#method_fromText"
         },                {
             "fqsen": "\\BBox\\BBox\u003A\u003Afrom4Coords\u0028\u0029",
             "name": "from4Coords",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020de\u00204\u0020coordonn\u00E9es\u0020dans\u0020l\u0027ordre\u0020\u005BlonWest,\u0020latSouth,\u0020lonEst,\u0020latNorth\u005D.",
+            "summary": "Fabrique\u0020un\u0020BBox\/GBox\u0020\u00E0\u0020partir\u0020de\u00204\u0020coordonn\u00E9es\u0020dans\u0020l\u0027ordre\u0020\u005BlonWest,\u0020latSouth,\u0020lonEst,\u0020latNorth\u005D.",
             "url": "classes/BBox-BBox.html#method_from4Coords"
         },                {
             "fqsen": "\\BBox\\BBox\u003A\u003AfromPos\u0028\u0029",
             "name": "fromPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020Pos.",
+            "summary": "Fabrique\u0020une\u0020BBox\/GBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020Pos.",
             "url": "classes/BBox-BBox.html#method_fromPos"
         },                {
             "fqsen": "\\BBox\\BBox\u003A\u003Awest\u0028\u0029",
@@ -3291,15 +3316,25 @@ Search.appendIndex(
             "summary": "Fabrique\u0020un\u0020GBox\u0020avec\u0020v\u00E9rification\u0020des\u0020contraintes\u0020d\u0027int\u00E9grit\u00E9.",
             "url": "classes/BBox-GBox.html#method___construct"
         },                {
-            "fqsen": "\\BBox\\GBox\u003A\u003AfromPos\u0028\u0029",
-            "name": "fromPos",
-            "summary": "Fabrique\u0020une\u0020GBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020Pos.",
-            "url": "classes/BBox-GBox.html#method_fromPos"
+            "fqsen": "\\BBox\\GBox\u003A\u003AlongInterval2\u0028\u0029",
+            "name": "longInterval2",
+            "summary": "Retourne\u0020l\u0027intervalle2\u0020en\u0020longitudes\u0020de\u0020la\u0020GBox.",
+            "url": "classes/BBox-GBox.html#method_longInterval2"
+        },                {
+            "fqsen": "\\BBox\\GBox\u003A\u003Aincludes\u0028\u0029",
+            "name": "includes",
+            "summary": "\u0024this\u0020inclus\u0020\u0024b\u0020au\u0020sens\u0020large,\u0020cad\u0020que\u0020\u0024a\u002D\u003Eincludes\u0028\u0024a\u0029\u0020est\u0020vrai.",
+            "url": "classes/BBox-GBox.html#method_includes"
         },                {
             "fqsen": "\\BBox\\GBox\u003A\u003Acenter\u0028\u0029",
             "name": "center",
             "summary": "Retourne\u0020le\u0020centre\u0020de\u0020la\u0020BBox.",
             "url": "classes/BBox-GBox.html#method_center"
+        },                {
+            "fqsen": "\\BBox\\GBox\u003A\u003AsizeInDegree\u0028\u0029",
+            "name": "sizeInDegree",
+            "summary": "Taille\u0020de\u0020la\u0020bbox\u0020en\u0020degr\u00E9s\u0020pour\u0020des\u0020coords.\u0020g\u00E9o.",
+            "url": "classes/BBox-GBox.html#method_sizeInDegree"
         },                {
             "fqsen": "\\BBox\\GBox\u003A\u003A__toString\u0028\u0029",
             "name": "__toString",
@@ -3320,11 +3355,6 @@ Search.appendIndex(
             "name": "fromLineString",
             "summary": "Fabrique\u0020une\u0020GBox\u0020\u00E0\u0020partir\u0020des\u0020coords\u0020d\u0027une\u0020LineString\u0020ne\u0020chevauchant\u0020pas\u0020l\u0027AM\u0020d\u00E9finie\u0020comme\u0020une\u0020LPos.",
             "url": "classes/BBox-GBox.html#method_fromLineString"
-        },                {
-            "fqsen": "\\BBox\\GBox\u003A\u003AincludesPt\u0028\u0029",
-            "name": "includesPt",
-            "summary": "Le\u0020Pt\u0020\u0024pt\u0020est\u002Dil\u0020inclus\u0020dans\u0020le\u0020BBox\u0020\u003F",
-            "url": "classes/BBox-GBox.html#method_includesPt"
         },                {
             "fqsen": "\\BBox\\GBox\u003A\u003AlongInterval\u0028\u0029",
             "name": "longInterval",
@@ -3791,6 +3821,126 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/BBox-LongIntervalTest.html#method_main"
         },                {
+            "fqsen": "\\BBox\\LongInterval2",
+            "name": "LongInterval2",
+            "summary": "2\u00E8me\u0020version\u0020d\u0027intervalle\u0020de\u0020longitude\u0020fond\u00E9e\u0020sur\u0020la\u0020cr\u00E9ation\u0020d\u0027un\u0020intervalle\u0020ayant\u0020un\u0020east\u0020\u00E9vt.\u0020\u003E\u0020180\u00B0.",
+            "url": "classes/BBox-LongInterval2.html"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Cr\u00E9ation\u0020\u00E0\u0020partir\u0020de\u0020\u0024west\u0020et\u0020\u0024east\u0020respectant\u0020les\u0020contraites\u0020de\u0020GBox.",
+            "url": "classes/BBox-LongInterval2.html#method___construct"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2.html#method___toString"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003Ashift360\u0028\u0029",
+            "name": "shift360",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2.html#method_shift360"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003Aincludes\u0028\u0029",
+            "name": "includes",
+            "summary": "L\u0027intervalle\u0020\u0024this\u0020inclut\u0027il\u0020\u0024b\u0020\u003F",
+            "url": "classes/BBox-LongInterval2.html#method_includes"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003A\u0024west",
+            "name": "west",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2.html#property_west"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2\u003A\u003A\u0024east",
+            "name": "east",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2.html#property_east"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2Test",
+            "name": "LongInterval2Test",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2Test.html"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2Test\u003A\u003AEXAMPLES\u0028\u0029",
+            "name": "EXAMPLES",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2Test.html#method_EXAMPLES"
+        },                {
+            "fqsen": "\\BBox\\LongInterval2Test\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "",
+            "url": "classes/BBox-LongInterval2Test.html#method_main"
+        },                {
+            "fqsen": "\\BBox\\PbType\\Pt",
+            "name": "Pt",
+            "summary": "Un\u0020Point\u0020en\u0020coord.\u0020g\u00E9o.\u0020\u0028lon,lat\u0029\u0020ou\u0020cart\u00E9siennes\u0020\u0028x,y\u0029.",
+            "url": "classes/BBox-PbType-Pt.html"
+        },                {
+            "fqsen": "\\BBox\\PbType\\Pt\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/BBox-PbType-Pt.html#method___construct"
+        },                {
+            "fqsen": "\\BBox\\PbType\\Pt\u003A\u003APRECISON",
+            "name": "PRECISON",
+            "summary": "Nombre\u0020de\u0020chiffres\u0020significatifs\u0020\u00E0\u0020l\u0027affichage.",
+            "url": "classes/BBox-PbType-Pt.html#constant_PRECISON"
+        },                {
+            "fqsen": "\\BBox\\PbType\\Pt\u003A\u003A\u0024lon",
+            "name": "lon",
+            "summary": "longitude\u0020\/\u0020x",
+            "url": "classes/BBox-PbType-Pt.html#property_lon"
+        },                {
+            "fqsen": "\\BBox\\PbType\\Pt\u003A\u003A\u0024lat",
+            "name": "lat",
+            "summary": "latitude\u0020\/\u0020y",
+            "url": "classes/BBox-PbType-Pt.html#property_lat"
+        },                {
+            "fqsen": "\\BBox\\PbType\\BBox",
+            "name": "BBox",
+            "summary": "",
+            "url": "classes/BBox-PbType-BBox.html"
+        },                {
+            "fqsen": "\\BBox\\PbType\\BBox\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/BBox-PbType-BBox.html#method___construct"
+        },                {
+            "fqsen": "\\BBox\\PbType\\BBox\u003A\u003Afrom4Coords\u0028\u0029",
+            "name": "from4Coords",
+            "summary": "Fabrique\u0020un\u0020BBox\u0020\u0028ou\u0020sous\u002Dclasse\u0029\u0020\u00E0\u0020partir\u0020de\u00204\u0020coordonn\u00E9es\n\u005BlonWest,\u0020latSouth,\u0020lonEast,\u0020latNorth\u005D.",
+            "url": "classes/BBox-PbType-BBox.html#method_from4Coords"
+        },                {
+            "fqsen": "\\BBox\\PbType\\BBox\u003A\u003A\u0024sw",
+            "name": "sw",
+            "summary": "Coin\u0020SW\u0020comme\u0020Pt",
+            "url": "classes/BBox-PbType-BBox.html#property_sw"
+        },                {
+            "fqsen": "\\BBox\\PbType\\BBox\u003A\u003A\u0024ne",
+            "name": "ne",
+            "summary": "Coin\u0020NE\u0020comme\u0020Pt",
+            "url": "classes/BBox-PbType-BBox.html#property_ne"
+        },                {
+            "fqsen": "\\BBox\\PbType\\GBox",
+            "name": "GBox",
+            "summary": "",
+            "url": "classes/BBox-PbType-GBox.html"
+        },                {
+            "fqsen": "\\BBox\\PbType\\GBox\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/BBox-PbType-GBox.html#method___construct"
+        },                {
+            "fqsen": "\\BBox\\PbType\\XXX",
+            "name": "XXX",
+            "summary": "",
+            "url": "classes/BBox-PbType-XXX.html"
+        },                {
+            "fqsen": "\\BBox\\PbType\\XXX\u003A\u003Axxx\u0028\u0029",
+            "name": "xxx",
+            "summary": "",
+            "url": "classes/BBox-PbType-XXX.html#method_xxx"
+        },                {
             "fqsen": "\\Pos\\Pos",
             "name": "Pos",
             "summary": "Fonctions\u0020sur\u0020les\u0020positions\u0020\u0028TPos\u0029\u0020d\u00E9finies\u0020comme\u0020une\u0020liste\u0020de\u00202\u0020nombres.",
@@ -4080,6 +4230,11 @@ Search.appendIndex(
             "name": "BBox",
             "summary": "",
             "url": "namespaces/bbox.html"
+        },                {
+            "fqsen": "\\BBox\\PbType",
+            "name": "PbType",
+            "summary": "",
+            "url": "namespaces/bbox-pbtype.html"
         },                {
             "fqsen": "\\Pos",
             "name": "Pos",
