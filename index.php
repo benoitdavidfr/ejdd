@@ -7,9 +7,8 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- permettre de consulter une carte d'une collection ou d'un n-uplet
-  - étendre la carte d'un n-uplet aux collections issues de requêtes
-    - pose la question de comment effectuer un geojson.php sur une requête
+- étendre la carte d'un n-uplet aux collections issues de requêtes
+  - pose la question de comment effectuer un geojson.php sur une requête
 - proposer un explorateur de JdD à la place de index.php
   - avec notamment un éditeur de requêtes
 - mettre en MD les description dans les schémas

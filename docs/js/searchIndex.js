@@ -3898,7 +3898,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\PbType\\BBox",
             "name": "BBox",
-            "summary": "",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-PbType-BBox.html"
         },                {
             "fqsen": "\\BBox\\PbType\\BBox\u003A\u003A__construct\u0028\u0029",
@@ -3923,7 +3923,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\PbType\\GBox",
             "name": "GBox",
-            "summary": "",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-PbType-GBox.html"
         },                {
             "fqsen": "\\BBox\\PbType\\GBox\u003A\u003A__construct\u0028\u0029",
@@ -3933,7 +3933,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\PbType\\XXX",
             "name": "XXX",
-            "summary": "",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-PbType-XXX.html"
         },                {
             "fqsen": "\\BBox\\PbType\\XXX\u003A\u003Axxx\u0028\u0029",
@@ -4018,7 +4018,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\TBox\\BBox",
             "name": "BBox",
-            "summary": "Classe\u0020BBox\u0020concr\u00E8te\u0020et\u0020simple\u0020\u002B\u00202\u0020sous\u002Dclasses\u0020sp\u00E9cialis\u00E9es\u0020GBox\u0020et\u0020EBox.",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-TBox-BBox.html"
         },                {
             "fqsen": "\\BBox\\TBox\\BBox\u003A\u003AclassName\u0028\u0029",
@@ -4033,7 +4033,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\TBox\\GBox",
             "name": "GBox",
-            "summary": "Classe\u0020BBox\u0020concr\u00E8te\u0020et\u0020simple\u0020\u002B\u00202\u0020sous\u002Dclasses\u0020sp\u00E9cialis\u00E9es\u0020GBox\u0020et\u0020EBox.",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-TBox-GBox.html"
         },                {
             "fqsen": "\\BBox\\TBox\\GBox\u003A\u003Aop\u0028\u0029",
@@ -4043,7 +4043,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\BBox\\TBox\\EBox",
             "name": "EBox",
-            "summary": "Classe\u0020BBox\u0020concr\u00E8te\u0020et\u0020simple\u0020\u002B\u00202\u0020sous\u002Dclasses\u0020sp\u00E9cialis\u00E9es\u0020GBox\u0020et\u0020EBox.",
+            "summary": "Voir\u0020la\u0020doc\u0020du\u0020fichier.",
             "url": "classes/BBox-TBox-EBox.html"
         },                {
             "fqsen": "\\BBox\\TBox\\EBox\u003A\u003Aop\u0028\u0029",

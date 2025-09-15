@@ -1,21 +1,24 @@
 <?php
 /** Test de hiérarchie de classes avec op. binaire.
- * Dans GeoJSON, je veux pouvoir utiliser BBox ou GBox mais en m'assurant que je ne mélange pas les 2 types de traitement
- * 1) Quand GBox hérite de BBox, Php ne permet pas dé définir GBox::op(GBox) -> GBox
- *    -> définir GBox::op(BBox) -> GBox et éventuellement lancer une exception si le paramètre n'est pas un GBox
+ * Dans GeoJSON, je veux pouvoir utiliser BBox ou GBox en m'assurant de ne pas mélanger pas les 2 types de traitement
+ * 1) Quand GBox hérite de BBox, Php ne permet pas de définir GBox::op(GBox): GBox
+ *    donc définir GBox::op(BBox): GBox et éventuellement lancer une exception si le paramètre n'est pas un GBox
  * 2) get_class() est compliqué à utiliser car il intègre l'espace de nom.
- *    -> définition de className()
+ *    donc définition de className()
  * 3) il est préférable d'éviter d'utiliser le noms de la classe dans la classe car en cas de chgt de nom de classe cela ne fonctionne plus
- *    -> utiliser (get_class($b) == __CLASS__)
- * Conclusion: Je peux définir une classe BBox concrète et simple et une classe GBox plus sophistiquée et héritant de BBox.
+ *    donc utiliser (get_class($b) == __CLASS__)
+ *
+ * Conclusion du test: définir une classe BBox concrète et simple et une classe GBox plus sophistiquée et héritant de BBox.
+ *
  * Avantage:
- *   - Dans GeoJSON, je peux n'utiliser que type BBox en définissant qqpart un paramètre BBox/GBox pour choir entre les 2 implems.
+ *   - Dans GeoJSON, dans le use je peux choir d'utiliser soit le type BBox, soit GBox.
  *   - je garantis que je ne mélange pas les traitements BBox et GBox
  * @package BBox\TBox
  */
 namespace BBox\TBox;
 
-/** Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.
+/** Voir la doc du fichier.
+ * Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.
  * Je décide que l'opération est interdite entre 2 objets de classes différentes.
  */
 class BBox {
@@ -28,6 +31,7 @@ class BBox {
   }
 };
 
+/** Voir la doc du fichier. */
 class GBox extends BBox {
   function op(BBox $b): self {
     echo "Dans GBox::op(): get_class()=",get_class($b),"\n";
@@ -42,6 +46,7 @@ class GBox extends BBox {
   }
 };
 
+/** Voir la doc du fichier. */
 class EBox extends BBox {
   function op(BBox $b): self {
     return new self;

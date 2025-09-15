@@ -189,19 +189,19 @@
             <p class="phpdocumentor-summary">Test de hiérarchie de classes avec op. binaire.</p>
 
         
-            <section class="phpdocumentor-description"><p>Dans GeoJSON, je veux pouvoir utiliser BBox ou GBox mais en m'assurant que je ne mélange pas les 2 types de traitement</p>
+            <section class="phpdocumentor-description"><p>Dans GeoJSON, je veux pouvoir utiliser BBox ou GBox en m'assurant de ne pas mélanger pas les 2 types de traitement</p>
 <ol>
-<li>Quand GBox hérite de BBox, Php ne permet pas dé définir GBox::op(GBox) -&gt; GBox
--&gt; définir GBox::op(BBox) -&gt; GBox et éventuellement lancer une exception si le paramètre n'est pas un GBox</li>
+<li>Quand GBox hérite de BBox, Php ne permet pas de définir GBox::op(GBox): GBox
+donc définir GBox::op(BBox): GBox et éventuellement lancer une exception si le paramètre n'est pas un GBox</li>
 <li>get_class() est compliqué à utiliser car il intègre l'espace de nom.
--&gt; définition de className()</li>
+donc définition de className()</li>
 <li>il est préférable d'éviter d'utiliser le noms de la classe dans la classe car en cas de chgt de nom de classe cela ne fonctionne plus
--&gt; utiliser (get_class($b) == <strong>CLASS</strong>)
-Conclusion: Je peux définir une classe BBox concrète et simple et une classe GBox plus sophistiquée et héritant de BBox.
-Avantage:</li>
+donc utiliser (get_class($b) == <strong>CLASS</strong>)</li>
 </ol>
+<p>Conclusion du test: définir une classe BBox concrète et simple et une classe GBox plus sophistiquée et héritant de BBox.</p>
+<p>Avantage:</p>
 <ul>
-<li>Dans GeoJSON, je peux n'utiliser que type BBox en définissant qqpart un paramètre BBox/GBox pour choir entre les 2 implems.</li>
+<li>Dans GeoJSON, dans le use je peux choir d'utiliser soit le type BBox, soit GBox.</li>
 <li>je garantis que je ne mélange pas les traitements BBox et GBox</li>
 </ul>
 </section>
@@ -225,7 +225,7 @@ Avantage:</li>
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-BBox.html"><abbr title="\BBox\TBox\BBox">BBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-GBox.html"><abbr title="\BBox\TBox\GBox">GBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-EBox.html"><abbr title="\BBox\TBox\EBox">EBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-BBox.html"><abbr title="\BBox\TBox\BBox">BBox</abbr></a></dt><dd>Voir la doc du fichier.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-GBox.html"><abbr title="\BBox\TBox\GBox">GBox</abbr></a></dt><dd>Voir la doc du fichier.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-EBox.html"><abbr title="\BBox\TBox\EBox">EBox</abbr></a></dt><dd>Voir la doc du fichier.</dd>    </dl>
 
 
 

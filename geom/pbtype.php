@@ -1,6 +1,11 @@
 <?php
 /**
- * Code proposé par ChatGPT pour supprimer l'erreur de type sur from4Coords()
+ * Ce fichier trace la solution proposée par ChatGPT pour supprimer l'erreur de type sur from4Coords().
+ * Définir BBox::from4Coords() avec un new static permet lors de l'appel de GBox::from4Coords() de créer un GBox ss dupliquer le code.
+ * Cependant, par défaut PhpStan ne comprend pas ce code et génère une erreur sur le type retourné par GBox::from4Coords().
+ * Pour éviter cette erreur, il faut rajouter le tag '@phpstan-consistent-constructor' dans la classe BBox.
+ * Je garde ce code pour tracer cette solution proposée par ChatGPT.
+ *
  * @package BBox\PbType
  */
 namespace BBox\PbType;
@@ -25,6 +30,7 @@ class Pt {
 }
 
 /**
+ * Voir la doc du fichier.
  * @phpstan-consistent-constructor
  */
 class BBox {
@@ -61,6 +67,7 @@ class BBox {
   }
 }
 
+/** Voir la doc du fichier. */
 class GBox extends BBox {
   /**
    * @param array{0:float,1:float}|null $sw
@@ -71,6 +78,9 @@ class GBox extends BBox {
   }
 }
 
+/** Voir la doc du fichier.
+ * Exemple de méthode imposant un GBox et appelé avec GBox::from4Coords()
+ */
 class XXX {
   public static function xxx(GBox $gbox): void {
     // ...

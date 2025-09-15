@@ -186,10 +186,15 @@
     <article class="phpdocumentor-element -file">
         <h2 class="phpdocumentor-content__title">pbtype.php</h2>
 
-            <p class="phpdocumentor-summary">Code proposé par ChatGPT pour supprimer l&#039;erreur de type sur from4Coords()</p>
+            <p class="phpdocumentor-summary">Ce fichier trace la solution proposée par ChatGPT pour supprimer l&#039;erreur de type sur from4Coords().</p>
 
         
-        
+            <section class="phpdocumentor-description"><p>Définir BBox::from4Coords() avec un new static permet lors de l'appel de GBox::from4Coords() de créer un GBox ss dupliquer le code.
+Cependant, par défaut PhpStan ne comprend pas ce code et génère une erreur sur le type retourné par GBox::from4Coords().
+Pour éviter cette erreur, il faut rajouter le tag '@phpstan-consistent-constructor' dans la classe BBox.
+Je garde ce code pour tracer cette solution proposée par ChatGPT.</p>
+</section>
+
         
 
 
@@ -209,7 +214,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-Pt.html"><abbr title="\BBox\PbType\Pt">Pt</abbr></a></dt><dd>Un Point en coord. géo. (lon,lat) ou cartésiennes (x,y).</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-BBox.html"><abbr title="\BBox\PbType\BBox">BBox</abbr></a></dt>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-GBox.html"><abbr title="\BBox\PbType\GBox">GBox</abbr></a></dt>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-XXX.html"><abbr title="\BBox\PbType\XXX">XXX</abbr></a></dt>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-Pt.html"><abbr title="\BBox\PbType\Pt">Pt</abbr></a></dt><dd>Un Point en coord. géo. (lon,lat) ou cartésiennes (x,y).</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-BBox.html"><abbr title="\BBox\PbType\BBox">BBox</abbr></a></dt><dd>Voir la doc du fichier.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-GBox.html"><abbr title="\BBox\PbType\GBox">GBox</abbr></a></dt><dd>Voir la doc du fichier.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-PbType-XXX.html"><abbr title="\BBox\PbType\XXX">XXX</abbr></a></dt><dd>Voir la doc du fichier.</dd>    </dl>
 
 
 
