@@ -1,4 +1,21 @@
 title: Réflexion sur les possibilités de stockage et de manipulation d'un jeu de données (V3)
+views:
+  - comment permettre d'utiliser des requêtes dans la réalisation de carte ?
+  - à date (15/9/2025), quand j'affiche le résultat d'une vue je ne peux pas en faire une carte
+  - ex: http://localhost/ejdd/algebra/query.php?action=exec&title=display%28jointure+simple%29
+  - query: display(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))
+  - idées
+    - un JdD qui stocke des vues (views), chaque collection étant une vue
+    - le mot-clé 'query' pouvant être utilisé à la place du datasetName pour indiquer que la collection est une requête
+    - considérer dans index.php/display que tte collection est une query
+
+
+'Fatal error: Uncaught Exception: Erreur dataset InnerJoinF(InseeCog inexistant in /var/www/html/ejdd/datasets/dataset.inc.php:136 Stack trace: 
+  #0 /var/www/html/ejdd/algebra/collection.inc.php(353): Dataset\Dataset::get('InnerJoinF(Inse...') 
+  '#1 /var/www/html/ejdd/index.php(386): Algebra\CollectionOfDs::get('InnerJoinF(Inse...') 
+  '#2 /var/www/html/ejdd/index.php(465): Application::main() 
+  #3 {main}
+  thrown in /var/www/html/ejdd/datasets/dataset.inc.php on line 136
 applis:
   index.php:
     - appli interactive pour

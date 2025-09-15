@@ -12,6 +12,8 @@ require_once __DIR__.'/datasets/dataset.inc.php';
 require_once __DIR__.'/geom/gbox.php';
 
 use Dataset\Dataset;
+use Algebra\Collection;
+use Algebra\CollectionOfDs;
 use GeoJSON\Geometry;
 // Dans les 2 lignes suivantes, 1 doit être en commentaire, et pas l'autre. Permet de définir la classe utilisée pour BBox 
 #use BBox\BBox as GeoBox;
@@ -30,7 +32,9 @@ Ce script, qui peut être appelé en mode web ou en CLI, génère un flux GeoJSO
 </p>
 En mode web les URL d'appel sont les suivantes:<ul>
   <li><tt>geojson.php/{dataset}/collection/{collName}/items</tt> - génère le flux GeoJSON de la collection {collName} du JdD {dataset}</li>
+  <li><tt>geojson.php//collection/{collId}/items</tt> - génère le flux GeoJSON de la collection {collId}</li>
   <li><tt>geojson.php/{dataset}/collection/{collName}/items/{key}</tt> - génère le flux GeoJSON de l'item ayant pour clé {key} dans la collection {collName} du JdD {dataset}</li>
+  <li><tt>geojson.php//collection/{collId}/items/{key}</tt> - génère le flux GeoJSON de l'item ayant pour clé {key} dans la collection {collId}</li>
   <li><tt>geojson.php/{dataset}</tt> - liste en HTML les collections du JdD {dataset}</li>
   <li><tt>geojson.php</tt> - affiche cette doc et liste en HTML les JdD ainsi que qqs URL de test</li>
 </ul>
@@ -79,17 +83,14 @@ EOT;
 
   /** Génère le flux GeoJSON de l'item ayant pour clé $key de la Collection $collName du JdD $dsName.
    * @param array<string,int> $options */
-  static function item(Dataset $dataset, string $collName, string|int $key, array $options): void {
-    if (!($collectionMD = $dataset->collections[$collName] ?? null)) { // les MD de la collection
-      self::error("$collName n'est pas une collection du JdD ".$dataset->name, 404);
-    }
-    $kind = $collectionMD->kind;
-    //print_r($collectionMD);
+  static function item(Collection $collection, string|int $key, array $options): void {
+    $kind = $collection->kind;
+    //print_r($collection);
 
-    $tuple = $dataset->getOneItemByKey($collName, $key);
+    $tuple = $collection->getOneItemByKey($key);
     header('Access-Control-Allow-Origin: *');
     if (!$tuple) {
-      self::error("La clé $key ne correspond à aucun item de la collection $collName du JdD ".$dataset->name, 404);
+      self::error("La clé $key ne correspond à aucun item de la collection ".$collection->id(), 404);
     }
 
     if ($geometry = $tuple['geometry'] ?? null) {
@@ -98,7 +99,7 @@ EOT;
 
     header('Content-Type: application/json');
     echo '{ "type": "FeatureCollection"',",\n",
-      '  "name": "',$dataset->name,"$collName/$key",'",',"\n",
+      '  "name": "',$collection->id(),"/$key",'",',"\n",
       '  "features":',"[\n";
 
     $crossesAntimeridian = ($geom = $geometry ? Geometry::create($geometry) : null) && $geom->crossesAntimeridian();
@@ -141,7 +142,7 @@ EOT;
   
   /** Génère le flux GeoJSON de la Collection $collName du JdD $dsName éventuellement filtré par un bbox.
   * @param array<string,int> $options */
-  static function collection(Dataset $dataset, string $collName, array $options): void {
+  static function collection(Collection $collection, array $options): void {
     if ($bbox = $_GET['bbox'] ?? ($_POST['bbox'] ?? null)) {
       self::log("Appel avec bbox=$bbox");
       //echo "<pre>bbox="; print_r($bbox); //die();
@@ -153,10 +154,7 @@ EOT;
     }
     $zoom = intval($_GET['zoom'] ?? ($_POST['zoom'] ?? 6));
     
-    if (!($collectionMD = $dataset->collections[$collName] ?? null)) { // les MD de la collection
-      self::error("$collName n'est pas une collection du JdD ".$dataset->name, 404);
-    }
-    $kind = $collectionMD->kind;
+    $kind = $collection->kind;
     //print_r($collectionMD);
 
     if (php_sapi_name() <> 'cli') {
@@ -164,12 +162,12 @@ EOT;
       header('Content-Type: application/json');
     }
     echo '{ "type": "FeatureCollection"',",\n",
-      '  "name": "',$dataset->name,"/$collName",'",',"\n",
+      '  "name": "',$collection->id(),'",',"\n",
       '  "features":',"[\n";
 
     $first = true;
 
-    foreach ($dataset->getItems($collName, ['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
+    foreach ($collection->getItems(['bbox'=> $bbox, 'zoom'=> $zoom]) as $key => $item) {
       $tuple = is_array($item) ? $item : ['value'=> $item];
       if ($geometry = $tuple['geometry'] ?? null) { // Si le tuple comporte une géométrie
         if (($geometry = $tuple['geometry'] ?? null) && $bbox) { // Si bbox est défini
@@ -195,10 +193,10 @@ EOT;
       $style = $tuple['style'] ?? null;
       unset($tuple['style']);
       //echo '<pre>propertiesForGeoJSON='; print_r($collectionMD->schema['items']['propertiesForGeoJSON']);
-      if (isset($collectionMD->schema->array['items']['propertiesForGeoJSON'])) {
+      if (isset($collection->schema->array['items']['propertiesForGeoJSON'])) {
         //print_r($tuple);
         $tuple2 = [];
-        foreach ($collectionMD->schema->array['items']['propertiesForGeoJSON'] as $prop)
+        foreach ($collection->schema->array['items']['propertiesForGeoJSON'] as $prop)
           $tuple2[$prop] = $tuple[$prop];
         //print_r($tuple2);
         $tuple = $tuple2;
@@ -232,19 +230,29 @@ EOT;
   /** Exécute la commande en fonction des paramètres.
    * @param array<string,int> $options */
   static function run(string $path, array $options): void {
-    if (preg_match('!^/([^/]+)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la collection 
+    if (preg_match('!^/([^/]*)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la collection 
       $dsName = $matches[1];
-      $cName = $matches[2];
-      $dataset = Dataset::get($dsName);
-      self::collection($dataset, $cName, $options);
+      $collNameOrId = $matches[2];
+      if (!$dsName) {
+        $coll = Collection::query($collNameOrId);
+      }
+      else {
+        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
+      }
+      self::collection($coll, $options);
     }
-    elseif (preg_match('!^/([^/]+)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON de l'item défini par sa clé 
+    elseif (preg_match('!^/([^/]*)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON de l'item défini par sa clé 
       //echo '<pre>$matches='; print_r($matches);
       $dsName = $matches[1];
-      $collName = $matches[2];
+      $collNameOrId = $matches[2];
+      if (!$dsName) {
+        $coll = Collection::query($collNameOrId);
+      }
+      else {
+        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
+      }
       $key = $matches[3];
-      $dataset = Dataset::get($dsName);
-      self::item($dataset, $collName, $key, $options);
+      self::item($coll, $key, $options);
     }
     else {
       self::error("path $path non traité", 400);
@@ -256,8 +264,8 @@ EOT;
     echo "usage:\n",
          "  php $cmde - fournit cette aide et liste les jeux de données\n",
          "  php $cmde [-g] {dataset} - liste les collections du dataset\n",
-         "  php $cmde [-g] {dataset} {collection} - génère le flux GeoJSON des items de la collection\n",
-         "  php $cmde [-g] {dataset} {collection} {key} - génère le flux GeoJSON de l'item de la collection\n",
+         "  php $cmde [-g] {collectionId} - génère le flux GeoJSON des items de la collection\n",
+         "  php $cmde [-g] {collectionId} {key} - génère le flux GeoJSON de l'item de la collection\n",
          "Options:\n  '-g' supprime l'affichage de la géométrie\n";
   }
   
@@ -281,27 +289,25 @@ EOT;
              "  php $cmde ",implode("\n  php $cmde ", array_keys(Dataset::REGISTRE)),"\n";
         die();
       }
-      case 1: {
-        $dsName = $argv[0];
-        if (!in_array($dsName, array_keys(Dataset::REGISTRE))) {
-          echo "Le JdD $dsName n'existe pas\n";
+      case 1: { // php $cmde [-g] {dataset} || php $cmde [-g] {collectionId} 
+        if (in_array($argv[0], array_keys(Dataset::REGISTRE))) { // php $cmde [-g] {dataset}
+          $dsName = $argv[0];
+          $ds = Dataset::get($dsName);
+          foreach (array_keys($ds->collections) as $collName) {
+            echo "  php $cmde $dsName.$collName\n";
+          }
+        }
+        elseif ($query = Collection::query($argv[0])) { // php $cmde [-g] {collectionId} 
+          self::collection($query, $options);
+        }
+        else {
+          echo "$argv[0] n'est ni le nom d'un JdD, ni une requête valide\n";
           self::usage($cmde);
-          echo "Jeux de données:\n",
-               "  php $cmde ",implode("\n  php $cmde ", array_keys(Dataset::REGISTRE)),"\n";
-          die();
-        }
-        $ds = Dataset::get($dsName);
-        foreach (array_keys($ds->collections) as $collName) {
-          echo "  php $cmde $dsName $collName\n";
         }
         die();
       }
-      case 2: {
-        self::run("/$argv[0]/collections/$argv[1]/items", $options);
-        die();
-      }
-      case 3: {
-        self::run($path = "/$argv[0]/collections/$argv[1]/items/$argv[2]", $options);
+      case 2: { // php $cmde [-g] {collectionId} {key}
+       self::run($path = "//collections/$argv[0]/items/$argv[1]", $options);
         die();
       }
       default: {

@@ -49,6 +49,8 @@ Journal des modifications récentes du code
   - finalisation de GBox
   - amélioration de geojson.php
   - création d'une branche 'query' pour étendre l'utilisation des cartes aux requêtes
+    - modification de geojson.php pour qu'il puisse générer le GeoJSON d'une requête
+    - modification de index.php pour gérer correctement des requêtes
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
@@ -304,6 +306,7 @@ require_once __DIR__.'/install.php';
 require_once __DIR__.'/datasets/dataset.inc.php';
 
 use Dataset\Dataset;
+use Algebra\Collection;
 use Algebra\CollectionOfDs;
 
 /** Documentation générale de l'application -> voir le README. */
@@ -364,21 +367,25 @@ class Application {
       case 'display': {
         if (!isset($_GET['collection']))
           Dataset::get($_GET['dataset'])->display();
-        elseif (!isset($_GET['key']))
-          CollectionOfDs::get($_GET['collection'])->display($_GET['skip'] ?? 0);
-        elseif (!isset($_GET['field']))
-          CollectionOfDs::get($_GET['collection'])->displayItem($_GET['key']);
+        elseif (!isset($_GET['key'])) {
+          echo "_GET['collection']=",$_GET['collection'],"<br>\n";
+          Collection::query($_GET['collection'])->display($_GET['skip'] ?? 0);
+        }
+        elseif (!isset($_GET['field'])) {
+          echo "_GET['collection']=",$_GET['collection'],"<br>\n";
+          Collection::query($_GET['collection'])->displayItem($_GET['key']);
+        }
         else
-          CollectionOfDs::get($_GET['collection'])->displayValue($_GET['key'], $_GET['field']);
+          Collection::query($_GET['collection'])->displayValue($_GET['key'], $_GET['field']);
         break;
       }
       case 'draw': {
         if (!isset($_GET['collection']))
           throw new \Exception("Paramètre collection nécessaire");
         elseif (!isset($_GET['key']))
-          echo CollectionOfDs::get($_GET['collection'])->draw();
+          echo Collection::query($_GET['collection'])->draw();
         else
-          echo CollectionOfDs::get($_GET['collection'])->drawItem($_GET['key']);
+          echo Collection::query($_GET['collection'])->drawItem($_GET['key']);
         break;
       }
       case 'stats': {

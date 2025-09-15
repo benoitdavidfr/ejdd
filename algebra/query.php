@@ -42,7 +42,9 @@ class Program {
   }
 };
 
-/** Le parser de requêtes, appelé par start(), retourne un Program, une Collection ou null en cas d'erreur.
+/**
+ * Parser de requêtes, appelé par start(), retourne un Program, une Collection ou null en cas d'erreur.
+ *
  * La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
  * S'il retourne un Program alors celui-ci peut être exécuté par __invoke().
  * La constante BNF n'est utilisé que pour la documentation, par contre TOKENS est utilisé dans le code.
@@ -187,7 +189,7 @@ EOT
   
   /** Point d'appel du parser indépendant des noms des nonterminaux.
    * Retourne un programme ou une collection en cas de succès, null en cas d'échec.
-   * Retourne null si le texte n'est pas entièrement consommé.
+   * Retourne null en cas d'erreur d'analyse ou si le texte n'est pas entièrement consommé.
    */
   static function start(string $text): Program|Collection|null {
     self::$trace = [];
@@ -471,6 +473,10 @@ class QueryTest {
         foreach (self::EXAMPLES as $title => $exp)
           echo "<a href='?action=show&title=",urlencode($title),"'>$title</a> ",
                "(<a href='?action=exec&title=",urlencode($title),"'>exec</a>)<br>\n";
+        echo "<h3>Tests d'appels d'affichage avec query</h3>\n";
+        echo "<a href='../?action=display&collection=DebugScripts.geoCollection'>display DebugScripts.geoCollection</a><br>\n";
+        echo "<a href='../?action=display&collection=",urlencode('InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)'),"'>
+          display InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)</a><br>\n";
         break;
       }
       case 'bnf': { // Affiche la BNF du langage et les tokens 

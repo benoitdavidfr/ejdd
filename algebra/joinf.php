@@ -35,7 +35,7 @@ class JoinF extends Collection {
 
   /** l'identifiant permettant de recréer la collection. Reconstitue la requête. */
   function id(): string {
-    return $this->type.'f('.$this->coll1->id().','.$this->field1.','.$this->coll2->id().','.$this->field2.')';
+    return $this->type.'F('.$this->coll1->id().','.$this->field1.','.$this->coll2->id().','.$this->field2.')';
   }
     
   /** Retourne les filtres implémentés par getTuples().
