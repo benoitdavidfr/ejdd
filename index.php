@@ -251,6 +251,7 @@ Lignes de commandes utiles
     composer require justinrainbow/json-schema
     composer require symfony/yaml
     composer require phpoffice/phpspreadsheet
+    composer require michelf/php-markdown
     
     composer outdated # pour connaitre les composants périmés
     composer update   # pour mettre à jour les composants

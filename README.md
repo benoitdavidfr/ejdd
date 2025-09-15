@@ -38,6 +38,11 @@ Cette démarche propose un cadre extensible dans 2 directions:
     - c'est moins performant que JSON
   - PhpStan est utilisé au niveau 6 pour analyser le code
   - phpDocumentor est utilisé pour documenter le code, [consulter cette doc](https://benoitdavidfr.github.io/ejdd/).
+  - Composer est utilisé pour exploiter les composants suivants
+    - justinrainbow/json-schema pour vérifier qu'une valeur respecte un schéma JSON
+    - symfony/yaml pour lire des fichiers Yaml
+    - phpoffice/phpspreadsheet pour lire des fichiers ODS
+    - michelf/php-markdown pour afficher des fichiers markdown
 
 ## Solution.
 ### Généralités:
