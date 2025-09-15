@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/geojson.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/bbox.html" class="">BBox</a>
 </h4>
     <ul class="phpdocumentor-list">
@@ -81,14 +85,6 @@
                 
             </li>
             </ul>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bboxv1.html" class="">BBoxV1</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
-</h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
@@ -130,16 +126,18 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBoxV1.html" class="">BBoxV1</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBox.html" class="">BBox</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/BBox-TBox.html" class="">TBox</a>
+                
+            </li>
+            </ul>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
@@ -220,13 +218,13 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
-- finir gbox.php, notamment l&#039;union
-- mettre en MD les description dans les schémas
-- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
+- finaliser GBox avec center() et size()
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
   - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
+- proposer un explorateur de JdD à la place de index.php
+  - avec notamment un éditeur de requêtes
+- mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -304,7 +302,7 @@ Journal des modifications récentes du code
   - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
-  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.php utilisant des algos moins faux mais complexes
   - gbox.php n&#039;est pas finalisé
   - déplacement des fichiers sur la geom dans un répertoire geom
   - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
@@ -490,7 +488,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -546,13 +544,13 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
-- finir gbox.php, notamment l&#039;union
-- mettre en MD les description dans les schémas
-- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
+- finaliser GBox avec center() et size()
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
   - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
+- proposer un explorateur de JdD à la place de index.php
+  - avec notamment un éditeur de requêtes
+- mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -680,7 +678,7 @@ Journal des modifications récentes du code
   - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
-  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.php utilisant des algos moins faux mais complexes
   - gbox.php n&#039;est pas finalisé
   - déplacement des fichiers sur la geom dans un répertoire geom
   - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
@@ -891,7 +889,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:

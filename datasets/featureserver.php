@@ -42,7 +42,7 @@ class Cache {
     $dirPath = self::dirPath($filePath);
     if (!is_dir($dirPath)) {
       self::createDir($dirPath);
-      echo "Création de $dirPath<br>\n";
+      //echo "Création de $dirPath<br>\n";
       mkdir($dirPath);
     }
   }

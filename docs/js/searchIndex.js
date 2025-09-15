@@ -2996,10 +2996,45 @@ Search.appendIndex(
             "summary": "D\u00E9finition\u0020d\u0027une\u0020carte\u0020en\u0020Yaml.",
             "url": "classes/LLMap-AMapAndItsLayersTest.html#constant_YAML_DEF"
         },                {
-            "fqsen": "\\Algebra\\usage\u0028\u0029",
+            "fqsen": "\\GeoJSON\\Feed",
+            "name": "Feed",
+            "summary": "G\u00E9n\u00E8re\u0020un\u0020flux\u0020GeoJSON\u0020pour\u0020une\u0020collection\u0020ou\u0020un\u0020item\u0020d\u0027une\u0020collection\u0020d\u0027un\u0020JdD\u0020\u003B\u0020peut\u0020\u00EAtre\u0020appel\u00E9\u0020en\u0020cli\u0020ou\u0020en\u0020mode\u0020web.",
+            "url": "classes/GeoJSON-Feed.html"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Aitem\u0028\u0029",
+            "name": "item",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020l\u0027item\u0020ayant\u0020pour\u0020cl\u00E9\u0020\u0024key\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName.",
+            "url": "classes/GeoJSON-Feed.html#method_item"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Acollection\u0028\u0029",
+            "name": "collection",
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName.",
+            "url": "classes/GeoJSON-Feed.html#method_collection"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Arun\u0028\u0029",
+            "name": "run",
+            "summary": "Ex\u00E9cute\u0020la\u0020commande\u0020en\u0020fonction\u0020des\u0020param\u00E8tres.",
+            "url": "classes/GeoJSON-Feed.html#method_run"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Ausage\u0028\u0029",
             "name": "usage",
-            "summary": "",
-            "url": "namespaces/algebra.html#function_usage"
+            "summary": "Fournit\u0020la\u0020doc\u0020en\u0020mode\u0020CLI.",
+            "url": "classes/GeoJSON-Feed.html#method_usage"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003AcliCall\u0028\u0029",
+            "name": "cliCall",
+            "summary": "Appel\u0020en\u0020mode\u0020CLI.",
+            "url": "classes/GeoJSON-Feed.html#method_cliCall"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003AwebCall\u0028\u0029",
+            "name": "webCall",
+            "summary": "Appel\u0020en\u0020mode\u0020web",
+            "url": "classes/GeoJSON-Feed.html#method_webCall"
+        },                {
+            "fqsen": "\\GeoJSON\\Feed\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "M\u00E9thode\u0020principale.",
+            "url": "classes/GeoJSON-Feed.html#method_main"
         },                {
             "fqsen": "\\BBox\\BNONE",
             "name": "BNONE",
@@ -3205,196 +3240,6 @@ Search.appendIndex(
             "name": "ne",
             "summary": "Coin\u0020NE\u0020comme\u0020Pt",
             "url": "classes/BBox-BBox.html#property_ne"
-        },                {
-            "fqsen": "\\BBoxV1\\NONE",
-            "name": "NONE",
-            "summary": "Constante\u0020pour\u0020l\u0027espace\u0020vide.",
-            "url": "namespaces/bboxv1.html#constant_NONE"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt",
-            "name": "Pt",
-            "summary": "Un\u0020Point\u0020en\u0020coord.\u0020g\u00E9o.\u0020\u0028degr\u00E9s\u0020lon,lat\u0029.\u0020Classe\u0020interne\u0020\u00E0\u0020BBox.",
-            "url": "classes/BBoxV1-Pt.html"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/BBoxV1-Pt.html#method___construct"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003Apos\u0028\u0029",
-            "name": "pos",
-            "summary": "Un\u0020TPos\u0020\u00E0\u0020partir\u0020d\u0027un\u0020Pt.",
-            "url": "classes/BBoxV1-Pt.html#method_pos"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003AfromText\u0028\u0029",
-            "name": "fromText",
-            "summary": "Construit\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u007Bnbre\u007D\u0040\u007Bnbre\u007D.",
-            "url": "classes/BBoxV1-Pt.html#method_fromText"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003A__toString2\u0028\u0029",
-            "name": "__toString2",
-            "summary": "Affiche\u0020ss\u0020limiter\u0020le\u0020nmbre\u0020de\u0020chiffres\u0020significatifs.",
-            "url": "classes/BBoxV1-Pt.html#method___toString2"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Affiche\u0020en\u0020fixant\u0020le\u0020nmbre\u0020de\u0020chiffres\u0020significatifs.",
-            "url": "classes/BBoxV1-Pt.html#method___toString"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003AislSW\u0028\u0029",
-            "name": "islSW",
-            "summary": "\u0024this\u0020est\u0020largement\u0020au\u0020Sud\u002DOuest\u0020de\u0020\u0024b.",
-            "url": "classes/BBoxV1-Pt.html#method_islSW"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003Asw\u0028\u0029",
-            "name": "sw",
-            "summary": "Le\u0020point\u0020juste\u0020au\u0020SW\u0020des\u00202\u0020points\u0020\u003B\u0020tient\u0020compte\u0020de\u0020la\u0020gestion\u0020de\u0020l\u0027antim\u00E9ridien",
-            "url": "classes/BBoxV1-Pt.html#method_sw"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003Ane\u0028\u0029",
-            "name": "ne",
-            "summary": "Le\u0020point\u0020juste\u0020au\u0020NE\u0020des\u00202\u0020points.",
-            "url": "classes/BBoxV1-Pt.html#method_ne"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003Adistance\u0028\u0029",
-            "name": "distance",
-            "summary": "Distance\u0020entre\u00202\u0020points\u003B\u0020calcul\u0020et\u0020r\u00E9sultat\u0020en\u0020degr\u00E9s\u0020tenant\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
-            "url": "classes/BBoxV1-Pt.html#method_distance"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003AmidPoint\u0028\u0029",
-            "name": "midPoint",
-            "summary": "Milieu\u0020entre\u00202\u0020points\u0020tenant\u0020compte\u0020de\u0020l\u0027antim\u00E9ridien.",
-            "url": "classes/BBoxV1-Pt.html#method_midPoint"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003AlPos2LPt\u0028\u0029",
-            "name": "lPos2LPt",
-            "summary": "Fabrique\u0020une\u0020liste\u0020de\u0020Pt\u0020\u00E0\u0020partir\u0020d\u0027une\u0020TLPos.",
-            "url": "classes/BBoxV1-Pt.html#method_lPos2LPt"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003APRECISON",
-            "name": "PRECISON",
-            "summary": "Nombre\u0020de\u0020chiffres\u0020significatifs\u0020\u00E0\u0020l\u0027affichage.",
-            "url": "classes/BBoxV1-Pt.html#constant_PRECISON"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003A\u0024x",
-            "name": "x",
-            "summary": "",
-            "url": "classes/BBoxV1-Pt.html#property_x"
-        },                {
-            "fqsen": "\\BBoxV1\\Pt\u003A\u003A\u0024y",
-            "name": "y",
-            "summary": "",
-            "url": "classes/BBoxV1-Pt.html#property_y"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox",
-            "name": "BBox",
-            "summary": "Un\u0020rectangle\u0020englobant\u0020en\u0020coord.\u0020geo.\u0020pour\u0020le\u0020stocker,\u0020effectuer\u0020diverses\u0020op\u00E9rations\u0020et\u0020tester\u0020des\u0020conditions.",
-            "url": "classes/BBoxV1-BBox.html"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Fabrique\u0020avec\u0020v\u00E9rification\u0020des\u0020contraintes\u0020d\u0027int\u00E9grit\u00E9.",
-            "url": "classes/BBoxV1-BBox.html#method___construct"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AfromText\u0028\u0029",
-            "name": "fromText",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027un\u0020texte\u0020au\u0020format\u0020\u005B\u007BPt\u007D,\u007BPt\u007D\u005D\u0020ou\u0020\u007BPt\u007D\u0020ou\u0020chaine\u0020vide.",
-            "url": "classes/BBoxV1-BBox.html#method_fromText"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Afrom4Coords\u0028\u0029",
-            "name": "from4Coords",
-            "summary": "Fabrique\u0020un\u0020BBox\u0020\u00E0\u0020partir\u0020de\u00204\u0020coordonn\u00E9es\u0020\u005Bxmin,\u0020ymin,\u0020xmax,\u0020ymax\u005D.",
-            "url": "classes/BBoxV1-BBox.html#method_from4Coords"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Aas4Coordinates\u0028\u0029",
-            "name": "as4Coordinates",
-            "summary": "G\u00E9n\u00E8re\u0020un\u0020array\u0020de\u00204\u0020coordonn\u00E9es\u0020utilis\u00E9\u0020en\u0020GeoJSON.",
-            "url": "classes/BBoxV1-BBox.html#method_as4Coordinates"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Aas4CoordsLatLon\u0028\u0029",
-            "name": "as4CoordsLatLon",
-            "summary": "G\u00E9n\u00E8re\u0020un\u0020array\u0020de\u00204\u0020coordonn\u00E9es\u0020LatLon\u0020utilis\u00E9\u0020par\u0020WFS.",
-            "url": "classes/BBoxV1-BBox.html#method_as4CoordsLatLon"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AfromPos\u0028\u0029",
-            "name": "fromPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020Pos.",
-            "url": "classes/BBoxV1-BBox.html#method_fromPos"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AfromLPos\u0028\u0029",
-            "name": "fromLPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020LPos.",
-            "url": "classes/BBoxV1-BBox.html#method_fromLPos"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AfromLLPos\u0028\u0029",
-            "name": "fromLLPos",
-            "summary": "Fabrique\u0020une\u0020BBox\u0020\u00E0\u0020partir\u0020d\u0027une\u0020LLPos.",
-            "url": "classes/BBoxV1-BBox.html#method_fromLLPos"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AisEmpty\u0028\u0029",
-            "name": "isEmpty",
-            "summary": "",
-            "url": "classes/BBoxV1-BBox.html#method_isEmpty"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "Affiche\u0020dans\u0020le\u0020m\u00EAme\u0020format\u0020que\u0020celui\u0020de\u0020la\u0020construction\u0020sauf\u0020pour\u0020l\u0027espace\u0020vide\u0020qui\u0020est\u0020affich\u00E9\u0020par\u0020\u0027NONE\u0027.",
-            "url": "classes/BBoxV1-BBox.html#method___toString"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Acenter\u0028\u0029",
-            "name": "center",
-            "summary": "Retourne\u0020le\u0020centre\u0020de\u0020la\u0020BBox.",
-            "url": "classes/BBoxV1-BBox.html#method_center"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Asize\u0028\u0029",
-            "name": "size",
-            "summary": "Taille\u0020du\u0020bbox\u0020en\u0020degr\u00E9s.",
-            "url": "classes/BBoxV1-BBox.html#method_size"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003AcrossesAntimeridian\u0028\u0029",
-            "name": "crossesAntimeridian",
-            "summary": "Le\u0020BBox\u0020intersecte\u0020t\u0027il\u0020l\u0027antim\u00E9rdien\u0020\u003F\nLorsque\u0020le\u0020BBox\u0020chevauche\u0020l\u0027antim\u00E9ridien\u0020\u0028antimeridian\u0029,\u0020la\u0020longitude\u0020du\u0020coin\u0020SW\u0020est\u0020\u003E\u00200\u0020et\u0020celle\u0020du\u0020coin\u0020NE\u0020est\u0020\u003C\u00200.",
-            "url": "classes/BBoxV1-BBox.html#method_crossesAntimeridian"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Aincludes\u0028\u0029",
-            "name": "includes",
-            "summary": "\u0024this\u0020inclus\u0020\u0024b\u0020au\u0020sens\u0020large,\u0020cad\u0020que\u0020\u0024a\u002D\u003Eincludes\u0028\u0024a\u0029\u0020est\u0020vrai.",
-            "url": "classes/BBoxV1-BBox.html#method_includes"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Ainters\u0028\u0029",
-            "name": "inters",
-            "summary": "Intersection\u0020g\u00E9om\u00E9trique\u0020de\u0020\u0024this\u0020avec\u0020\u0024b.\u0020Le\u0020r\u00E9sultat\u0020est\u0020toujours\u0020une\u0020BBox\u0020\u0021",
-            "url": "classes/BBoxV1-BBox.html#method_inters"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Aunion\u0028\u0029",
-            "name": "union",
-            "summary": "Union\u0020g\u00E9om\u00E9trique\u0020de\u0020\u0024this\u0020et\u0020\u0024b.\u0020Le\u0020r\u00E9sultat\u0020est\u0020toujours\u0020une\u0020BBox.",
-            "url": "classes/BBoxV1-BBox.html#method_union"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003Aextends\u0028\u0029",
-            "name": "extends",
-            "summary": "Agrandit\u0020la\u0020BBox\u0020au\u0020plus\u0020juste\u0020pour\u0020qu\u0027elle\u0020contienne\u0020la\u0020liste\u0020de\u0020points.",
-            "url": "classes/BBoxV1-BBox.html#method_extends"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003A\u0024sw",
-            "name": "sw",
-            "summary": "Coin\u0020SW",
-            "url": "classes/BBoxV1-BBox.html#property_sw"
-        },                {
-            "fqsen": "\\BBoxV1\\BBox\u003A\u003A\u0024ne",
-            "name": "ne",
-            "summary": "Coin\u0020NE",
-            "url": "classes/BBoxV1-BBox.html#property_ne"
-        },                {
-            "fqsen": "\\BBoxV1\\BBoxTest",
-            "name": "BBoxTest",
-            "summary": "Test\u0020de\u0020BBox.",
-            "url": "classes/BBoxV1-BBoxTest.html"
-        },                {
-            "fqsen": "\\BBoxV1\\BBoxTest\u003A\u003Amain\u0028\u0029",
-            "name": "main",
-            "summary": "",
-            "url": "classes/BBoxV1-BBoxTest.html#method_main"
         },                {
             "fqsen": "\\BBox\\EBox",
             "name": "EBox",
@@ -3828,7 +3673,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\GeoJSON\\GeoJSONTest",
             "name": "GeoJSONTest",
-            "summary": "",
+            "summary": "Test\u0020des\u0020classes\u0020GeoJSON.",
             "url": "classes/GeoJSON-GeoJSONTest.html"
         },                {
             "fqsen": "\\GeoJSON\\GeoJSONTest\u003A\u003Amain\u0028\u0029",
@@ -4226,20 +4071,15 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/llmap.html"
         },                {
-            "fqsen": "\\BBox",
-            "name": "BBox",
-            "summary": "",
-            "url": "namespaces/bbox.html"
-        },                {
-            "fqsen": "\\BBoxV1",
-            "name": "BBoxV1",
-            "summary": "",
-            "url": "namespaces/bboxv1.html"
-        },                {
             "fqsen": "\\GeoJSON",
             "name": "GeoJSON",
             "summary": "",
             "url": "namespaces/geojson.html"
+        },                {
+            "fqsen": "\\BBox",
+            "name": "BBox",
+            "summary": "",
+            "url": "namespaces/bbox.html"
         },                {
             "fqsen": "\\Pos",
             "name": "Pos",

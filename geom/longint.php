@@ -1,5 +1,7 @@
 <?php
-/** Intervalle de longitudes sur la Terre. */
+/** Intervalle de longitudes sur la Terre.
+ * @package BBox
+ */
 declare(strict_types=1);
 namespace BBox;
 

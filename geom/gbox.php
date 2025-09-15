@@ -7,17 +7,18 @@ namespace BBox;
 
 require_once __DIR__.'/bbox.php';
 require_once __DIR__.'/longint.php';
+require_once __DIR__.'/longint2.php';
 
 use Pos\Pos;
-use Pos\BiPos;
+#use Pos\BiPos;
 
 /**
  * Une boite englobante en coord. geo. gérant correctement les géométries chevauchant l'antiméridien.
  *
- * Lorsque la GBox ne chevauche pas l'antiméridien (AM), $sw->lon <= $ne->lon, c'est la représentation classique.
- * Si $sw->lon == $ne->lon alors la GBox est réduite soit à 1 point, soit à segment de méridien.
- * Si $sw->lon > $ne->lon alors la GBox chevauche l'AM
- *   et on peut se la représenter comme l'union de 2 boites, la 1ère de $sw->lon à +180° et la 2nd de -180° à $ne->lon.
+ * Lorsque la GBox ne chevauche pas l'antiméridien (AM), west <= east, c'est la représentation classique.
+ * Si west == east alors la GBox est réduite soit à 1 point, soit à segment de méridien.
+ * Si west > east alors la GBox chevauche l'AM
+ *   et on peut se la représenter comme l'union de 2 boites, la 1ère [west -> +180°] et la 2nd [-180° -> east].
  * Enfin, cas particuliers:
  *  - si la GBox couvre ttes les longitudes, elle est codée [-180, +180] et on considère qu'elle chevauche l'AM.
  *  - un segment d'AM est codé [+180, +180] et on considère qu'il NE chevauche PAS l'AM.
@@ -28,7 +29,8 @@ use Pos\BiPos;
  * Ainsi les coordonnées d'une LineString ne chevauche jamais l'AM.
  *
  * En conséquence la méthode extends() qui prend en paramètre une liste de Pt fait l'hypothèse que cette LineString ne chevauche pas l'AM.
- * Par contre la méthode union() qui agrège 2 GBox doit pouvoir prendre des GBox chevauchant l'AM et produire une GBox chevauchant l'AM.
+ * Par contre la méthode union() qui agrège 2 GBox et la méthode intersection() doivent pouvoir prendre des GBox chevauchant l'AM
+ * et produire une GBox chevauchant l'AM.
  *
  * Le calcul de l'union et de l'intersection utilise LongInterval.
  */
@@ -61,28 +63,52 @@ class GBox extends BBox {
     parent::__construct($sw, $ne);
   }
 
-  /** Fabrique un GBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
-   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. * /
-  static function from4Coords(array $coords): self {
-    if (!BiPos::is($coords))
-      throw new \Exception("Le paramètre n'est pas une liste de 4 nombres");
-    return new self(
-      [floatval($coords[0]), floatval($coords[1])],
-      [floatval($coords[2]), floatval($coords[3])]
-    );
-  }*/
+  /** Retourne l'intervalle2 en longitudes de la GBox. */
+  private function longInterval2(): LongInterval2 {
+    if (!$this->sw)
+      throw new \Exception("Impossible de créer un LongInterval2 sur GNONE");
+    return new LongInterval2($this->west(), $this->east());
+  }
   
-  /** Fabrique une GBox à partir d'une Pos.
-   * @param TPos $pos
-   */
-  static function fromPos(array $pos): self { return new self($pos, $pos); }
-
+  /** $this inclus $b au sens large, cad que $a->includes($a) est vrai. */
+  function includes(BBox $b): bool {
+    if (get_class($b) <> __CLASS__)
+      throw new \Exception("Dans GBox::includes(), b est un ".get_class($b)." et PAS un ".__CLASS__);
+    if (!$this->sw)
+      return false;
+    if (!$b->sw)
+      return true;
+    if (($b->south() < $this->south()) || ($b->north() > $this->north()))
+      return false;
+    return $this->longInterval2()->includes($b->longInterval2());
+  }
+  
   /** Retourne le centre de la BBox.
    * @return TPos */
   function center(): array {
-    throw new \Exception("TO BE IMPLEMENTED");
+    if (!$this->sw)
+      return [];
+    $lon = ($this->sw->lon + $this->ne->lon)/2;
+    $lat = ($this->sw->lat + $this->ne->lat)/2;
+    if ($this->west() <= $this->east()) // Ne chevauche PAS l'AM
+      return [$lon, $lat];
+    elseif ($lon > 0)
+      return [$lon-180, $lat];
+    else
+      return [$lon+180, $lat];
   }
   
+  /** Taille de la bbox en degrés pour des coords. géo. */
+  function sizeInDegree(): float {
+    $dLat = $this->north() - $this->south();
+    $dLon = $this->east() - $this->west();
+    if ($dLon < 0) // le GBox chevauche l'AM
+      $dLon += 360;
+    // le delta en longitude est multiplé par le cosinus de la moyenne des latitudes
+    $dLon *= cos(($this->south() + $this->north()) * pi() / 2 / 180);
+    return sqrt($dLon * $dLon + $dLat * $dLat);
+  }
+
   /** Affiche dans le même format que celui de la construction sauf pour l'espace vide qui est affiché par 'NONE'. */
   function __toString(): string {
     if ($this == GNONE)
@@ -96,69 +122,7 @@ class GBox extends BBox {
   }
   
   /** Le GBox chevauche t'il l'antiméridien ? */
-  function crossesAntimeridian(): bool { return ($this->sw->lon > $this->ne->lon) || (($this->sw->lon == -180) && ($this->ne->lon == +180)); }
-  
-  /* * PERIME Retourne une GBox agrandie pour contenir les segments définis par la liste de points tout en restant la plus petite possible.
-   * @param list<Pt> $lpts * /
-  function PERIMEextends(array $lpts): self {
-    if ($this->isEmpty()) {  // Je commence par traiter le cas particulier de la GBox est vide
-      if (count($lpts) == 0) // Si la liste des points est vide
-        return GNONE;        // alors le résultat est GNONE
-      else {                          // sinon
-        $pt = array_shift($lpts);     // j'extraie le 1er point de la liste
-        $bbox = self::fromPos($pt->pos()); // je crée un bbox avec ce 1er point
-        return $bbox->extends($lpts); // j'appelle récursivement la méthode sur ce bbox avec le reste de la liste
-      }
-    }
-    // je sais maintenant que ttes les coords de $this sont définies
-    $lonWest = $this->sw->lon;
-    $latSouth = $this->sw->lat;
-    $lonEast = $this->ne->lon;
-    $latNorth = $this->ne->lat;
-    foreach ($lpts as $pt) {
-      $latSouth = min($latSouth, $pt->lat);
-      $latNorth = max($latNorth, $pt->lat);
-      
-      /*if ($lonWest <= $lonEast) { // la GBox courante ne chevauche pas l'antiméridien
-        echo "la BBox courante ne chevauche pas l'antiméridien\n";
-        if (($pt->lon < $lonWest) || ($pt->lon > $lonEast)) {
-          if (Pt::deltaLon($pt->lon, $lonWest) < Pt::deltaLon($pt->lon, $lonEast)) {
-            $lonWest = $pt->lon;
-          }
-          else {
-            $lonEast = $pt->lon;
-          }
-        }
-      }
-      else { // $lonWest > $lonEast - la BBox courante chevauche l'antiméridien <=> [-180 -> lonEast] + [lonWest -> +180]
-        echo "la BBox courante chevauche l'antiméridien\n";
-        if (($pt->lon > $lonEast) && ($pt->lon < $lonWest)) {
-          if (Pt::deltaLon($pt->lon, $lonWest) < Pt::deltaLon($pt->lon, $lonEast)) {
-            $lonWest = $pt->lon;
-          }
-          else {
-            $lonEast = $pt->lon;
-          }
-        }
-      }* /
-      
-      if ( // la GBox courante NE chevauche PAS l'antiméridien -> pt->lon à l'extérieur de l'intervalle
-          (($lonWest <= $lonEast) && (($pt->lon < $lonWest) || ($pt->lon > $lonEast)))
-         ||
-            // la GBox courante chevauche l'antiméridien -> pt->lon est dans l'intervalle extérieur
-          (($lonWest >  $lonEast) && (($pt->lon > $lonEast) && ($pt->lon < $lonWest)))
-         ) {
-        if (Pt::deltaLon($pt->lon, $lonWest) < Pt::deltaLon($pt->lon, $lonEast)) {
-          $lonWest = $pt->lon;
-        }
-        else {
-          $lonEast = $pt->lon;
-        }
-      }
-    }
-    // La BBox résultante ne peut jamais couvrir l'ensemble de la Terre
-    return self::from4Coords([$lonWest, $latSouth, $lonEast, $latNorth]);
-  }*/
+  function crossesAntimeridian(): bool { return ($this->west() > $this->east()) || (($this->west() == -180) && ($this->east() == +180)); }
   
   /** Agrandit la GBox au plus juste pour qu'elle contienne la liste de points.
    * @param list<Pt> $lpts
@@ -180,7 +144,7 @@ class GBox extends BBox {
    */
   static function fromLineString(array $coords): GBox { return GNONE->extends(Pt::lPos2LPt($coords)); }
   
-  /** Le Pt $pt est-il inclus dans le BBox ? */
+  /** Le Pt $pt est-il inclus dans le BBox ? * /
   function includesPt(Pt $pt): bool {
     if (($pt->lat < $this->sw->lat) || ($pt->lat > $this->ne->lat))
       return false;
@@ -190,7 +154,7 @@ class GBox extends BBox {
     else { // $this->sw->lon > $this->ne->lon - la BBox courante chevauche l'AM
       return ($pt->lon >= $this->sw->lon) || ($pt->lon <= $this->ne->lon);
     }
-  }
+  }*/
   
   /** Retourne l'intervalle en longitudes de la GBox. */
   private function longInterval(): LongInterval {

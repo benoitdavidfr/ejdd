@@ -96,7 +96,11 @@ abstract class Collection {
 
   /** Affiche les données de la collection */
   function displayItems(int $skip=0): void {
-    $nbPerPage = $_GET['nbPerPage'] ?? self::NB_TUPLES_PER_PAGE;
+    $nbPerPage = match($_GET['nbPerPage'] ?? null) {
+      null => self::NB_TUPLES_PER_PAGE, // si le paramètre n'est pas défini alors la valeur par défaut est utilisée
+      'all' => PHP_INT_MAX, // 'all' peut être utilisé pour obtenir tous les items
+      default => $_GET['nbPerPage'], // sinon c'est la valer du paramètre qui est utilisée
+    };
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
     $cols_prec = [];
@@ -142,7 +146,10 @@ abstract class Collection {
              "&skip=$skip",
              isset($_GET['nbPerPage']) ? "&nbPerPage=$nbPerPage" : '',
              "'>",
-           "Suivants (skip=$skip)</a><br>\n";
+           "Suivants (skip=$skip)</a>, ";
+      echo "<a href='?action=display&collection=",urlencode($this->id()),
+            isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
+            "&nbPerPage=all'>Tous</a><br>\n";
     }
   }
 

@@ -380,6 +380,7 @@ class FeatureCollection {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Séparateur entre les 2 parties 
 
 
+/** Test des classes GeoJSON. */
 class GeoJSONTest {
   static function main(): void {
     ini_set('memory_limit', '10G');

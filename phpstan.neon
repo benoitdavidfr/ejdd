@@ -76,8 +76,10 @@ parameters:
     - datasets/featureserverextract.php
     - datasets/extract.php
     - geom/pos.inc.php
+    - geom/pbtype.php
     - geom/bbox.php
     - geom/longint.php
+    - geom/longint2.php
     - geom/gbox.php
     - geom/ebox.php
     - geom/tbox.php

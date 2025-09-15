@@ -1,0 +1,48 @@
+Je cherche les algorithmes qui permettent de calculer respectivement l'union et l'intersection de 2 intervalles de longitude sur la Terre, chacun pouvant chevaucher l'antiméridien. Un intervalle est représenté par un couple de nombres (west, east) où west est la longitude de l'extrémité Ouest et east est la longitude de l'extrémité Est.
+Si l'intervalle ne chevauche pas l'antiméridien alors -180 < west <= east < +180.
+Par contre, si l'intervalle chevauche l'antiméridien alors  -180 < east < west < 180.
+Il existe quelques cas particuliers:
+ - west = east correspond à un intervalle réduit à une valeur
+ - l'intervalle correspondant au tour complet de la Terre est représenté par le couple (-180, +180)
+
+Ci-dessous un script Php définissant la classe LongInterval qui implémente cet intervalle en Php.
+
+<?php
+/** Intervalle de longitudes sur la Terre. */
+
+namespace BBox;
+
+/**
+ * Intervalle de longitudes sur la Terre pouvant chevaucher l'antiméridien représenté par un couple de longitudes ($west, $east). 
+ *
+ * Si l'intervalle ne chevauche pas l'antiméridien alors -180 < $west <= $east < +180.
+ * Par contre, si l'intervalle chevauche l'antiméridien alors  -180 < $east < $west < 180.
+ * Il existe quelques cas particuliers:
+ *  - $west = $east correspond à un intervalle réduit à une valeur
+ *  - l'intervalle correspondant au tour complet de la Terre est représenté par le couple (-180, +180)
+ *  - l'intervalle vide est représenté par la valeur null
+ */
+class LongInterval {
+  /**
+   * @param float $west longitude de l'extrémité Ouest
+   * @param floar $east longitude de l'extrémité Est */
+  function __construct(readonly float $west, readonly float $east) {}
+  
+  /** L'intervalle chevauche l'antiméridien ? */
+  function crossesAM(): bool { return ($this->west > $this->east) || (($this->west == -180) && ($this->east == +180)); }
+  
+  /** L'intersection entre 2 intervalles. */
+  function intersection(self $b): self {
+    
+  }
+
+  /** L'union entre 2 intervalles. */
+  function union(self $b): self {
+    
+  }
+};
+
+const TOUR_OF_THE_EARTH = new LongInterval(-180, +180);
+?>
+
+Peux-tu me fournir le code Php pour les méthodes intersection et union ?

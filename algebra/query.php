@@ -460,6 +460,8 @@ class QueryTest {
   ];
   
   static function main(): void {
+    ini_set('memory_limit', '10G');
+    set_time_limit(5*60);
     echo "<title>query</title>\n";
     switch ($_GET['action'] ?? null) {
       case null: {

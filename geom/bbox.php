@@ -82,6 +82,8 @@ class Pt {
  *
  * Implémente le calcul de BBox sur des géométries de manière simple en calculant le min et max des coordonnées
  * sans tenir compte de l'antiméridien.
+ *
+ * @phpstan-consistent-constructor
  */
 class BBox {
   /** Coin SW comme Pt */
@@ -108,35 +110,38 @@ class BBox {
     return get_class($b) == get_called_class();
   }
   
-  /** Fabrique un BBox à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou chaine vide. */
+  /** Fabrique une BBox/GBox à partir d'un texte au format [{Pt},{Pt}] ou {Pt} ou chaine vide.
+   * @return static
+   */
   static function fromText(string $text): self {
-    $class = get_called_class();
     if ($text == '')
-      return new $class(null, null);
+      return new static(null, null);
     if (preg_match('!^([.0-9@]+)$!', $text, $matches))
-      return new $class($pos = Pt::fromText($matches[1])->pos(), $pos);
+      return new static($pos = Pt::fromText($matches[1])->pos(), $pos);
     elseif (preg_match('!^\[([.0-9@]+),([.0-9@]+)\]$!', $text, $matches))
-      return new $class(Pt::fromText($matches[1])->pos(), Pt::fromText($matches[2])->pos());
+      return new static(Pt::fromText($matches[1])->pos(), Pt::fromText($matches[2])->pos());
     else
       throw new \Exception("le texte en entrée '$text' ne correspond pas au motif d'une BBox/GBox");
   }
   
-  /** Fabrique un BBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
-   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées. */
+  /** Fabrique un BBox/GBox à partir de 4 coordonnées dans l'ordre [lonWest, latSouth, lonEst, latNorth].
+   * @param (list<float>|list<string>) $coords - liste de 4 coordonnées.
+   * @return static
+   */
   static function from4Coords(array $coords): self {
     if (!BiPos::is($coords))
       throw new \Exception("Le paramètre n'est pas une liste de 4 nombres");
-    $class = get_called_class();
-    return new $class(
+    return new static(
       [floatval($coords[0]), floatval($coords[1])],
       [floatval($coords[2]), floatval($coords[3])]
     );
   }
 
-  /** Fabrique une BBox à partir d'une Pos.
+  /** Fabrique une BBox/GBox à partir d'une Pos.
    * @param TPos $pos
+   * @return static
    */
-  static function fromPos(array $pos): self { return new self($pos, $pos); }
+  static function fromPos(array $pos): self { return new static($pos, $pos); }
 
   function west(): float { return $this->sw->lon; }
   function south(): float { return $this->sw->lat; }

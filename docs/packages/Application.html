@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/geojson.html" class="">GeoJSON</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/bbox.html" class="">BBox</a>
 </h4>
     <ul class="phpdocumentor-list">
@@ -81,14 +85,6 @@
                 
             </li>
             </ul>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/bboxv1.html" class="">BBoxV1</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/geojson.html" class="">GeoJSON</a>
-</h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/pos.html" class="">Pos</a>
@@ -130,16 +126,18 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBox.html" class="">BBox</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/BBoxV1.html" class="">BBoxV1</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/BBox.html" class="">BBox</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/BBox-TBox.html" class="">TBox</a>
+                
+            </li>
+            </ul>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Pos.html" class="">Pos</a>
@@ -196,7 +194,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-OnLineColl.html"><abbr title="\Algebra\OnLineColl">OnLineColl</abbr></a></dt><dd>Collection définie à la volée utile pour des tests.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-OnLineCollTest.html"><abbr title="\Algebra\OnLineCollTest">OnLineCollTest</abbr></a></dt><dd>Test de OnLineColl.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-LongInterval.html"><abbr title="\BBox\LongInterval">LongInterval</abbr></a></dt><dd>Version 4 compatible PhpStan</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-LongIntervalTest.html"><abbr title="\BBox\LongIntervalTest">LongIntervalTest</abbr></a></dt>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-BBox.html"><abbr title="\BBox\TBox\BBox">BBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-GBox.html"><abbr title="\BBox\TBox\GBox">GBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/BBox-TBox-EBox.html"><abbr title="\BBox\TBox\EBox">EBox</abbr></a></dt><dd>Classe BBox concrète et simple + 2 sous-classes spécialisées GBox et EBox.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Application.html"><abbr title="\Application">Application</abbr></a></dt><dd>Documentation générale de l&#039;application -&gt; voir le README.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Application.html"><abbr title="\Application">Application</abbr></a></dt><dd>Documentation générale de l&#039;application -&gt; voir le README.</dd>    </dl>
 
 
 
@@ -211,13 +209,13 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
-- finir gbox.php, notamment l&#039;union
-- mettre en MD les description dans les schémas
-- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
+- finaliser GBox avec center() et size()
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
   - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
+- proposer un explorateur de JdD à la place de index.php
+  - avec notamment un éditeur de requêtes
+- mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -295,7 +293,7 @@ Journal des modifications récentes du code
   - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
-  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.php utilisant des algos moins faux mais complexes
   - gbox.php n&#039;est pas finalisé
   - déplacement des fichiers sur la geom dans un répertoire geom
   - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
@@ -481,7 +479,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -500,31 +498,11 @@ EOT]                            </span>
 </dt>
 <dd>Cmdes utiles</dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/bbox.html#constant_TOUR_OF_THE_EARTH">TOUR_OF_THE_EARTH</a>
-    <span>
-        &nbsp;= new \BBox\LongInterval(-180.0, 180.0)                            </span>
-</dt>
-<dd>Intervalle correspondant au tour complet de la Terre.</dd>
-
     </dl>
 
 
 
 
-<h4 id="toc-functions">
-    Functions
-    <a href="packages/Application.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-</h4>
-<dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -function -">
-    <a class="" href="namespaces/algebra.html#function_usage">usage()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-
-    </dl>
 
         
     <section class="phpdocumentor-constants">
@@ -556,13 +534,13 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- finir la possibilité d&#039;afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
-- finir gbox.php, notamment l&#039;union
-- mettre en MD les description dans les schémas
-- il y a probablement un pb sur les requêtes bbox à cheval sur l&#039;antiméridien
+- finaliser GBox avec center() et size()
 - permettre de consulter une carte d&#039;une collection ou d&#039;un n-uplet
   - étendre la carte d&#039;un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
+- proposer un explorateur de JdD à la place de index.php
+  - avec notamment un éditeur de requêtes
+- mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -690,7 +668,7 @@ Journal des modifications récentes du code
   - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d&#039;améliorer bbox.php -&gt; échec, chgt de stratégie
-  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.php utilisant des algos moins faux mais complexes
   - gbox.php n&#039;est pas finalisé
   - déplacement des fichiers sur la geom dans un répertoire geom
   - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
@@ -901,7 +879,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -927,83 +905,9 @@ EOT]</span>
     
 
 </article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_TOUR_OF_THE_EARTH">
-        TOUR_OF_THE_EARTH
-        <a href="namespaces/bbox.html#constant_TOUR_OF_THE_EARTH" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geom/longint.php"><a href="files/geom-longint.html"><abbr title="geom/longint.php">longint.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">351</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Intervalle correspondant au tour complet de la Terre.</p>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">TOUR_OF_THE_EARTH</span>
-    = <span class="phpdocumentor-signature__default-value">new \BBox\LongInterval(-180.0, 180.0)</span>
-</code>
-
-
-    
-    
-    
-
-    
-
-</article>
             </section>
 
-            <section class="phpdocumentor-functions">
-        <h3 class="phpdocumentor-elements__header" id="functions">
-            Functions
-            <a href="packages/Application.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
-
-        </h3>
-                    <article class="phpdocumentor-element -function - ">
-    <h4 class="phpdocumentor-element__name" id="function_usage">
-        usage()
-        <a href="namespaces/algebra.html#function_usage" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geojson.php"><a href="files/geojson.html">geojson.php</a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">21</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility"></span>
-                    <span class="phpdocumentor-signature__name">usage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$argv</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$argv</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-</article>
-            </section>
-
+        
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
@@ -1111,8 +1015,7 @@ EOT]</span>
                 <ul class="phpdocumentor-list -clean">
                                                                                                         <li><a href="packages/Application.html#toc-classes">Classes</a></li>
                                                                                                         <li><a href="packages/Application.html#toc-constants">Constants</a></li>
-                                                                <li><a href="packages/Application.html#toc-functions">Functions</a></li>
-                                    </ul>
+                                                        </ul>
             </li>
 
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
@@ -1122,16 +1025,9 @@ EOT]</span>
                                                     <li class=""><a href="namespaces/default.html#constant_GITHUB">GITHUB</a></li>
                                                     <li class=""><a href="namespaces/default.html#constant_JOURNAL">JOURNAL</a></li>
                                                     <li class=""><a href="namespaces/default.html#constant_LIGNE_DE_COMMANDE">LIGNE_DE_COMMANDE</a></li>
-                                                    <li class=""><a href="namespaces/bbox.html#constant_TOUR_OF_THE_EARTH">TOUR_OF_THE_EARTH</a></li>
                                             </ul>
                 </li>
             
-                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
-                <li>
-                    <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/algebra.html#function_usage">usage()</a></li>
-                                            </ul>
-                </li>
                     </ul>
     </section>
 

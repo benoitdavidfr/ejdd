@@ -11,6 +11,7 @@
  * Avantage:
  *   - Dans GeoJSON, je peux n'utiliser que type BBox en définissant qqpart un paramètre BBox/GBox pour choir entre les 2 implems.
  *   - je garantis que je ne mélange pas les traitements BBox et GBox
+ * @package BBox\TBox
  */
 namespace BBox\TBox;
 

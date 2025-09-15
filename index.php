@@ -7,13 +7,12 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- finir la possibilité d'afficher une carte avec GD et de la possibilité de sair des points, notamment pour faire des tests
-- finir gbox.php, notamment l'union
-- mettre en MD les description dans les schémas
-- il y a probablement un pb sur les requêtes bbox à cheval sur l'antiméridien
 - permettre de consulter une carte d'une collection ou d'un n-uplet
   - étendre la carte d'un n-uplet aux collections issues de requêtes
     - pose la question de comment effectuer un geojson.php sur une requête
+- proposer un explorateur de JdD à la place de index.php
+  - avec notamment un éditeur de requêtes
+- mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
 - comment tracer les requêtes, properties, schema ?
@@ -47,6 +46,9 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+15/9/2025:
+  - finalisation de GBox
+  - amélioration de geojson.php
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
@@ -65,7 +67,7 @@ Journal des modifications récentes du code
   - petite appli avec GdDrawing pour commencer à debugger
 10/9/2025:
   - essai d'améliorer bbox.php -> échec, chgt de stratégie
-  - dissociation de bbox utilisant des algos simples mais faux et gbox.inc.php utilisant des algos moins faux mais complexes
+  - dissociation de bbox utilisant des algos simples mais faux et gbox.php utilisant des algos moins faux mais complexes
   - gbox.php n'est pas finalisé
   - déplacement des fichiers sur la geom dans un répertoire geom
   - démarrage de drawing pour dessiner avec GD pour faciliter les tests notamment de gbox
@@ -258,7 +260,7 @@ Lignes de commandes utiles
   Fenêtre Php8.4:
     docker exec -it --user=www-data dockerc-php84-1 /bin/bash
   phpDocumentor, utiliser la commande en Php8.2:
-    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php --target docs
+    ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
   Pour committer le git:
@@ -324,13 +326,9 @@ class Application {
           }
           
           echo "<h2>Tests</h2><ul>\n";
-          echo "<li><a href='algebra/proj.php'>Projection d'une collection</a></li>\n";
-          echo "<li><a href='algebra/select.php'>Sélection d'une collection</a></li>\n";
-          echo "<li><a href='algebra/joinf.php'>Jointure entre 2 collections sur champs</a></li>\n";
-          echo "<li><a href='algebra/joinp.php'>Jointure entre 2 collections sur prédicat</a></li>\n";
-          echo "<li><a href='algebra/cproduct.php'>Produit cartésien entre 2 collections</a></li>\n";
-          //echo "<li><a href='expparser.php'>expparser</a></li>\n";
-          echo "<li><a href='algebra/query.php'>Requêter les collections</a></li>\n";
+          echo "<li><a href='algebra/'>Algebra</a></li>\n";
+          echo "<li><a href='geom/'>Geom</a></li>\n";
+          echo "<li><a href='drawing/'>Drawing</a></li>\n";
           echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
           echo "</ul>\n";
 

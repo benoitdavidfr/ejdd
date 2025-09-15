@@ -1,5 +1,7 @@
 <?php
-/** Collection définie à la volée utile pour des tests. */
+/** Collection définie à la volée utile pour des tests.
+ * @package Algebra
+ */
 namespace Algebra;
 
 require_once __DIR__.'/collection.inc.php';
