@@ -48,6 +48,7 @@ Journal des modifications récentes du code
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
+  - création d'une branche 'query' pour étendre l'utilisation des cartes aux requêtes
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
