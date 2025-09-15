@@ -7,7 +7,7 @@ Cette démarche répond aux besoins suivants :
      - carto mondiale simplifiée,
      - ...
    - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable,
-   - explorer ces JdD avent de les utiliser,
+   - explorer ces JdD avant de les utiliser,
    - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas en mémoire,
    - cartographier les JdD en mode web,
    - faire facilement des traitements ensemblistes comme des jointures et des projections.
