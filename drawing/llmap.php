@@ -17,6 +17,7 @@ require_once __DIR__.'/../geom/zoomlevel.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Dataset\Dataset;
+use Algebra\Collection;
 use BBox\BBox;
 use ZoomLevel\ZoomLevel;
 use Lib\RecArray;
@@ -127,14 +128,20 @@ class L_UGeoJSONLayer extends Layer {
   function checkIntegrity(): void {
     // Le paramètre endpoint doit correspondre à un JdD et une collection de ce JdD
     // ex:       endpoint: '{gjsurl}NE110mPhysical/collections/ne_110m_coastline/items'
-    if (!preg_match('!^{gjsurl}([^/]+)/collections/([^/]+)/items(/(.*))?$!', $this->params['endpoint'], $matches)) {
+    if (!preg_match('!^{gjsurl}([^/]*)/collections/([^/]+)/items(/(.*))?$!', $this->params['endpoint'], $matches)) {
       throw new \Exception("params[endpoint]='".$this->params['endpoint']."' don't match");
     }
-    $dsName = $matches[1];
-    $cName = $matches[2];
-    $ds = Dataset::get($dsName);
-    if (!array_key_exists($cName, $ds->collections))
-      throw new \Exception("Erreur, la collection $cName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
+    if ($dsName = $matches[1]) { // cas CollectionOfDs
+      $collName = $matches[2];
+      $ds = Dataset::get($dsName);
+      if (!array_key_exists($collName, $ds->collections))
+        throw new \Exception("Erreur, la collection $collName n'existe pas dans dans le JdD $dsName pour la couche $this->lyrId");
+    }
+    else {
+      $collId = urldecode($matches[2]);
+      if (!Collection::query($collId))
+        throw new \Exception("Erreur, la collection $collId pour la couche $this->lyrId");
+    }
   }
   
   function toJS(): string {

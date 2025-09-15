@@ -32,9 +32,9 @@ Ce script, qui peut être appelé en mode web ou en CLI, génère un flux GeoJSO
 </p>
 En mode web les URL d'appel sont les suivantes:<ul>
   <li><tt>geojson.php/{dataset}/collection/{collName}/items</tt> - génère le flux GeoJSON de la collection {collName} du JdD {dataset}</li>
-  <li><tt>geojson.php//collection/{collId}/items</tt> - génère le flux GeoJSON de la collection {collId}</li>
-  <li><tt>geojson.php/{dataset}/collection/{collName}/items/{key}</tt> - génère le flux GeoJSON de l'item ayant pour clé {key} dans la collection {collName} du JdD {dataset}</li>
-  <li><tt>geojson.php//collection/{collId}/items/{key}</tt> - génère le flux GeoJSON de l'item ayant pour clé {key} dans la collection {collId}</li>
+  <li><tt>geojson.php//collection/{encodedCollId}/items</tt> - génère le flux GeoJSON de la collection ayant pour id urlencodé {encodedCollId}</li>
+  <li><tt>geojson.php/{dataset}/collection/{collName}/items/{encodedKey}</tt> - génère le flux GeoJSON de l'item ayant pour clé urlencodée {encodedKey} dans la collection {collName} du JdD {dataset}</li>
+  <li><tt>geojson.php//collection/{encodedCollId}/items/{encodedKey}</tt> - génère le flux GeoJSON de l'item ayant pour clé urlencodée {encodedKey} dans la collection ayant pour id urlencodé {collId}</li>
   <li><tt>geojson.php/{dataset}</tt> - liste en HTML les collections du JdD {dataset}</li>
   <li><tt>geojson.php</tt> - affiche cette doc et liste en HTML les JdD ainsi que qqs URL de test</li>
 </ul>
@@ -227,38 +227,6 @@ EOT;
     die("\n  ]\n}\n");
   }
   
-  /** Exécute la commande en fonction des paramètres.
-   * @param array<string,int> $options */
-  static function run(string $path, array $options): void {
-    if (preg_match('!^/([^/]*)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la collection 
-      $dsName = $matches[1];
-      $collNameOrId = $matches[2];
-      if (!$dsName) {
-        $coll = Collection::query($collNameOrId);
-      }
-      else {
-        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
-      }
-      self::collection($coll, $options);
-    }
-    elseif (preg_match('!^/([^/]*)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON de l'item défini par sa clé 
-      //echo '<pre>$matches='; print_r($matches);
-      $dsName = $matches[1];
-      $collNameOrId = $matches[2];
-      if (!$dsName) {
-        $coll = Collection::query($collNameOrId);
-      }
-      else {
-        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
-      }
-      $key = $matches[3];
-      self::item($coll, $key, $options);
-    }
-    else {
-      self::error("path $path non traité", 400);
-    }
-  }
-  
   /** Fournit la doc en mode CLI. */
   static function usage(string $cmde='geojson.php'): void {
     echo "usage:\n",
@@ -307,7 +275,13 @@ EOT;
         die();
       }
       case 2: { // php $cmde [-g] {collectionId} {key}
-       self::run($path = "//collections/$argv[0]/items/$argv[1]", $options);
+        if ($query = Collection::query($argv[0])) { // php $cmde [-g] {collectionId} 
+          self::item($query, $argv[1], $options);
+        }
+        else {
+          echo "$argv[0] n'est ni le nom d'un JdD, ni une requête valide\n";
+          self::usage($cmde);
+        }
         die();
       }
       default: {
@@ -353,8 +327,32 @@ EOT;
       }
       die();
     }
+    if (preg_match('!^/([^/]*)/collections/([^/]+)/items(\?.*)?$!', $path, $matches)) { // GeoJSON de la collection 
+      $dsName = $matches[1];
+      $collNameOrId = $matches[2];
+      if (!$dsName) {
+        $coll = Collection::query(urldecode($collNameOrId));
+      }
+      else {
+        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
+      }
+      self::collection($coll, $options);
+    }
+    elseif (preg_match('!^/([^/]*)/collections/([^/]+)/items/(.*)$!', $path, $matches)) { // GeoJSON de l'item défini par sa clé 
+      //echo '<pre>$matches='; print_r($matches);
+      $dsName = $matches[1];
+      $collNameOrId = $matches[2];
+      $key = $matches[3];
+      if (!$dsName) {
+        $coll = Collection::query(urldecode($collNameOrId));
+      }
+      else {
+        $coll = CollectionOfDs::get("$dsName.$collNameOrId");
+      }
+      self::item($coll, urldecode($key), $options);
+    }
     else {
-      self::run($path, $options);
+      self::error("path $path non traité", 400);
     }
   }
   

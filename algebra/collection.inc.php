@@ -200,7 +200,7 @@ abstract class Collection {
   
   /** Affiche les properties et données de la collection */
   function display(int $skip=0): void {
-    echo '<h2>',$this->id(),"</h2>\n";
+    echo '<h2>',$this->id()," (<a href='?action=draw&collection=",urlencode($this->id()),"'>Carte</a>)</h2>\n";
 
     echo "<h3>Propriétés</h3>\n";
     $this->displayProperties();
@@ -210,16 +210,6 @@ abstract class Collection {
   
   /** Dessine une carte de la collection ayant un champ géométrique nommé geometry. */
   function draw(): string {
-    //echo $this->id(),"<br>\n";
-    $id = $this->id();
-    //echo "id=$id<br>\n";
-    $pos = strpos($id, '.');
-    $dsName = substr($id, 0, $pos);
-    $collName = substr($id, $pos+1);
-    //echo "$dsName/$collName\n";
-    if (!Dataset::exists($dsName)) {
-      throw new \Exception("Collection::draw() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
-    }
     $yamlDef = [
       <<<'EOT'
 map:
@@ -253,9 +243,10 @@ layers:
 EOT
     ];
     $def = Yaml::parse($yamlDef[0]);
+    $encodedCollId = urlencode($this->id());
     // A améliorer
     $def['views']['bbox'] = ['latLon'=> [0, 0], 'zoomLevel'=> 2];
-    $def['layers']['layerOfTheCollection']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}$dsName/collections/$collName/items";
+    $def['layers']['layerOfTheCollection']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}/collections/$encodedCollId/items";
     
     $map = new AMapAndItsLayers($def);
     //$map->display();
@@ -267,15 +258,6 @@ EOT
    */
   function drawItem(string $key): string {
     //echo $this->id(),"<br>\n";
-    $id = $this->id();
-    //echo "id=$id<br>\n";
-    $pos = strpos($id, '.');
-    $dsName = substr($id, 0, $pos);
-    $collName = substr($id, $pos+1);
-    //echo "$dsName/$collName\n";
-    if (!Dataset::exists($dsName)) {
-      throw new \Exception("Collection::drawItem() ne fonctionne que sur une CollectionOfDs, '$dsName' n'est pas le nom d'un Dataset");
-    }
     $item = $this->getOneItemByKey($key);
     $geometry = $item['geometry'];
     $yamlDef = [
@@ -312,10 +294,11 @@ EOT
     ];
     $def = Yaml::parse($yamlDef[0]);
     $def['views']['bbox'] = View::createFromBBox(Geometry::create($geometry)->bbox())->def;
-    $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}$dsName/collections/$collName/items/$key";
+    $encodedCollId = urlencode($this->id());
+    $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}/collections/$encodedCollId/items/".urlencode($key);
     
     $map = new AMapAndItsLayers($def);
-    //$map->display();
+    $map->display();
     return $map->draw();
   }
 };

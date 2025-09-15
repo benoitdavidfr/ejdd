@@ -7,8 +7,6 @@
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- étendre la carte d'un n-uplet aux collections issues de requêtes
-  - pose la question de comment effectuer un geojson.php sur une requête
 - proposer un explorateur de JdD à la place de index.php
   - avec notamment un éditeur de requêtes
 - mettre en MD les description dans les schémas
@@ -50,7 +48,9 @@ Journal des modifications récentes du code
   - amélioration de geojson.php
   - création d'une branche 'query' pour étendre l'utilisation des cartes aux requêtes
     - modification de geojson.php pour qu'il puisse générer le GeoJSON d'une requête
-    - modification de index.php pour gérer correctement des requêtes
+    - modification de index.php et collection.inc.php pour gérer correctement
+      - l'affichage du contenu d'une requête
+      - le dessin de carte de requêtes
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
