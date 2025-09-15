@@ -1,19 +1,20 @@
-Réflexion sur l'utilisation de Jeux de données
-==============================================
+# Explorateur de Jeux de données (ejdd)
+
 ## Besoins:
-Cette démarche répond à 5 besoins:
+Cette démarche répond aux besoins suivants :
   - utiliser facilement en Php des JdD habituels
      - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
-     - carto mondiale simplifiée
-   - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable
-   - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas
-     en  mémoire
-   - cartographier les JdD en mode web
-   - faire facilement des traitements ensemblistes comme des jointures et des projections
+     - carto mondiale simplifiée,
+     - ...
+   - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable,
+   - explorer ces JdD avent de les utiliser,
+   - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas en mémoire,
+   - cartographier les JdD en mode web,
+   - faire facilement des traitements ensemblistes comme des jointures et des projections.
 
 Cette démarche propose un cadre extensible dans 2 directions:
-  - d'une part, on peut rajouter facilement de nouveaux jeux de données
-  - d'autre part, on peut rajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
+  - d'une part, ajouter facilement de nouveaux jeux de données
+  - d'autre part, ajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
 
 ## Techno utilisées (JSON/Yaml/ODS/Php):
   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
@@ -32,7 +33,7 @@ Cette démarche propose un cadre extensible dans 2 directions:
     - le format est assez standard
     - il est facile à utiliser en Php (avec phpoffice/phpspreadsheet)
     - voir son efficacité
-  - Php en version 8.4 est utilisé pour exécuter du code et j'évite de stocker des données en Php car
+  - Php en version 8.4 est utilisé pour exécuter du code mais j'évite de stocker des données en Php car
     - c'est difficilement éditable
     - c'est moins performant que JSON
   - PhpStan est utilisé au niveau 6 pour analyser le code
@@ -44,6 +45,7 @@ Cette démarche propose un cadre extensible dans 2 directions:
  - chaque **collection** est logiquement un **itérable d'items**, de préférence homogènes mais pas forcément
    - la référence d'une collection est la notion de table de n-uplets, ou celle de collection d'OGC API Features
    - un item doit pouvoir tenir en mémoire Php alors qu'une collection peut ne pas y tenir
+ - une **collection** peut aussi être produite par une **opération ensembliste** à partir d'autres collection,
  - un JdD doit a minima définir les **MD suivantes**
    - title -> titre du JdD sur une ligne
    - description -> texte de présentation du JdD aussi longue qu'utile (il faudrait la mettre en Markdown)
