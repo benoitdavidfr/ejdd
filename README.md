@@ -16,7 +16,7 @@ Cette démarche propose un cadre extensible dans 2 directions:
   - d'une part, ajouter facilement de nouveaux jeux de données
   - d'autre part, ajouter de nouveaux opérateurs pour effectuer des traitements ensemblistes sur les collections
 
-## Techno utilisées (JSON/Yaml/ODS/Php):
+## Techno utilisées (JSON/Yaml/ODS/Php8.4/PhpStan/phpDocumentor):
   - je privilégie le JSON comme format de stockage des données pour plusieurs raisons
     - efficacité du stockage/utilisation (est à peu près 2* plus rapide que le Php)
     - standard
