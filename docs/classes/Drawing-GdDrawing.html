@@ -114,15 +114,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -210,16 +210,17 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">21</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">class GdDrawing implements Drawing - classe implémentant un dessin utilisant les primitives GD + copie d&#039;image</p>
+            <p class="phpdocumentor-summary">Dessin utilisant les primitives GD et définissant un espace de coordonnées utilisateur.</p>
 
 
     <section class="phpdocumentor-description"><p>Un dessin définit un système de coord. utilisateurs, une taille d'image d'affichage et une couleur de fond.
 Il définit des méthodes de dessin d'une ligne brisée et d'un polygone.
-Il permet aussi de rééchantilloner l'image dessinée, pour par ex. modifier son échelle.</p>
+Le système de coordonnées utilisateur correspond à 2 fonctions affines en X et en Y par rappport aux cooordonnées écran.
+Il est défini par d'une part la taille de l'image et, d'autre part, le EBox des coordonnées utilisateur.</p>
 </section>
 
 
@@ -446,7 +447,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">24</span>
+    <span class="phpdocumentor-element-found-in__line">25</span>
 
     </aside>
 
@@ -477,7 +478,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">23</span>
+    <span class="phpdocumentor-element-found-in__line">24</span>
 
     </aside>
 
@@ -508,7 +509,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">21</span>
+    <span class="phpdocumentor-element-found-in__line">22</span>
 
     </aside>
 
@@ -539,7 +540,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">22</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
@@ -570,7 +571,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">30</span>
+    <span class="phpdocumentor-element-found-in__line">31</span>
 
     </aside>
 
@@ -601,7 +602,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">29</span>
+    <span class="phpdocumentor-element-found-in__line">30</span>
 
     </aside>
 
@@ -632,7 +633,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">25</span>
+    <span class="phpdocumentor-element-found-in__line">26</span>
 
     </aside>
 
@@ -663,7 +664,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">28</span>
+    <span class="phpdocumentor-element-found-in__line">29</span>
 
     </aside>
 
@@ -694,7 +695,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">27</span>
+    <span class="phpdocumentor-element-found-in__line">28</span>
 
     </aside>
 
@@ -725,7 +726,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">26</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 
     </aside>
 
@@ -756,7 +757,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">31</span>
+    <span class="phpdocumentor-element-found-in__line">32</span>
 
     </aside>
 
@@ -803,7 +804,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 
     </aside>
 
@@ -841,7 +842,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 
     </aside>
 
@@ -879,7 +880,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 
     </aside>
 
@@ -917,7 +918,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">34</span>
+    <span class="phpdocumentor-element-found-in__line">35</span>
 
     </aside>
 
@@ -955,7 +956,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">35</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
     </aside>
 
@@ -998,7 +999,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">46</span>
+    <span class="phpdocumentor-element-found-in__line">47</span>
 
     </aside>
 
@@ -1081,7 +1082,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">233</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 
     </aside>
 
@@ -1137,7 +1138,7 @@ Les paramètres sont ceux définis par GD:
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">205</span>
+    <span class="phpdocumentor-element-found-in__line">206</span>
 
     </aside>
 
@@ -1241,7 +1242,7 @@ Cette méthode n'utilise pas les coordonnées utilisateurs du dessin</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">153</span>
+    <span class="phpdocumentor-element-found-in__line">154</span>
 
     </aside>
 
@@ -1297,7 +1298,7 @@ Cette méthode n'utilise pas les coordonnées utilisateurs du dessin</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">130</span>
+    <span class="phpdocumentor-element-found-in__line">131</span>
 
     </aside>
 
@@ -1353,7 +1354,7 @@ Cette méthode n'utilise pas les coordonnées utilisateurs du dessin</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">96</span>
+    <span class="phpdocumentor-element-found-in__line">97</span>
 
     </aside>
 
@@ -1409,7 +1410,7 @@ Après tests, l'utilisation des valeurs 1000000 et -1000000 donne de bons résul
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">117</span>
+    <span class="phpdocumentor-element-found-in__line">118</span>
 
     </aside>
 
@@ -1464,7 +1465,7 @@ Après tests, l'utilisation des valeurs 1000000 et -1000000 donne de bons résul
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">68</span>
+    <span class="phpdocumentor-element-found-in__line">69</span>
 
     </aside>
 

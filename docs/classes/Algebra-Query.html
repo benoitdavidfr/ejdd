@@ -114,15 +114,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -207,11 +207,11 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">60</span>
+    <span class="phpdocumentor-element-found-in__line">69</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Le parser de requêtes, appelé par start(), retourne un Program, une Collection ou null en cas d&#039;erreur.</p>
+            <p class="phpdocumentor-summary">Parser de requêtes, appelé par start(), retourne un Program, une Collection ou null en cas d&#039;erreur.</p>
 
 
     <section class="phpdocumentor-description"><p>La trace des appels pour notamment comprendre une erreur peut être affichée par displayTrace().
@@ -262,7 +262,7 @@ Le parsing d'un {predicate} est délégué à la classe PredicateParser</p>
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 {program} ::= &#039;display(&#039; {expCollection} &#039;)&#039; // affiche le contenu d&#039;une Collection&#039;
-            | &#039;draw(&#039; {expDataset} &#039;)&#039;       // dessine la carte d&#039;un Dataset&#039;
+            | &#039;draw(&#039; {expCollection} &#039;)&#039;    // dessine la carte d&#039;une collection&#039;
             | {expCollection}                // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                      // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
@@ -384,12 +384,6 @@ EOT]                            </span>
 <dd>Point d&#039;appel du parser indépendant des noms des nonterminaux.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Algebra-Query.html#method_test">test()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Query.html#method_token">token()</a>
     <span>
                                 &nbsp;: string|null    </span>
@@ -417,7 +411,7 @@ EOT]                            </span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">68</span>
+    <span class="phpdocumentor-element-found-in__line">77</span>
 
     </aside>
 
@@ -429,7 +423,7 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">BNF</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 {program} ::= &#039;display(&#039; {expCollection} &#039;)&#039; // affiche le contenu d&#039;une Collection&#039;
-            | &#039;draw(&#039; {expDataset} &#039;)&#039;       // dessine la carte d&#039;un Dataset&#039;
+            | &#039;draw(&#039; {expCollection} &#039;)&#039;    // dessine la carte d&#039;une collection&#039;
             | {expCollection}                // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                      // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
@@ -465,7 +459,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">61</span>
+    <span class="phpdocumentor-element-found-in__line">70</span>
 
     </aside>
 
@@ -520,7 +514,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">91</span>
+    <span class="phpdocumentor-element-found-in__line">100</span>
 
     </aside>
 
@@ -568,7 +562,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">95</span>
+    <span class="phpdocumentor-element-found-in__line">104</span>
 
     </aside>
 
@@ -631,7 +625,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">116</span>
+    <span class="phpdocumentor-element-found-in__line">125</span>
 
     </aside>
 
@@ -666,7 +660,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">106</span>
+    <span class="phpdocumentor-element-found-in__line">115</span>
 
     </aside>
 
@@ -701,7 +695,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">255</span>
+    <span class="phpdocumentor-element-found-in__line">275</span>
 
     </aside>
 
@@ -760,7 +754,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">233</span>
+    <span class="phpdocumentor-element-found-in__line">253</span>
 
     </aside>
 
@@ -819,7 +813,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">381</span>
+    <span class="phpdocumentor-element-found-in__line">401</span>
 
     </aside>
 
@@ -884,7 +878,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">406</span>
+    <span class="phpdocumentor-element-found-in__line">426</span>
 
     </aside>
 
@@ -949,7 +943,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">146</span>
+    <span class="phpdocumentor-element-found-in__line">155</span>
 
     </aside>
 
@@ -1028,7 +1022,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">198</span>
+    <span class="phpdocumentor-element-found-in__line">207</span>
 
     </aside>
 
@@ -1087,7 +1081,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">192</span>
+    <span class="phpdocumentor-element-found-in__line">201</span>
 
     </aside>
 
@@ -1101,7 +1095,7 @@ EOT]</span>
         </div>
     
         <section class="phpdocumentor-description"><p>Retourne un programme ou une collection en cas de succès, null en cas d'échec.
-Retourne null si le texte n'est pas entièrement consommé.</p>
+Retourne null en cas d'erreur d'analyse ou si le texte n'est pas entièrement consommé.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1131,40 +1125,6 @@ Retourne null si le texte n'est pas entièrement consommé.</p>
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_test">
-        test()
-        <a href="classes/Algebra-Query.html#method_test" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">423</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">test</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                    -static                    "
->
     <h4 class="phpdocumentor-element__name" id="method_token">
         token()
         <a href="classes/Algebra-Query.html#method_token" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1173,7 +1133,7 @@ Retourne null si le texte n'est pas entièrement consommé.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">169</span>
+    <span class="phpdocumentor-element-found-in__line">178</span>
 
     </aside>
 
@@ -1366,7 +1326,6 @@ Retourne null si le texte n'est pas entièrement consommé.</p>
                                             <li class=""><a href="classes/Algebra-Query.html#method_pmatch">pmatch()</a></li>
                                             <li class=""><a href="classes/Algebra-Query.html#method_program">program()</a></li>
                                             <li class=""><a href="classes/Algebra-Query.html#method_start">start()</a></li>
-                                            <li class=""><a href="classes/Algebra-Query.html#method_test">test()</a></li>
                                             <li class=""><a href="classes/Algebra-Query.html#method_token">token()</a></li>
                                     </ul>
             </li>

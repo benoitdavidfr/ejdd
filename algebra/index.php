@@ -3,8 +3,8 @@
  * Accueil Algebra.
  *
  * Comporte 2 parties:
- *   1) appli interactive d'interrogation des JdD au moyen du langage de requêtes
- *   2) lien vers les tests unitaires des comosants d'Algebra
+ *   1) un explorateur pour interroger des JdD au moyen du langage de requêtes
+ *   2) lien vers les tests unitaires des composants d'Algebra
  *
  * @package Algebra
  */
@@ -14,7 +14,7 @@ require_once __DIR__.'/../datasets/dataset.inc.php';
 
 use Dataset\Dataset;
 
-/** Le contexte de l'appli. passé en cookie d'un appel à l'autre. */
+/** Le contexte de l'explorateur passé en cookie d'un appel à l'autre. */
 class Context {
   /** @var list<string> $datasetPath - Descente dans les datasets, [{dataset}, {collection}] */
   protected array $datasetPath=[];
@@ -55,11 +55,22 @@ class Context {
   }
 };
 
-/** Explorateur de JdD. */
+/**
+ * Explorateur de JdD.
+ *
+ * Permet en parallèle
+ *  - de saisir une requête dans le langage de requêtes
+ *  - de naviguer dans les MD des JdD pour voir leur schéma et la doc sur les champs
+ *  - de consulter les résultats et de naviguer dedans
+ *
+ * Du fait de la techno utilisée, ergonomie limitée.
+ * Les données courantes de l'appli sont conservées entre 2 appels Http dans un cookie.
+ */
 class Explorer {
   /** Le nom du cookie dans lequel le contexte est stocké. */
   const COOKIE_NAME = 'contextAlgebra';
   
+  /** Liens vers les tests unitaires. */
   static function unitTests(): void {
     echo "<h1>Tests unitaires de Algebra</h1><ul>
 <li><a href='proj.php'>Projection d'une collection</a></li>
@@ -151,6 +162,7 @@ class Explorer {
     }
   }
   
+  /** Affiche le Header Html. Peut être dissocié du display pour afficher des infos entres les 2. */
   static function displayHeader(): void {
     echo "<title>Algrebra</title>\n<h2>Interrogation des JdD</h2>\n";
   }
@@ -170,6 +182,7 @@ class Explorer {
     Query::displayBnf();
   }
 
+  /** Programme pincipal. */
   static function main(): void {
     self::getContext();
     $answerOptions = [];
@@ -227,16 +240,3 @@ class Explorer {
   }
 };
 Explorer::main();
-die();
-?>
-
-<pre>
-+------------------------------------------------------+------------------------------------------+
-|        Zone pour poser des questions                 |     Zone pour consulter les JdD          |
-|                    --                                |                                          |
-|            Questions enregistrées                    |                                          |
-|            Saisie de nlle question                   |                                          |
-|                                                      |                                          |
-+------------------------------------------------------+------------------------------------------+
-|
-|                                               Zone avec la réponse

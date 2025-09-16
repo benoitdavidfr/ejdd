@@ -53,7 +53,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayItems\u0028\u0029",
             "name": "displayItems",
-            "summary": "Affiche\u0020les\u0020donn\u00E9es\u0020de\u0020la\u0020collection",
+            "summary": "Affiche\u0020les\u0020donn\u00E9es\u0020de\u0020la\u0020collection.",
             "url": "classes/Algebra-Collection.html#method_displayItems"
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayItem\u0028\u0029",
@@ -68,7 +68,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
-            "summary": "Affiche\u0020les\u0020properties\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection",
+            "summary": "Affiche\u0020les\u0020properties\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection.",
             "url": "classes/Algebra-Collection.html#method_display"
         },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003Adraw\u0028\u0029",
@@ -143,7 +143,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
-            "summary": "Affiche\u0020les\u0020MD\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection",
+            "summary": "Affiche\u0020les\u0020MD\u0020et\u0020donn\u00E9es\u0020de\u0020la\u0020collection.",
             "url": "classes/Algebra-CollectionOfDs.html#method_display"
         },                {
             "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003AisValid\u0028\u0029",
@@ -315,6 +315,101 @@ Search.appendIndex(
             "name": "main",
             "summary": "",
             "url": "classes/Algebra-CProductTest.html#method_main"
+        },                {
+            "fqsen": "\\Algebra\\Context",
+            "name": "Context",
+            "summary": "Le\u0020contexte\u0020de\u0020l\u0027explorateur\u0020pass\u00E9\u0020en\u0020cookie\u0020d\u0027un\u0020appel\u0020\u00E0\u0020l\u0027autre.",
+            "url": "classes/Algebra-Context.html"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003A\u0024datasetPath",
+            "name": "datasetPath",
+            "summary": "",
+            "url": "classes/Algebra-Context.html#property_datasetPath"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003AsetDataset\u0028\u0029",
+            "name": "setDataset",
+            "summary": "",
+            "url": "classes/Algebra-Context.html#method_setDataset"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003AsetCollection\u0028\u0029",
+            "name": "setCollection",
+            "summary": "",
+            "url": "classes/Algebra-Context.html#method_setCollection"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003A\u0024query",
+            "name": "query",
+            "summary": "La\u0020question\u0020en\u0020cours.",
+            "url": "classes/Algebra-Context.html#property_query"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003AsetQuery\u0028\u0029",
+            "name": "setQuery",
+            "summary": "",
+            "url": "classes/Algebra-Context.html#method_setQuery"
+        },                {
+            "fqsen": "\\Algebra\\Context\u003A\u003Adisplay\u0028\u0029",
+            "name": "display",
+            "summary": "",
+            "url": "classes/Algebra-Context.html#method_display"
+        },                {
+            "fqsen": "\\Algebra\\Explorer",
+            "name": "Explorer",
+            "summary": "Explorateur\u0020de\u0020JdD.",
+            "url": "classes/Algebra-Explorer.html"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AunitTests\u0028\u0029",
+            "name": "unitTests",
+            "summary": "Liens\u0020vers\u0020les\u0020tests\u0020unitaires.",
+            "url": "classes/Algebra-Explorer.html#method_unitTests"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AgetContext\u0028\u0029",
+            "name": "getContext",
+            "summary": "R\u00E9cup\u00E8re\u0020le\u0020contexte\u0020\u00E0\u0020partir\u0020du\u0020cookie.",
+            "url": "classes/Algebra-Explorer.html#method_getContext"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AstoreContext\u0028\u0029",
+            "name": "storeContext",
+            "summary": "Enregistre\u0020le\u0020contexte\u0020dans\u0020le\u0020cookie,\u0020doit\u0020\u00EAtre\u0020appel\u00E9\u0020avant\u0020toute\u0020sortie\u0020de\u0020texte.",
+            "url": "classes/Algebra-Explorer.html#method_storeContext"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AaskQuery\u0028\u0029",
+            "name": "askQuery",
+            "summary": "Affiche\u0020la\u0020zone\u0020permettant\u0020de\u0020poser\u0020une\u0020req\u00EAte,\u0020le\u0020retour\u0020est\u0020une\u0020action\u0020query\u0020avec\u0020en\u0020param\u00E8tre\u0020la\u0020query.",
+            "url": "classes/Algebra-Explorer.html#method_askQuery"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AshowDatasets\u0028\u0029",
+            "name": "showDatasets",
+            "summary": "Permet\u0020de\u0020naviguer\u0020entre\u0020les\u0020datasets\u0020au\u0020sein\u0020de\u0020chacun.",
+            "url": "classes/Algebra-Explorer.html#method_showDatasets"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003Aanswer\u0028\u0029",
+            "name": "answer",
+            "summary": "Affiche\u0020la\u0020r\u00E9ponse\u0020\u00E0\u0020la\u0020requ\u00EAte.",
+            "url": "classes/Algebra-Explorer.html#method_answer"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003AdisplayHeader\u0028\u0029",
+            "name": "displayHeader",
+            "summary": "Affiche\u0020le\u0020Header\u0020Html.\u0020Peut\u0020\u00EAtre\u0020dissoci\u00E9\u0020du\u0020display\u0020pour\u0020afficher\u0020des\u0020infos\u0020entres\u0020les\u00202.",
+            "url": "classes/Algebra-Explorer.html#method_displayHeader"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003Adisplay\u0028\u0029",
+            "name": "display",
+            "summary": "Affichage\u0020principal.",
+            "url": "classes/Algebra-Explorer.html#method_display"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "Programme\u0020pincipal.",
+            "url": "classes/Algebra-Explorer.html#method_main"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003ACOOKIE_NAME",
+            "name": "COOKIE_NAME",
+            "summary": "Le\u0020nom\u0020du\u0020cookie\u0020dans\u0020lequel\u0020le\u0020contexte\u0020est\u0020stock\u00E9.",
+            "url": "classes/Algebra-Explorer.html#constant_COOKIE_NAME"
+        },                {
+            "fqsen": "\\Algebra\\Explorer\u003A\u003A\u0024context",
+            "name": "context",
+            "summary": "Le\u0020context\u0020cad\u0020les\u0020donn\u00E9es\u0020de\u0020l\u0027appli",
+            "url": "classes/Algebra-Explorer.html#property_context"
         },                {
             "fqsen": "\\A_FAIRE_JOINF",
             "name": "A_FAIRE_JOINF",
@@ -803,7 +898,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\PredicateParser",
             "name": "PredicateParser",
-            "summary": "Le\u0020parser\u0020des\u0020pr\u00E9dicats,\u0020fonctionne\u0020de\u0020la\u0020m\u00EAme\u0020mani\u00E8re\u0020et\u0020en\u0020harmonie\u0020avec\u0020le\u0020parser\u0020de\u0020requ\u00EAtes\u0020DsParser.",
+            "summary": "Le\u0020parser\u0020des\u0020pr\u00E9dicats,\u0020fonctionne\u0020de\u0020la\u0020m\u00EAme\u0020mani\u00E8re\u0020et\u0020en\u0020harmonie\u0020avec\u0020le\u0020parser\u0020de\u0020requ\u00EAtes\u0020Query.",
             "url": "classes/Algebra-PredicateParser.html"
         },                {
             "fqsen": "\\Algebra\\PredicateParser\u003A\u003Atoken\u0028\u0029",
@@ -938,7 +1033,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Program\u003A\u003A__invoke\u0028\u0029",
             "name": "__invoke",
-            "summary": "",
+            "summary": "Appel\u0020du\u0020programme\u0020avec\u0020d\u0027\u00E9ventuelle\u0020options.",
             "url": "classes/Algebra-Program.html#method___invoke"
         },                {
             "fqsen": "\\Algebra\\Program\u003A\u003A\u0024operator",
@@ -953,7 +1048,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Query",
             "name": "Query",
-            "summary": "Le\u0020parser\u0020de\u0020requ\u00EAtes,\u0020appel\u00E9\u0020par\u0020start\u0028\u0029,\u0020retourne\u0020un\u0020Program,\u0020une\u0020Collection\u0020ou\u0020null\u0020en\u0020cas\u0020d\u0027erreur.",
+            "summary": "Parser\u0020de\u0020requ\u00EAtes,\u0020appel\u00E9\u0020par\u0020start\u0028\u0029,\u0020retourne\u0020un\u0020Program,\u0020une\u0020Collection\u0020ou\u0020null\u0020en\u0020cas\u0020d\u0027erreur.",
             "url": "classes/Algebra-Query.html"
         },                {
             "fqsen": "\\Algebra\\Query\u003A\u003AaddTrace\u0028\u0029",
@@ -1010,11 +1105,6 @@ Search.appendIndex(
             "name": "namePair",
             "summary": "",
             "url": "classes/Algebra-Query.html#method_namePair"
-        },                {
-            "fqsen": "\\Algebra\\Query\u003A\u003Atest\u0028\u0029",
-            "name": "test",
-            "summary": "",
-            "url": "classes/Algebra-Query.html#method_test"
         },                {
             "fqsen": "\\Algebra\\Query\u003A\u003ATOKENS",
             "name": "TOKENS",
@@ -2453,7 +2543,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Drawing\\GdDrawing",
             "name": "GdDrawing",
-            "summary": "class\u0020GdDrawing\u0020implements\u0020Drawing\u0020\u002D\u0020classe\u0020impl\u00E9mentant\u0020un\u0020dessin\u0020utilisant\u0020les\u0020primitives\u0020GD\u0020\u002B\u0020copie\u0020d\u0027image",
+            "summary": "Dessin\u0020utilisant\u0020les\u0020primitives\u0020GD\u0020et\u0020d\u00E9finissant\u0020un\u0020espace\u0020de\u0020coordonn\u00E9es\u0020utilisateur.",
             "url": "classes/Drawing-GdDrawing.html"
         },                {
             "fqsen": "\\Drawing\\GdDrawing\u003A\u003A__construct\u0028\u0029",
@@ -2575,6 +2665,51 @@ Search.appendIndex(
             "name": "world",
             "summary": "",
             "url": "classes/Drawing-GdDrawing.html#property_world"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere",
+            "name": "Planisphere",
+            "summary": "Utilisation\u0020dans\u0020GdDrawing\u0020du\u0020planisphere\u0020cr\u00E9\u00E9\u0020par\u0020screenshot\u0020d\u0027OSM.",
+            "url": "classes/Drawing-Planisphere.html"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003Aimagecreate\u0028\u0029",
+            "name": "imagecreate",
+            "summary": "Cr\u00E9ation\u0020d\u0027une\u0020image\u0020GD\u0020\u00E0\u0020partir\u0020du\u0020fichier\u0020PNG.",
+            "url": "classes/Drawing-Planisphere.html#method_imagecreate"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003AEBox\u0028\u0029",
+            "name": "EBox",
+            "summary": "D\u00E9finition\u0020de\u0020l\u0027espace\u0020de\u0020coordonn\u00E9es\u0020utilisateurs\u0020en\u0020degr\u00E9s.",
+            "url": "classes/Drawing-Planisphere.html#method_EBox"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003APATH",
+            "name": "PATH",
+            "summary": "Chemin\u0020du\u0020fichier.",
+            "url": "classes/Drawing-Planisphere.html#constant_PATH"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003AWIDTH",
+            "name": "WIDTH",
+            "summary": "Largeur\u0020de\u0020l\u0027image.",
+            "url": "classes/Drawing-Planisphere.html#constant_WIDTH"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003AHEIGHT",
+            "name": "HEIGHT",
+            "summary": "Hauteur\u0020de\u0020l\u0027image.",
+            "url": "classes/Drawing-Planisphere.html#constant_HEIGHT"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003ADOC",
+            "name": "DOC",
+            "summary": "Documentation\u0020du\u0020calcul\u0020de\u0020l\u0027espace\u0020de\u0020coorddonn\u00E9es.",
+            "url": "classes/Drawing-Planisphere.html#constant_DOC"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003AWEST",
+            "name": "WEST",
+            "summary": "",
+            "url": "classes/Drawing-Planisphere.html#constant_WEST"
+        },                {
+            "fqsen": "\\Drawing\\Planisphere\u003A\u003AEAST",
+            "name": "EAST",
+            "summary": "XMAX\u0020de\u0020l\u0027espace\u0020de\u0020coordonn\u00E9es.",
+            "url": "classes/Drawing-Planisphere.html#constant_EAST"
         },                {
             "fqsen": "\\Drawing\\Context",
             "name": "Context",
@@ -3035,11 +3170,6 @@ Search.appendIndex(
             "name": "collection",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020flux\u0020GeoJSON\u0020de\u0020la\u0020Collection\u0020\u0024collName\u0020du\u0020JdD\u0020\u0024dsName\u0020\u00E9ventuellement\u0020filtr\u00E9\u0020par\u0020un\u0020bbox.",
             "url": "classes/GeoJSON-Feed.html#method_collection"
-        },                {
-            "fqsen": "\\GeoJSON\\Feed\u003A\u003Arun\u0028\u0029",
-            "name": "run",
-            "summary": "Ex\u00E9cute\u0020la\u0020commande\u0020en\u0020fonction\u0020des\u0020param\u00E8tres.",
-            "url": "classes/GeoJSON-Feed.html#method_run"
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Ausage\u0028\u0029",
             "name": "usage",

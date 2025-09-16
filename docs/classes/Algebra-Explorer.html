@@ -181,21 +181,18 @@
             <div class="phpdocumentor-column -nine phpdocumentor-content">
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/llmap.html">LLMap</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/algebra.html">Algebra</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    L_geoJSON
+    Explorer
 
-        <span class="phpdocumentor-element__extends">
-        extends <a href="classes/LLMap-Layer.html"><abbr title="\LLMap\Layer">Layer</abbr></a>
-    </span>
     
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
-                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Map.html">Map</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Algebra.html">Algebra</a></li>
                             </ul>
         </div>
     
@@ -208,15 +205,24 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">69</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Classe concrète des couches L.geoJSON.</p>
+            <p class="phpdocumentor-summary">Explorateur de JdD.</p>
 
 
+    <section class="phpdocumentor-description"><p>Permet en parallèle</p>
+<ul>
+<li>de saisir une requête dans le langage de requêtes</li>
+<li>de naviguer dans les MD des JdD pour voir leur schéma et la doc sur les champs</li>
+<li>de consulter les résultats et de naviguer dedans</li>
+</ul>
+<p>Du fait de la techno utilisée, ergonomie limitée.
+Les données courantes de l'appli sont conservées entre 2 appels Http dans un cookie.</p>
+</section>
 
 
 
@@ -226,7 +232,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/LLMap-L-geoJSON.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Algebra-Explorer.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -238,91 +244,103 @@
 
 <h4 id="toc-constants">
     Constants
-    <a href="classes/LLMap-L-geoJSON.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Algebra-Explorer.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/LLMap-L-geoJSON.html#constant_JS_CODE">JS_CODE</a>
+    <a class="" href="classes/Algebra-Explorer.html#constant_COOKIE_NAME">COOKIE_NAME</a>
     <span>
-        &nbsp;= &quot;  // affichage de {id}\n&quot; . &quot;    &#039;{id}&#039; : L.geoJSON(\n&quot; . &quot;      {geoJsonGeometry},\n&quot; . &quot;      {style}\n&quot; . &quot;    ),\n&quot;                            </span>
+        &nbsp;= &#039;contextAlgebra&#039;                            </span>
 </dt>
+<dd>Le nom du cookie dans lequel le contexte est stocké.</dd>
 
     </dl>
 
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/LLMap-L-geoJSON.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Algebra-Explorer.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/LLMap-Layer.html#property_all">$all</a>
+    <a class="" href="classes/Algebra-Explorer.html#property_context">$context</a>
     <span>
-                        &nbsp;: array&lt;string, <a href="classes/LLMap-Layer.html"><abbr title="\LLMap\Layer">Layer</abbr></a>&gt;            </span>
+                        &nbsp;: <a href="classes/Algebra-Context.html"><abbr title="\Algebra\Context">Context</abbr></a>|null            </span>
 </dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/LLMap-Layer.html#property_lyrId">$lyrId</a>
-    <span>
-                        &nbsp;: string            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/LLMap-Layer.html#property_params">$params</a>
-    <span>
-                        &nbsp;: array&lt;string|int, mixed&gt;            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/LLMap-Layer.html#property_title">$title</a>
-    <span>
-                        &nbsp;: string            </span>
-</dt>
+<dd>Le context cad les données de l&#039;appli</dd>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/LLMap-L-geoJSON.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Algebra-Explorer.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/LLMap-L-geoJSON.html#method___construct">__construct()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Création d&#039;une couche.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/LLMap-Layer.html#method_asArray">asArray()</a>
-    <span>
-                                &nbsp;: array&lt;string, mixed&gt;    </span>
-</dt>
-<dd>Retourne une Layer comme un array avec son id pour affichage avec Yaml::dump().</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/LLMap-L-geoJSON.html#method_checkIntegrity">checkIntegrity()</a>
+    <a class="" href="classes/Algebra-Explorer.html#method_answer">answer()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Les erreurs d&#039;intégité soulèvent des exceptions.</dd>
+<dd>Affiche la réponse à la requête.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/LLMap-Layer.html#method_create">create()</a>
+    <a class="" href="classes/Algebra-Explorer.html#method_askQuery">askQuery()</a>
     <span>
-                                &nbsp;: self    </span>
+                                &nbsp;: void    </span>
 </dt>
-<dd>Création d&#039;une couche dans la bonne classe en fonction des paramètres.</dd>
+<dd>Affiche la zone permettant de poser une reqête, le retour est une action query avec en paramètre la query.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/LLMap-L-geoJSON.html#method_toJS">toJS()</a>
+    <a class="" href="classes/Algebra-Explorer.html#method_display">display()</a>
     <span>
-                                &nbsp;: string    </span>
+                                &nbsp;: void    </span>
 </dt>
-<dd>Retourne le code JS affichant la couche.</dd>
+<dd>Affichage principal.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_displayHeader">displayHeader()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Affiche le Header Html. Peut être dissocié du display pour afficher des infos entres les 2.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_getContext">getContext()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Récupère le contexte à partir du cookie.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_main">main()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Programme pincipal.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_showDatasets">showDatasets()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Permet de naviguer entre les datasets au sein de chacun.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_storeContext">storeContext()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Enregistre le contexte dans le cookie, doit être appelé avant toute sortie de texte.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Explorer.html#method_unitTests">unitTests()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+<dd>Liens vers les tests unitaires.</dd>
 
     </dl>
 
@@ -332,30 +350,31 @@
     <section class="phpdocumentor-constants">
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
-            <a href="classes/LLMap-L-geoJSON.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Algebra-Explorer.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_JS_CODE">
-        JS_CODE
-        <a href="classes/LLMap-L-geoJSON.html#constant_JS_CODE" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_COOKIE_NAME">
+        COOKIE_NAME
+        <a href="classes/Algebra-Explorer.html#constant_COOKIE_NAME" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">167</span>
+    <span class="phpdocumentor-element-found-in__line">71</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Le nom du cookie dans lequel le contexte est stocké.</p>
+
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">JS_CODE</span>
-    = <span class="phpdocumentor-signature__default-value">&quot;  // affichage de {id}\n&quot; . &quot;    &#039;{id}&#039; : L.geoJSON(\n&quot; . &quot;      {geoJsonGeometry},\n&quot; . &quot;      {style}\n&quot; . &quot;    ),\n&quot;</span>
+    <span class="phpdocumentor-signature__name">COOKIE_NAME</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;contextAlgebra&#039;</span>
 </code>
 
 
@@ -372,7 +391,7 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/LLMap-L-geoJSON.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Algebra-Explorer.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -382,145 +401,28 @@
             -public
             -static                                                        "
 >
-    <h4 class="phpdocumentor-element__name" id="property_all">
-        $all
-        <a href="classes/LLMap-Layer.html#property_all" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_context">
+        $context
+        <a href="classes/Algebra-Explorer.html#property_context" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                                             </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">35</span>
+    <span class="phpdocumentor-element-found-in__line">87</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Le context cad les données de l&#039;appli</p>
+
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type">array&lt;string, <a href="classes/LLMap-Layer.html"><abbr title="\LLMap\Layer">Layer</abbr></a>&gt;</span>
-    <span class="phpdocumentor-signature__name">$all</span>
-     = <span class="phpdocumentor-signature__default-value">[]</span></code>
-
-    
-        <section class="phpdocumentor-description"><p>le dictionnaire des couches indexées par leur id</p>
-</section>
-
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                -read-only                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_lyrId">
-        $lyrId
-        <a href="classes/LLMap-Layer.html#property_lyrId" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">29</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">string</span>
-    <span class="phpdocumentor-signature__name">$lyrId</span>
-    </code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                -read-only                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_params">
-        $params
-        <a href="classes/LLMap-Layer.html#property_params" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">32</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;</span>
-    <span class="phpdocumentor-signature__name">$params</span>
-    </code>
-
-    
-        <section class="phpdocumentor-description"><p>Les paramètres de l'appel.</p>
-</section>
-
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                -read-only                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_title">
-        $title
-        <a href="classes/LLMap-Layer.html#property_title" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">30</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">string</span>
-    <span class="phpdocumentor-signature__name">$title</span>
-    </code>
+        <span class="phpdocumentor-signature__static">static</span>    <span class="phpdocumentor-signature__type"><a href="classes/Algebra-Context.html"><abbr title="\Algebra\Context">Context</abbr></a>|null</span>
+    <span class="phpdocumentor-signature__name">$context</span>
+     = <span class="phpdocumentor-signature__default-value">null</span></code>
 
     
     
@@ -536,32 +438,32 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/LLMap-L-geoJSON.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Algebra-Explorer.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
         class="phpdocumentor-element
             -method
             -public
-                                                        "
+                                    -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method___construct">
-        __construct()
-        <a href="classes/LLMap-L-geoJSON.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_answer">
+        answer()
+        <a href="classes/Algebra-Explorer.html#method_answer" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">176</span>
+    <span class="phpdocumentor-element-found-in__line">148</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Création d&#039;une couche.</p>
+        <p class="phpdocumentor-summary">Affiche la réponse à la requête.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$lyrId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$title</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">answer</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array{'skip'?: int, 'nbPerPage'?: int|"all"}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -570,27 +472,11 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$lyrId</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                <span class="phpdocumentor-signature__argument__name">$options</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{'skip'?: int, 'nbPerPage'?: int|"all"}</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$title</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$params</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>Les paramètres d'appel</p>
-</section>
-
             </dd>
             </dl>
 
@@ -604,64 +490,107 @@
         class="phpdocumentor-element
             -method
             -public
-                                                        "
+                                    -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_asArray">
-        asArray()
-        <a href="classes/LLMap-Layer.html#method_asArray" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_askQuery">
+        askQuery()
+        <a href="classes/Algebra-Explorer.html#method_askQuery" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">74</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne une Layer comme un array avec son id pour affichage avec Yaml::dump().</p>
+        <p class="phpdocumentor-summary">Affiche la zone permettant de poser une reqête, le retour est une action query avec en paramètre la query.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">asArray</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string, mixed&gt;</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">askQuery</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Dans un second temps prévoir de stocker des requêtes.</p>
+</section>
+
     
     
 
     
 
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string, mixed&gt;</span>
-            </section>
-
+    
 </article>
                     <article
         class="phpdocumentor-element
             -method
             -public
-                                                        "
+                                    -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_checkIntegrity">
-        checkIntegrity()
-        <a href="classes/LLMap-L-geoJSON.html#method_checkIntegrity" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_display">
+        display()
+        <a href="classes/Algebra-Explorer.html#method_display" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">181</span>
+    <span class="phpdocumentor-element-found-in__line">173</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Les erreurs d&#039;intégité soulèvent des exceptions.</p>
+        <p class="phpdocumentor-summary">Affichage principal.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">checkIntegrity</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">display</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array{'skip'?: int, 'nbPerPage'?: int|"all"}&nbsp;</span><span class="phpdocumentor-signature__argument__name">$answerOptions</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$answerOptions</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array{'skip'?: int, 'nbPerPage'?: int|"all"}</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_displayHeader">
+        displayHeader()
+        <a href="classes/Algebra-Explorer.html#method_displayHeader" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">166</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Affiche le Header Html. Peut être dissocié du display pour afficher des infos entres les 2.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">displayHeader</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -680,83 +609,58 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_create">
-        create()
-        <a href="classes/LLMap-Layer.html#method_create" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_getContext">
+        getContext()
+        <a href="classes/Algebra-Explorer.html#method_getContext" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">41</span>
+    <span class="phpdocumentor-element-found-in__line">90</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Création d&#039;une couche dans la bonne classe en fonction des paramètres.</p>
+        <p class="phpdocumentor-summary">Récupère le contexte à partir du cookie.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">create</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$lyrId</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$def</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getContext</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>L'intégrité des couches est vérifiée par checkIntegrity().</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$lyrId</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$def</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"><p>La définition de la couche respectant le schéma de la couche</p>
-</section>
-
-            </dd>
-            </dl>
-
+    
+    
     
 
     
 
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">self</span>
-            </section>
-
+    
 </article>
                     <article
         class="phpdocumentor-element
             -method
             -public
-                                                        "
+                                    -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_toJS">
-        toJS()
-        <a href="classes/LLMap-L-geoJSON.html#method_toJS" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_main">
+        main()
+        <a href="classes/Algebra-Explorer.html#method_main" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="drawing/llmap.php"><a href="files/drawing-llmap.html"><abbr title="drawing/llmap.php">llmap.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">183</span>
+    <span class="phpdocumentor-element-found-in__line">186</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne le code JS affichant la couche.</p>
+        <p class="phpdocumentor-summary">Programme pincipal.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">toJS</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">main</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -767,11 +671,112 @@
 
     
 
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">string</span>
-            </section>
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_showDatasets">
+        showDatasets()
+        <a href="classes/Algebra-Explorer.html#method_showDatasets" class="headerlink"><i class="fas fa-link"></i></a>
 
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">109</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Permet de naviguer entre les datasets au sein de chacun.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">showDatasets</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_storeContext">
+        storeContext()
+        <a href="classes/Algebra-Explorer.html#method_storeContext" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">93</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Enregistre le contexte dans le cookie, doit être appelé avant toute sortie de texte.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">storeContext</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_unitTests">
+        unitTests()
+        <a href="classes/Algebra-Explorer.html#method_unitTests" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/index.php"><a href="files/algebra-index.html"><abbr title="algebra/index.php">index.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">74</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Liens vers les tests unitaires.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">unitTests</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+    
 </article>
             </section>
 
@@ -779,7 +784,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/drawing/llmap.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/algebra/index.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -880,36 +885,37 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                        <li><a href="classes/LLMap-L-geoJSON.html#toc-constants">Constants</a></li>
-                                                            <li><a href="classes/LLMap-L-geoJSON.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/LLMap-L-geoJSON.html#toc-methods">Methods</a></li>
+                                        <li><a href="classes/Algebra-Explorer.html#toc-constants">Constants</a></li>
+                                                            <li><a href="classes/Algebra-Explorer.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/Algebra-Explorer.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/LLMap-L-geoJSON.html#constant_JS_CODE">JS_CODE</a></li>
+                                                    <li class=""><a href="classes/Algebra-Explorer.html#constant_COOKIE_NAME">COOKIE_NAME</a></li>
                                             </ul>
                 </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/LLMap-Layer.html#property_all">$all</a></li>
-                                                    <li class=""><a href="classes/LLMap-Layer.html#property_lyrId">$lyrId</a></li>
-                                                    <li class=""><a href="classes/LLMap-Layer.html#property_params">$params</a></li>
-                                                    <li class=""><a href="classes/LLMap-Layer.html#property_title">$title</a></li>
+                                                    <li class=""><a href="classes/Algebra-Explorer.html#property_context">$context</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/LLMap-L-geoJSON.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/LLMap-Layer.html#method_asArray">asArray()</a></li>
-                                            <li class=""><a href="classes/LLMap-L-geoJSON.html#method_checkIntegrity">checkIntegrity()</a></li>
-                                            <li class=""><a href="classes/LLMap-Layer.html#method_create">create()</a></li>
-                                            <li class=""><a href="classes/LLMap-L-geoJSON.html#method_toJS">toJS()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_answer">answer()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_askQuery">askQuery()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_display">display()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_displayHeader">displayHeader()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_getContext">getContext()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_main">main()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_showDatasets">showDatasets()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_storeContext">storeContext()</a></li>
+                                            <li class=""><a href="classes/Algebra-Explorer.html#method_unitTests">unitTests()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -929,7 +935,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/LLMap-L-geoJSON.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Algebra-Explorer.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

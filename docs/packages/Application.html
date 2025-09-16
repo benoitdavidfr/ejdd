@@ -114,15 +114,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="-active">Application</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="-active">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -217,8 +217,6 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- étendre la carte d&#039;un n-uplet aux collections issues de requêtes
-  - pose la question de comment effectuer un geojson.php sur une requête
 - proposer un explorateur de JdD à la place de index.php
   - avec notamment un éditeur de requêtes
 - mettre en MD les description dans les schémas
@@ -229,7 +227,7 @@ Actions à réaliser:
 - écrire le cas d&#039;un prédicat plus complexe dans JoinP
 - prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
   - documenter la vue
-    - de la vue elle même, pourquoi elle a até conçue, ...
+    - de la vue elle même, pourquoi elle a été conçue, ...
     - des données utilisées
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
@@ -281,9 +279,18 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+16/9/2025:
+  - 1ère v. de l&#039;exploreur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
+  - création d&#039;une branche &#039;query&#039; pour étendre l&#039;utilisation des cartes aux requêtes
+    - modification de geojson.php pour qu&#039;il puisse générer le GeoJSON d&#039;une requête
+    - modification de index.php et collection.inc.php pour gérer correctement
+      - l&#039;affichage du contenu d&#039;une requête
+      - le dessin de la carte du résultat d&#039;une requête
+  - amélioration de GdDrawing
+EOT], &#039;AVANT_15SEPT2025&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l&#039;assistance de ChatGPT pour finaliser GBox
@@ -480,6 +487,7 @@ Lignes de commandes utiles
     composer require justinrainbow/json-schema
     composer require symfony/yaml
     composer require phpoffice/phpspreadsheet
+    composer require michelf/php-markdown
     
     composer outdated # pour connaitre les composants périmés
     composer update   # pour mettre à jour les composants
@@ -543,8 +551,6 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- étendre la carte d&#039;un n-uplet aux collections issues de requêtes
-  - pose la question de comment effectuer un geojson.php sur une requête
 - proposer un explorateur de JdD à la place de index.php
   - avec notamment un éditeur de requêtes
 - mettre en MD les description dans les schémas
@@ -555,7 +561,7 @@ Actions à réaliser:
 - écrire le cas d&#039;un prédicat plus complexe dans JoinP
 - prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
   - documenter la vue
-    - de la vue elle même, pourquoi elle a até conçue, ...
+    - de la vue elle même, pourquoi elle a été conçue, ...
     - des données utilisées
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
@@ -594,7 +600,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">280</span>
+    <span class="phpdocumentor-element-found-in__line">291</span>
 
     </aside>
 
@@ -643,7 +649,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">43</span>
+    <span class="phpdocumentor-element-found-in__line">41</span>
 
     </aside>
 
@@ -657,9 +663,18 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+16/9/2025:
+  - 1ère v. de l&#039;exploreur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
+  - création d&#039;une branche &#039;query&#039; pour étendre l&#039;utilisation des cartes aux requêtes
+    - modification de geojson.php pour qu&#039;il puisse générer le GeoJSON d&#039;une requête
+    - modification de index.php et collection.inc.php pour gérer correctement
+      - l&#039;affichage du contenu d&#039;une requête
+      - le dessin de la carte du résultat d&#039;une requête
+  - amélioration de GdDrawing
+EOT], &#039;AVANT_15SEPT2025&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l&#039;assistance de ChatGPT pour finaliser GBox
@@ -862,7 +877,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">245</span>
+    <span class="phpdocumentor-element-found-in__line">255</span>
 
     </aside>
 
@@ -881,6 +896,7 @@ Lignes de commandes utiles
     composer require justinrainbow/json-schema
     composer require symfony/yaml
     composer require phpoffice/phpspreadsheet
+    composer require michelf/php-markdown
     
     composer outdated # pour connaitre les composants périmés
     composer update   # pour mettre à jour les composants

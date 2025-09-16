@@ -181,18 +181,18 @@
             <div class="phpdocumentor-column -nine phpdocumentor-content">
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/geojson.html">GeoJSON</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/drawing.html">Drawing</a></li>
     </ul>
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    FeatureCollection
+    Planisphere
 
     
             <div class="phpdocumentor-element__package">
             in package
             <ul class="phpdocumentor-breadcrumbs">
-                                    <li class="phpdocumentor-breadcrumb"><a href="packages/GeoJSON.html">GeoJSON</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drawing.html">Drawing</a></li>
                             </ul>
         </div>
     
@@ -205,15 +205,22 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geom/geojson.inc.php"><a href="files/geom-geojson-inc.html"><abbr title="geom/geojson.inc.php">geojson.inc.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">359</span>
+    <span class="phpdocumentor-element-found-in__line">262</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">FeatureCollection GeoJSON.</p>
+            <p class="phpdocumentor-summary">Utilisation dans GdDrawing du planisphere créé par screenshot d&#039;OSM.</p>
 
 
+    <section class="phpdocumentor-description"><p>Pour l'utiliser avec GdDrawing, il faut d'une part le chemin du fichier, et la largeur et la hauteur de l'image,
+et, d'autre part, définir l'espace de coordonnées permettant d'utiliser des coordonnées utilisateur en degrés.
+Cet espace est défini dans GdDrawing par un EBox couvrant l'ensemble de l'espace image, qui est défini dans EBox().
+L'explication des valeurs est donné dans DOC.
+Le mapping entre les coordonnées est très approximatif, c'est une fonction affine entre lon/lat et X/Y image.
+Je pourrais aller chercher les tuiles de OSM pour créer cette image.</p>
+</section>
 
 
 
@@ -223,7 +230,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/GeoJSON-FeatureCollection.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Drawing-Planisphere.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -233,87 +240,298 @@
 
 
 
-
-
-<h4 id="toc-properties">
-    Properties
-    <a href="classes/GeoJSON-FeatureCollection.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/Drawing-Planisphere.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/GeoJSON-FeatureCollection.html#property_features">$features</a>
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_DOC">DOC</a>
     <span>
-                        &nbsp;: array&lt;int, <a href="classes/GeoJSON-Feature.html"><abbr title="\GeoJSON\Feature">Feature</abbr></a>&gt;            </span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+planisphere2:
+  taille de l&#039;image: 1315 X 821, -180° correspond à x=145, +180° correspond à x=1170
+Calcul des paramètres de la fonction affine de la longitude en degrés -&gt; X écran 
+ y = a * x + b / où y coord. image, x coord. uti. degré
+ 145 = a * (-180) + b =&gt; a = (145 - b)/-180
+ 1170 = a * 180 + b =&gt; 1170 = (145 - b) * 180 / -180 + b = 2*b - 145 =&gt; b = (1170 + 145)/2 = 1315/2
+&amp; a = (145 - b)/-180 = (145 - (1170 + 145)/2)/-180 = 512,5 / 180
+--
+je cherche x pour y=0 et x pour y=1315
+y=0 -&gt; x = -b/a = - 1315/2 /  (512,5 / 180) = - 1315/1025 * 180
+y=1315 -&gt; 1315 = (512,5 / 180) * x + 1315/2 =&gt; x=1315/2 / (512,5 / 180) = 1315/1025 * 180
+EOT]                            </span>
+</dt>
+<dd>Documentation du calcul de l&#039;espace de coorddonnées.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_EAST">EAST</a>
+    <span>
+        &nbsp;= +1315 / 1025 * 180                            </span>
+</dt>
+<dd>XMAX de l&#039;espace de coordonnées.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_HEIGHT">HEIGHT</a>
+    <span>
+        &nbsp;= 821                            </span>
+</dt>
+<dd>Hauteur de l&#039;image.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_PATH">PATH</a>
+    <span>
+        &nbsp;= __DIR__ . &#039;/img/planisphere2.png&#039;                            </span>
+</dt>
+<dd>Chemin du fichier.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_WEST">WEST</a>
+    <span>
+        &nbsp;= -1315 / 1025 * 180                            </span>
 </dt>
 
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Drawing-Planisphere.html#constant_WIDTH">WIDTH</a>
+    <span>
+        &nbsp;= 1315                            </span>
+</dt>
+<dd>Largeur de l&#039;image.</dd>
+
     </dl>
+
+
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/GeoJSON-FeatureCollection.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Drawing-Planisphere.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/GeoJSON-FeatureCollection.html#method___construct">__construct()</a>
+    <a class="" href="classes/Drawing-Planisphere.html#method_EBox">EBox()</a>
     <span>
-                                &nbsp;: mixed    </span>
+                                &nbsp;: <a href="classes/BBox-EBox.html"><abbr title="\BBox\EBox">EBox</abbr></a>    </span>
 </dt>
+<dd>Définition de l&#039;espace de coordonnées utilisateurs en degrés.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/GeoJSON-FeatureCollection.html#method_fromFile">fromFile()</a>
+    <a class="" href="classes/Drawing-Planisphere.html#method_imagecreate">imagecreate()</a>
     <span>
-                                &nbsp;: self    </span>
+                                &nbsp;: <abbr title="\GdImage">GdImage</abbr>    </span>
 </dt>
-<dd>Lecture du fichier comme objet FeatureCollection qui en général ne tient pas en mémoire.</dd>
+<dd>Création d&#039;une image GD à partir du fichier PNG.</dd>
 
     </dl>
 
 
 
         
-
-        
-    <section class="phpdocumentor-properties">
-        <h3 class="phpdocumentor-elements__header" id="properties">
-            Properties
-            <a href="classes/GeoJSON-FeatureCollection.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="classes/Drawing-Planisphere.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                -read-only                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_features">
-        $features
-        <a href="classes/GeoJSON-FeatureCollection.html#property_features" class="headerlink"><i class="fas fa-link"></i></a>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_DOC">
+        DOC
+        <a href="classes/Drawing-Planisphere.html#constant_DOC" class="headerlink"><i class="fas fa-link"></i></a>
 
-        <span class="phpdocumentor-element__modifiers">
-                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
     </h4>
+
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geom/geojson.inc.php"><a href="files/geom-geojson-inc.html"><abbr title="geom/geojson.inc.php">geojson.inc.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">361</span>
+    <span class="phpdocumentor-element-found-in__line">270</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Documentation du calcul de l&#039;espace de coorddonnées.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">DOC</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+planisphere2:
+  taille de l&#039;image: 1315 X 821, -180° correspond à x=145, +180° correspond à x=1170
+Calcul des paramètres de la fonction affine de la longitude en degrés -&gt; X écran 
+ y = a * x + b / où y coord. image, x coord. uti. degré
+ 145 = a * (-180) + b =&gt; a = (145 - b)/-180
+ 1170 = a * 180 + b =&gt; 1170 = (145 - b) * 180 / -180 + b = 2*b - 145 =&gt; b = (1170 + 145)/2 = 1315/2
+&amp; a = (145 - b)/-180 = (145 - (1170 + 145)/2)/-180 = 512,5 / 180
+--
+je cherche x pour y=0 et x pour y=1315
+y=0 -&gt; x = -b/a = - 1315/2 /  (512,5 / 180) = - 1315/1025 * 180
+y=1315 -&gt; 1315 = (512,5 / 180) * x + 1315/2 =&gt; x=1315/2 / (512,5 / 180) = 1315/1025 * 180
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_EAST">
+        EAST
+        <a href="classes/Drawing-Planisphere.html#constant_EAST" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">288</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">XMAX de l&#039;espace de coordonnées.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">EAST</span>
+    = <span class="phpdocumentor-signature__default-value">+1315 / 1025 * 180</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_HEIGHT">
+        HEIGHT
+        <a href="classes/Drawing-Planisphere.html#constant_HEIGHT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">268</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Hauteur de l&#039;image.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">HEIGHT</span>
+    = <span class="phpdocumentor-signature__default-value">821</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PATH">
+        PATH
+        <a href="classes/Drawing-Planisphere.html#constant_PATH" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">264</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Chemin du fichier.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PATH</span>
+    = <span class="phpdocumentor-signature__default-value">__DIR__ . &#039;/img/planisphere2.png&#039;</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WEST">
+        WEST
+        <a href="classes/Drawing-Planisphere.html#constant_WEST" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">286</span>
 
     </aside>
 
     
     
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type">array&lt;int, <a href="classes/GeoJSON-Feature.html"><abbr title="\GeoJSON\Feature">Feature</abbr></a>&gt;</span>
-    <span class="phpdocumentor-signature__name">$features</span>
-    </code>
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WEST</span>
+    = <span class="phpdocumentor-signature__default-value">-1315 / 1025 * 180</span>
+</code>
+
 
     
     
     
 
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_WIDTH">
+        WIDTH
+        <a href="classes/Drawing-Planisphere.html#constant_WIDTH" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">266</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Largeur de l&#039;image.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">WIDTH</span>
+    = <span class="phpdocumentor-signature__default-value">1315</span>
+</code>
+
+
+    
+    
     
 
     
@@ -321,55 +539,52 @@
 </article>
             </section>
 
+        
+
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/GeoJSON-FeatureCollection.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Drawing-Planisphere.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
         class="phpdocumentor-element
             -method
             -public
-                                                        "
+                                    -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method___construct">
-        __construct()
-        <a href="classes/GeoJSON-FeatureCollection.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_EBox">
+        EBox()
+        <a href="classes/Drawing-Planisphere.html#method_EBox" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geom/geojson.inc.php"><a href="files/geom-geojson-inc.html"><abbr title="geom/geojson.inc.php">geojson.inc.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">364</span>
+    <span class="phpdocumentor-element-found-in__line">299</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Définition de l&#039;espace de coordonnées utilisateurs en degrés.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\GeoJSON\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$featCol</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">EBox</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/BBox-EBox.html"><abbr title="\BBox\EBox">EBox</abbr></a></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
     
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$featCol</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\GeoJSON\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
+    
     
 
     
 
-    
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/BBox-EBox.html"><abbr title="\BBox\EBox">EBox</abbr></a></span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -377,46 +592,36 @@
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_fromFile">
-        fromFile()
-        <a href="classes/GeoJSON-FeatureCollection.html#method_fromFile" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_imagecreate">
+        imagecreate()
+        <a href="classes/Drawing-Planisphere.html#method_imagecreate" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="geom/geojson.inc.php"><a href="files/geom-geojson-inc.html"><abbr title="geom/geojson.inc.php">geojson.inc.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="drawing/gddrawing.php"><a href="files/drawing-gddrawing.html"><abbr title="drawing/gddrawing.php">gddrawing.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">372</span>
+    <span class="phpdocumentor-element-found-in__line">291</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Lecture du fichier comme objet FeatureCollection qui en général ne tient pas en mémoire.</p>
+        <p class="phpdocumentor-summary">Création d&#039;une image GD à partir du fichier PNG.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">fromFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filePath</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">imagecreate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\GdImage">GdImage</abbr></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
     
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$filePath</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
+    
     
 
     
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">self</span>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\GdImage">GdImage</abbr></span>
             </section>
 
 </article>
@@ -426,7 +631,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/geom/geojson.inc.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/drawing/gddrawing.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -527,23 +732,28 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/GeoJSON-FeatureCollection.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/GeoJSON-FeatureCollection.html#toc-methods">Methods</a></li>
+                                        <li><a href="classes/Drawing-Planisphere.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/Drawing-Planisphere.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
-            
-                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/GeoJSON-FeatureCollection.html#property_features">$features</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_DOC">DOC</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_EAST">EAST</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_HEIGHT">HEIGHT</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_PATH">PATH</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_WEST">WEST</a></li>
+                                                    <li class=""><a href="classes/Drawing-Planisphere.html#constant_WIDTH">WIDTH</a></li>
                                             </ul>
                 </li>
+            
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/GeoJSON-FeatureCollection.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/GeoJSON-FeatureCollection.html#method_fromFile">fromFile()</a></li>
+                                            <li class=""><a href="classes/Drawing-Planisphere.html#method_EBox">EBox()</a></li>
+                                            <li class=""><a href="classes/Drawing-Planisphere.html#method_imagecreate">imagecreate()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -563,7 +773,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/GeoJSON-FeatureCollection.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Drawing-Planisphere.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 
