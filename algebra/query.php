@@ -32,10 +32,13 @@ use Dataset\Dataset;
 class Program {
   function __construct(readonly string $operator, readonly Collection $operand) {}
   
-  function __invoke(): void {
+  /** Appel du programme avec d'éventuelle options.
+   * @param array<string,int|string> $options
+   */
+  function __invoke(array $options=[]): void {
     switch ($this->operator) {
       case 'display': {
-        $this->operand->displayItems();
+        $this->operand->displayItems($options);
         break;
       }
       case 'draw': {

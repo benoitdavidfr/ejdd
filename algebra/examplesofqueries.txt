@@ -1,0 +1,19 @@
+Exemples de requêtes
+
+Jointure Région X Département avec projection:
+display(
+  Proj(
+    InnerJoinF(InseeCog.v_region_2025, REG, InseeCog.v_departement_2025, REG),
+    [s1_REG > REG, s1_LIBELLE>LIBREG, DEP>DEP, s2_LIBELLE>LIBDEP]
+  )
+)
+-> génère une erreur BUG !!!
+
+Jointure Région X Département avec projection:
+display(Proj(InnerJoinF(InseeCog.v_region_2025, REG, InseeCog.v_departement_2025, REG),[s1_REG > REG, s1_LIBELLE>LIBREG, DEP>DEP, s2_LIBELLE>LIBDEP]))
+-> ok
+
+http://localhost/ejdd/algebra/?action=display&collection=Proj%28InnerJoinF%28InseeCog.v_region_2025%2CREG%2CInseeCog.v_departement_2025%2CREG%29%2C+%5Bs1_REG%3EREG%2Cs1_LIBELLE%3ELIBREG%2CDEP%3EDEP%2Cs2_LIBELLE%3ELIBDEP%5D%29&key={10}{7}
+-> key non pris en compte !
+
+Proj(InseeCog.v_region_2025,[REG>R])

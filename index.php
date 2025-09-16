@@ -43,6 +43,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+16/9/2025:
+  - 1ère v. de l'exploreur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
@@ -55,6 +57,7 @@ Journal des modifications récentes du code
 EOT
 ],
 'AVANT_15SEPT2025'=> [
+<<<'EOT'
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
@@ -372,8 +375,12 @@ class Application {
         if (!isset($_GET['collection']))
           Dataset::get($_GET['dataset'])->display();
         elseif (!isset($_GET['key'])) {
-          //echo "_GET['collection']=",$_GET['collection'],"<br>\n";
-          Collection::query($_GET['collection'])->display($_GET['skip'] ?? 0);
+          $options = array_merge(
+            isset($_GET['skip']) ? ['skip'=> $_GET['skip']] : [],
+            isset($_GET['nbPerPage']) ? ['nbPerPage'=> $_GET['nbPerPage']] : [],
+            isset($_GET['predicate']) ? ['predicate'=> $_GET['predicate']] : [],
+          );
+          Collection::query($_GET['collection'])->display($options);
         }
         elseif (!isset($_GET['field'])) {
           //echo "_GET['collection']=",$_GET['collection'],"<br>\n";

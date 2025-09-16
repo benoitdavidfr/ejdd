@@ -94,20 +94,23 @@ abstract class Collection {
     return $result;
   }
 
-  /** Affiche les données de la collection */
-  function displayItems(int $skip=0): void {
-    $nbPerPage = match($_GET['nbPerPage'] ?? null) {
+  /** Affiche les données de la collection.
+   * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
+   */
+  function displayItems(array $options=[]): void {
+    $skip = $options['skip'] ?? 0;
+    $nbPerPage = match($options['nbPerPage'] ?? null) {
       null => self::NB_TUPLES_PER_PAGE, // si le paramètre n'est pas défini alors la valeur par défaut est utilisée
       'all' => PHP_INT_MAX, // 'all' peut être utilisé pour obtenir tous les items
-      default => $_GET['nbPerPage'], // sinon c'est la valer du paramètre qui est utilisée
+      default => $options['nbPerPage'], // sinon c'est la valer du paramètre qui est utilisée
     };
     echo "<h3>Contenu</h3>\n";
     echo "<table border=1>\n";
     $cols_prec = [];
     $i = 0; // no de tuple
     $filters = array_merge(
-      ['skip'=> $skip],
-      isset($_GET['predicate']) ? ['predicate'=> Predicate::fromText($_GET['predicate'])] : []
+      isset($options['skip']) ? ['skip'=> $options['skip']] : [],
+      isset($options['predicate']) ? ['predicate'=> Predicate::fromText($options['predicate'])] : []
     );
     foreach ($this->getItems($filters) as $key => $item) {
       $tuple = match ($this->kind) {
@@ -148,7 +151,7 @@ abstract class Collection {
              "'>",
            "Suivants (skip=$skip)</a>, ";
       echo "<a href='?action=display&collection=",urlencode($this->id()),
-            isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
+            isset($options['predicate']) ? "&predicate=".urlencode($options['predicate']) : '',
             "&nbPerPage=all'>Tous</a><br>\n";
     }
   }
@@ -198,14 +201,16 @@ abstract class Collection {
     echo '<pre>'.json_encode($value).'</pre>';
   }
   
-  /** Affiche les properties et données de la collection */
-  function display(int $skip=0): void {
+  /** Affiche les properties et données de la collection.
+   * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
+   */
+  function display(array $options=[]): void {
     echo '<h2>',$this->id()," (<a href='?action=draw&collection=",urlencode($this->id()),"'>Carte</a>)</h2>\n";
 
     echo "<h3>Propriétés</h3>\n";
     $this->displayProperties();
     
-    $this->displayItems($skip);
+    $this->displayItems($options);
   }
   
   /** Dessine une carte de la collection ayant un champ géométrique nommé geometry. */
@@ -363,8 +368,10 @@ class CollectionOfDs extends Collection {
     return Dataset::get($this->dsName)->getItemsOnValue($this->name, $field, $value);
   }
 
-  /** Affiche les MD et données de la collection */
-  function display(int $skip=0): void {
+  /** Affiche les MD et données de la collection.
+   * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
+   */
+  function display(array $options=[]): void {
     echo '<h2>',$this->title," (<a href='?action=draw&collection=",$this->id(),"'>Carte</a>)</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->schema['description']);
@@ -373,7 +380,7 @@ class CollectionOfDs extends Collection {
     if (in_array('predicate', $this->implementedFilters()))
       echo Predicate::form();
     
-    $this->displayItems($skip);
+    $this->displayItems($options);
 
     if ($this->properties()) {
       echo "<h3>Propriétés</h3>\n";
