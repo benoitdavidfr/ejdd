@@ -20,9 +20,9 @@ EOT
 );
 
 require_once __DIR__.'/../datasets/dataset.inc.php';
+require_once __DIR__.'/predicate.inc.php';
 require_once __DIR__.'/proj.php';
 require_once __DIR__.'/joinf.php';
-require_once __DIR__.'/predicate.inc.php';
 require_once __DIR__.'/joinp.php';
 require_once __DIR__.'/select.php';
 
@@ -36,6 +36,10 @@ class Program {
     switch ($this->operator) {
       case 'display': {
         $this->operand->displayItems();
+        break;
+      }
+      case 'draw': {
+        echo $this->operand->draw();
         break;
       }
     }
@@ -70,7 +74,7 @@ class Query {
   const BNF = [
     <<<'EOT'
 {program} ::= 'display(' {expCollection} ')' // affiche le contenu d'une Collection'
-            | 'draw(' {expDataset} ')'       // dessine la carte d'un Dataset'
+            | 'draw(' {expCollection} ')'    // dessine la carte d'une collection'
             | {expCollection}                // retourne un Generator pour exploitation par API
 {expDataset} ::= {name}                      // eg: InseeCog
 {expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
@@ -200,7 +204,7 @@ EOT
   static function program(array $path, string &$text0): Program|Collection|null {
     $path[] = 'program';
     
-    { // {program}#0 : 'display(' {expCollection} ')' // affiche le contenu d'une table'
+    { // {program}#0 : 'display(' {expCollection} ')' // affiche le contenu d'une collection'
       $text = $text0;
       if (self::pmatch('display\(', $text)
         && ($expCollection = self::expCollection($path, $text))
@@ -213,7 +217,18 @@ EOT
       self::addTrace($path, "Echec display", $text0);
     }
     
-    // MANQUE {program}#1 : 'draw' '(' {expDataset} ')'
+    { // {program}#1 : 'draw' '(' {expCollection} ')' // dessine les items d'une collection
+      $text = $text0;
+      if (self::pmatch('draw\(', $text)
+        && ($expCollection = self::expCollection($path, $text))
+          && self::pmatch('^\)', $text))
+      {
+        self::addTrace($path, "succès {program}#1 : 'draw' '(' {expCollection} ')'", "$text0 -> $text");
+        $text0 = $text;
+        return new Program('draw', $expCollection);
+      }
+      self::addTrace($path, "Echec draw", $text0);
+    }
     
     { // {program}#2 : {expCollection}
       $text = $text0;
@@ -421,21 +436,7 @@ EOT
     self::addTrace($path, "échec", $text0);
     return [];
   }
-  
-  static function test(): void {
-    if (0) { // @phpstan-ignore if.alwaysFalse  
-      $text = "display(inseeCog.region)";
-      $p = self::pmatch('display\(', $text);
-      echo 'res=',$p?'vrai':'false',", text=$text<br>\n";
-    }
-    elseif (1) {
-      $text = 'inseeCog.region';
-      echo 'res=',self::token([], '{name}', $text),", text=$text<br>\n";
-    }
-    die("Fin ligne ".__LINE__);
-  }
 };
-//Query::test();
 
 
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
@@ -452,6 +453,7 @@ class QueryTest {
     "select"=> "display(Select(REG='02', InseeCog.v_region_2025))",
     "jointure simple -> renvoie rien" => "InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg)",
     "display(jointure simple)" => "display(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
+    "draw(jointure simple)" => "draw(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg))",
     "Expression complexe -> renvoie rien"
       => "InnerJoinF(InnerJoinF(InseeCog.v_region_2025, REG, AeCogPe.region, insee_reg), REG, AeCogPe.region, insee_reg)",
     "union"=> "union(InseeCog.v_region_2025, AeCogPe.region)",

@@ -1,5 +1,5 @@
 <?php
-/** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec DsParser.
+/** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec Query.
  * @package Algebra
  */
 namespace Algebra;
@@ -284,7 +284,7 @@ class PredicateJunction extends Predicate {
   }
 };
 
-/** Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser de requêtes DsParser. */
+/** Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser de requêtes Query. */
 class PredicateParser {
   /** Les tokens ajoutés. */
   const TOKENS = [
@@ -514,7 +514,7 @@ EOT
 };
 
 
-if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
+if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 
 
 require_once __DIR__.'/collection.inc.php';

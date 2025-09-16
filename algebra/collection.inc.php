@@ -253,9 +253,7 @@ EOT
     return $map->draw();
   }
   
-  /** Dessine une carte de l'Item ayant un champ géométrique nommé geometry.
-   * Ne fonctionne pour le momemnt que sur une CollectionOfDs.
-   */
+  /** Dessine une carte de l'Item ayant un champ géométrique nommé geometry. */
   function drawItem(string $key): string {
     //echo $this->id(),"<br>\n";
     $item = $this->getOneItemByKey($key);

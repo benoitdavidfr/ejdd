@@ -17,7 +17,7 @@ Actions à réaliser:
 - écrire le cas d'un prédicat plus complexe dans JoinP
 - prévoir un mécanisme de stockage des vues, évolution d'extract ?
   - documenter la vue
-    - de la vue elle même, pourquoi elle a até conçue, ...
+    - de la vue elle même, pourquoi elle a été conçue, ...
     - des données utilisées
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
@@ -50,7 +50,11 @@ Journal des modifications récentes du code
     - modification de geojson.php pour qu'il puisse générer le GeoJSON d'une requête
     - modification de index.php et collection.inc.php pour gérer correctement
       - l'affichage du contenu d'une requête
-      - le dessin de carte de requêtes
+      - le dessin de la carte du résultat d'une requête
+  - amélioration de GdDrawing
+EOT
+],
+'AVANT_15SEPT2025'=> [
 14/9/2025:
   - chgt du nom du répertoire en ejdd, pour explorateur de jeu de données
   - écriture de LongInterval avec l'assistance de ChatGPT pour finaliser GBox
@@ -368,11 +372,11 @@ class Application {
         if (!isset($_GET['collection']))
           Dataset::get($_GET['dataset'])->display();
         elseif (!isset($_GET['key'])) {
-          echo "_GET['collection']=",$_GET['collection'],"<br>\n";
+          //echo "_GET['collection']=",$_GET['collection'],"<br>\n";
           Collection::query($_GET['collection'])->display($_GET['skip'] ?? 0);
         }
         elseif (!isset($_GET['field'])) {
-          echo "_GET['collection']=",$_GET['collection'],"<br>\n";
+          //echo "_GET['collection']=",$_GET['collection'],"<br>\n";
           Collection::query($_GET['collection'])->displayItem($_GET['key']);
         }
         else

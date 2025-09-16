@@ -11,11 +11,12 @@ require_once __DIR__.'/../lib/sexcept.inc.php';
 use BBox\EBox;
 
 /**
- * class GdDrawing implements Drawing - classe implémentant un dessin utilisant les primitives GD + copie d'image
+ * Dessin utilisant les primitives GD et définissant un espace de coordonnées utilisateur.
  *
  * Un dessin définit un système de coord. utilisateurs, une taille d'image d'affichage et une couleur de fond.
  * Il définit des méthodes de dessin d'une ligne brisée et d'un polygone.
- * Il permet aussi de rééchantilloner l'image dessinée, pour par ex. modifier son échelle.
+ * Le système de coordonnées utilisateur correspond à 2 fonctions affines en X et en Y par rappport aux cooordonnées écran.
+ * Il est défini par d'une part la taille de l'image et, d'autre part, le EBox des coordonnées utilisateur.
  */
 class GdDrawing implements Drawing {
   const ErrorCreate = 'GdDrawing::ErrorCreate';
@@ -248,6 +249,56 @@ class GdDrawing implements Drawing {
   }
 };
 
+/**
+ * Utilisation dans GdDrawing du planisphere créé par screenshot d'OSM.
+ *
+ * Pour l'utiliser avec GdDrawing, il faut d'une part le chemin du fichier, et la largeur et la hauteur de l'image,
+ * et, d'autre part, définir l'espace de coordonnées permettant d'utiliser des coordonnées utilisateur en degrés.
+ * Cet espace est défini dans GdDrawing par un EBox couvrant l'ensemble de l'espace image, qui est défini dans EBox().
+ * L'explication des valeurs est donné dans DOC.
+ * Le mapping entre les coordonnées est très approximatif, c'est une fonction affine entre lon/lat et X/Y image.
+ * Je pourrais aller chercher les tuiles de OSM pour créer cette image.
+ */
+class Planisphere {
+  /** Chemin du fichier. */
+  const PATH = __DIR__.'/img/planisphere2.png';
+  /** Largeur de l'image. */
+  const WIDTH = 1315;
+  /** Hauteur de l'image. */
+  const HEIGHT = 821;
+  /** Documentation du calcul de l'espace de coorddonnées. */
+  const DOC = [
+    <<<'EOT'
+planisphere2:
+  taille de l'image: 1315 X 821, -180° correspond à x=145, +180° correspond à x=1170
+Calcul des paramètres de la fonction affine de la longitude en degrés -> X écran 
+ y = a * x + b / où y coord. image, x coord. uti. degré
+ 145 = a * (-180) + b => a = (145 - b)/-180
+ 1170 = a * 180 + b => 1170 = (145 - b) * 180 / -180 + b = 2*b - 145 => b = (1170 + 145)/2 = 1315/2
+& a = (145 - b)/-180 = (145 - (1170 + 145)/2)/-180 = 512,5 / 180
+--
+je cherche x pour y=0 et x pour y=1315
+y=0 -> x = -b/a = - 1315/2 /  (512,5 / 180) = - 1315/1025 * 180
+y=1315 -> 1315 = (512,5 / 180) * x + 1315/2 => x=1315/2 / (512,5 / 180) = 1315/1025 * 180
+EOT
+  ];
+  /* XMIN de l'espace de coordonnées */
+  const WEST = - 1315/1025 * 180;
+  /** XMAX de l'espace de coordonnées. */
+  const EAST = + 1315/1025 * 180;
+  
+  /** Création d'une image GD à partir du fichier PNG. */
+  static function imagecreate(): \GdImage {
+    if ($img = imagecreatefrompng(self::PATH))
+      return $img;
+    else
+      throw new \Exception("Lecture du planisphere impossible");
+  }
+  
+  /** Définition de l'espace de coordonnées utilisateurs en degrés. */
+  static function EBox(): EBox { return new EBox([self::WEST, -90], [self::EAST, +90]); }
+};
+
 
 if (basename(__FILE__) <> basename($_SERVER['PHP_SELF'])) return; // test unitaire de GdDrawing
 
@@ -258,7 +309,7 @@ require_once __DIR__.'/../lib.php';
 
 use GeoJSON\Polygon;
 use GeoJSON\LineString;
-// GeoBox est utilisé pour BBox ou GBox et permet ainsi de définir si BBox ou GBox est utilisé
+// La définition de GeoBox détermine si BBox ou GBox est utilisé
 #use BBox\BBox as GeoBox;
 use BBox\GBox as GeoBox;
 use Lib\HtmlForm;
@@ -387,6 +438,7 @@ class GdDrawingTest {
   ];
   /** Taille des rectangles de la Mpa Html en coord. écran. */
   const SIZE_OF_RECT = 20;
+  
   /** Le context cad les données de l'appli */
   static Context $context;
   
@@ -398,8 +450,7 @@ class GdDrawingTest {
   
   /** Fabrique et transmet l'image au navigateur. */
   static function sendImage(GdDrawing $drawing): void {
-    $planisphere = imagecreatefrompng(__DIR__.'/../input/planisphere2.png');
-    $drawing->imagecopy($planisphere, 0, 0, 0, 0, 1315, 821);
+    $drawing->imagecopy(Planisphere::imagecreate(), 0, 0, 0, 0, Planisphere::WIDTH, Planisphere::HEIGHT);
 
     (new LineString([[-180,-90],[-180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]); // dessin de l'AM West
     (new LineString([[+180,-90],[+180,90]]))->draw($drawing, ['stroke'=> 0x0000FF]); // dessin de l'AM Est
@@ -463,17 +514,7 @@ class GdDrawingTest {
   /** Fonction principale. */
   static function main(): void {
     self::$context = new Context;
-    $drawing = new GdDrawing(1315, 821, new EBox([- 1315/1025 * 180, -90],[1315/1025 * 180, +90]), 0xFFFFFF);
-    {/* planisphere2: image 1315 X 821 - -180° -> 145, +180° -> 1170
-     y = a * x + b / où y coord. image, x coord. uti. degré
-     145 = a * (-180) + b => a = (145 - b)/-180
-     1170 = a * 180 + b => 1170 = (145 - b) * 180 / -180 + b = 2*b - 145 => b = (1170 + 145)/2 = 1315/2
-    & a = (145 - b)/-180 = (145 - (1170 + 145)/2)/-180 = 512,5 / 180
-    --
-    je cherche x pour y=0 et x pour y=1315
-    y=0 -> x = -b/a = - 1315/2 /  (512,5 / 180) = - 1315/1025 * 180
-    y=1315 -> 1315 = (512,5 / 180) * x + 1315/2 => x=1315/2 / (512,5 / 180) = 1315/1025 * 180
-    */}
+    $drawing = new GdDrawing(Planisphere::WIDTH, Planisphere::HEIGHT, Planisphere::EBox(), 0xFFFFFF);
     switch ($_GET['action'] ?? null) {
       case null: {
         echo "<title>GdDrawing</title>\n";
