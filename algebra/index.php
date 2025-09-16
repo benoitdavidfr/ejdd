@@ -15,7 +15,7 @@ require_once __DIR__.'/../datasets/dataset.inc.php';
 use Dataset\Dataset;
 
 /** Le contexte de l'explorateur passé en cookie d'un appel à l'autre. */
-class Context {
+class ContextOfTheExplorer {
   /** @var list<string> $datasetPath - Descente dans les datasets, [{dataset}, {collection}] */
   protected array $datasetPath=[];
   /** La question en cours. */
@@ -70,6 +70,9 @@ class Explorer {
   /** Le nom du cookie dans lequel le contexte est stocké. */
   const COOKIE_NAME = 'contextAlgebra';
   
+  /** Le context cad les données de l'appli conservées en cookie entre 2 appels. */
+  static ?ContextOfTheExplorer $context=null;
+  
   /** Liens vers les tests unitaires. */
   static function unitTests(): void {
     echo "<h1>Tests unitaires de Algebra</h1><ul>
@@ -82,9 +85,6 @@ class Explorer {
 </ul>
 ";
   }
-  
-  /** Le context cad les données de l'appli */
-  static ?Context $context=null;
   
   /** Récupère le contexte à partir du cookie. */
   static function getContext(): void { self::$context = isset($_COOKIE[self::COOKIE_NAME]) ? unserialize($_COOKIE[self::COOKIE_NAME]) : null; }
@@ -142,7 +142,7 @@ class Explorer {
     }
   }
   
-  /**  Affiche la réponse à la requête.
+  /** Affiche la réponse à la requête.
    * @param array{'skip'?: int, 'nbPerPage'?: int|'all'} $options
    */
   static function answer(array $options): void {
@@ -162,7 +162,7 @@ class Explorer {
     }
   }
   
-  /** Affiche le Header Html. Peut être dissocié du display pour afficher des infos entres les 2. */
+  /** Affiche le Header Html qui peut être dissocié du display pour afficher des infos entres les 2. */
   static function displayHeader(): void {
     echo "<title>Algrebra</title>\n<h2>Interrogation des JdD</h2>\n";
   }
