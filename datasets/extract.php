@@ -1,5 +1,5 @@
 <?php
-/** Catégorie de jeux de données définis comme une agrégation de collections d&finies dans d'autres jeux.
+/** Catégorie de jeux de données définis comme une agrégation de collections définies dans d'autres jeux.
  * @package Dataset
  */
 namespace Dataset;

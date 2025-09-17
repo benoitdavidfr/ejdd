@@ -1,7 +1,10 @@
 <?php
 /** Fichier racine de ejdd.
- * Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte le code de bootstrap de l'IHM.
+ * Définit diverses constantes pratiques, ainsi qu'une classe Main qui porte le code de bootstrap de l'IHM.
+ *
+ * @package Main
  */
+namespace Main;
 
 /** Actions à réaliser. */
 const A_FAIRE = [
@@ -9,6 +12,7 @@ const A_FAIRE = [
 Actions à réaliser:
 - proposer un explorateur de JdD à la place de index.php
   - avec notamment un éditeur de requêtes
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -43,6 +47,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+17/9/2025:
+  - amélioration de l'exploreur
 16/9/2025:
   - 1ère v. de l'exploreur
 15/9/2025:
@@ -316,14 +322,14 @@ use Dataset\Dataset;
 use Algebra\Collection;
 use Algebra\CollectionOfDs;
 
-/** Documentation générale de l'application -> voir le README. */
-class Application {
+/** Code de bootstrap de ejdd. */
+class Main {
   /** Bootstrap de l'IHM. */
   static function main(): void {
     ini_set('memory_limit', '10G');
     set_time_limit(5*60);
     switch ($_GET['action'] ?? null) {
-      case null: {
+      case null: { // Choix d'un JdD et de l'action à réaliser dessus 
         if (!isset($_GET['dataset'])) {
           echo "<title>ejdd</title>\n";
           echo "<h2>Choix d'un JdD</h2>\n";
@@ -371,7 +377,7 @@ class Application {
         }
         break;
       }
-      case 'display': {
+      case 'display': { // affichage du contenu du JdD ou de la collection ou d'un item ou d'une valeur 
         if (!isset($_GET['collection']))
           Dataset::get($_GET['dataset'])->display();
         elseif (!isset($_GET['key'])) {
@@ -390,7 +396,7 @@ class Application {
           Collection::query($_GET['collection'])->displayValue($_GET['key'], $_GET['field']);
         break;
       }
-      case 'draw': {
+      case 'draw': { // création d'une carte de la collection 
         if (!isset($_GET['collection']))
           throw new \Exception("Paramètre collection nécessaire");
         elseif (!isset($_GET['key']))
@@ -399,16 +405,16 @@ class Application {
           echo Collection::query($_GET['collection'])->drawItem($_GET['key']);
         break;
       }
-      case 'stats': {
+      case 'stats': { // calcul de stats sur le jdd 
         Dataset::get($_GET['dataset'])->stats();
         break;
       }
-      case 'json': {
+      case 'json': { // affichage du jdd en JSON 
         $dataset = Dataset::get($_GET['dataset']);
         header('Content-Type: application/json');
         die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
       }
-      case 'validate': {
+      case 'validate': { // vérification de la conformité du JdD par rapport à son schéma 
         require_once __DIR__.'/vendor/autoload.php';
 
         $dataset = Dataset::get($_GET['dataset']);
@@ -475,4 +481,4 @@ class Application {
     }
   }
 };
-Application::main();
+Main::main();

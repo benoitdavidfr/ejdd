@@ -10,6 +10,24 @@
  */
 namespace Algebra;
 
+/** Actions à réaliser. */
+const A_FAIRE_EXPLORER = [
+<<<'EOT'
+Actions à réaliser:
+- faire un script particulier explorer.php ?
+- revoir l'IHM
+  - limiter la zone query à une requête hors Program
+  - ajouter un menu
+    - display (par défaut)
+    - draw
+    - show
+  - voir si je supprime display() et draw() de la BNF ?
+- des requêtes génèrent une erreur alors qu'elles ne le devraient pas => bug dans query
+- améliorer l'affichage des champs
+- l'affichage d'un item ne fonctionne pas
+EOT
+];
+
 require_once __DIR__.'/../datasets/dataset.inc.php';
 
 use Dataset\Dataset;
@@ -36,6 +54,14 @@ class ContextOfTheExplorer {
   function query(): string { return $this->query; }
   
   function setQuery(string $query): void { $this->query = $query; }
+  
+  /** Teste si la requête correspond à l'affichage d'une carte. */
+  function isAMap(): bool {
+    return $this->query
+     && ($answer = Collection::query($this->query))
+     && (get_class($answer) == 'Algebra\Program')
+     && ($answer->operator == 'draw');
+  }
   
   /*function skip(): int { return $this->skip; }
   
@@ -87,7 +113,17 @@ class Explorer {
   }
   
   /** Récupère le contexte à partir du cookie. */
-  static function getContext(): void { self::$context = isset($_COOKIE[self::COOKIE_NAME]) ? unserialize($_COOKIE[self::COOKIE_NAME]) : null; }
+  static function getContext(): void {
+    try {
+      self::$context = isset($_COOKIE[self::COOKIE_NAME]) ? unserialize($_COOKIE[self::COOKIE_NAME]) : null;
+    }
+    catch (\TypeError $error) {
+      print_r($error);
+      self::$context = new ContextOfTheExplorer;
+      self::storeContext();
+      //die();
+    }
+  }
   
   /** Enregistre le contexte dans le cookie, doit être appelé avant toute sortie de texte. */
   static function storeContext(): void { setcookie(self::COOKIE_NAME, serialize(self::$context), time()+60*60*24*30, '/'); }
@@ -116,10 +152,10 @@ class Explorer {
         break;
       }
       case 1: { // collection d'un dataset 
+        echo "<a href='?action=clearDsPath'>Retour aux JdD</a><br>\n";
         $dsName = self::$context->datasetPath()[0];
         $ds = Dataset::get($dsName);
         echo "<h3>JdD $dsName</h3>\n";
-        echo "<a href='?action=clearDsPath'>Retour aux JdD</a><br>\n";
         foreach (array_keys($ds->collections) as $collName) {
           echo "<a href='?action=setCollection&elt=$collName'>$collName</a><br>";
         }
@@ -128,11 +164,19 @@ class Explorer {
       case 2: { // champs d'une collection 
         $dsName = self::$context->datasetPath()[0];
         $collName = self::$context->datasetPath()[1];
-        echo "<h3>Champs de $dsName.$collName</h3>\n";
         echo "<a href='?action=setDataset&elt=$dsName'>Retour aux collections</a><br>\n";
+        echo "<h3>Champs de $dsName.$collName</h3>\n";
 
-        echo '<pre>'; print_r(CollectionOfDs::get("$dsName.$collName")->schema->schema['items']['properties']); echo "</pre>\n";
-        //echo '<pre>'; print_r(CollectionOfDs::get("$dsName.$collName")); echo "</pre>\n";
+        $coll = CollectionOfDs::get("$dsName.$collName");
+        if (isset($coll->schema->schema['items'])) { // cas listOfTuples
+          echo '<pre>'; print_r($coll->schema->schema['items']['properties']); echo "</pre>\n";
+        }
+        elseif (isset($coll->schema->schema['patternProperties'])) { // cas dictOfTuples
+          echo '<pre>'; print_r(array_values($coll->schema->schema['patternProperties'])[0]['properties']); echo "</pre>\n";
+        }
+        else {
+          echo '<pre>'; print_r($coll); echo "</pre>\n";
+        }
         break;
       }
       default: {
@@ -146,14 +190,13 @@ class Explorer {
    * @param array{'skip'?: int, 'nbPerPage'?: int|'all'} $options
    */
   static function answer(array $options): void {
-    echo "Zone des réponses";
     if ($query = self::$context->query()) {         // Si la query n'est pas définie on ne fait rien 
       if (!($answer = Collection::query($query))) { // si erreur d'analyse
         Query::displayTrace();                      // alors affiche la trace du parseur
       }
       else {                                        // sinon, cad pas d'arreur d'analyse
         if (get_class($answer) == 'Algebra\Program') { // si le résultat est un programme
-          $answer($options);                                   // alors exécution du programme
+          $answer($options);                           // alors exécution du programme
         }
         else {                                         // sinon
           echo '<pre>answer='; print_r($answer); echo "</pre>\n"; // affichage de la requête
@@ -184,58 +227,75 @@ class Explorer {
 
   /** Programme pincipal. */
   static function main(): void {
+    ini_set('memory_limit', '10G');
+    set_time_limit(5*60);
     self::getContext();
     $answerOptions = [];
+    
+    // Traitements à réaliser avant l'affichage définis par $_GET['action']
     switch ($_GET['action'] ?? null) {
-      case null: break;
-      case 'reinit': {
-        self::$context = new Context;
+      case null: { // aucune action 
+        self::displayHeader();
+        break;
+      }
+      case 'reinit': { // réinitialisation du contexte 
+        self::$context = new ContextOfTheExplorer;
         self::storeContext();
         self::displayHeader();
         break;
       }
-      case 'unitTests': {
+      case 'unitTests': { // affichage des tests unitaires 
         self::unitTests();
         die();
       }
-      case 'clearDsPath': {
+      case 'clearDsPath': { // Affichage de la liste des JdD dans la zpne des Jdd
         self::$context->setDataset();
         self::storeContext();
         self::displayHeader();
         break;
       }
-      case 'setDataset': {
+      case 'setDataset': { // Affichage de la liste des collections d'un JdD dans la zpne des Jdd
         self::$context->setDataset($_GET['elt']);
         self::storeContext();
         self::displayHeader();
         break;
       }
-      case 'setCollection': {
+      case 'setCollection': { // Affichage de la liste des champs d'une collection d'un JdD dans la zpne des Jdd
         self::$context->setCollection($_GET['elt']);
         self::storeContext();
         self::displayHeader();
         break;
       }
-      case 'query': {
+      case 'query': { // définition de la requête 
         self::$context->setQuery($_GET['query']);
         self::storeContext();
+        if (self::$context->isAMap()) { // cas d'une carte => affichage spécifique pleine page
+          self::answer([]);
+          die();
+        }
         self::displayHeader();
         break;
       }
-      case 'display': {
+      case 'display': { // retour d'un display avec des arguments particuliers 
         $answerOptions = array_merge(
           isset($_GET['skip']) ? ['skip'=> $_GET['skip']] : [],
           isset($_GET['nbPerPage']) ? ['nbPerPage'=> $_GET['nbPerPage']] : []
         );
+        self::displayHeader();
         break;
       }
-      default: throw new \Exception("Action $_GET[action] inconnue");
+      default: {
+        self::displayHeader();
+        echo "<b>Erreur, action $_GET[action] inconnue</b><br>\n";
+      }
     }
 
+    // affichage du contexte pour faciliter le debuggage
     if (self::$context)
       self::$context->display();
     else
       echo "contexte vide<br>\n";
+    
     self::display($answerOptions);
   }
 };

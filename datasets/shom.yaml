@@ -317,7 +317,7 @@ schemaOfExtract:
       type: object
 
 collections:
-  CARTES_MARINES_GRILLE:grille_geotiff_800:
+  CARTES_MARINES_GRILLE_grille_geotiff_800:
     source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_800
     $schema:
       title: "Catalogue des cartes marines numériques raster : Générales (échelle supérieure à 1:800 000)"

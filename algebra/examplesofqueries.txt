@@ -17,3 +17,5 @@ http://localhost/ejdd/algebra/?action=display&collection=Proj%28InnerJoinF%28Ins
 -> key non pris en compte !
 
 Proj(InseeCog.v_region_2025,[REG>R])
+
+draw(AeCogPe.departement)

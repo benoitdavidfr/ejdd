@@ -47,7 +47,7 @@ schemaOfExtract:
 
 collections:
   parc_national:
-    source: wfs-fr-ign-gpf.patrinat_pn:parc_national
+    source: IgnWfs.patrinat_pn:parc_national
     $schema:
       title: Parcs nationaux
       description: Parcs nationaux
@@ -82,7 +82,7 @@ collections:
           bbox:
           geometry:
   apb:
-    source: wfs-fr-ign-gpf.patrinat_apb:apb
+    source: IgnWfs.patrinat_apb:apb
     $schema:
       title: Arrêtés de protection de biotope (APB)
       description: |

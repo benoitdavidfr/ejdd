@@ -316,40 +316,40 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Algebra-CProductTest.html#method_main"
         },                {
-            "fqsen": "\\Algebra\\Context",
-            "name": "Context",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer",
+            "name": "ContextOfTheExplorer",
             "summary": "Le\u0020contexte\u0020de\u0020l\u0027explorateur\u0020pass\u00E9\u0020en\u0020cookie\u0020d\u0027un\u0020appel\u0020\u00E0\u0020l\u0027autre.",
-            "url": "classes/Algebra-Context.html"
+            "url": "classes/Algebra-ContextOfTheExplorer.html"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003A\u0024datasetPath",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003A\u0024datasetPath",
             "name": "datasetPath",
             "summary": "",
-            "url": "classes/Algebra-Context.html#property_datasetPath"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#property_datasetPath"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003AsetDataset\u0028\u0029",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003AsetDataset\u0028\u0029",
             "name": "setDataset",
             "summary": "",
-            "url": "classes/Algebra-Context.html#method_setDataset"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#method_setDataset"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003AsetCollection\u0028\u0029",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003AsetCollection\u0028\u0029",
             "name": "setCollection",
             "summary": "",
-            "url": "classes/Algebra-Context.html#method_setCollection"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#method_setCollection"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003A\u0024query",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003A\u0024query",
             "name": "query",
             "summary": "La\u0020question\u0020en\u0020cours.",
-            "url": "classes/Algebra-Context.html#property_query"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#property_query"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003AsetQuery\u0028\u0029",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003AsetQuery\u0028\u0029",
             "name": "setQuery",
             "summary": "",
-            "url": "classes/Algebra-Context.html#method_setQuery"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#method_setQuery"
         },                {
-            "fqsen": "\\Algebra\\Context\u003A\u003Adisplay\u0028\u0029",
+            "fqsen": "\\Algebra\\ContextOfTheExplorer\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
             "summary": "",
-            "url": "classes/Algebra-Context.html#method_display"
+            "url": "classes/Algebra-ContextOfTheExplorer.html#method_display"
         },                {
             "fqsen": "\\Algebra\\Explorer",
             "name": "Explorer",
@@ -388,7 +388,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Explorer\u003A\u003AdisplayHeader\u0028\u0029",
             "name": "displayHeader",
-            "summary": "Affiche\u0020le\u0020Header\u0020Html.\u0020Peut\u0020\u00EAtre\u0020dissoci\u00E9\u0020du\u0020display\u0020pour\u0020afficher\u0020des\u0020infos\u0020entres\u0020les\u00202.",
+            "summary": "Affiche\u0020le\u0020Header\u0020Html\u0020qui\u0020peut\u0020\u00EAtre\u0020dissoci\u00E9\u0020du\u0020display\u0020pour\u0020afficher\u0020des\u0020infos\u0020entres\u0020les\u00202.",
             "url": "classes/Algebra-Explorer.html#method_displayHeader"
         },                {
             "fqsen": "\\Algebra\\Explorer\u003A\u003Adisplay\u0028\u0029",
@@ -408,7 +408,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Explorer\u003A\u003A\u0024context",
             "name": "context",
-            "summary": "Le\u0020context\u0020cad\u0020les\u0020donn\u00E9es\u0020de\u0020l\u0027appli",
+            "summary": "Le\u0020context\u0020cad\u0020les\u0020donn\u00E9es\u0020de\u0020l\u0027appli\u0020conserv\u00E9es\u0020en\u0020cookie\u0020entre\u00202\u0020appels.",
             "url": "classes/Algebra-Explorer.html#property_context"
         },                {
             "fqsen": "\\A_FAIRE_JOINF",
@@ -4216,35 +4216,35 @@ Search.appendIndex(
             "summary": "R\u00E9solution\u0020std\u0020d\u0027un\u0020pixel\u0020d\u00E9fini\u0020dans\u0020le\u0020standard\u0020WMS,\u0020en\u0020m\u00E8tres.",
             "url": "classes/ZoomLevel-ZoomLevel.html#constant_STD_PIXEL_SIZE_IN_METERS"
         },                {
-            "fqsen": "\\A_FAIRE",
+            "fqsen": "\\Main\\A_FAIRE",
             "name": "A_FAIRE",
             "summary": "Actions\u0020\u00E0\u0020r\u00E9aliser.",
-            "url": "namespaces/default.html#constant_A_FAIRE"
+            "url": "namespaces/main.html#constant_A_FAIRE"
         },                {
-            "fqsen": "\\JOURNAL",
+            "fqsen": "\\Main\\JOURNAL",
             "name": "JOURNAL",
             "summary": "Journal\u0020des\u0020modifications\u0020du\u0020code.",
-            "url": "namespaces/default.html#constant_JOURNAL"
+            "url": "namespaces/main.html#constant_JOURNAL"
         },                {
-            "fqsen": "\\LIGNE_DE_COMMANDE",
+            "fqsen": "\\Main\\LIGNE_DE_COMMANDE",
             "name": "LIGNE_DE_COMMANDE",
             "summary": "Cmdes\u0020utiles",
-            "url": "namespaces/default.html#constant_LIGNE_DE_COMMANDE"
+            "url": "namespaces/main.html#constant_LIGNE_DE_COMMANDE"
         },                {
-            "fqsen": "\\GITHUB",
+            "fqsen": "\\Main\\GITHUB",
             "name": "GITHUB",
             "summary": "Utilisation\u0020de\u0020GitHub",
-            "url": "namespaces/default.html#constant_GITHUB"
+            "url": "namespaces/main.html#constant_GITHUB"
         },                {
-            "fqsen": "\\Application",
+            "fqsen": "\\Main\\Application",
             "name": "Application",
             "summary": "Documentation\u0020g\u00E9n\u00E9rale\u0020de\u0020l\u0027application\u0020\u002D\u003E\u0020voir\u0020le\u0020README.",
-            "url": "classes/Application.html"
+            "url": "classes/Main-Application.html"
         },                {
-            "fqsen": "\\Application\u003A\u003Amain\u0028\u0029",
+            "fqsen": "\\Main\\Application\u003A\u003Amain\u0028\u0029",
             "name": "main",
             "summary": "Bootstrap\u0020de\u0020l\u0027IHM.",
-            "url": "classes/Application.html#method_main"
+            "url": "classes/Main-Application.html#method_main"
         },                {
             "fqsen": "\\Lib\\HtmlForm",
             "name": "HtmlForm",
@@ -4380,6 +4380,11 @@ Search.appendIndex(
             "name": "ZoomLevel",
             "summary": "",
             "url": "namespaces/zoomlevel.html"
+        },                {
+            "fqsen": "\\Main",
+            "name": "Main",
+            "summary": "",
+            "url": "namespaces/main.html"
         },                {
             "fqsen": "\\Lib",
             "name": "Lib",
