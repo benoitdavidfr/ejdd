@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
@@ -96,10 +100,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -134,6 +134,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Main.html" class="-active">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
@@ -157,10 +161,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Main.html" class="-active">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -210,7 +210,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Application.html"><abbr title="\Main\Application">Application</abbr></a></dt><dd>Documentation générale de l&#039;application -&gt; voir le README.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-ExplorerContext.html"><abbr title="\Main\ExplorerContext">ExplorerContext</abbr></a></dt><dd>Le contexte de l&#039;explorateur passé en cookie d&#039;un appel à l&#039;autre.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Explorer.html"><abbr title="\Main\Explorer">Explorer</abbr></a></dt><dd>Explorateur de JdD.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Main.html"><abbr title="\Main\Main">Main</abbr></a></dt><dd>Code de bootstrap de ejdd.</dd>    </dl>
 
 
 
@@ -225,8 +225,8 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- proposer un explorateur de JdD à la place de index.php
-  - avec notamment un éditeur de requêtes
+- réfléchir à un opérateur de tri
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -253,6 +253,21 @@ Actions à réaliser:
   - voir pourquoi c&#039;est lent, ca remet en cause la méthode
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
+EOT]                            </span>
+</dt>
+<dd>Actions à réaliser.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a>
+    <span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+Actions à réaliser:
+- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
+  - c&#039;est notament le cas des FT des wfs
+    - ca vaudrait le coût de récupérer les propriétés des FT
+- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
+- améliorer l&#039;affichage des JdD, collections et champs
+- l&#039;affichage d&#039;un item ne fonctionne pas
 EOT]                            </span>
 </dt>
 <dd>Actions à réaliser.</dd>
@@ -287,6 +302,12 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+18-21/9/2025:
+  - ajout de la possibilité de définir des catégories de JdD paramétrées
+  - modif de Wfs en catégorie paramétrée
+  - ajout de la catégorie paramétrée WfsNs
+17/9/2025:
+  - amélioration de l&#039;exploreur
 16/9/2025:
   - 1ère v. de l&#039;exploreur
 15/9/2025:
@@ -559,8 +580,8 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- proposer un explorateur de JdD à la place de index.php
-  - avec notamment un éditeur de requêtes
+- réfléchir à un opérateur de tri
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -599,6 +620,46 @@ EOT]</span>
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_A_FAIRE_EXPLORER">
+        A_FAIRE_EXPLORER
+        <a href="namespaces/main.html#constant_A_FAIRE_EXPLORER" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="explorer.php"><a href="files/explorer.html">explorer.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">10</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Actions à réaliser.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">A_FAIRE_EXPLORER</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+Actions à réaliser:
+- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
+  - c&#039;est notament le cas des FT des wfs
+    - ca vaudrait le coût de récupérer les propriétés des FT
+- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
+- améliorer l&#039;affichage des JdD, collections et champs
+- l&#039;affichage d&#039;un item ne fonctionne pas
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_GITHUB">
         GITHUB
         <a href="namespaces/main.html#constant_GITHUB" class="headerlink"><i class="fas fa-link"></i></a>
@@ -608,7 +669,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">294</span>
+    <span class="phpdocumentor-element-found-in__line">300</span>
 
     </aside>
 
@@ -671,6 +732,12 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+18-21/9/2025:
+  - ajout de la possibilité de définir des catégories de JdD paramétrées
+  - modif de Wfs en catégorie paramétrée
+  - ajout de la catégorie paramétrée WfsNs
+17/9/2025:
+  - amélioration de l&#039;exploreur
 16/9/2025:
   - 1ère v. de l&#039;exploreur
 15/9/2025:
@@ -885,7 +952,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">258</span>
+    <span class="phpdocumentor-element-found-in__line">264</span>
 
     </aside>
 
@@ -1056,6 +1123,7 @@ EOT]</span>
                 <li>
                     <ul class="phpdocumentor-list -clean">
                                                     <li class=""><a href="namespaces/main.html#constant_A_FAIRE">A_FAIRE</a></li>
+                                                    <li class=""><a href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_GITHUB">GITHUB</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_JOURNAL">JOURNAL</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_LIGNE_DE_COMMANDE">LIGNE_DE_COMMANDE</a></li>

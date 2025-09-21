@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
@@ -96,10 +100,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -134,6 +134,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
@@ -157,10 +161,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -271,20 +271,22 @@
     &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;,
     &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;,
     // NaturalEarth stylée avec la feuille de style naturalearth.yaml
-    &#039;IgnWfs&#039; =&gt; &#039;FeatureServer&#039;,
-    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;LimitesAdminExpress&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;BDCarto&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;BDTopo&#039; =&gt; &#039;FeatureServerExtract&#039;,
+    &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
+    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
+    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
+    &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
+    &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
+    // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+    &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
+    &#039;BDTopoE&#039; =&gt; &#039;WfsExtract&#039;,
     &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;MesuresCompensatoires&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;RPG&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;ShomWfs&#039; =&gt; &#039;FeatureServer&#039;,
+    &#039;MesuresCompensatoires&#039; =&gt; &#039;WfsExtract&#039;,
+    &#039;RPG&#039; =&gt; &#039;WfsExtract&#039;,
+    &#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;],
     &#039;Shom&#039; =&gt; &#039;Extract&#039;,
 ]                            </span>
 </dt>
-<dd>Registre contenant la liste des JdD sous la forme {dsName} =&gt; {className}|null</dd>
+<dd>Registre contenant la liste des JdD sous la forme {dsName} =&gt; null|{className}|list&lt;string&gt;.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="classes/Dataset-Dataset.html#constant_UNITS">UNITS</a>
@@ -363,6 +365,13 @@
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
 <dd>Construit le JdD sous la forme d&#039;un array.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Dataset.html#method_class">class()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Retourne le nom de la classe du JdD $dsName sans son espace de noms.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_count">count()</a>
@@ -536,7 +545,7 @@
 
     </aside>
 
-        <p class="phpdocumentor-summary">Registre contenant la liste des JdD sous la forme {dsName} =&gt; {className}|null</p>
+        <p class="phpdocumentor-summary">Registre contenant la liste des JdD sous la forme {dsName} =&gt; null|{className}|list&lt;string&gt;.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
@@ -561,16 +570,18 @@
     &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;,
     &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;,
     // NaturalEarth stylée avec la feuille de style naturalearth.yaml
-    &#039;IgnWfs&#039; =&gt; &#039;FeatureServer&#039;,
-    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;LimitesAdminExpress&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;BDCarto&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;BDTopo&#039; =&gt; &#039;FeatureServerExtract&#039;,
+    &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
+    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
+    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
+    &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
+    &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
+    // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+    &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
+    &#039;BDTopoE&#039; =&gt; &#039;WfsExtract&#039;,
     &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;MesuresCompensatoires&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;RPG&#039; =&gt; &#039;FeatureServerExtract&#039;,
-    &#039;ShomWfs&#039; =&gt; &#039;FeatureServer&#039;,
+    &#039;MesuresCompensatoires&#039; =&gt; &#039;WfsExtract&#039;,
+    &#039;RPG&#039; =&gt; &#039;WfsExtract&#039;,
+    &#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;],
     &#039;Shom&#039; =&gt; &#039;Extract&#039;,
 ]</span>
 </code>
@@ -593,7 +604,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">74</span>
+    <span class="phpdocumentor-element-found-in__line">75</span>
 
     </aside>
 
@@ -640,7 +651,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">88</span>
+    <span class="phpdocumentor-element-found-in__line">89</span>
 
     </aside>
 
@@ -680,7 +691,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">84</span>
+    <span class="phpdocumentor-element-found-in__line">85</span>
 
     </aside>
 
@@ -756,7 +767,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">82</span>
+    <span class="phpdocumentor-element-found-in__line">83</span>
 
     </aside>
 
@@ -838,7 +849,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">86</span>
+    <span class="phpdocumentor-element-found-in__line">87</span>
 
     </aside>
 
@@ -878,7 +889,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">83</span>
+    <span class="phpdocumentor-element-found-in__line">84</span>
 
     </aside>
 
@@ -965,7 +976,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">185</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 
     </aside>
 
@@ -994,6 +1005,55 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
         class="phpdocumentor-element
             -method
             -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_class">
+        class()
+        <a href="classes/Dataset-Dataset.html#method_class" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">95</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le nom de la classe du JdD $dsName sans son espace de noms.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">class</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dsName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dsName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                                                         "
 >
     <h4 class="phpdocumentor-element__name" id="method_count">
@@ -1004,7 +1064,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">383</span>
+    <span class="phpdocumentor-element-found-in__line">415</span>
 
     </aside>
 
@@ -1060,7 +1120,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">365</span>
+    <span class="phpdocumentor-element-found-in__line">397</span>
 
     </aside>
 
@@ -1095,7 +1155,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">380</span>
+    <span class="phpdocumentor-element-found-in__line">412</span>
 
     </aside>
 
@@ -1140,7 +1200,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">351</span>
+    <span class="phpdocumentor-element-found-in__line">383</span>
 
     </aside>
 
@@ -1175,7 +1235,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">259</span>
+    <span class="phpdocumentor-element-found-in__line">291</span>
 
     </aside>
 
@@ -1210,7 +1270,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">224</span>
+    <span class="phpdocumentor-element-found-in__line">256</span>
 
     </aside>
 
@@ -1259,7 +1319,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">91</span>
+    <span class="phpdocumentor-element-found-in__line">92</span>
 
     </aside>
 
@@ -1308,7 +1368,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">404</span>
+    <span class="phpdocumentor-element-found-in__line">436</span>
 
     </aside>
 
@@ -1357,7 +1417,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">414</span>
+    <span class="phpdocumentor-element-found-in__line">446</span>
 
     </aside>
 
@@ -1406,7 +1466,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">122</span>
+    <span class="phpdocumentor-element-found-in__line">116</span>
 
     </aside>
 
@@ -1455,7 +1515,7 @@ SHP_DIR le chemin relatif du répertoire dans lequel sont stockés le fichiers S
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">307</span>
+    <span class="phpdocumentor-element-found-in__line">339</span>
 
     </aside>
 
@@ -1559,7 +1619,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">174</span>
+    <span class="phpdocumentor-element-found-in__line">206</span>
 
     </aside>
 
@@ -1624,7 +1684,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">163</span>
+    <span class="phpdocumentor-element-found-in__line">195</span>
 
     </aside>
 
@@ -1680,7 +1740,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">151</span>
+    <span class="phpdocumentor-element-found-in__line">183</span>
 
     </aside>
 
@@ -1787,7 +1847,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">262</span>
+    <span class="phpdocumentor-element-found-in__line">294</span>
 
     </aside>
 
@@ -1843,7 +1903,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">219</span>
+    <span class="phpdocumentor-element-found-in__line">251</span>
 
     </aside>
 
@@ -1882,7 +1942,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">202</span>
+    <span class="phpdocumentor-element-found-in__line">234</span>
 
     </aside>
 
@@ -1935,7 +1995,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">394</span>
+    <span class="phpdocumentor-element-found-in__line">426</span>
 
     </aside>
 
@@ -1991,7 +2051,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">425</span>
+    <span class="phpdocumentor-element-found-in__line">457</span>
 
     </aside>
 
@@ -2150,6 +2210,7 @@ Les filtres possibles sont:</p>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/Dataset-GeoDataset.html#method___construct">__construct()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_asArray">asArray()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_class">class()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_count">count()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_display">display()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_displayCollection">displayCollection()</a></li>

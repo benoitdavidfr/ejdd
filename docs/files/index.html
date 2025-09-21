@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
@@ -96,10 +100,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -134,6 +134,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
@@ -157,10 +161,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -197,7 +197,7 @@
             <p class="phpdocumentor-summary">Fichier racine de ejdd.</p>
 
         
-            <section class="phpdocumentor-description"><p>Définit diverses constantes pratiques, ainsi qu'une classe Application qui porte le code de bootstrap de l'IHM.</p>
+            <section class="phpdocumentor-description"><p>Définit diverses constantes pratiques, ainsi qu'une classe Main qui porte le code de bootstrap de l'IHM.</p>
 </section>
 
         
@@ -219,7 +219,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Application.html"><abbr title="\Main\Application">Application</abbr></a></dt><dd>Documentation générale de l&#039;application -&gt; voir le README.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Main.html"><abbr title="\Main\Main">Main</abbr></a></dt><dd>Code de bootstrap de ejdd.</dd>    </dl>
 
 
 
@@ -234,8 +234,8 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- proposer un explorateur de JdD à la place de index.php
-  - avec notamment un éditeur de requêtes
+- réfléchir à un opérateur de tri
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -296,6 +296,12 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+18-21/9/2025:
+  - ajout de la possibilité de définir des catégories de JdD paramétrées
+  - modif de Wfs en catégorie paramétrée
+  - ajout de la catégorie paramétrée WfsNs
+17/9/2025:
+  - amélioration de l&#039;exploreur
 16/9/2025:
   - 1ère v. de l&#039;exploreur
 15/9/2025:
@@ -569,8 +575,8 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- proposer un explorateur de JdD à la place de index.php
-  - avec notamment un éditeur de requêtes
+- réfléchir à un opérateur de tri
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
   - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
@@ -618,7 +624,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">294</span>
+    <span class="phpdocumentor-element-found-in__line">300</span>
 
     </aside>
 
@@ -681,6 +687,12 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+18-21/9/2025:
+  - ajout de la possibilité de définir des catégories de JdD paramétrées
+  - modif de Wfs en catégorie paramétrée
+  - ajout de la catégorie paramétrée WfsNs
+17/9/2025:
+  - amélioration de l&#039;exploreur
 16/9/2025:
   - 1ère v. de l&#039;exploreur
 15/9/2025:
@@ -895,7 +907,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">258</span>
+    <span class="phpdocumentor-element-found-in__line">264</span>
 
     </aside>
 

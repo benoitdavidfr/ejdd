@@ -73,6 +73,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="namespaces/main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/geojson.html" class="">GeoJSON</a>
 </h4>
 
@@ -96,10 +100,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="namespaces/zoomlevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="namespaces/main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -134,6 +134,10 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Main.html" class="">Main</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/GeoJSON.html" class="">GeoJSON</a>
 </h4>
 
@@ -157,10 +161,6 @@
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/ZoomLevel.html" class="">ZoomLevel</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Main.html" class="">Main</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -272,9 +272,9 @@ Le parsing d'un {predicate} est délégué à la classe PredicateParser</p>
 {program} ::= &#039;display(&#039; {expCollection} &#039;)&#039; // affiche le contenu d&#039;une Collection&#039;
             | &#039;draw(&#039; {expCollection} &#039;)&#039;    // dessine la carte d&#039;une collection&#039;
             | {expCollection}                // retourne un Generator pour exploitation par API
-{expDataset} ::= {name}                      // eg: InseeCog
-{expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
-              1   | {joinType} &#039;F(&#039; {expCollection} &#039;,&#039; {name} &#039;,&#039; {expCollection} &#039;,&#039; {name} &#039;)&#039;
+{expDataset} ::= {datasetName}                      // eg: InseeCog
+{expCollection} ::= {expDataset} {point} {collName}    // eg: InseeCog.v_region_2025
+              1   | {joinType} &#039;F(&#039; {expCollection} &#039;,&#039; {fieldName} &#039;,&#039; {expCollection} &#039;,&#039; {fieldName} &#039;)&#039;
               2   | {joinType} &#039;P(&#039; {expCollection} &#039;,&#039; {expCollection} &#039;,&#039; {predicate} &#039;)&#039;
               3 //| &#039;Union(&#039; {expCollection} &#039;,&#039; {expCollection} &#039;)&#039; ---------------------- [TO BE COMPLETED]
               4   | &#039;Proj(&#039; {expCollection} &#039;,&#039; &#039;[&#039; {FieldPairs} &#039;]&#039; &#039;)&#039;
@@ -284,7 +284,7 @@ Le parsing d'un {predicate} est délégué à la classe PredicateParser</p>
               8 //| &#039;Map&#039; &#039;(&#039; {phpFun} &#039;,&#039; {expCollection} &#039;)&#039; -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} &#039;,&#039; {FieldPairs}
-{namePair} ::= {name} &#039;&gt;&#039; {name}
+{namePair} ::= {fieldName} &#039;&gt;&#039; {fieldName}
 EOT]                            </span>
 </dt>
 
@@ -294,8 +294,12 @@ EOT]                            </span>
         &nbsp;= [
     &#039;space&#039; =&gt; &#039;[ \n]+&#039;,
     &#039;{point}&#039; =&gt; &#039;\.&#039;,
-    &#039;{name}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
-    // nom représentant {datasetName}, {collectionName} ou {fieldName}
+    &#039;{datasetName}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant un jdd
+    &#039;{fieldName}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant un champ
+    &#039;{collName}&#039; =&gt; &#039;[a-zéèêàA-Z][-:.a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant une collection
     &#039;{joinType}&#039; =&gt; &#039;(InnerJoin|LeftJoin|DiffJoin)&#039;,
     // Les différentes opérations de jointure
     &#039;{phpFun}&#039; =&gt; &#039;function [a-zA-Z]+ {[^}]*}&#039;,
@@ -419,7 +423,7 @@ EOT]                            </span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">77</span>
+    <span class="phpdocumentor-element-found-in__line">79</span>
 
     </aside>
 
@@ -433,9 +437,9 @@ EOT]                            </span>
 {program} ::= &#039;display(&#039; {expCollection} &#039;)&#039; // affiche le contenu d&#039;une Collection&#039;
             | &#039;draw(&#039; {expCollection} &#039;)&#039;    // dessine la carte d&#039;une collection&#039;
             | {expCollection}                // retourne un Generator pour exploitation par API
-{expDataset} ::= {name}                      // eg: InseeCog
-{expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
-              1   | {joinType} &#039;F(&#039; {expCollection} &#039;,&#039; {name} &#039;,&#039; {expCollection} &#039;,&#039; {name} &#039;)&#039;
+{expDataset} ::= {datasetName}                      // eg: InseeCog
+{expCollection} ::= {expDataset} {point} {collName}    // eg: InseeCog.v_region_2025
+              1   | {joinType} &#039;F(&#039; {expCollection} &#039;,&#039; {fieldName} &#039;,&#039; {expCollection} &#039;,&#039; {fieldName} &#039;)&#039;
               2   | {joinType} &#039;P(&#039; {expCollection} &#039;,&#039; {expCollection} &#039;,&#039; {predicate} &#039;)&#039;
               3 //| &#039;Union(&#039; {expCollection} &#039;,&#039; {expCollection} &#039;)&#039; ---------------------- [TO BE COMPLETED]
               4   | &#039;Proj(&#039; {expCollection} &#039;,&#039; &#039;[&#039; {FieldPairs} &#039;]&#039; &#039;)&#039;
@@ -445,7 +449,7 @@ EOT]                            </span>
               8 //| &#039;Map&#039; &#039;(&#039; {phpFun} &#039;,&#039; {expCollection} &#039;)&#039; -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} &#039;,&#039; {FieldPairs}
-{namePair} ::= {name} &#039;&gt;&#039; {name}
+{namePair} ::= {fieldName} &#039;&gt;&#039; {fieldName}
 EOT]</span>
 </code>
 
@@ -480,8 +484,12 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[
     &#039;space&#039; =&gt; &#039;[ \n]+&#039;,
     &#039;{point}&#039; =&gt; &#039;\.&#039;,
-    &#039;{name}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
-    // nom représentant {datasetName}, {collectionName} ou {fieldName}
+    &#039;{datasetName}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant un jdd
+    &#039;{fieldName}&#039; =&gt; &#039;[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant un champ
+    &#039;{collName}&#039; =&gt; &#039;[a-zéèêàA-Z][-:.a-zA-Zéèêà0-9_]*&#039;,
+    // nom représentant une collection
     &#039;{joinType}&#039; =&gt; &#039;(InnerJoin|LeftJoin|DiffJoin)&#039;,
     // Les différentes opérations de jointure
     &#039;{phpFun}&#039; =&gt; &#039;function [a-zA-Z]+ {[^}]*}&#039;,
@@ -522,7 +530,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">100</span>
+    <span class="phpdocumentor-element-found-in__line">102</span>
 
     </aside>
 
@@ -570,7 +578,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">104</span>
+    <span class="phpdocumentor-element-found-in__line">106</span>
 
     </aside>
 
@@ -633,7 +641,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">125</span>
+    <span class="phpdocumentor-element-found-in__line">127</span>
 
     </aside>
 
@@ -668,7 +676,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">115</span>
+    <span class="phpdocumentor-element-found-in__line">117</span>
 
     </aside>
 
@@ -703,7 +711,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">275</span>
+    <span class="phpdocumentor-element-found-in__line">277</span>
 
     </aside>
 
@@ -762,7 +770,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">253</span>
+    <span class="phpdocumentor-element-found-in__line">255</span>
 
     </aside>
 
@@ -821,7 +829,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">401</span>
+    <span class="phpdocumentor-element-found-in__line">405</span>
 
     </aside>
 
@@ -886,7 +894,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">426</span>
+    <span class="phpdocumentor-element-found-in__line">430</span>
 
     </aside>
 
@@ -951,7 +959,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">155</span>
+    <span class="phpdocumentor-element-found-in__line">157</span>
 
     </aside>
 
@@ -1030,7 +1038,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">207</span>
+    <span class="phpdocumentor-element-found-in__line">209</span>
 
     </aside>
 
@@ -1089,7 +1097,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">201</span>
+    <span class="phpdocumentor-element-found-in__line">203</span>
 
     </aside>
 
@@ -1141,7 +1149,7 @@ Retourne null en cas d'erreur d'analyse ou si le texte n'est pas entièrement co
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/query.php"><a href="files/algebra-query.html"><abbr title="algebra/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">178</span>
+    <span class="phpdocumentor-element-found-in__line">180</span>
 
     </aside>
 
