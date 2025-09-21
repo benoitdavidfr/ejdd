@@ -10,8 +10,7 @@ namespace Main;
 const A_FAIRE = [
 <<<'EOT'
 Actions à réaliser:
-- proposer un explorateur de JdD à la place de index.php
-  - avec notamment un éditeur de requêtes
+- réfléchir à un opérateur de tri
 - il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
 - revoir les datasets initiaux
@@ -47,6 +46,10 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+18-21/9/2025:
+  - ajout de la possibilité de définir des catégories de JdD paramétrées
+  - modif de Wfs en catégorie paramétrée
+  - ajout de la catégorie paramétrée WfsNs
 17/9/2025:
   - amélioration de l'exploreur
 16/9/2025:
@@ -360,7 +363,7 @@ class Main {
         }
         else {
           echo "<title>$_GET[dataset]</title>\n<h2>Choix de l'action</h2>\n";
-          $class = Dataset::REGISTRE[$_GET['dataset']] ?? $_GET['dataset'];
+          $class = Dataset::class($_GET['dataset']);
           echo "<a href='datasets/",strToLower($class),".php?dataset=$_GET[dataset]'>",
                 "Appli de construction du JdD $_GET[dataset]</a><br>\n";
           $dataset = Dataset::get($_GET['dataset']);

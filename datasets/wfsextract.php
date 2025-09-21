@@ -1,17 +1,17 @@
 <?php
-/** JdD FeatureServerExtract - Extrait des FeatureTypes d'un FeatureServer.
+/** ABANDON, remplacé par WfsNs - JdD WfsExtract - Extrait des FeatureTypes d'un Wfs.
  *
  * @package Dataset
  */
 namespace Dataset;
 
-require_once __DIR__.'/featureserver.php';
+require_once __DIR__.'/wfs.php';
 
-/** JdD FeatureServerExtract - Extrait des FeatureTypes d'un FeatureServer définis par un préfixe sur le nom du FeatureType. */
-class FeatureServerExtract extends Dataset {
+/** ABANDON, remplacé par WfsNs - JdD WfsExtract - Extrait des FeatureTypes d'un Wfs définis par un préfixe sur le nom du FeatureType. */
+class WfsExtract extends Dataset {
   /** Registre des serveurs WFS indexé par le nom du JdD. */
   const REGISTRE = [
-    'AdminExpress-COG-Carto-PE' => [
+    /*'AdminExpress-COG-Carto-PE' => [
       'title'=> "Admin Express COG Carto petite échelle (dernière édition) de l'IGN",
       'description'=> [
         "Le produit ADMIN EXPRESS COG CARTO PETITE ECHELLE de l'IGN appartient à la gamme ADMIN EXPRESS (https://geoservices.ign.fr/adminexpress).
@@ -77,7 +77,7 @@ La BD CARTO® est publiée une fois par an, au 2ème trimestre. (https://geoserv
       ],
       'source'=> 'IgnWfs',
       'prefix'=> 'BDCARTO_V5:',
-    ],
+    ],*/
     'BDTopo'=> [
       'title'=> "BD TOPO® IGN, modélisation 2D et 3D du territoire et de ses infrastructures sur l'ensemble du territoire français",
       'description'=> [
@@ -133,8 +133,8 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
     if (!isset(self::REGISTRE[$name]))
       throw new \Exception("Erreur de création de '$name'");
     $srceName = self::REGISTRE[$name]['source'];
-    $source = new FeatureServer($srceName);
-    $srceSchema = $source->cap->jsonSchemaOfTheDs($srceName);
+    $wfs = Wfs::get($srceName);
+    $srceSchema = $wfs->cap->jsonSchemaOfTheDs();
     $prefix = self::REGISTRE[$name]['prefix'];
     $collections = [];
     foreach ($srceSchema['properties'] as $collName => $coll) {
@@ -163,16 +163,16 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
   function implementedFilters(string $collName): array { return ['skip', 'bbox']; }
 
   /** L'accès aux items d'une collection du JdD par un Generator. A REVOIR pour descendre le bbox dans la geometry !!!
-   * @param string $cName nom de la collection
-   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - bbox: BBox - rectangle de sélection des n-uplets
+   * @param string $cName nom de la collection
+   * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
    * @return \Generator<int|string,array<mixed>>
    */
   function getItems(string $cName, array $filters=[]): \Generator {
-    $source = new FeatureServer(self::REGISTRE[$this->name]['source']);
-    foreach ($source->getItems(self::REGISTRE[$this->name]['prefix'].$cName, $filters) as $key => $item) {
+    $wfs = Dataset::get(self::REGISTRE[$this->name]['source']);
+    foreach ($wfs->getItems(self::REGISTRE[$this->name]['prefix'].$cName, $filters) as $key => $item) {
       yield $key => $item;
     }
     return;
@@ -182,7 +182,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
    * @return array<mixed>|null
    */ 
   function getOneItemByKey(string $cName, string|int $id): array|null {
-    $source = new FeatureServer(self::REGISTRE[$this->name]['source']);
-    return $source->getOneItemByKey(self::REGISTRE[$this->name]['prefix'].$cName, $id);
+    $wfs = Dataset::get(self::REGISTRE[$this->name]['source']);
+    return $wfs->getOneItemByKey(self::REGISTRE[$this->name]['prefix'].$cName, $id);
   }
 };

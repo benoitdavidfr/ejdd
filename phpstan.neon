@@ -34,6 +34,7 @@ parameters:
         type: 'FeatureCollection',
         bbox?: TGJBox,
         features: list<TGeoJsonFeature>,
+        numberMatched?: int,
         numberReturned?: int,
         totalFeatures?: int
       }
@@ -47,6 +48,7 @@ parameters:
     - install.php
     - lib.php
     - geojson.php
+    - explorer.php
     - algebra/schema.inc.php
     - algebra/collection.inc.php
     - algebra/predicate.inc.php
@@ -72,8 +74,9 @@ parameters:
     - datasets/worldeez.php
     - datasets/geodataset.php
     - datasets/styler.php
-    - datasets/featureserver.php
-    - datasets/featureserverextract.php
+    - datasets/wfs.php
+    - datasets/wfsns.php
+    - datasets/wfsextract.php
     - datasets/extract.php
     - geom/pos.inc.php
     - geom/pbtype.php

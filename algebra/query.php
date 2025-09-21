@@ -70,7 +70,9 @@ class Query {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
-    '{name}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant {datasetName}, {collectionName} ou {fieldName}
+    '{datasetName}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant un jdd
+    '{fieldName}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant un champ
+    '{collName}' => '[a-zéèêàA-Z][-:.a-zA-Zéèêà0-9_]*', // nom représentant une collection
     '{joinType}' => '(InnerJoin|LeftJoin|DiffJoin)', // Les différentes opérations de jointure
     '{phpFun}'=> 'function [a-zA-Z]+ {[^}]*}',
   ];
@@ -79,9 +81,9 @@ class Query {
 {program} ::= 'display(' {expCollection} ')' // affiche le contenu d'une Collection'
             | 'draw(' {expCollection} ')'    // dessine la carte d'une collection'
             | {expCollection}                // retourne un Generator pour exploitation par API
-{expDataset} ::= {name}                      // eg: InseeCog
-{expCollection} ::= {expDataset} {point} {name}    // eg: InseeCog.v_region_2025
-              1   | {joinType} 'F(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+{expDataset} ::= {datasetName}                      // eg: InseeCog
+{expCollection} ::= {expDataset} {point} {collName}    // eg: InseeCog.v_region_2025
+              1   | {joinType} 'F(' {expCollection} ',' {fieldName} ',' {expCollection} ',' {fieldName} ')'
               2   | {joinType} 'P(' {expCollection} ',' {expCollection} ',' {predicate} ')'
               3 //| 'Union(' {expCollection} ',' {expCollection} ')' ---------------------- [TO BE COMPLETED]
               4   | 'Proj(' {expCollection} ',' '[' {FieldPairs} ']' ')'
@@ -91,7 +93,7 @@ class Query {
               8 //| 'Map' '(' {phpFun} ',' {expCollection} ')' -------------------------------- [TO BE COMPLETED]
 {FieldPairs} ::= {namePair}
                | {namePair} ',' {FieldPairs}
-{namePair} ::= {name} '>' {name}
+{namePair} ::= {fieldName} '>' {fieldName}
 EOT
   ];
   
@@ -252,9 +254,9 @@ EOT
   /** @param list<string> $path - chemin des appels */
   static function expDataset(array $path, string &$text0): ?Dataset {
     $path[] = 'expDataset';
-    // {expDataset} ::= {name}                    // eg: InseeCog
+    // {expDataset} ::= {datasetName}                    // eg: InseeCog
     $text = $text0;
-    if ($name = self::token($path, '{name}', $text)) {
+    if ($name = self::token($path, '{datasetName}', $text)) {
       try {
         $dataset = Dataset::get($name);
       }
@@ -276,30 +278,32 @@ EOT
     $path[] = "expCollection";
     //echo "Test expCollection($text0)<br>\n";
     
-    { // {expCollection}#0 : {expDataset} {point} {name} // eg: InseeCog.v_region_2025
+    { // {expCollection}#0 : {expDataset} {point} {collName} // eg: InseeCog.v_region_2025
       $text = $text0;
       if (($dataset = self::expDataset($path, $text))
         && self::token($path, '{point}', $text)
-          && ($name = self::token($path, '{name}', $text))
+          && ($name = self::token($path, '{collName}', $text))
       ) {
-        self::addTrace($path, "Succès {expCollection} ::= {expDataset} {point} {name}", $text0);
+        self::addTrace($path, "Succès {expCollection} ::= {expDataset} {point} {collName}", $text0);
         $text0 = $text;
+        if (!isset($dataset->collections[$name]))
+          throw new \Exception("$name n'est pas une collection de ".$dataset->name);
         return $dataset->collections[$name];
       }
-      self::addTrace($path, "Echec  {expCollection} ::= {expDataset} {point} {name}", $text0);
+      self::addTrace($path, "Echec  {expCollection} ::= {expDataset} {point} {collName}", $text0);
     }
     
-    { // {expCollection}#1 : {joinType} 'F(' {expCollection} ',' {name} ',' {expCollection} ',' {name} ')'
+    { // {expCollection}#1 : {joinType} 'F(' {expCollection} ',' {fieldName} ',' {expCollection} ',' {fieldName} ')'
       $text = $text0;
       if (($joinType = self::token($path, '{joinType}', $text))
         && self::pmatch('F\(', $text)
           && ($expCollection1 = self::expCollection($path, $text))
             && self::pmatch(',', $text)
-              && ($field1 = self::token($path, '{name}', $text))
+              && ($field1 = self::token($path, '{fieldName}', $text))
                 && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
                   && ($expCollection2 = self::expCollection($path, $text))
                     && self::pmatch(',', $text) // @phpstan-ignore booleanAnd.rightAlwaysTrue 
-                      && ($field2 = self::token($path, '{name}', $text))
+                      && ($field2 = self::token($path, '{fieldName}', $text))
                         && self::pmatch('\)', $text)
       ) {
         self::addTrace($path, "Succès JoinF", $text0);
@@ -425,11 +429,11 @@ EOT
    * @return array<string,string> - [{name1}=> {name2}] avec un seul couple */
   static function namePair(array $path, string &$text0): ?array {
     $path[] = 'namePair';
-    // {namePair} ::= {name} '/' {name}
+    // {namePair} ::= {fieldName} '/' {fieldName}
     $text = $text0;
-    if (($key = self::token($path, '{name}', $text))
+    if (($key = self::token($path, '{fieldName}', $text))
       && self::pmatch('>', $text)
-        && ($value = self::token($path, '{name}', $text))
+        && ($value = self::token($path, '{fieldName}', $text))
     ) {
       self::addTrace($path, "succès", $text0);
       $text0 = $text;

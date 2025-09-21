@@ -40,7 +40,7 @@ use Symfony\Component\Yaml\Yaml;
  *   - getItemsOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
  */
 abstract class Dataset {
-  /** Registre contenant la liste des JdD sous la forme {dsName} => {className}|null */
+  /** Registre contenant la liste des JdD sous la forme {dsName} => null|{className}|list<string>. */
   const REGISTRE = [
     'DebugScripts'=> null,
     'InseeCog'=> null,
@@ -58,16 +58,17 @@ abstract class Dataset {
     'NE10mPhysical' => 'GeoDataset',
     'NE10mCultural' => 'GeoDataset',
     'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
-    'IgnWfs'=> 'FeatureServer',
-    'AdminExpress-COG-Carto-PE'=> 'FeatureServerExtract',
-    'AdminExpress-COG-Carto-ME'=> 'FeatureServerExtract',
-    'LimitesAdminExpress'=> 'FeatureServerExtract',
-    'BDCarto'=> 'FeatureServerExtract',
-    'BDTopo'=> 'FeatureServerExtract',
+    'IgnWfs'=> ['class'=> 'Wfs', 'url'=> 'https://data.geopf.fr/wfs/ows'],
+    'AdminExpress-COG-Carto-PE'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO-PE.LATEST'], 
+    'AdminExpress-COG-Carto-ME'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO.LATEST'], 
+    'LimitesAdminExpress'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST'], 
+    'BDCarto'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDCARTO_V5'], // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+    'BDTopo'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDTOPO_V3'],
+    'BDTopoE'=> 'WfsExtract',
     'Patrinat'=> 'Extract',
-    'MesuresCompensatoires'=> 'FeatureServerExtract',
-    'RPG'=> 'FeatureServerExtract',
-    'ShomWfs'=> 'FeatureServer',
+    'MesuresCompensatoires'=> 'WfsExtract',
+    'RPG'=> 'WfsExtract',
+    'ShomWfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.data.shom.fr/INSPIRE/wfs'],
     'Shom'=> 'Extract',
     /**/
   ];
@@ -89,6 +90,55 @@ abstract class Dataset {
   
   /** teste si le nom est celui d'un JdD. */
   static function exists(string $dsName): bool { return array_key_exists($dsName, self::REGISTRE); }
+  
+  /** Retourne le nom de la classe du JdD $dsName sans son espace de noms. */
+  static function class(string $dsName): string {
+    //echo "dsname=$dsName<br>\n";
+    if (!array_key_exists($dsName, self::REGISTRE)) {
+      throw new \Exception("Erreur dataset $dsName inexistant");
+    }
+    else {
+      // Si le JdD appartient à une catégorie alors la classe est cette catégorie, sinon la classe est le JdD
+      $classParams = (self::REGISTRE[$dsName] ?? $dsName);
+      if (is_string($classParams)) {
+        return $classParams;
+      }
+      elseif (is_array($classParams)) {
+        return $classParams['class'];
+      }
+      else {
+        throw new \Exception("Erreur sur $dsName");
+      }
+    }
+  }
+  
+  /** Retourne le JdD portant ce nom. */
+  static function get(string $dsName): self {
+    //echo "dsname=$dsName\n";
+    if (!array_key_exists($dsName, self::REGISTRE)) {
+      throw new \Exception("Erreur dataset $dsName inexistant");
+    }
+    else {
+      // Si le JdD appartient à une catégorie alors la classe est cette catégorie, sinon la classe est le JdD
+      $classParams = (self::REGISTRE[$dsName] ?? $dsName);
+      if (is_array($classParams)) {
+        $class = $classParams['class'];
+        $classParams['dsName'] = $dsName;
+      }
+      elseif (is_string($classParams)) {
+        $class = $classParams;
+        $classParams = $dsName;
+      }
+      else {
+        throw new \Exception("Erreur sur $dsName");
+      }
+      if (!is_file(__DIR__.strtolower("/$class.php")))
+        throw new \Exception("Erreur fichier '".strtolower("datasets/$class.php")."' inexistant");
+      require_once __DIR__.strtolower("/$class.php");
+      $class = __NAMESPACE__.'\\'.$class;
+      return new $class($classParams);
+    }
+  }
   
   /** @param array<mixed> $schema Le schéma JSON du JdD */
   function __construct(string $dsName, array $schema, bool $validate=false) {
@@ -116,24 +166,6 @@ abstract class Dataset {
       $collections[$key] = new CollectionOfDs($dsName, $key, $schemaOfColl);
     }
     $this->collections = $collections;
-  }
-  
-  /** Retourne le JdD portant ce nom. */
-  static function get(string $dsName): self {
-    //echo "dsname=$dsName\n";
-    if (array_key_exists($dsName, self::REGISTRE)) {
-      // Si le JdD appartient à une catégorie alors l classe est cette catégorie, sinon la classe est le JdD
-      $class = (self::REGISTRE[$dsName] ?? $dsName);
-      //echo 'getcwd()=',getcwd(),"<br>\n";
-      //echo __DIR__,"<br>\n";
-      if (!is_file(__DIR__.strtolower("/$class.php")))
-        throw new \Exception("Erreur fichier '".strtolower("datasets$class.php")."' inexistant");
-      require_once __DIR__.strtolower("/$class.php");
-      $class = '\\Dataset\\'.$class;
-      return new $class($dsName);
-    }
-    else
-      throw new \Exception("Erreur dataset $dsName inexistant");
   }
   
   /** Permet à un JdD d'indiquer qu'il n'est pas disponible ou qu'il est disponible pour construction.
