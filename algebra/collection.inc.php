@@ -392,20 +392,18 @@ class CollectionOfDs extends Collection {
   }
   
   /** Vérifie que la collection est conforme à son schéma */
-  function isValid(bool $verbose, int $nbreItems=0): bool {
+  function isValid(bool $verbose, int $nbreItems): bool {
     //$verbose = true;
+    //echo "Appel de CollectionOfDs::isValid(verbose=$verbose, nbreItems=$nbreItems)<br>\n";
+    //return true;
     $t0 = microtime(true);
     $nbTuples = 0;
     $kind = $this->schema->kind();
     $validator = new Validator;
     foreach ($this->getItems() as $key => $item) {
-      $tuple = match ($kind = $this->schema->kind()) {
-        'dictOfTuples', 'dictOfValues' => [$key => $item],
-        'listOfTuples', 'listOfValues' => [$item],
-        default => throw new \Exception("kind $kind non traité"),
-      };
+      //echo "Dans CollectionOfDs::isValid(), lecture du $this->name $key<br>\n";
       //$data[$key]['geometry'] = '';
-      $data = RecArray::toStdObject($tuple);
+      $data = RecArray::toStdObject([$key => $item]);
       //echo "<pre>appel de Validator::validate avec data=\n",Yaml::dump(['data'=> $tuple], 4, 2),
       //     "\net schema=\n",Yaml::dump(['$schema'=>$this->schema->schema], 9, 2);
       $validator->validate($data, $this->schema->schema);
@@ -414,10 +412,11 @@ class CollectionOfDs extends Collection {
       $nbTuples++;
       if (!($nbTuples % 10_000) && $verbose)
         printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
-      if ($nbreItems && ($nbTuples >= $nbreItems)) {
-        //echo "Fin après $nbreItems items<br>\n";
+      if (($nbreItems <> 0) && ($nbTuples >= $nbreItems)) {
+        echo "Fin après $nbreItems items<br>\n";
         break;
       }
+      if ($nbTuples > 0) return true;
     }
     if ($verbose)
       printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
@@ -427,27 +426,38 @@ class CollectionOfDs extends Collection {
   /** Retourne les erreurs de conformité de la collection à son schéma;
    * @return list<mixed>
    */
-  function getErrors(): array {
+  function getErrors(int $nbreItems): array {
     $kind = $this->schema->kind();
     //echo "kind=$kind<br>\n";
     $errors = [];
     $validator = new Validator;
+    $nbItemsGot = 0;
     foreach ($this->getItems() as $key => $tuple) {
-      $data = match ($kind = $this->schema->kind()) {
+      /*$data = match ($kind = $this->schema->kind()) {
         'dictOfTuples', 'dictOfValues' => [$key => $tuple],
         'listOfTuples', 'listOfValues' => [$tuple],
         default => throw new \Exception("kind $kind non traité"),
       };
       $data = RecArray::toStdObject($data);
+      */
+      /*$tuple2 = $tuple;
+      $tuple2['geometry'] = 'geometry';
+      $data = RecArray::toStdObject([$key => $tuple2]);
+      echo "<pre>Validation de "; print_r($data); echo "par rapport au schema "; print_r($this->schema->schema); echo "</pre>\n";
+      */
+      $data = RecArray::toStdObject([$key => $tuple]);
       $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid()) {
         foreach ($validator->getErrors() as $error) {
-          $error['property'] = $this->name.".[$key].".substr($error['property'], 4);
-          //echo "<pre>error="; print_r($error); echo "</pre>\n";
+          //echo '<pre>$errorAvant='; print_r($error);
+          $error['property'] = $this->name.'.'.$error['property'];
+          //echo "<pre>errorAprès="; print_r($error); echo "</pre>\n";
           $errors[] = $error;
         }
       }
-        $errors = array_merge($errors, );
+      //$errors = array_merge($errors, );
+      if (++$nbItemsGot >= $nbreItems)
+        return $errors;
     }
     return $errors;
   }

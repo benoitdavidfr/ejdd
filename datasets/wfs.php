@@ -140,6 +140,11 @@ class WfsCap {
         //'defaultCRS'=> str_replace('__',':', $featureType->DefaultCRS),
         'bbox'=> self::WGS84BoundingBoxTo4Coordinates($featureType->ows__WGS84BoundingBox),
         'type'=> 'object',
+        'patternProperties'=> [
+          ''=> [
+            'type'=> 'object',
+          ],
+        ],
       ];
       //if (count($collections) > 15) break; // limitation du nbre de FeatureType pour le développement
     }
@@ -192,14 +197,16 @@ class WfsGetRequest {
    * @return TGeoJsonFeatureCollection
    */
   function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox): array {
+    //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
     if ($bbox) {
       // En WFS on précise le CRS du BBox qui doit être fourni en LatLon
       $bboxLatLon = $bbox->as4CoordsLatLon();
       $qbboxLatLon[] = 'urn:ogc:def:crs:EPSG::4326';
       //echo "bboxLatLon=[".implode(',',$bboxLatLon)."]<br>\n";
     }
+    $ftNameCache = str_replace(':','/', $ftName);
     $fcoll = WfsCache::get(
-      "$this->name/features/$ftName".($bbox?'-'.$bbox:'')."/$start-$count.json",
+      "$this->name/features/$ftNameCache".($bbox?"/bbox$bbox":'')."/$start-$count.json",
       $this->url
         ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$ftName"
         .'&srsName=urn:ogc:def:crs:EPSG::4326'
@@ -277,7 +284,7 @@ class Wfs extends Dataset {
    * @return \Generator<int|string,array<mixed>>
    */
   function getItems(string $collName, array $filters=[]): \Generator {
-    //echo "cName=$cName<br>\n";
+    //echo "Appel de Wfs::getItems(collName=$collName, filters)<br>\n";
     $start = $filters['skip'] ?? 0;
     while (true) {
       $fcoll = $this->wfsReq->getFeatures($collName, $start, self::COUNT, $filters['bbox'] ?? null);
@@ -296,6 +303,7 @@ class Wfs extends Dataset {
           $feature['properties'],
           ['geometry'=> $geometry]
         );
+        //echo "Wfs::getItems(collName=$collName, filters) yield $id<br>\n";
         yield $id => $tuple;
         $start++;
       }
@@ -327,7 +335,7 @@ class Wfs extends Dataset {
     return $tuple;
   }
 
-  /** Retourne le DescribeFeatureType des FeatureTypes de l'espace de noms converti en SimpleXMLElement. */
+  /** Retourne le DescribeFeatureType des FeatureTypes de l'espace de noms conerti en SimpleXMLElement. */
   function describeFeatureTypes(string $namespace): \SimpleXMLElement {
     $ftNames = [];
     foreach (array_keys($this->collections) as $ftName) {

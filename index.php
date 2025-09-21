@@ -389,7 +389,9 @@ class Main {
             isset($_GET['nbPerPage']) ? ['nbPerPage'=> $_GET['nbPerPage']] : [],
             isset($_GET['predicate']) ? ['predicate'=> $_GET['predicate']] : [],
           );
-          Collection::query($_GET['collection'])->display($options);
+          if (!($coll = Collection::query($_GET['collection'])))
+            throw new \Exception("sur Collection::query($_GET[collection])");
+          $coll->display($options);
         }
         elseif (!isset($_GET['field'])) {
           //echo "_GET['collection']=",$_GET['collection'],"<br>\n";
@@ -432,7 +434,7 @@ class Main {
           echo "Le JdD est conforme à son schéma.<br>\n";
         }
         else {
-          $dataset->displayErrors();
+          $dataset->displayErrors($_GET['nbreItems'] ?? 0);
         }
         break;
       }

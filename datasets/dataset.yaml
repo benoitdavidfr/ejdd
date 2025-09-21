@@ -48,7 +48,13 @@ definitions:
                 additionalProperties: false
                 properties:
                   type:
-                    type: string
+                    oneOf:
+                      - description: cas d'un type de champ simple comme par ex. string
+                        type: string
+                      - description: cas d'un champ défini par une union de types, par ex. string|null
+                        type: array
+                        items:
+                          type: string
                   description:
                     type: string
                   pattern:

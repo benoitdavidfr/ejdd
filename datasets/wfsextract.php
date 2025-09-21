@@ -78,7 +78,7 @@ La BD CARTO® est publiée une fois par an, au 2ème trimestre. (https://geoserv
       'source'=> 'IgnWfs',
       'prefix'=> 'BDCARTO_V5:',
     ],*/
-    'BDTopo'=> [
+    'BDTopoE'=> [
       'title'=> "BD TOPO® IGN, modélisation 2D et 3D du territoire et de ses infrastructures sur l'ensemble du territoire français",
       'description'=> [
         "La BD TOPO® est une description vectorielle 3D (structurée en objets) des éléments du territoire et de ses infrastructures, de précision métrique, exploitable à des échelles allant du 1 : 2 000 au 1 : 50 000.

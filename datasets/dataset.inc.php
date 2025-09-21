@@ -291,7 +291,7 @@ abstract class Dataset {
   function displaySchemaErrors(): void { self::displaySchemaErrorsS($this->schema); }
   
   /** Vérifie la conformité du JdD par rapport à son schéma */
-  function isValid(bool $verbose, int $nbreItems=0): bool {
+  function isValid(bool $verbose, int $nbreItems): bool {
     // Validation des MD du jeu de données
     $validator = new Validator;
     $schema = [
@@ -336,7 +336,7 @@ abstract class Dataset {
   /** Retourne les erreurs de non conformité du JdD.
    * @return list<mixed>
    */
-  function getErrors(): array {
+  function getErrors(int $nbreItems): array {
     $errors = [];
     $validator = new Validator;
     $schema = [
@@ -373,16 +373,19 @@ abstract class Dataset {
     
     // Validation de chaque collection
     foreach ($this->collections as $collection) {
-      if (!$collection->isValid(false))
-        $errors = array_merge($errors, $collection->getErrors()); 
+      if (!$collection->isValid(false, $nbreItems))
+        $errors = array_merge($errors, $collection->getErrors($nbreItems));
     }
     return $errors;
   }
   
   /** Affiche les erreurs de non conformité du JdD */
-  function displayErrors(): void {
-    if (!($errors = $this->getErrors())) {
-      echo "Le JdD est conforme à son schéma.<br>\n";
+  function displayErrors(int $nbreItems): void {
+    if (!($errors = $this->getErrors($nbreItems))) {
+      if ($nbreItems == 0)
+        echo "Le JdD est conforme à son schéma.<br>\n";
+      else
+        echo "L'extrait du JdD est conforme à son schéma.<br>\n";
     }
     else {
       echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";

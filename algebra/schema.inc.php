@@ -31,15 +31,21 @@ class SimplifiedType {
    * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
   static function create2(?array $prop): string {
     // Les types simples
-    if (in_array($prop['type'] ?? null, ['string','number','integer']))
+    if (in_array($prop['type'] ?? null, ['string','number','integer'])) // Le type vaut 'string', 'number', ou 'integer'
       return $prop['type'];
-    elseif (($prop['type'] ?? null) && ($prop['type']['enum'] ?? null))
+    elseif (is_array($prop['type'] ?? null)
+       && (in_array($prop['type'][0] ?? null, ['string','number','integer']))
+         && (in_array($prop['type'][1] ?? null, ['null']))) // cas (string|number|integer) ou null
+           return $prop['type'][0];
+    elseif (($prop['type'] ?? null) && ($prop['type']['enum'] ?? null)) // Le type est un enum
       return json_encode($prop['type']);
-    elseif (($prop['type'] ?? null) && ($prop['type']['const'] ?? null))
+    elseif (($prop['type'] ?? null) && ($prop['type']['const'] ?? null)) // Le type est une constante
       return json_encode($prop['type']);
+    // Le type est un array
     elseif ('array' == ($prop['type'] ?? null)) {
       return json_encode(['type'=> 'array', 'items'=> $prop['items']]);
     }
+    // Le type est un array
     elseif ('object' == ($prop['type'] ?? null)) {
       if ($stgjs = self::forGeoJSON($prop['properties'] ?? null))
         return $stgjs;

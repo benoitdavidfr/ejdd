@@ -70,7 +70,7 @@ class Query {
   const TOKENS = [
     'space'=> '[ \n]+',
     '{point}'=> '\.',
-    '{datasetName}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant un jdd
+    '{datasetName}' => '[a-zéèêàA-Z][-a-zA-Zéèêà0-9_]*', // nom représentant un jdd
     '{fieldName}' => '[a-zéèêàA-Z][a-zA-Zéèêà0-9_]*', // nom représentant un champ
     '{collName}' => '[a-zéèêàA-Z][-:.a-zA-Zéèêà0-9_]*', // nom représentant une collection
     '{joinType}' => '(InnerJoin|LeftJoin|DiffJoin)', // Les différentes opérations de jointure

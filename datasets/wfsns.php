@@ -19,11 +19,15 @@ class WfsNsProperties {
    */
   private function fieldType(string $type): array {
     return match($type) {
-      'xsd:string'=> ['type'=> 'string'],
+      'xsd:string'=> ['type'=> ['string', 'null']],
       'xsd:boolean'=> ['type'=>'boolean'],
-      'xsd:int'=> ['type'=>'integer'],
-      'xsd:double'=> ['type'=> 'number'],
-      'xsd:date'=> ['type'=> $type],
+      'xsd:int'=> ['type'=> ['integer', 'null']],
+      'xsd:double'=> ['type'=> ['number', 'null']],
+      'xsd:date'=> [
+        'type'=> 'string',
+        'pattern'=> '^\d{4}-\d{2}-\d{2}Z$',
+      ],
+      'xsd:dateTime'=> ['type'=> $type],
       'gml:MultiSurfacePropertyType'=> [
         'type'=> 'object',
         'required'=> ['type', 'coordinates'],
@@ -105,7 +109,8 @@ class WfsNsProperties {
         $fieldName = (string)$fieldDescription['name'];
         if ($fieldName == 'geometrie')
           $fieldName = 'geometry';
-        $props[$eltName][$fieldName] = $this->fieldType((string)$fieldDescription['type']);
+        $fieldType = $this->fieldType((string)$fieldDescription['type']);
+        $props[$eltName][$fieldName] = $fieldType;
       }
       //echo "<pre>props[$eltName]="; print_r($props[$eltName]);
     }
@@ -149,8 +154,10 @@ class WfsNs extends Dataset {
     foreach ($globalSchema['properties'] as $ftName => $ftSchema) {
       if (substr($ftName, 0, strlen($this->namespace)+1) == $this->namespace.':') {
         $ftName = substr($ftName, strlen($this->namespace)+1);
-        $ftSchema['required'] = array_keys($properties[$ftName]);
-        $ftSchema['properties'] = $properties[$ftName];
+        /*if (!in_array($ftName, ['chef_lieu_de_collectivite_territoriale','collectivite_territoriale']))
+          continue;*/
+        $ftSchema['patternProperties']['']['required'] = array_keys($properties[$ftName]);
+        $ftSchema['patternProperties']['']['properties'] = $properties[$ftName];
         $schema['properties'][$ftName] = $ftSchema;
         $schema['required'][] = $ftName;
       }
@@ -168,7 +175,7 @@ class WfsNs extends Dataset {
     $this->wfs = Wfs::get($params['wfsName']);
     $this->namespace = $params['namespace'];
     $schema = $this->schema($params['dsName']);
-    parent::__construct($params['dsName'], $schema, true);
+    parent::__construct($params['dsName'], $schema, false);
   }
 
   static function get(string $dsName): self {
@@ -187,7 +194,9 @@ class WfsNs extends Dataset {
    * @return \Generator<string|int,array<mixed>>
    */
   function getItems(string $collName, array $filters=[]): \Generator {
+    //echo "Appel de WfsNs::getItems($collName=$collName, filters)<br>\n";
     foreach ($this->wfs->getItems($this->namespace.':'.$collName, $filters) as $id => $tuple) {
+      //echo "WfsNs::getItems($collName=$collName, filters)-> yield id=$id<br>\n";
       yield $id => $tuple;
     }
     return null;
@@ -207,11 +216,14 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'util
 
 class WfsNsBuild {
   static function main(): void {
+    ini_set('memory_limit', '10G');
+    set_time_limit(5*60);
     echo "<title>WfsNs</title>\n";
     switch($_GET['action'] ?? null) {
       case null: {
         echo "<h2>Menu</h2><ul>\n";
         echo "<li><a href='?action=print&dataset=$_GET[dataset]'>Affiche le jdd</a></li>\n";
+        echo "<li><a href='?action=nsProperties&dataset=$_GET[dataset]'>nsProperties</a></li>\n";
         echo "<li><a href='?action=properties&dataset=$_GET[dataset]'>",
                   "Test construction des propriétés de chaque champ de chaque collection du JdD sous la forme ",
                   "[{collName}=> [{fieldName} => ['type'=> ...]]]</a></li>\n";
@@ -221,6 +233,12 @@ class WfsNsBuild {
       case 'print': {
         $dataset = Dataset::get($_GET['dataset']);
         echo '<pre>$bdcarto='; print_r($dataset);
+        break;
+      }
+      case 'nsProperties': {
+        $dataset = WfsNs::get($_GET['dataset']);
+        $nsProperties = new WfsNsProperties($dataset->namespace, $dataset->wfs->describeFeatureTypes($dataset->namespace));
+        echo '<pre>$nsProperties='; print_r($nsProperties);
         break;
       }
       case 'properties': {
