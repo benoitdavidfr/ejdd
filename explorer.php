@@ -130,7 +130,7 @@ class Explorer {
     switch (count(self::$context->datasetPath())) {
       case 0: { // liste des datasets 
         echo "<h3>JdD</h3>";
-        foreach (array_keys(Dataset::REGISTRE) as $dsName) {
+        foreach (array_keys(Dataset::dictOfDatasets()) as $dsName) {
           echo "<a href='?action=setDataset&elt=$dsName'>$dsName</a><br>";
         }
         break;

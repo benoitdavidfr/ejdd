@@ -297,9 +297,9 @@ class PredicateParser {
   /** La BNF utilisée dans un souci de documentation. */
   const BNF = [
     <<<'EOT'
-{predicate} ::= {name} {comparator} {constant}
-              | {constant} {comparator} {name}
-              | {name} {comparator} {name}
+{predicate} ::= {fieldName} {comparator} {constant}
+              | {constant} {comparator} {fieldName}
+              | {fieldName} {comparator} {fieldName}
               | '(' {predicate} ')' {junction} '(' {predicate} ')'
 {constant} ::=  {float}
               | {integer}
@@ -344,9 +344,9 @@ EOT
    * @param list<string> $path - chemin des appels */
   static function predicate(array $path, string &$text0): ?Predicate {
     $path[] = 'predicate';
-    { // {predicate} ::= {name} {comparator} {constant}
+    { // {predicate} ::= {fieldName} {comparator} {constant}
       $text = $text0;
-      if (($field = Query::token($path, '{name}', $text))
+      if (($field = Query::token($path, '{fieldName}', $text))
         && ($comparator = self::comparator($path, $text))
           && ($constant = self::constant($path, $text))
       ) {
@@ -354,10 +354,10 @@ EOT
         $text0 = $text;
         return new PredicateConstant($field, $comparator, $constant);
       }
-      Query::addTrace($path, "échec {predicate} ::= {name} {comparator} {constant}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {fieldName} {comparator} {constant}", $text0);
     }
     
-    { // {predicate} ::= {constant} {comparator} {name}
+    { // {predicate} ::= {constant} {comparator} {fieldName}
       $text = $text0;
       if (($constant = self::constant($path, $text))
         && ($comparator = self::comparator($path, $text))
@@ -367,20 +367,20 @@ EOT
         $text0 = $text;
         return new PredicateConstantInv($constant, $comparator, $field);
       }
-      Query::addTrace($path, "échec {predicate} ::= {constant} {comparator} {name}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {constant} {comparator} {fieldName}", $text0);
     }
     
     { // {predicate} ::= {name} {comparator} {name}
       $text = $text0;
-      if (($field1 = Query::token($path, '{name}', $text))
+      if (($field1 = Query::token($path, '{fieldName}', $text))
         && ($comparator = self::comparator($path, $text))
-          && ($field2 = Query::token($path, '{name}', $text))
+          && ($field2 = Query::token($path, '{fieldName}', $text))
       ) {
         Query::addTrace($path, "succès", $text0);
         $text0 = $text;
         return new PredicateField($field1, $comparator, $field2);
       }
-      Query::addTrace($path, "échec {predicate} ::= {name} {comparator} {name}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {fieldName} {comparator} {fieldName}", $text0);
     }
     
     { // {predicate} ::= '(' {predicate} ')' {junction} '(' {predicate} ')'
@@ -561,7 +561,7 @@ class PredicateTest {
       case 'saisie': {
         if (!isset($_GET['dataset'])) {
           echo "<h3>Choix d'un dataset</h3>\n";
-          foreach (array_keys(Dataset::REGISTRE) as $dsName) {
+          foreach (array_keys(Dataset::dictOfDatasets()) as $dsName) {
             $dataset = Dataset::get($dsName);
             if (self::atLeast1CollImplementPredicate($dataset))
               echo "<a href='?action=$_GET[action]&dataset=$dsName'>",$dataset->title,"</a><br>\n";

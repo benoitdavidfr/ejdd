@@ -140,14 +140,14 @@ class ExtractBuild {
         }
         break;
       }
-      case 'validateDef': {
+      case 'validateDef': { // Valide le fichier Yaml de définition / schéma 
         Extract::validateExtractSchema($_GET['dataset']);
         Extract::displayDefErrors($_GET['dataset']);
         break;
       }
       case 'validate': {
         $dataset = new Extract($_GET['dataset']);
-        $dataset->displaySchemaErrors();
+        $dataset->schemaIsValid();
         break;
       }
     }

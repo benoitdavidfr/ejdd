@@ -291,8 +291,7 @@ properties:
                   ARM: Arrondissement municipal
                   COMA: Commune associée
                   COMD: Commune déléguée
-              type:
-                enum: [ARM, COMA, COMD]
+              enum: [ARM, COMA, COMDx]
             COM:
               description: code Insee de l'entité
               type: string
@@ -636,7 +635,7 @@ properties:
     title: Couples code-libellé de commune ayant existé depuis 1943
     description: >
       liste de tous les couples code-libellé de commune ayant existé depuis 1943 avec la période durant laquelle le code
-      correspondait au libellé
+      correspondait au libellé. Uniquement Commune et Arrondissement municipal.
     type: array
     items:
       type: object
@@ -648,9 +647,7 @@ properties:
             Modalités:
               ARM: Arrondissement municipal
               COM: Commune
-              COMA: Commune associée
-              COMD: Commune déléguée
-          enum: [ARM, COM, COMA, COMDx]
+          enum: [ARM, COM]
         COM:
           description: code Insee de l'entité
           type: string

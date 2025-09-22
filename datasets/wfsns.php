@@ -392,7 +392,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
   }
 
   static function get(string $dsName): self {
-    $params = Dataset::REGISTRE[$dsName];
+    $params = Dataset::definitionOfADataset($dsName);
     return new self(['dsName'=> $dsName, 'wfsName'=> $params['wfsName'], 'namespace'=> $params['namespace']]);
   }  
   

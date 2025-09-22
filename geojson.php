@@ -254,11 +254,11 @@ EOT;
       case 0: {
         self::usage($cmde);
         echo "Jeux de données:\n",
-             "  php $cmde ",implode("\n  php $cmde ", array_keys(Dataset::REGISTRE)),"\n";
+             "  php $cmde ",implode("\n  php $cmde ", array_keys(Dataset::dictOfDatasets())),"\n";
         die();
       }
       case 1: { // php $cmde [-g] {dataset} || php $cmde [-g] {collectionId} 
-        if (in_array($argv[0], array_keys(Dataset::REGISTRE))) { // php $cmde [-g] {dataset}
+        if (in_array($argv[0], array_keys(Dataset::dictOfDatasets()))) { // php $cmde [-g] {dataset}
           $dsName = $argv[0];
           $ds = Dataset::get($dsName);
           foreach (array_keys($ds->collections) as $collName) {
@@ -301,7 +301,7 @@ EOT;
       echo "<title>geojson.php</title><h1>Script geojson.php</h1>\n";
       echo self::DOC();
       echo "<h2>Jeux de données disponibles</h2><ul>\n";
-      foreach (array_keys(Dataset::REGISTRE) as $dsName) {
+      foreach (array_keys(Dataset::dictOfDatasets()) as $dsName) {
         echo "<li><a href='$script_name/$dsName'>$dsName</a></li>\n";
       }
       echo "</ul>\n";
@@ -318,7 +318,7 @@ EOT;
     elseif (preg_match('!^/([^/]+)$!', $path, $matches)) { // liens HTML vers les collections du JdD  
       echo "<title>geojson.php</title><h1>Script geojson.php</h1>\n";
       $dsname = $matches[1];
-      if (!array_key_exists($dsname, Dataset::REGISTRE))
+      if (!Dataset::exists($dsname))
         self::error("le jeu de données '$dsname' n'existe pas", 404);
       $dataset = Dataset::get($dsname);
       echo "<h2>Liste des collections du jeu de données $dsname</h2><ul>\n";

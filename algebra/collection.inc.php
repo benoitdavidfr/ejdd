@@ -391,77 +391,62 @@ class CollectionOfDs extends Collection {
     echo $this->schema->toHtml();
   }
   
-  /** Vérifie que la collection est conforme à son schéma */
-  function isValid(bool $verbose, int $nbreItems): bool {
-    //$verbose = true;
-    echo "Appel de CollectionOfDs::isValid(verbose=",$verbose?'true':'false',", nbreItems=$nbreItems)<br>\n";
-    //return true;
-    $t0 = microtime(true);
-    $nbTuples = 0;
-    $kind = $this->schema->kind();
-    $validator = new Validator;
-    foreach ($this->getItems() as $key => $item) {
-      $data = match ($kind = $this->schema->kind()) {
-        'dictOfTuples', 'dictOfValues' => [$key => $item],
-        'listOfTuples', 'listOfValues' => [$item],
-        default => throw new \Exception("kind $kind non traité"),
-      };
-      $validator->validate($data, $this->schema->schema);
-      if (!$validator->isValid())
-        return false;
-      $nbTuples++;
-      echo "$nbTuples % 10_000=",$nbTuples % 10_000,"<br>\n";
-      if (!($nbTuples % 10_000) && $verbose)
-        printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
-      if (($nbreItems <> 0) && ($nbTuples >= $nbreItems)) {
-        echo "Fin après $nbreItems items<br>\n";
-        break;
-      }
-      //if ($nbTuples > 0) return true;
-    }
-    if ($verbose)
-      printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
-    return true;
-  }
-  
-  /** Retourne les erreurs de conformité de la collection à son schéma;
-   * @return list<mixed>
+  /**
+   * Vérifie que les données de la collection sont conformes au schéma de la collection.
+   *
+   * $verbose indique si des messages d'informations sont affichés ou non en dehors des erreurs.
+   * Si $nbreMaxItems <> 0 alors on se limite au $nbreMaxItems 1ers items, si $nbreMaxItems == 0 alors tous les items sont traités.
+   * Si $nbreMaxErrors == 0 alors toutes les erreurs sont affichées,
+   * si $nbreMaxErrors > 0 alors on se limite au $nbreMaxErrors 1ères erreurs,
+   * si $nbreMaxErrors == -1 alors aucune erreur n'est affichée.
    */
-  function getErrors(int $nbreItems): array {
+  function isValid(bool $verbose, int $nbreMaxItems, int $nbreMaxErrors): bool {
+    //echo "Appel de CollectionOfDs::isValid@$this->name(verbose=",$verbose?'true':'false',", nbreItems=$nbreItems)<br>\n";
+    $t0 = microtime(true);
+    $valid = true; // résultat de la validation
+    $nbItems = 0; // nbre d'items traités
+    $nbErrors = 0; // nb d'erreurs déjà affichées
     $kind = $this->schema->kind();
-    //echo "kind=$kind<br>\n";
-    $errors = [];
     $validator = new Validator;
-    $nbItemsGot = 0;
     foreach ($this->getItems() as $key => $item) {
-      $data = match ($kind = $this->schema->kind()) {
-        'dictOfTuples', 'dictOfValues' => [$key => $item],
-        'listOfTuples', 'listOfValues' => [$item],
+      $data = match ($kind) {
+        'dictOfTuples', 'dictOfValues' => RecArray::toStdObject([$key => $item]),
+        'listOfTuples', 'listOfValues' => RecArray::toStdObject([$item]),
         default => throw new \Exception("kind $kind non traité"),
       };
-      $data = RecArray::toStdObject($data);
-      
-      /*$tuple2 = $tuple;
-      $tuple2['geometry'] = 'geometry';
-      $data = RecArray::toStdObject([$key => $tuple2]);
-      echo "<pre>Validation de "; print_r($data); echo "par rapport au schema "; print_r($this->schema->schema); echo "</pre>\n";
-      */
-      //$data = RecArray::toStdObject([$key => $tuple]);
       $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid()) {
-        foreach ($validator->getErrors() as $error) {
-          //echo '<pre>$errorAvant='; print_r($error);
-          $error['property'] = $this->name.'.'.$error['property'];
-          //echo "<pre>errorAprès="; print_r($error); echo "</pre>\n";
-          $errors[] = $error;
+        $valid = false;
+        if ($nbreMaxErrors <> -1) { // j'affiche les erreurs 
+          echo "<pre>";
+          foreach ($validator->getErrors() as $error) {
+            //echo '<pre>$errorAvant='; print_r($error);
+            $ep = $error['property'];
+            if (in_array($kind, ['listOfTuples', 'listOfValues']))
+              $ep = str_replace('[0]', "[$key]", $ep);
+            $error['property'] = $this->name.'.'.$ep;
+            //echo "<pre>errorAprès="; print_r($error); echo "</pre>\n";
+            printf("[%s] %s\n", $error['property'], $error['message']);
+            $nbErrors++;
+          }
+          echo "</pre>\n";
+          if ($nbreMaxErrors && ($nbErrors >= $nbreMaxErrors)) {
+            echo "Fin après $nbErrors erreurs affichées.<br>\n";
+            return false;
+          }
         }
       }
-      //$errors = array_merge($errors, );
-      $nbItemsGot++;
-      if ($nbreItems && ($nbItemsGot >= $nbreItems))
-        return $errors;
+      $nbItems++;
+      if (!($nbItems % 10_000) && $verbose)
+        printf("%d items de %s vérifiés en %.2f sec.<br>\n", $nbItems, $this->name, microtime(true)-$t0);
+      if (($nbreMaxItems <> 0) && ($nbItems >= $nbreMaxItems)) {
+        echo "Fin après $nbreMaxItems items<br>\n";
+        return $valid;
+      }
     }
-    return $errors;
+    if ($verbose)
+      printf("%d items de %s vérifiés en %.2f sec.<br>\n", $nbItems, $this->name, microtime(true)-$t0);
+    return $valid;
   }
 };
 

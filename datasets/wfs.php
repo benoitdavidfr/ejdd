@@ -264,8 +264,9 @@ class Wfs extends Dataset {
   
   /** Crée un Wfs à partir de son nom. Utile pour que PhpStan comprenne le type de l'objet retourné. */
   static function get(string $dsName): self {
-    $url = Dataset::REGISTRE[$dsName]['url'];
-    return new self(['dsName'=> $dsName, 'url'=> $url]);
+    if (!($def = Dataset::definitionOfADataset($dsName)))
+      throw new \Exception("Définition de $dsName ne correspond pas à un Wfs");
+    return new self(['dsName'=> $dsName, 'url'=> $def['url']]);
   }
   
   /** Retourne les filtres implémentés par getItems().

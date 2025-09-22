@@ -88,15 +88,9 @@ switch ($_GET['action'] ?? null) {
     if ($dataset->schemaIsValid()) {
       echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
     }
-    else {
-      $dataset->displaySchemaErrors();
-    }
 
-    if ($dataset->isValid(false, 0)) {
+    if ($dataset->isValid(true, 0, 0)) {
       echo "Le JdD est conforme à son schéma.<br>\n";
-    }
-    else {
-      $dataset->displayErrors(0);
     }
     break;
   }
@@ -114,7 +108,7 @@ switch ($_GET['action'] ?? null) {
     //  2) que la définition de la carte à dessiner ne présente pas d'erreurs d'intégrité
     $mapDataset = Dataset::get('MapDataset');
     
-    if (!$mapDataset->isValid(false, 0)) {
+    if (!$mapDataset->isValid(false, 0, -1)) {
       echo "Erreur, certaines cartes ne sont pas conformes au schéma du JdD.<br>\n",
            "Dessin de la carte impossible.<br>\n",
            "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";

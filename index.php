@@ -47,7 +47,9 @@ const JOURNAL = [
 Journal des modifications récentes du code
 ------------------------------------------
 22/9/2025:
-  - la validation des données ne fonctionne plus, je ne comprends pas pourquoi
+  - création d'une branche bugvalid
+  - simplification de l'affichage des erreurs de non conformité pour éviter les bugs
+  - hiérarchisation des JdD dans TREE à la place de REGISTRE
 18-21/9/2025:
   - ajout de la possibilité de définir des catégories de JdD paramétrées
   - modif de Wfs en catégorie paramétrée
@@ -329,6 +331,28 @@ use Algebra\CollectionOfDs;
 
 /** Code de bootstrap de ejdd. */
 class Main {
+  /** Affichage de l'arbre des datasets.
+   * @param array<mixed> $tree - initialement par défaut l'arbre complet, puis un sous-arbre dans les appels récursifs
+   */
+  static function displayTree(array $tree = Dataset::TREE): void {
+    echo "<ul>\n";
+    foreach ($tree as $key => $content) {
+      if (!is_array($content) || array_key_exists('class', $content)) { // content est une définition de JdD 
+        $dataset = Dataset::get($key);
+        if ($dataset->isAvailable())
+          echo "<li><a href='?dataset=$key'>$dataset->title ($key)</a>.</li>\n";
+        elseif ($dataset->isAvailable('forBuilding'))
+          echo "<li><a href='?dataset=$key'>$dataset->title ($key)</a> disponible à la construction.</li>\n";
+      }
+      else {                                                            // content est un sous-arbre
+        echo "<li><b>$key</b> </li><ul>\n";
+        self::displayTree($content);
+        echo "</ul>\n";
+      }
+    }
+    echo "</ul>\n";
+  }
+  
   /** Bootstrap de l'IHM. */
   static function main(): void {
     ini_set('memory_limit', '10G');
@@ -338,14 +362,17 @@ class Main {
         if (!isset($_GET['dataset'])) {
           echo "<title>ejdd</title>\n";
           echo "<h2>Choix d'un JdD</h2>\n";
-          foreach (Dataset::REGISTRE as $dsName=> $class) {
-            $dataset = Dataset::get($dsName);
-            //echo "<a href='?dataset=$dsName'>$dsName</a>.<br>\n";
-            if ($dataset->isAvailable())
-              echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.<br>\n";
-            elseif ($dataset->isAvailable('forBuilding'))
-              echo "<a href='?dataset=$dsName'>$dataset->title ($dsName)</a> disponible à la construction.<br>\n";
-          }
+          //self::displayTree();
+          Dataset::displayTree(
+            function(string $dsName, Dataset $dataset): string {
+              if ($dataset->isAvailable())
+                return "<li><a href='?dataset=$dsName'>$dataset->title ($dsName)</a>.</li>\n";
+              elseif ($dataset->isAvailable('forBuilding'))
+                return "<li><a href='?dataset=$dsName'>$dataset->title ($dsName)</a> disponible à la construction.</li>\n";
+              else
+                return '';
+            }
+          );
           
           echo "<h2>Tests</h2><ul>\n";
           echo "<li><a href='algebra/'>Algebra</a></li>\n";
@@ -354,13 +381,14 @@ class Main {
           echo "<li><a href='datasets/mapdataset.php?action=listMaps'>Dessiner une carte</a></li>\n";
           echo "</ul>\n";
 
-          echo "<h2>Autres</h2><ul>\n";
+          echo "<h2>Liens</h2><ul>\n";
           echo "<li><a href='docs/' target='_blank'>Doc de l'appli</a></li>\n";
-          echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com</a></li>\n";
+          echo "<li><a href='https://github.com/benoitdavidfr/ejdd' target='_blank'>Lien vers le GitHub</a></li>\n";
+          echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com utilisé pour les cartes</a></li>\n";
           echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
-                "Lien vers Leaflet uGeoJSON Layer</a></li>\n";
+                "Lien vers le plugin Leaflet uGeoJSON Layer</a></li>\n";
           echo "<li><a href='https://github.com/calvinmetcalf/leaflet-ajax' target='_blank'>",
-                "Lien vers leaflet-ajaxr</a></li>\n";
+                "Lien vers le plugin leaflet-ajax</a></li>\n";
           echo "</ul>\n";
         }
         else {
@@ -422,21 +450,13 @@ class Main {
         die(json_encode($dataset->asArray(), JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE));
       }
       case 'validate': { // vérification de la conformité du JdD par rapport à son schéma 
-        require_once __DIR__.'/vendor/autoload.php';
-
         $dataset = Dataset::get($_GET['dataset']);
         if ($dataset->schemaIsValid()) {
           echo "Le schéma du JdD est conforme au méta-schéma JSON Schema et au méta-schéma des JdD.<br>\n";
         }
-        else {
-          $dataset->displaySchemaErrors();
-        }
 
-        if ($dataset->isValid(true, $_GET['nbreItems'] ?? 0)) {
+        if ($dataset->isValid(true, $_GET['nbreItems'] ?? 0, $_GET['nbreMaxErrors'] ?? 30)) {
           echo "Le JdD est conforme à son schéma.<br>\n";
-        }
-        else {
-          $dataset->displayErrors($_GET['nbreItems'] ?? 0);
         }
         break;
       }

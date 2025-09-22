@@ -40,38 +40,46 @@ use Symfony\Component\Yaml\Yaml;
  *   - getItemsOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
  */
 abstract class Dataset {
-  /** Registre contenant la liste des JdD sous la forme {dsName} => null|{className}|list<string>. */
-  const REGISTRE = [
-    'DebugScripts'=> null,
-    'InseeCog'=> null,
-    'DeptReg'=> null,
-    'NomsCnig'=> null,
-    'NomsCtCnigC'=> null,
-    'Pays'=> null,
-    'MapDataset'=> null,
-    'AeCogPe'=> null,
-    'WorldEez'=> null,
-    'NE110mPhysical'=> 'GeoDataset',
-    'NE110mCultural'=> 'GeoDataset',
-    'NE50mPhysical' => 'GeoDataset',
-    'NE50mCultural' => 'GeoDataset',
-    'NE10mPhysical' => 'GeoDataset',
-    'NE10mCultural' => 'GeoDataset',
-    'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
-    'IgnWfs'=> ['class'=> 'Wfs', 'url'=> 'https://data.geopf.fr/wfs/ows'],
-    'AdminExpress-COG-Carto-PE'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO-PE.LATEST'], 
-    'AdminExpress-COG-Carto-ME'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO.LATEST'], 
-    'LimitesAdminExpress'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST'], 
-    'BDCarto'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDCARTO_V5'], // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
-    'BDTopo'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDTOPO_V3'],
+  /** Arbre des JdD. */
+  const TREE = [
+    'Jeux de test'=> [
+      'DebugScripts'=> null,
+      'InseeCog'=> null,
+      'DeptReg'=> null,
+      'NomsCnig'=> null,
+      'NomsCtCnigC'=> null,
+      'Pays'=> null,
+      'MapDataset'=> null,
+      'AeCogPe'=> null,
+    ],
+    'Jeux mondiaux'=> [
+      'WorldEez'=> null,
+      'NE110mPhysical'=> 'GeoDataset',
+      'NE110mCultural'=> 'GeoDataset',
+      'NE50mPhysical' => 'GeoDataset',
+      'NE50mCultural' => 'GeoDataset',
+      'NE10mPhysical' => 'GeoDataset',
+      'NE10mCultural' => 'GeoDataset',
+      'NaturalEarth' => 'Styler', // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+    ],
+    'Jeux IGN'=> [
+      'IgnWfs'=> ['class'=> 'Wfs', 'url'=> 'https://data.geopf.fr/wfs/ows'],
+      'AdminExpress-COG-Carto-PE'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO-PE.LATEST'], 
+      'AdminExpress-COG-Carto-ME'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'ADMINEXPRESS-COG-CARTO.LATEST'], 
+      'LimitesAdminExpress'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST'], 
+      'BDCarto'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDCARTO_V5'], // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+      'BDTopo'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDTOPO_V3'],
+      'RPG'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'RPG.LATEST'],
+    ],
     'MesuresCompensatoires'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'MESURES_COMPENSATOIRES'],
-    'RPG'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'RPG.LATEST'],
     'Patrinat'=> 'Extract',
-    'ShomWfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.data.shom.fr/INSPIRE/wfs'],
-    'Shom'=> 'Extract',
-    'ShomTAcartesMarinesRaster'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'CARTES_MARINES_GRILLE'],
-    'ShomTAcartesMarinesPapier'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLES_CARTES_PAPIER'],
-    'ShomTAcartesMarinesS57'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_S57_WFSc'],
+    'Jeux Shom'=> [
+      'ShomWfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.data.shom.fr/INSPIRE/wfs'],
+      'Shom'=> 'Extract',
+      'ShomTAcartesMarinesRaster'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'CARTES_MARINES_GRILLE'],
+      'ShomTAcartesMarinesPapier'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLES_CARTES_PAPIER'],
+      'ShomTAcartesMarinesS57'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_S57_WFSc'],
+    ],
     
     /**/
   ];
@@ -91,18 +99,56 @@ abstract class Dataset {
   /** @var array<string,CollectionOfDs> $collections Le dict. des collections. */
   readonly array $collections;
   
+  /** Retourne le dictionnaire applati des jeux de données, doit être appelé initialement sans paramètre.
+   * @param array<mixed> $tree
+   * @return array<string,(null|string|array<string,string>)>
+   */
+  static function dictOfDatasets(array $tree=self::TREE): array {
+    $dict = [];
+    foreach ($tree as $key => $content) {
+      if (!is_array($content) || array_key_exists('class', $content)) // c'est une feuille
+        $dict[$key] = $content;
+      else {                                                          // c'est un noeud
+        $dict = array_merge($dict, self::dictOfDatasets($content));
+      }
+    }
+    return $dict;
+  }
+  
+  /** Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.
+   * Attention, la définition peut être null pour les JdD qui sont catégorie.
+   * @param array<mixed> $tree
+   * @return (null|string|array<string,string>)
+   */
+  static function definitionOfADataset(string $dsName, array $tree=self::TREE): mixed {
+    //echo "<pre>Appel sur ",json_encode($tree),"</pre>\n";
+    foreach ($tree as $key => $content) {
+      //echo "balayage $key<br>\n";
+      if (is_array($content) && !array_key_exists('class', $content)) { // si c'est un noeud alors
+        if ($def = self::definitionOfADataset($dsName, $content))       //   si def trouvée dans l'appel récursif alors
+          return $def;                                                  //     retourne la déf
+      }
+      elseif ($key == $dsName) {                                        // sinon c'est la bonne feuille
+        //echo "<pre>Retourne ",json_encode($content),"</pre>\n";
+        return $content;                                                //   retourne la def
+      }
+    }
+    return null;
+  }
+  
   /** teste si le nom est celui d'un JdD. */
-  static function exists(string $dsName): bool { return array_key_exists($dsName, self::REGISTRE); }
+  static function exists(string $dsName): bool { return array_key_exists($dsName, self::dictOfDatasets()); }
   
   /** Retourne le nom de la classe du JdD $dsName sans son espace de noms. */
   static function class(string $dsName): string {
     //echo "dsname=$dsName<br>\n";
-    if (!array_key_exists($dsName, self::REGISTRE)) {
+    $dictOfDatasets = self::dictOfDatasets();
+    if (!array_key_exists($dsName, $dictOfDatasets)) {
       throw new \Exception("Erreur dataset $dsName inexistant");
     }
     else {
       // Si le JdD appartient à une catégorie alors la classe est cette catégorie, sinon la classe est le JdD
-      $classParams = (self::REGISTRE[$dsName] ?? $dsName);
+      $classParams = ($dictOfDatasets[$dsName] ?? $dsName);
       if (is_string($classParams)) {
         return $classParams;
       }
@@ -118,12 +164,13 @@ abstract class Dataset {
   /** Retourne le JdD portant ce nom. */
   static function get(string $dsName): self {
     //echo "dsname=$dsName\n";
-    if (!array_key_exists($dsName, self::REGISTRE)) {
+    $dictOfDatasets = self::dictOfDatasets();
+    if (!array_key_exists($dsName, $dictOfDatasets)) {
       throw new \Exception("Erreur dataset $dsName inexistant");
     }
     else {
       // Si le JdD appartient à une catégorie alors la classe est cette catégorie, sinon la classe est le JdD
-      $classParams = (self::REGISTRE[$dsName] ?? $dsName);
+      $classParams = ($dictOfDatasets[$dsName] ?? $dsName);
       if (is_array($classParams)) {
         $class = $classParams['class'];
         $classParams['dsName'] = $dsName;
@@ -147,9 +194,8 @@ abstract class Dataset {
   function __construct(string $dsName, array $schema, bool $validate=false) {
     if ($validate) {
       if (!self::schemaIsValidS($schema)) {
-        echo "<h2>$dsName</h2>\n";
+        echo "<h2>Schema de $dsName</h2>\n";
         echo "<pre>",Yaml::dump($schema, 9, 2),"</pre>\n";
-        self::displaySchemaErrorsS($schema);
         //throw new \Exception("Schéma de $dsName invalide");
       }
     }
@@ -175,6 +221,26 @@ abstract class Dataset {
    * Peut permettre au même code de tourner dans des environnements où certains jeux ne sont pas disponibles.
    */
   function isAvailable(?string $condition=null): bool { return true; }
+  
+  /** Affiche l'arbre des datasets avec en paramètre la fonction qui retourne le string à afficher pour un Dataset.
+   * @param callable(string $dsName, Dataset $dataset): string $displayLeaf - retourne le string à afficher pour un Dataset
+   * @param array<mixed> $tree - initialement par défaut l'arbre complet, puis un sous-arbre dans les appels récursifs
+   */
+  static function displayTree(callable $displayLeaf, array $tree = Dataset::TREE): void {
+    echo "<ul>\n";
+    foreach ($tree as $key => $content) {
+      if (!is_array($content) || array_key_exists('class', $content)) { // content est une définition de JdD 
+        $dataset = Dataset::get($key);
+        echo $displayLeaf($key, $dataset);
+      }
+      else {                                                            // content est un sous-arbre
+        echo "<li><b>$key</b> </li><ul>\n";
+        self::displayTree($displayLeaf, $content);
+        echo "</ul>\n";
+      }
+    }
+    echo "</ul>\n";
+  }
   
   /** Retourne les filtres implémentés par getTuples(). Peut être redéfinie par chaque Dataset.
    * Les filtres possibles sont:
@@ -239,99 +305,55 @@ abstract class Dataset {
     $validator = new Validator;
     $stdObject = RecArray::toStdObject($schema);
     $validator->validate($stdObject, $schema['$schema']);
-    if (!$validator->isValid())
+    if (!$validator->isValid()) {
+      echo "<pre>Le schéma du JdD n'est pas conforme au méta-schéma JSON Schema. Violations:\n";
+      foreach ($validator->getErrors() as $error) {
+        printf("[%s] %s\n", $error['property'], $error['message']);
+      }
+      echo "</pre>\n";
       return false;
+    }
     
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
     $stdObject = RecArray::toStdObject($schema);
     $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
     $validator->validate($stdObject, $metaSchemaDataset);
-    return $validator->isValid();
-  }
-  
-  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD. */
-  function schemaIsValid(): bool { return self::schemaIsValidS($this->schema); }
-  
-  /** Affiche les erreurs de non conformité du schéma.
-   * @param array<mixed> $schema - le schéma
-   */
-  static function displaySchemaErrorsS(array $schema): void {
-    $validator = new Validator;
-    $data = RecArray::toStdObject($schema);
-    $validator->validate($data, $schema['$schema']);
-
-    // Validation du schéma du JdD par rapport au méta-schéma JSON Schema
-    if ($validator->isValid()) {
-      echo "Le schéma du JdD est conforme au méta-schéma JSON Schema.<br>\n";
-    }
-    else {
-      echo "<pre>Le schéma du JdD n'est pas conforme au méta-schéma JSON Schema. Violations:\n";
-      foreach ($validator->getErrors() as $error) {
-        printf("[%s] %s\n", $error['property'], $error['message']);
-      }
-      echo "</pre>\n";
-    }
-
-    // Validation du schéma du JdD par rapport au méta-schéma des JdD
-    $validator = new Validator;
-    $schema = RecArray::toStdObject($schema);
-    $metaSchemaDataset = Yaml::parseFile(__DIR__.'/dataset.yaml');
-    $validator->validate($schema, $metaSchemaDataset);
-    if ($validator->isValid()) {
-      echo "Le schéma du JdD est conforme au méta-schéma des JdD.<br>\n";
-    }
+    if ($validator->isValid())
+      return true;
     else {
       echo "<pre>Le schéma du JdD n'est pas conforme au méta-schéma des JdD. Violations:\n";
       foreach ($validator->getErrors() as $error) {
         printf("[%s] %s\n", $error['property'], $error['message']);
       }
       echo "</pre>\n";
+      return false;
     }
   }
   
-  /** Affiche les erreurs de non conformité du schéma */
-  function displaySchemaErrors(): void { self::displaySchemaErrorsS($this->schema); }
+  /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD.
+   * En cas de non conformité, les erreurs sont affichées.
+   */
+  function schemaIsValid(): bool { return self::schemaIsValidS($this->schema); }
   
-  /** Vérifie la conformité du JdD par rapport à son schéma */
-  function isValid(bool $verbose, int $nbreItems): bool {
+  /**
+   * Vérifie la conformité des données du JdD par rapport à son schéma.
+   *
+   * Si $nbreItems <> 0 alors on se limite au $nbreItems 1ers items, si $nbreItems == 0 alors tous les items sont traités.
+   * Si $nbreMaxErrors == 0 alors toutes les erreurs sont affichées,
+   * si $nbreMaxErrors > 0 alors on se limite au $nbreMaxErrors 1ères erreurs,
+   * si $nbreMaxErrors == -1 alors aucune erreur n'est affichée.
+   * S'arrête dès qu'une collection n'est pas conforme.
+   */
+  function isValid(bool $verbose, int $nbreItems, int $nbreMaxErrors): bool {
+    //echo "Appel de Dataset::isValid@$this->name(verbose=$verbose, nbreItems=$nbreItems)<br>\n";
     // Validation de chaque collection
-    foreach ($this->collections as $collection) {
-      echo "verbose=",$verbose?'true':'false',"<br>\n";
-      if (!$collection->isValid($verbose, $nbreItems))
+    foreach ($this->collections as $collName => $collection) {
+      //echo "collName=$collName, verbose=",$verbose?'true':'false',"<br>\n";
+      if (!$collection->isValid($verbose, $nbreItems, $nbreMaxErrors))
         return false;
     }
     return true;
-  }
-  
-  /** Retourne les erreurs de non conformité du JdD.
-   * @return list<mixed>
-   */
-  function getErrors(int $nbreItems): array {
-    $errors = [];
-    // Validation de chaque collection
-    foreach ($this->collections as $collection) {
-      if (!$collection->isValid(false, $nbreItems))
-        $errors = array_merge($errors, $collection->getErrors($nbreItems));
-    }
-    return $errors;
-  }
-  
-  /** Affiche les erreurs de non conformité du JdD */
-  function displayErrors(int $nbreItems): void {
-    if (!($errors = $this->getErrors($nbreItems))) {
-      if ($nbreItems == 0)
-        echo "Le JdD est conforme à son schéma.<br>\n";
-      else
-        echo "Les $nbreItems items du JdD sont conformes au schéma du JdD.<br>\n";
-    }
-    else {
-      echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";
-      foreach ($errors as $error) {
-        printf("[%s] %s\n", $error['property'], $error['message']);
-      }
-      echo "</pre>\n";
-    }
   }
   
   /** Affiche le JdD en Html. */
@@ -413,18 +435,24 @@ abstract class Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
-switch ($_GET['action'] ?? null) {
-  case null: {
-    foreach (array_keys(Dataset::REGISTRE) as $dataset) {
-      echo "<a href='?action=title&dataset=$dataset'>Afficher le titre de $dataset</a>.<br>\n";
+class DatasetTest {
+  static function main(): void {
+    switch ($_GET['action'] ?? null) {
+      case null: {
+        echo "<a href='?action=displayTree'>displayTree</a><br>\n";
+        echo "<a href='?action=testDef'>testDef</a><br>\n";
+        break;
+      }
+      case 'displayTree': {
+        echo "<h2>Arbre des Jdd</h2>\n";
+        Dataset::displayTree(function(string $dsName, Dataset $dataset): string { return  "<li>".$dataset->title."</li>\n";});
+        break;
+      }
+      case 'testDef': {
+        var_dump(Dataset::definitionOfADataset('IgnWfs'));
+        break;
+      }
     }
-    break;
   }
-  case 'title': {
-    $ds = Dataset::get($_GET['dataset']);
-    echo "<table border=1>\n";
-    echo "<tr><td>title</td><td>",$ds->title,"</td></tr>\n";
-    echo "</table>\n";
-    break;
-  }
-}
+};
+DatasetTest::main();

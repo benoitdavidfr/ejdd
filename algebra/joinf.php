@@ -230,7 +230,8 @@ class JoinFTest {
             echo "<a href='?action=query2&title=",urlencode($title),"'>$title</a><br>\n";
 
           echo "<h3>Choix interactif des datasets à joindre</h3>\n";
-          foreach (array_keys(Dataset::REGISTRE) as $dsName) {
+          $datasets = [];
+          foreach (array_keys(Dataset::dictOfDatasets()) as $dsName) {
             $datasets[$dsName] = Dataset::get($dsName)->title;
           }
           echo "<table border=1><tr><form>\n",
