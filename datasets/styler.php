@@ -85,9 +85,9 @@ class Styler extends Dataset {
       if (($zoom < $dataset['minZoom']) || ($zoom > $dataset['maxZoom']))
         continue;
       $ds = Dataset::get($dsName);
-      foreach (array_reverse($dataset['collections']) as $cName => $collection) {
-        $collectionMD = $ds->collections[$cName]; // les MD de la collection
-        foreach ($ds->getItems($cName) as $tuple) {
+      foreach (array_reverse($dataset['collections']) as $collName => $collection) {
+        $collectionMD = $ds->collections[$collName]; // les MD de la collection
+        foreach ($ds->getItems($collName, []) as $tuple) {
           if ($skip-- > 0)
             continue;
           if (isset($collectionMD->schema->array['items']['propertiesForGeoJSON'])) {

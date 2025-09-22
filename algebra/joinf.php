@@ -268,7 +268,7 @@ class JoinFTest {
             $ds = Dataset::get($_GET["dataset$i"]);
             $dsTitles[$i] = $ds->title;
             $item = [];
-            foreach ($ds->getItems($_GET["coll$i"]) as $item) { break; }
+            foreach ($ds->getItems($_GET["coll$i"], []) as $item) { break; }
             $selects[$i] = HtmlForm::select("field$i", array_keys($item));
             $item = [];
           }

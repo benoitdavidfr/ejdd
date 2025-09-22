@@ -31,7 +31,7 @@ class SimplifiedType {
    * @param ?array<mixed> $prop - la propriété selon le formalisme du schéma JSON dont on veut le type simplifié. */
   static function create2(?array $prop): string {
     // Les types simples
-    if (in_array($prop['type'] ?? null, ['string','number','integer'])) // Le type vaut 'string', 'number', ou 'integer'
+    if (in_array($prop['type'] ?? null, ['string','number','integer','boolean'])) // Le type vaut 'string', 'number', 'integer', ou 'boolean'
       return $prop['type'];
     elseif (is_array($prop['type'] ?? null)
        && (in_array($prop['type'][0] ?? null, ['string','number','integer']))
@@ -53,7 +53,7 @@ class SimplifiedType {
         return json_encode(['type'=> 'object', 'properties'=> $prop['properties']]);
     }
     else {
-      return 'unknown';
+      return 'unknown ('.json_encode($prop).')';
     }
   }
   

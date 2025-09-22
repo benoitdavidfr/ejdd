@@ -320,7 +320,7 @@ collections:
   CARTES_MARINES_GRILLE_grille_geotiff_800:
     source: ShomWfs.CARTES_MARINES_GRILLE:grille_geotiff_800
     $schema:
-      title: "Catalogue des cartes marines numériques raster : Générales (échelle supérieure à 1:800 000)"
+      title: "Catalogue des cartes marines générales raster"
       description: "Catalogue des cartes marines numériques raster : Générales (échelle supérieure à 1:800 000)"
       type: object
       additionalProperties: false

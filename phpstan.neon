@@ -45,6 +45,8 @@ parameters:
     TIntFun: 'Closure(Interpret, AbstractSyntaxTree, mixed ...): mixed'
   paths:
     - index.php
+    #- datasets/dataset2.inc.php
+    #- algebra/collection2.inc.php
     - install.php
     - lib.php
     - geojson.php
@@ -97,7 +99,8 @@ parameters:
     #- lib/gegeom.inc.php
     #- lib/pos.inc.php
     #- lib/zoom.inc.php
+    
   excludePaths:
     analyse:
-        
+      
   treatPhpDocTypesAsCertain: false

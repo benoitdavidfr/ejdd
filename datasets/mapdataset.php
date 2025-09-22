@@ -69,10 +69,10 @@ switch ($_GET['action'] ?? null) {
   case 'refIntegrity': {
     echo "<h2>Contraintes d'intégrité</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
-    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
+    foreach ($mapDataset->getItems('layers', []) as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
-    foreach ($mapDataset->getItems('maps') as $mapId => $map) {
+    foreach ($mapDataset->getItems('maps', []) as $mapId => $map) {
       $map = new Map($map);
       if ($errors = $map->integrityErrors($mapId)) {
         echo "<pre>errors="; print_r($errors); echo "</pre>\n";
@@ -92,18 +92,18 @@ switch ($_GET['action'] ?? null) {
       $dataset->displaySchemaErrors();
     }
 
-    if ($dataset->isValid(false)) {
+    if ($dataset->isValid(false, 0)) {
       echo "Le JdD est conforme à son schéma.<br>\n";
     }
     else {
-      $dataset->displayErrors();
+      $dataset->displayErrors(0);
     }
     break;
   }
   case 'listMaps': {
     echo "<h2>Liste des cartes à dessiner</h2>\n";
     $mapDataset = Dataset::get('MapDataset');
-    foreach ($mapDataset->getItems('maps') as $mapKey => $map)
+    foreach ($mapDataset->getItems('maps', []) as $mapKey => $map)
       echo "<a href='?action=draw&map=$mapKey'>Dessiner $map[title]</a>, ",
            "<a href='?action=display&map=$mapKey'>l'afficher</a>.<br>\n";
     break;
@@ -114,14 +114,14 @@ switch ($_GET['action'] ?? null) {
     //  2) que la définition de la carte à dessiner ne présente pas d'erreurs d'intégrité
     $mapDataset = Dataset::get('MapDataset');
     
-    if (!$mapDataset->isValid(false)) {
+    if (!$mapDataset->isValid(false, 0)) {
       echo "Erreur, certaines cartes ne sont pas conformes au schéma du JdD.<br>\n",
            "Dessin de la carte impossible.<br>\n",
            "<a href='?action=validate&dataset=MapDataset'>Vérifier la conformité du JdD.</a><br>\n";
       throw new \Exception("Cartes non valides");
     }
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
-    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
+    foreach ($mapDataset->getItems('layers', []) as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
     if ($errors = $map->integrityErrors($_GET['map'])) {
@@ -140,7 +140,7 @@ switch ($_GET['action'] ?? null) {
     echo "<title>$_GET[map]</title>\n";
     $mapDataset = Dataset::get('MapDataset');;
     $map = new Map($mapDataset->getOneItemByKey('maps', $_GET['map']));
-    foreach ($mapDataset->getItems('layers') as $lyrId => $layer) {
+    foreach ($mapDataset->getItems('layers', []) as $lyrId => $layer) {
       Layer::$all[$lyrId] = Layer::create($lyrId, $layer);
     }
     $viewId = $map->def['view'];

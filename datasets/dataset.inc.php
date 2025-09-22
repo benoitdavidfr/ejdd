@@ -64,12 +64,15 @@ abstract class Dataset {
     'LimitesAdminExpress'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'LIMITES_ADMINISTRATIVES_EXPRESS.LATEST'], 
     'BDCarto'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDCARTO_V5'], // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
     'BDTopo'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'BDTOPO_V3'],
-    'BDTopoE'=> 'WfsExtract',
+    'MesuresCompensatoires'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'MESURES_COMPENSATOIRES'],
+    'RPG'=> ['class'=> 'WfsNs', 'wfsName'=> 'IgnWfs', 'namespace'=> 'RPG.LATEST'],
     'Patrinat'=> 'Extract',
-    'MesuresCompensatoires'=> 'WfsExtract',
-    'RPG'=> 'WfsExtract',
     'ShomWfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.data.shom.fr/INSPIRE/wfs'],
     'Shom'=> 'Extract',
+    'ShomTAcartesMarinesRaster'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'CARTES_MARINES_GRILLE'],
+    'ShomTAcartesMarinesPapier'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLES_CARTES_PAPIER'],
+    'ShomTAcartesMarinesS57'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_S57_WFSc'],
+    
     /**/
   ];
   const UNITS = [
@@ -187,13 +190,13 @@ abstract class Dataset {
    * @param array<string,mixed> $filters - filtres éventuels sur les items à renvoyer
    * @return \Generator<string|int,array<mixed>>
    */
-  abstract function getItems(string $collName, array $filters=[]): \Generator;
+  abstract function getItems(string $collName, array $filters): \Generator;
   
   /** Retourne l'item ayant la clé fournie. Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(string $collection, string|int $key): array|string|null {
-    foreach ($this->getItems($collection) as $k => $tuple)
+    foreach ($this->getItems($collection, []) as $k => $tuple)
       if ($k == $key)
         return $tuple;
     return null;
@@ -205,7 +208,7 @@ abstract class Dataset {
    */ 
   function getItemsOnValue(string $collection, string $field, string $value): array {
     $result = [];
-    foreach ($this->getItems($collection) as $k => $tuple)
+    foreach ($this->getItems($collection, []) as $k => $tuple)
       if ($tuple[$field] == $value)
         $result[$k] = $tuple;
     return $result;
@@ -216,19 +219,19 @@ abstract class Dataset {
    */
   function asArray(): array {
     $array = [
-      'title'=> $this->title,
-      'description'=> $this->description,
       '$schema'=> $this->schema,
     ];
     //echo '<pre>'; print_r($array);
-    foreach (array_keys($this->collections) as $cName) {
-      foreach ($this->getItems($cName) as $key => $item)
-        $array[$cName][$key] = $item;
+    foreach (array_keys($this->collections) as $collName) {
+      foreach ($this->getItems($collName, []) as $key => $item)
+        $array[$collName][$key] = $item;
     }
     return $array;
   }
   
   /** Vérifie la conformité du schéma du JdD par rapport à son méta-schéma JSON et par rapport au méta-schéma des JdD.
+   * Cette version statique est nécessaire pour pouvoir vérifier un schéma avant l'initialisation de l'objet.
+   *
    * @param array<mixed> $schema - le schéma
    */
   static function schemaIsValidS(array $schema): bool {
@@ -237,7 +240,7 @@ abstract class Dataset {
     $stdObject = RecArray::toStdObject($schema);
     $validator->validate($stdObject, $schema['$schema']);
     if (!$validator->isValid())
-    return false;
+      return false;
     
     // Validation du schéma du JdD par rapport au méta-schéma des JdD
     $validator = new Validator;
@@ -292,41 +295,9 @@ abstract class Dataset {
   
   /** Vérifie la conformité du JdD par rapport à son schéma */
   function isValid(bool $verbose, int $nbreItems): bool {
-    // Validation des MD du jeu de données
-    $validator = new Validator;
-    $schema = [
-      '$schema'=> 'http://json-schema.org/draft-07/schema#',
-      'title'=> "Schéma de l'en-tête du jeu dd données",
-      'description'=> "Ce schéma permet de vérifier les MD du jeu.",
-      'type'=> 'object',
-      'required'=> ['title','description','$schema'],
-      'additionalProperties'=> false,
-      'properties'=> [
-        'title'=> [
-          'description'=> "Titre du jeu de données",
-          'type'=> 'string',
-        ],
-        'description'=> [
-          'description'=> "Description du jeu de données",
-          'type'=> 'string',
-        ],
-        '$schema'=> [
-          'description'=> "Schéma JSON du jeu de données",
-          'type'=> 'object',
-        ],
-      ],
-    ];
-    $data = RecArray::toStdObject([
-      'title'=> $this->title,
-      'description'=> $this->description,
-      '$schema'=> $this->schema,
-    ]);
-    $validator->validate($data, $schema);
-    if (!$validator->isValid())
-      return false;
-    
     // Validation de chaque collection
     foreach ($this->collections as $collection) {
+      echo "verbose=",$verbose?'true':'false',"<br>\n";
       if (!$collection->isValid($verbose, $nbreItems))
         return false;
     }
@@ -338,39 +309,6 @@ abstract class Dataset {
    */
   function getErrors(int $nbreItems): array {
     $errors = [];
-    $validator = new Validator;
-    $schema = [
-      '$schema'=> 'http://json-schema.org/draft-07/schema#',
-      'title'=> "Schéma de l'en-tête du jeu dd données",
-      'description'=> "Ce schéma permet de vérifier les MD du jeu.",
-      'type'=> 'object',
-      'required'=> ['title','description','$schema'],
-      'additionalProperties'=> false,
-      'properties'=> [
-        'title'=> [
-          'description'=> "Titre du jeu de données",
-          'type'=> 'string',
-        ],
-        'description'=> [
-          'description'=> "Description du jeu de données",
-          'type'=> 'string',
-        ],
-        '$schema'=> [
-          'description'=> "Schéma JSON du jeu de données",
-          'type'=> 'object',
-        ],
-      ],
-    ];
-    $data = RecArray::toStdObject([
-      'title'=> $this->title,
-      'description'=> $this->description,
-      '$schema'=> $this->schema,
-    ]);
-    $validator->validate($data, $schema);
-    if (!$validator->isValid()) {
-      $errors = array_merge($errors, $validator->getErrors()); 
-    }
-    
     // Validation de chaque collection
     foreach ($this->collections as $collection) {
       if (!$collection->isValid(false, $nbreItems))
@@ -385,7 +323,7 @@ abstract class Dataset {
       if ($nbreItems == 0)
         echo "Le JdD est conforme à son schéma.<br>\n";
       else
-        echo "L'extrait du JdD est conforme à son schéma.<br>\n";
+        echo "Les $nbreItems items du JdD sont conformes au schéma du JdD.<br>\n";
     }
     else {
       echo "<pre>Le JdD n'est pas conforme à son schéma. Violations:<br>\n";

@@ -370,4 +370,9 @@ EOT;
     }
   }
 };
+
+
+if ((php_sapi_name() == 'cli') || (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__)) return; // Exemple d'utilisation pour debuggage 
+
+
 Feed::main($argc ?? 0, $argv ?? []);

@@ -31,8 +31,8 @@ use JsonSchema\Validator;
  *   - id() construit un identifiant qui pourra ensuite être reconnu par le Parser pour reconstruire la Collection
  *   - properties() fournit un schéma simplifié
  *   - implementedFilters() indique quels filtres sont mis en oeuvre poar getItems()
- *   - getItems() génère les Items
- *   - getOneItemByKey() retourne un Item par sa clé
+ *   - getItems() retour un Generator qui génère les Items
+ *   - getOneItemByKey() retourne l'Item défini par sa clé
  * Par ailleurs elle peut définir les méthodes suivantes:
  *   - getItemsOnValue(), s'il existe un algo plus performant qu'une boucle sur les items de la collection
  */
@@ -394,29 +394,30 @@ class CollectionOfDs extends Collection {
   /** Vérifie que la collection est conforme à son schéma */
   function isValid(bool $verbose, int $nbreItems): bool {
     //$verbose = true;
-    //echo "Appel de CollectionOfDs::isValid(verbose=$verbose, nbreItems=$nbreItems)<br>\n";
+    echo "Appel de CollectionOfDs::isValid(verbose=",$verbose?'true':'false',", nbreItems=$nbreItems)<br>\n";
     //return true;
     $t0 = microtime(true);
     $nbTuples = 0;
     $kind = $this->schema->kind();
     $validator = new Validator;
     foreach ($this->getItems() as $key => $item) {
-      //echo "Dans CollectionOfDs::isValid(), lecture du $this->name $key<br>\n";
-      //$data[$key]['geometry'] = '';
-      $data = RecArray::toStdObject([$key => $item]);
-      //echo "<pre>appel de Validator::validate avec data=\n",Yaml::dump(['data'=> $tuple], 4, 2),
-      //     "\net schema=\n",Yaml::dump(['$schema'=>$this->schema->schema], 9, 2);
+      $data = match ($kind = $this->schema->kind()) {
+        'dictOfTuples', 'dictOfValues' => [$key => $item],
+        'listOfTuples', 'listOfValues' => [$item],
+        default => throw new \Exception("kind $kind non traité"),
+      };
       $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid())
         return false;
       $nbTuples++;
+      echo "$nbTuples % 10_000=",$nbTuples % 10_000,"<br>\n";
       if (!($nbTuples % 10_000) && $verbose)
         printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
       if (($nbreItems <> 0) && ($nbTuples >= $nbreItems)) {
         echo "Fin après $nbreItems items<br>\n";
         break;
       }
-      if ($nbTuples > 0) return true;
+      //if ($nbTuples > 0) return true;
     }
     if ($verbose)
       printf("%d n-uplets de %s vérifiés en %.2f sec.<br>\n", $nbTuples, $this->name, microtime(true)-$t0);
@@ -432,20 +433,20 @@ class CollectionOfDs extends Collection {
     $errors = [];
     $validator = new Validator;
     $nbItemsGot = 0;
-    foreach ($this->getItems() as $key => $tuple) {
-      /*$data = match ($kind = $this->schema->kind()) {
-        'dictOfTuples', 'dictOfValues' => [$key => $tuple],
-        'listOfTuples', 'listOfValues' => [$tuple],
+    foreach ($this->getItems() as $key => $item) {
+      $data = match ($kind = $this->schema->kind()) {
+        'dictOfTuples', 'dictOfValues' => [$key => $item],
+        'listOfTuples', 'listOfValues' => [$item],
         default => throw new \Exception("kind $kind non traité"),
       };
       $data = RecArray::toStdObject($data);
-      */
+      
       /*$tuple2 = $tuple;
       $tuple2['geometry'] = 'geometry';
       $data = RecArray::toStdObject([$key => $tuple2]);
       echo "<pre>Validation de "; print_r($data); echo "par rapport au schema "; print_r($this->schema->schema); echo "</pre>\n";
       */
-      $data = RecArray::toStdObject([$key => $tuple]);
+      //$data = RecArray::toStdObject([$key => $tuple]);
       $validator->validate($data, $this->schema->schema);
       if (!$validator->isValid()) {
         foreach ($validator->getErrors() as $error) {
@@ -456,7 +457,8 @@ class CollectionOfDs extends Collection {
         }
       }
       //$errors = array_merge($errors, );
-      if (++$nbItemsGot >= $nbreItems)
+      $nbItemsGot++;
+      if ($nbreItems && ($nbItemsGot >= $nbreItems))
         return $errors;
     }
     return $errors;

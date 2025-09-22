@@ -650,7 +650,7 @@ properties:
               COM: Commune
               COMA: Commune associée
               COMD: Commune déléguée
-          enum: [ARM, COM, COMA, COMD]
+          enum: [ARM, COM, COMA, COMDx]
         COM:
           description: code Insee de l'entité
           type: string

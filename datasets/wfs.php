@@ -20,6 +20,7 @@ EOT
 require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
 
+use GeoJSON\Feed;
 use GeoJSON\Geometry;
 use BBox\GBox as BBox;
 
@@ -90,7 +91,7 @@ class WfsCache {
  * Construit notamment le schéma du JdD.
  */
 class WfsCap {
-  function __construct(readonly \SimpleXMLElement $elt) {}
+  function __construct(readonly string $dsName, readonly \SimpleXMLElement $elt) {}
   
   /** Convertit un coin d'un WGS84BoundingBox en Position.
    * @return TPos */
@@ -140,11 +141,7 @@ class WfsCap {
         //'defaultCRS'=> str_replace('__',':', $featureType->DefaultCRS),
         'bbox'=> self::WGS84BoundingBoxTo4Coordinates($featureType->ows__WGS84BoundingBox),
         'type'=> 'object',
-        'patternProperties'=> [
-          ''=> [
-            'type'=> 'object',
-          ],
-        ],
+        'patternProperties'=> [''=> ['type'=> 'object']],
       ];
       //if (count($collections) > 15) break; // limitation du nbre de FeatureType pour le développement
     }
@@ -201,8 +198,9 @@ class WfsGetRequest {
     if ($bbox) {
       // En WFS on précise le CRS du BBox qui doit être fourni en LatLon
       $bboxLatLon = $bbox->as4CoordsLatLon();
-      $qbboxLatLon[] = 'urn:ogc:def:crs:EPSG::4326';
+      $bboxLatLon[] = 'urn:ogc:def:crs:EPSG::4326';
       //echo "bboxLatLon=[".implode(',',$bboxLatLon)."]<br>\n";
+      Feed::log("bboxLatLon=[".implode(',',$bboxLatLon)."]\n");
     }
     $ftNameCache = str_replace(':','/', $ftName);
     $fcoll = WfsCache::get(
@@ -260,7 +258,7 @@ class Wfs extends Dataset {
    */
   function __construct(array $params) {
     $this->wfsReq = new WfsGetRequest($params['dsName'], $params['url']);
-    $this->cap = new WfsCap($this->wfsReq->getCapabilities());
+    $this->cap = new WfsCap($params['dsName'], $this->wfsReq->getCapabilities());
     parent::__construct($params['dsName'], $this->cap->jsonSchemaOfTheDs(), true);
   }
   

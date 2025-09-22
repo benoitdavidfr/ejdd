@@ -509,7 +509,7 @@ class AMapAndItsLayers {
    * @return array<string,View> */
   function datasetViews(): array {
     $views = [];
-    foreach (Dataset::get('MapDataset')->getItems('views') as $id => $viewDef) {
+    foreach (Dataset::get('MapDataset')->getItems('views', []) as $id => $viewDef) {
       $lyrs[$id] = new View($viewDef);
     }
     return $views;
@@ -542,7 +542,7 @@ class AMapAndItsLayers {
    * @return array<string,Layer> */
   function datasetLayers(): array {
     $lyrs = [];
-    foreach (Dataset::get('MapDataset')->getItems('layers') as $lyrId => $lyrDef) {
+    foreach (Dataset::get('MapDataset')->getItems('layers', []) as $lyrId => $lyrDef) {
       $lyrs[$lyrId] = Layer::create($lyrId, $lyrDef);
     }
     return $lyrs;

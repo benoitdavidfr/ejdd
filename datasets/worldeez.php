@@ -78,7 +78,7 @@ class WorldEezBuild {
   /** Calcul d'une estimation de la résolution de la collection $cname */
   static function reso(string $cname): void {
     $dataset = Dataset::get('WorldEez');
-    foreach ($dataset->getItems($cname) as $tuple) {
+    foreach ($dataset->getItems($cname, []) as $tuple) {
       /** @var Polygon|MultiPolygon $geom */
       $geom = Geometry::create($tuple['geometry']);
       echo "reso=",$geom->reso(),"<br>\n";
