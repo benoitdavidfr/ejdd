@@ -233,8 +233,8 @@ Une classe concrète doit indiquer la sorte de la Collection et définir les mé
 <li>id() construit un identifiant qui pourra ensuite être reconnu par le Parser pour reconstruire la Collection</li>
 <li>properties() fournit un schéma simplifié</li>
 <li>implementedFilters() indique quels filtres sont mis en oeuvre poar getItems()</li>
-<li>getItems() génère les Items</li>
-<li>getOneItemByKey() retourne un Item par sa clé
+<li>getItems() retour un Generator qui génère les Items</li>
+<li>getOneItemByKey() retourne l'Item défini par sa clé
 Par ailleurs elle peut définir les méthodes suivantes:</li>
 <li>getItemsOnValue(), s'il existe un algo plus performant qu'une boucle sur les items de la collection</li>
 </ul>

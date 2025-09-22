@@ -376,13 +376,6 @@ par la classe de JdD concrète héritant de Dataset.</p>
 <dd>Refabrique une CollectionOfDs à partir de son id.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Algebra-CollectionOfDs.html#method_getErrors">getErrors()</a>
-    <span>
-                                &nbsp;: array&lt;int, mixed&gt;    </span>
-</dt>
-<dd>Retourne les erreurs de conformité de la collection à son schéma;</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-CollectionOfDs.html#method_getItems">getItems()</a>
     <span>
                                 &nbsp;: <abbr title="\Generator">Generator</abbr>&lt;int|string, array&lt;string|int, mixed&gt;&gt;    </span>
@@ -422,7 +415,7 @@ par la classe de JdD concrète héritant de Dataset.</p>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
-<dd>Vérifie que la collection est conforme à son schéma</dd>
+<dd>Vérifie que les données de la collection sont conformes au schéma de la collection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-CollectionOfDs.html#method_properties">properties()</a>
@@ -1167,45 +1160,6 @@ par la classe de JdD concrète héritant de Dataset.</p>
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_getErrors">
-        getErrors()
-        <a href="classes/Algebra-CollectionOfDs.html#method_getErrors" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">430</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne les erreurs de conformité de la collection à son schéma;</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getErrors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, mixed&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;int, mixed&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
     <h4 class="phpdocumentor-element__name" id="method_getItems">
         getItems()
         <a href="classes/Algebra-CollectionOfDs.html#method_getItems" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1448,20 +1402,26 @@ par la classe de JdD concrète héritant de Dataset.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">395</span>
+    <span class="phpdocumentor-element-found-in__line">403</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Vérifie que la collection est conforme à son schéma</p>
+        <p class="phpdocumentor-summary">Vérifie que les données de la collection sont conformes au schéma de la collection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">isValid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$verbose</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreItems</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">isValid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$verbose</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreMaxItems</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreMaxErrors</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>$verbose indique si des messages d'informations sont affichés ou non en dehors des erreurs.
+Si $nbreMaxItems &lt;&gt; 0 alors on se limite au $nbreMaxItems 1ers items, si $nbreMaxItems == 0 alors tous les items sont traités.
+Si $nbreMaxErrors == 0 alors toutes les erreurs sont affichées,
+si $nbreMaxErrors &gt; 0 alors on se limite au $nbreMaxErrors 1ères erreurs,
+si $nbreMaxErrors == -1 alors aucune erreur n'est affichée.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1472,9 +1432,16 @@ par la classe de JdD concrète héritant de Dataset.</p>
                 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$nbreItems</span>
+                <span class="phpdocumentor-signature__argument__name">$nbreMaxItems</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$nbreMaxErrors</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
@@ -1721,7 +1688,6 @@ par la classe de JdD concrète héritant de Dataset.</p>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_draw">draw()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_drawItem">drawItem()</a></li>
                                             <li class=""><a href="classes/Algebra-CollectionOfDs.html#method_get">get()</a></li>
-                                            <li class=""><a href="classes/Algebra-CollectionOfDs.html#method_getErrors">getErrors()</a></li>
                                             <li class=""><a href="classes/Algebra-CollectionOfDs.html#method_getItems">getItems()</a></li>
                                             <li class=""><a href="classes/Algebra-CollectionOfDs.html#method_getItemsOnValue">getItemsOnValue()</a></li>
                                             <li class=""><a href="classes/Algebra-CollectionOfDs.html#method_getOneItemByKey">getOneItemByKey()</a></li>

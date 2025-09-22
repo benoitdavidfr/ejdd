@@ -148,13 +148,8 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003AisValid\u0028\u0029",
             "name": "isValid",
-            "summary": "V\u00E9rifie\u0020que\u0020la\u0020collection\u0020est\u0020conforme\u0020\u00E0\u0020son\u0020sch\u00E9ma",
+            "summary": "V\u00E9rifie\u0020que\u0020les\u0020donn\u00E9es\u0020de\u0020la\u0020collection\u0020sont\u0020conformes\u0020au\u0020sch\u00E9ma\u0020de\u0020la\u0020collection.",
             "url": "classes/Algebra-CollectionOfDs.html#method_isValid"
-        },                {
-            "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003AgetErrors\u0028\u0029",
-            "name": "getErrors",
-            "summary": "Retourne\u0020les\u0020erreurs\u0020de\u0020conformit\u00E9\u0020de\u0020la\u0020collection\u0020\u00E0\u0020son\u0020sch\u00E9ma\u003B",
-            "url": "classes/Algebra-CollectionOfDs.html#method_getErrors"
         },                {
             "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003A\u0024dsName",
             "name": "dsName",
@@ -1441,6 +1436,16 @@ Search.appendIndex(
             "summary": "Classe\u0020abstraite\u0020des\u0020JdD.",
             "url": "classes/Dataset-Dataset.html"
         },                {
+            "fqsen": "\\Dataset\\Dataset\u003A\u003AdictOfDatasets\u0028\u0029",
+            "name": "dictOfDatasets",
+            "summary": "Retourne\u0020le\u0020dictionnaire\u0020applati\u0020des\u0020jeux\u0020de\u0020donn\u00E9es,\u0020doit\u0020\u00EAtre\u0020appel\u00E9\u0020initialement\u0020sans\u0020param\u00E8tre.",
+            "url": "classes/Dataset-Dataset.html#method_dictOfDatasets"
+        },                {
+            "fqsen": "\\Dataset\\Dataset\u003A\u003AdefinitionOfADataset\u0028\u0029",
+            "name": "definitionOfADataset",
+            "summary": "Retourne\u0020la\u0020d\u00E9finition\u0020du\u0020jeu\u0020de\u0020donn\u00E9es\u0020dont\u0020le\u0020nom\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre\u0020ou\u0020null,\u0020doit\u0020\u00EAtre\u0020appel\u00E9\u0020initialement\u0020avec\u00201\u0020param\u00E8tre.",
+            "url": "classes/Dataset-Dataset.html#method_definitionOfADataset"
+        },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003Aexists\u0028\u0029",
             "name": "exists",
             "summary": "teste\u0020si\u0020le\u0020nom\u0020est\u0020celui\u0020d\u0027un\u0020JdD.",
@@ -1465,6 +1470,11 @@ Search.appendIndex(
             "name": "isAvailable",
             "summary": "Permet\u0020\u00E0\u0020un\u0020JdD\u0020d\u0027indiquer\u0020qu\u0027il\u0020n\u0027est\u0020pas\u0020disponible\u0020ou\u0020qu\u0027il\u0020est\u0020disponible\u0020pour\u0020construction.",
             "url": "classes/Dataset-Dataset.html#method_isAvailable"
+        },                {
+            "fqsen": "\\Dataset\\Dataset\u003A\u003AdisplayTree\u0028\u0029",
+            "name": "displayTree",
+            "summary": "Affiche\u0020l\u0027arbre\u0020des\u0020datasets\u0020avec\u0020en\u0020param\u00E8tre\u0020la\u0020fonction\u0020qui\u0020retourne\u0020le\u0020string\u0020\u00E0\u0020afficher\u0020pour\u0020un\u0020Dataset.",
+            "url": "classes/Dataset-Dataset.html#method_displayTree"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AimplementedFilters\u0028\u0029",
             "name": "implementedFilters",
@@ -1501,30 +1511,10 @@ Search.appendIndex(
             "summary": "V\u00E9rifie\u0020la\u0020conformit\u00E9\u0020du\u0020sch\u00E9ma\u0020du\u0020JdD\u0020par\u0020rapport\u0020\u00E0\u0020son\u0020m\u00E9ta\u002Dsch\u00E9ma\u0020JSON\u0020et\u0020par\u0020rapport\u0020au\u0020m\u00E9ta\u002Dsch\u00E9ma\u0020des\u0020JdD.",
             "url": "classes/Dataset-Dataset.html#method_schemaIsValid"
         },                {
-            "fqsen": "\\Dataset\\Dataset\u003A\u003AdisplaySchemaErrorsS\u0028\u0029",
-            "name": "displaySchemaErrorsS",
-            "summary": "Affiche\u0020les\u0020erreurs\u0020de\u0020non\u0020conformit\u00E9\u0020du\u0020sch\u00E9ma.",
-            "url": "classes/Dataset-Dataset.html#method_displaySchemaErrorsS"
-        },                {
-            "fqsen": "\\Dataset\\Dataset\u003A\u003AdisplaySchemaErrors\u0028\u0029",
-            "name": "displaySchemaErrors",
-            "summary": "Affiche\u0020les\u0020erreurs\u0020de\u0020non\u0020conformit\u00E9\u0020du\u0020sch\u00E9ma",
-            "url": "classes/Dataset-Dataset.html#method_displaySchemaErrors"
-        },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AisValid\u0028\u0029",
             "name": "isValid",
-            "summary": "V\u00E9rifie\u0020la\u0020conformit\u00E9\u0020du\u0020JdD\u0020par\u0020rapport\u0020\u00E0\u0020son\u0020sch\u00E9ma",
+            "summary": "V\u00E9rifie\u0020la\u0020conformit\u00E9\u0020des\u0020donn\u00E9es\u0020du\u0020JdD\u0020par\u0020rapport\u0020\u00E0\u0020son\u0020sch\u00E9ma.",
             "url": "classes/Dataset-Dataset.html#method_isValid"
-        },                {
-            "fqsen": "\\Dataset\\Dataset\u003A\u003AgetErrors\u0028\u0029",
-            "name": "getErrors",
-            "summary": "Retourne\u0020les\u0020erreurs\u0020de\u0020non\u0020conformit\u00E9\u0020du\u0020JdD.",
-            "url": "classes/Dataset-Dataset.html#method_getErrors"
-        },                {
-            "fqsen": "\\Dataset\\Dataset\u003A\u003AdisplayErrors\u0028\u0029",
-            "name": "displayErrors",
-            "summary": "Affiche\u0020les\u0020erreurs\u0020de\u0020non\u0020conformit\u00E9\u0020du\u0020JdD",
-            "url": "classes/Dataset-Dataset.html#method_displayErrors"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
@@ -1561,10 +1551,10 @@ Search.appendIndex(
             "summary": "Affiche\u0020des\u0020stats",
             "url": "classes/Dataset-Dataset.html#method_stats"
         },                {
-            "fqsen": "\\Dataset\\Dataset\u003A\u003AREGISTRE",
-            "name": "REGISTRE",
-            "summary": "Registre\u0020contenant\u0020la\u0020liste\u0020des\u0020JdD\u0020sous\u0020la\u0020forme\u0020\u007BdsName\u007D\u0020\u003D\u003E\u0020null\u007C\u007BclassName\u007D\u007Clist\u003Cstring\u003E.",
-            "url": "classes/Dataset-Dataset.html#constant_REGISTRE"
+            "fqsen": "\\Dataset\\Dataset\u003A\u003ATREE",
+            "name": "TREE",
+            "summary": "Arbre\u0020des\u0020JdD.",
+            "url": "classes/Dataset-Dataset.html#constant_TREE"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AUNITS",
             "name": "UNITS",
@@ -1595,6 +1585,16 @@ Search.appendIndex(
             "name": "collections",
             "summary": "",
             "url": "classes/Dataset-Dataset.html#property_collections"
+        },                {
+            "fqsen": "\\Dataset\\DatasetTest",
+            "name": "DatasetTest",
+            "summary": "",
+            "url": "classes/Dataset-DatasetTest.html"
+        },                {
+            "fqsen": "\\Dataset\\DatasetTest\u003A\u003Amain\u0028\u0029",
+            "name": "main",
+            "summary": "",
+            "url": "classes/Dataset-DatasetTest.html#method_main"
         },                {
             "fqsen": "\\Dataset\\DebugScripts",
             "name": "DebugScripts",
@@ -2226,6 +2226,11 @@ Search.appendIndex(
             "summary": "Construit\u0020le\u0020schema\u0020JSON\u0020\u00E0\u0020partir\u0020des\u0020capacit\u00E9s.",
             "url": "classes/Dataset-WfsCap.html#method_jsonSchemaOfTheDs"
         },                {
+            "fqsen": "\\Dataset\\WfsCap\u003A\u003A\u0024dsName",
+            "name": "dsName",
+            "summary": "",
+            "url": "classes/Dataset-WfsCap.html#property_dsName"
+        },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003A\u0024elt",
             "name": "elt",
             "summary": "",
@@ -2303,7 +2308,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003AdescribeFeatureTypes\u0028\u0029",
             "name": "describeFeatureTypes",
-            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020converti\u0020en\u0020SimpleXMLElement.",
+            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020conerti\u0020en\u0020SimpleXMLElement.",
             "url": "classes/Dataset-Wfs.html#method_describeFeatureTypes"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003ACOUNT",
@@ -2373,7 +2378,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsNsProperties\u003A\u003AfieldType\u0028\u0029",
             "name": "fieldType",
-            "summary": "Convertit\u0020le\u0020type\u0020d\u0027un\u0020champ.",
+            "summary": "Convertit\u0020le\u0020type\u0020d\u0027un\u0020champ\u0020de\u0020GML\u0020en\u0020GeoJSON.",
             "url": "classes/Dataset-WfsNsProperties.html#method_fieldType"
         },                {
             "fqsen": "\\Dataset\\WfsNsProperties\u003A\u003Aproperties\u0028\u0029",
@@ -2426,6 +2431,11 @@ Search.appendIndex(
             "summary": "Retourne\u0020l\u0027item\u0020ayant\u0020la\u0020cl\u00E9\u0020fournie.\u0020Devrait\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020les\u0020Dataset\u0020s\u0027il\u0020existe\u0020un\u0020algo.\u0020plus\u0020performant.",
             "url": "classes/Dataset-WfsNs.html#method_getOneItemByKey"
         },                {
+            "fqsen": "\\Dataset\\WfsNs\u003A\u003ADOCS",
+            "name": "DOCS",
+            "summary": "Documentation\u0020compl\u00E9mentaire\u0020rempla\u00E7ant\u0020les\u0020titres\u0020et\u0020desc\u0020ription\u0020par\u0020d\u00E9faut.",
+            "url": "classes/Dataset-WfsNs.html#constant_DOCS"
+        },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024wfsName",
             "name": "wfsName",
             "summary": "",
@@ -2443,7 +2453,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsNsBuild",
             "name": "WfsNsBuild",
-            "summary": "",
+            "summary": "Test\u0020de\u0020WfsNs.",
             "url": "classes/Dataset-WfsNsBuild.html"
         },                {
             "fqsen": "\\Dataset\\WfsNsBuild\u003A\u003Amain\u0028\u0029",

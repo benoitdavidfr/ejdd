@@ -251,9 +251,9 @@
     <a class="" href="classes/Algebra-PredicateParser.html#constant_BNF">BNF</a>
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-{predicate} ::= {name} {comparator} {constant}
-              | {constant} {comparator} {name}
-              | {name} {comparator} {name}
+{predicate} ::= {fieldName} {comparator} {constant}
+              | {constant} {comparator} {fieldName}
+              | {fieldName} {comparator} {fieldName}
               | &#039;(&#039; {predicate} &#039;)&#039; {junction} &#039;(&#039; {predicate} &#039;)&#039;
 {constant} ::=  {float}
               | {integer}
@@ -356,9 +356,9 @@ EOT]                            </span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">BNF</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-{predicate} ::= {name} {comparator} {constant}
-              | {constant} {comparator} {name}
-              | {name} {comparator} {name}
+{predicate} ::= {fieldName} {comparator} {constant}
+              | {constant} {comparator} {fieldName}
+              | {fieldName} {comparator} {fieldName}
               | &#039;(&#039; {predicate} &#039;)&#039; {junction} &#039;(&#039; {predicate} &#039;)&#039;
 {constant} ::=  {float}
               | {integer}

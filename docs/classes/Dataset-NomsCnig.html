@@ -257,26 +257,9 @@
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/Dataset-Dataset.html#constant_REGISTRE">REGISTRE</a>
+    <a class="" href="classes/Dataset-Dataset.html#constant_TREE">TREE</a>
     <span>
-        &nbsp;= [
-    &#039;DebugScripts&#039; =&gt; null,
-    &#039;InseeCog&#039; =&gt; null,
-    &#039;DeptReg&#039; =&gt; null,
-    &#039;NomsCnig&#039; =&gt; null,
-    &#039;NomsCtCnigC&#039; =&gt; null,
-    &#039;Pays&#039; =&gt; null,
-    &#039;MapDataset&#039; =&gt; null,
-    &#039;AeCogPe&#039; =&gt; null,
-    &#039;WorldEez&#039; =&gt; null,
-    &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;,
-    // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+        &nbsp;= [&#039;Jeux de test&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null], &#039;Jeux mondiaux&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;], &#039;Jeux IGN&#039; =&gt; [
     &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
     &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
     &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
@@ -284,15 +267,10 @@
     &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
     // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
     &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
-    &#039;BDTopoE&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;MesuresCompensatoires&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;RPG&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;],
-    &#039;Shom&#039; =&gt; &#039;Extract&#039;,
-]                            </span>
+    &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
+], &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;], &#039;Patrinat&#039; =&gt; &#039;Extract&#039;, &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]]]                            </span>
 </dt>
-<dd>Registre contenant la liste des JdD sous la forme {dsName} =&gt; null|{className}|list&lt;string&gt;.</dd>
+<dd>Arbre des JdD.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="classes/Dataset-Dataset.html#constant_UNITS">UNITS</a>
@@ -381,6 +359,20 @@
 <dd>Retourne le nbre de n-uplets.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Dataset.html#method_definitionOfADataset">definitionOfADataset()</a>
+    <span>
+                                &nbsp;: null|string|array&lt;string, string&gt;    </span>
+</dt>
+<dd>Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Dataset.html#method_dictOfDatasets">dictOfDatasets()</a>
+    <span>
+                                &nbsp;: array&lt;string, null|string|array&lt;string, string&gt;&gt;    </span>
+</dt>
+<dd>Retourne le dictionnaire applati des jeux de données, doit être appelé initialement sans paramètre.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_display">display()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -395,25 +387,11 @@
 <dd>Affiche une collection du JdD en Html.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-Dataset.html#method_displayErrors">displayErrors()</a>
+    <a class="" href="classes/Dataset-Dataset.html#method_displayTree">displayTree()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Affiche les erreurs de non conformité du JdD</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-Dataset.html#method_displaySchemaErrors">displaySchemaErrors()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Affiche les erreurs de non conformité du schéma</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-Dataset.html#method_displaySchemaErrorsS">displaySchemaErrorsS()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Affiche les erreurs de non conformité du schéma.</dd>
+<dd>Affiche l&#039;arbre des datasets avec en paramètre la fonction qui retourne le string à afficher pour un Dataset.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_exists">exists()</a>
@@ -442,13 +420,6 @@
                                 &nbsp;: self    </span>
 </dt>
 <dd>Retourne le JdD portant ce nom.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-Dataset.html#method_getErrors">getErrors()</a>
-    <span>
-                                &nbsp;: array&lt;int, mixed&gt;    </span>
-</dt>
-<dd>Retourne les erreurs de non conformité du JdD.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-NomsCnig.html#method_getItems">getItems()</a>
@@ -490,7 +461,7 @@
     <span>
                                 &nbsp;: bool    </span>
 </dt>
-<dd>Vérifie la conformité du JdD par rapport à son schéma</dd>
+<dd>Vérifie la conformité des données du JdD par rapport à son schéma.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_schemaIsValid">schemaIsValid()</a>
@@ -563,9 +534,9 @@
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_REGISTRE">
-        REGISTRE
-        <a href="classes/Dataset-Dataset.html#constant_REGISTRE" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_TREE">
+        TREE
+        <a href="classes/Dataset-Dataset.html#constant_TREE" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
@@ -576,31 +547,14 @@
 
     </aside>
 
-        <p class="phpdocumentor-summary">Registre contenant la liste des JdD sous la forme {dsName} =&gt; null|{className}|list&lt;string&gt;.</p>
+        <p class="phpdocumentor-summary">Arbre des JdD.</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">REGISTRE</span>
-    = <span class="phpdocumentor-signature__default-value">[
-    &#039;DebugScripts&#039; =&gt; null,
-    &#039;InseeCog&#039; =&gt; null,
-    &#039;DeptReg&#039; =&gt; null,
-    &#039;NomsCnig&#039; =&gt; null,
-    &#039;NomsCtCnigC&#039; =&gt; null,
-    &#039;Pays&#039; =&gt; null,
-    &#039;MapDataset&#039; =&gt; null,
-    &#039;AeCogPe&#039; =&gt; null,
-    &#039;WorldEez&#039; =&gt; null,
-    &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;,
-    &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;,
-    // NaturalEarth stylée avec la feuille de style naturalearth.yaml
+    <span class="phpdocumentor-signature__name">TREE</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;Jeux de test&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null], &#039;Jeux mondiaux&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;], &#039;Jeux IGN&#039; =&gt; [
     &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
     &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
     &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
@@ -608,13 +562,8 @@
     &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
     // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
     &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
-    &#039;BDTopoE&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;MesuresCompensatoires&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;RPG&#039; =&gt; &#039;WfsExtract&#039;,
-    &#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;],
-    &#039;Shom&#039; =&gt; &#039;Extract&#039;,
-]</span>
+    &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
+], &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;], &#039;Patrinat&#039; =&gt; &#039;Extract&#039;, &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]]]</span>
 </code>
 
 
@@ -635,7 +584,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">75</span>
+    <span class="phpdocumentor-element-found-in__line">86</span>
 
     </aside>
 
@@ -682,7 +631,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">89</span>
+    <span class="phpdocumentor-element-found-in__line">100</span>
 
     </aside>
 
@@ -722,7 +671,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">85</span>
+    <span class="phpdocumentor-element-found-in__line">96</span>
 
     </aside>
 
@@ -760,7 +709,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">83</span>
+    <span class="phpdocumentor-element-found-in__line">94</span>
 
     </aside>
 
@@ -798,7 +747,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">87</span>
+    <span class="phpdocumentor-element-found-in__line">98</span>
 
     </aside>
 
@@ -838,7 +787,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">84</span>
+    <span class="phpdocumentor-element-found-in__line">95</span>
 
     </aside>
 
@@ -965,7 +914,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">217</span>
+    <span class="phpdocumentor-element-found-in__line">286</span>
 
     </aside>
 
@@ -1004,7 +953,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">95</span>
+    <span class="phpdocumentor-element-found-in__line">143</span>
 
     </aside>
 
@@ -1053,7 +1002,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">415</span>
+    <span class="phpdocumentor-element-found-in__line">378</span>
 
     </aside>
 
@@ -1099,6 +1048,113 @@
         class="phpdocumentor-element
             -method
             -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_definitionOfADataset">
+        definitionOfADataset()
+        <a href="classes/Dataset-Dataset.html#method_definitionOfADataset" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">123</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">definitionOfADataset</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dsName</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tree</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::TREE</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">null|string|array&lt;string, string&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Attention, la définition peut être null pour les JdD qui sont catégorie.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dsName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$tree</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">self::TREE</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">null|string|array&lt;string, string&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_dictOfDatasets">
+        dictOfDatasets()
+        <a href="classes/Dataset-Dataset.html#method_dictOfDatasets" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">106</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le dictionnaire applati des jeux de données, doit être appelé initialement sans paramètre.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">dictOfDatasets</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tree</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::TREE</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string, null|string|array&lt;string, string&gt;&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$tree</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">self::TREE</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string, null|string|array&lt;string, string&gt;&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                                                         "
 >
     <h4 class="phpdocumentor-element__name" id="method_display">
@@ -1109,7 +1165,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">397</span>
+    <span class="phpdocumentor-element-found-in__line">360</span>
 
     </aside>
 
@@ -1144,7 +1200,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">412</span>
+    <span class="phpdocumentor-element-found-in__line">375</span>
 
     </aside>
 
@@ -1179,95 +1235,25 @@
         class="phpdocumentor-element
             -method
             -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_displayErrors">
-        displayErrors()
-        <a href="classes/Dataset-Dataset.html#method_displayErrors" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">383</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Affiche les erreurs de non conformité du JdD</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">displayErrors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_displaySchemaErrors">
-        displaySchemaErrors()
-        <a href="classes/Dataset-Dataset.html#method_displaySchemaErrors" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">291</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Affiche les erreurs de non conformité du schéma</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">displaySchemaErrors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_displaySchemaErrorsS">
-        displaySchemaErrorsS()
-        <a href="classes/Dataset-Dataset.html#method_displaySchemaErrorsS" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_displayTree">
+        displayTree()
+        <a href="classes/Dataset-Dataset.html#method_displayTree" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">256</span>
+    <span class="phpdocumentor-element-found-in__line">229</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Affiche les erreurs de non conformité du schéma.</p>
+        <p class="phpdocumentor-summary">Affiche l&#039;arbre des datasets avec en paramètre la fonction qui retourne le string à afficher pour un Dataset.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">displaySchemaErrorsS</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$schema</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">displayTree</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">callable(string $dsName, <a href="classes/Dataset-Dataset.html"><abbr title="\Dataset\Dataset">Dataset</abbr></a> $dataset): string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$displayLeaf</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tree</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">Dataset::TREE</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -1276,12 +1262,23 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$schema</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                <span class="phpdocumentor-signature__argument__name">$displayLeaf</span>
+                : <span class="phpdocumentor-signature__argument__return-type">callable(string $dsName, <a href="classes/Dataset-Dataset.html"><abbr title="\Dataset\Dataset">Dataset</abbr></a> $dataset): string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><ul>
-<li>le schéma</li>
+<li>retourne le string à afficher pour un Dataset</li>
+</ul>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$tree</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">Dataset::TREE</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><ul>
+<li>initialement par défaut l'arbre complet, puis un sous-arbre dans les appels récursifs</li>
 </ul>
 </section>
 
@@ -1308,7 +1305,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">92</span>
+    <span class="phpdocumentor-element-found-in__line">140</span>
 
     </aside>
 
@@ -1357,7 +1354,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">436</span>
+    <span class="phpdocumentor-element-found-in__line">399</span>
 
     </aside>
 
@@ -1406,7 +1403,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">446</span>
+    <span class="phpdocumentor-element-found-in__line">409</span>
 
     </aside>
 
@@ -1455,7 +1452,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">116</span>
+    <span class="phpdocumentor-element-found-in__line">165</span>
 
     </aside>
 
@@ -1487,45 +1484,6 @@
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">self</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_getErrors">
-        getErrors()
-        <a href="classes/Dataset-Dataset.html#method_getErrors" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">339</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne les erreurs de non conformité du JdD.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getErrors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, mixed&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;int, mixed&gt;</span>
             </section>
 
 </article>
@@ -1608,7 +1566,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">206</span>
+    <span class="phpdocumentor-element-found-in__line">275</span>
 
     </aside>
 
@@ -1673,7 +1631,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">195</span>
+    <span class="phpdocumentor-element-found-in__line">264</span>
 
     </aside>
 
@@ -1729,7 +1687,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">183</span>
+    <span class="phpdocumentor-element-found-in__line">252</span>
 
     </aside>
 
@@ -1836,20 +1794,26 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">294</span>
+    <span class="phpdocumentor-element-found-in__line">348</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Vérifie la conformité du JdD par rapport à son schéma</p>
+        <p class="phpdocumentor-summary">Vérifie la conformité des données du JdD par rapport à son schéma.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">isValid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$verbose</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreItems</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
+                    <span class="phpdocumentor-signature__name">isValid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$verbose</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreItems</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nbreMaxErrors</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Si $nbreItems &lt;&gt; 0 alors on se limite au $nbreItems 1ers items, si $nbreItems == 0 alors tous les items sont traités.
+Si $nbreMaxErrors == 0 alors toutes les erreurs sont affichées,
+si $nbreMaxErrors &gt; 0 alors on se limite au $nbreMaxErrors 1ères erreurs,
+si $nbreMaxErrors == -1 alors aucune erreur n'est affichée.
+S'arrête dès qu'une collection n'est pas conforme.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1862,7 +1826,14 @@ Les filtres possibles sont:</p>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$nbreItems</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$nbreMaxErrors</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
+                            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
@@ -1892,7 +1863,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">251</span>
+    <span class="phpdocumentor-element-found-in__line">337</span>
 
     </aside>
 
@@ -1905,7 +1876,9 @@ Les filtres possibles sont:</p>
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>En cas de non conformité, les erreurs sont affichées.</p>
+</section>
+
     
     
 
@@ -1931,7 +1904,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">234</span>
+    <span class="phpdocumentor-element-found-in__line">303</span>
 
     </aside>
 
@@ -1944,7 +1917,9 @@ Les filtres possibles sont:</p>
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Cette version statique est nécessaire pour pouvoir vérifier un schéma avant l'initialisation de l'objet.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1984,7 +1959,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">426</span>
+    <span class="phpdocumentor-element-found-in__line">389</span>
 
     </aside>
 
@@ -2040,7 +2015,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">457</span>
+    <span class="phpdocumentor-element-found-in__line">420</span>
 
     </aside>
 
@@ -2177,7 +2152,7 @@ Les filtres possibles sont:</p>
                 <li>
                     <ul class="phpdocumentor-list -clean">
                                                     <li class=""><a href="classes/Dataset-NomsCnig.html#constant_JSON_FILE_NAME">JSON_FILE_NAME</a></li>
-                                                    <li class=""><a href="classes/Dataset-Dataset.html#constant_REGISTRE">REGISTRE</a></li>
+                                                    <li class=""><a href="classes/Dataset-Dataset.html#constant_TREE">TREE</a></li>
                                                     <li class=""><a href="classes/Dataset-Dataset.html#constant_UNITS">UNITS</a></li>
                                             </ul>
                 </li>
@@ -2201,16 +2176,15 @@ Les filtres possibles sont:</p>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_asArray">asArray()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_class">class()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_count">count()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_definitionOfADataset">definitionOfADataset()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_dictOfDatasets">dictOfDatasets()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_display">display()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_displayCollection">displayCollection()</a></li>
-                                            <li class=""><a href="classes/Dataset-Dataset.html#method_displayErrors">displayErrors()</a></li>
-                                            <li class=""><a href="classes/Dataset-Dataset.html#method_displaySchemaErrors">displaySchemaErrors()</a></li>
-                                            <li class=""><a href="classes/Dataset-Dataset.html#method_displaySchemaErrorsS">displaySchemaErrorsS()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_displayTree">displayTree()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_exists">exists()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_formatThousands">formatThousands()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_formatUnit">formatUnit()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_get">get()</a></li>
-                                            <li class=""><a href="classes/Dataset-Dataset.html#method_getErrors">getErrors()</a></li>
                                             <li class=""><a href="classes/Dataset-NomsCnig.html#method_getItems">getItems()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_getItemsOnValue">getItemsOnValue()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_getOneItemByKey">getOneItemByKey()</a></li>
