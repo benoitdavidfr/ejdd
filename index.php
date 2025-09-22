@@ -331,28 +331,6 @@ use Algebra\CollectionOfDs;
 
 /** Code de bootstrap de ejdd. */
 class Main {
-  /** Affichage de l'arbre des datasets.
-   * @param array<mixed> $tree - initialement par défaut l'arbre complet, puis un sous-arbre dans les appels récursifs
-   */
-  static function displayTree(array $tree = Dataset::TREE): void {
-    echo "<ul>\n";
-    foreach ($tree as $key => $content) {
-      if (!is_array($content) || array_key_exists('class', $content)) { // content est une définition de JdD 
-        $dataset = Dataset::get($key);
-        if ($dataset->isAvailable())
-          echo "<li><a href='?dataset=$key'>$dataset->title ($key)</a>.</li>\n";
-        elseif ($dataset->isAvailable('forBuilding'))
-          echo "<li><a href='?dataset=$key'>$dataset->title ($key)</a> disponible à la construction.</li>\n";
-      }
-      else {                                                            // content est un sous-arbre
-        echo "<li><b>$key</b> </li><ul>\n";
-        self::displayTree($content);
-        echo "</ul>\n";
-      }
-    }
-    echo "</ul>\n";
-  }
-  
   /** Bootstrap de l'IHM. */
   static function main(): void {
     ini_set('memory_limit', '10G');
