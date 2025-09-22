@@ -435,6 +435,7 @@ abstract class Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
+/** Test de Dataset. */
 class DatasetTest {
   static function main(): void {
     switch ($_GET['action'] ?? null) {

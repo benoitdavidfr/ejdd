@@ -1588,7 +1588,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\DatasetTest",
             "name": "DatasetTest",
-            "summary": "",
+            "summary": "Test\u0020de\u0020Dataset.",
             "url": "classes/Dataset-DatasetTest.html"
         },                {
             "fqsen": "\\Dataset\\DatasetTest\u003A\u003Amain\u0028\u0029",
