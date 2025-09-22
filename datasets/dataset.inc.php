@@ -33,14 +33,21 @@ use JsonSchema\Validator;
 use Symfony\Component\Yaml\Yaml;
 
 /** Classe abstraite des JdD.
- * Une sous-classe concrète doit définir la méthode getItems().
- * Elle peut par ailleurs redéfinir les méthodes:
- *   - implementedFilters() pour indiquer les filtres pris en compte dans getTuples(),
- *   - getOneItemByKey() d'accès aux n-uplets sur clé s'il existe un algo. plus performant.
- *   - getItemsOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant.
+ * Chaque JdD doit correspondre à une sous-classe concrète qui doit définir la méthode getItems().
+ * Elle peut aussi redéfinir les méthodes:
+ *   - implementedFilters() pour indiquer les filtres pris en compte dans getItems(),
+ *   - getOneItemByKey() d'accès aux n-uplets sur clé s'il existe un algo. plus performant que celui fourni dans cette classe.
+ *   - getItemsOnValue() d'accès aux n-uplets sur une valeur de champ s'il existe un algo. plus performant que celui fourni dans cette classe.
  */
 abstract class Dataset {
-  /** Arbre des JdD. */
+  /**
+   * Arbre des JdD sous la forme [{dsName} => {defOfDataset}|{subTree}].
+   *
+   * {defOfDataset} peut être:
+   * - null pour les JdD qui sont leur propre catégorie,
+   * - string pour les JdD correspondant à un gabarit simple, ou
+   * - array<string,string> pour les JdD correspondant à un gabarit paramétré.
+   */
   const TREE = [
     'Jeux de test'=> [
       'DebugScripts'=> null,
@@ -115,8 +122,8 @@ abstract class Dataset {
     return $dict;
   }
   
-  /** Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.
-   * Attention, la définition peut être null pour les JdD qui sont catégorie.
+  /** Retourne la définition du jeu de données dont le nom est fourni en paramètre ou null, doit être appelé initialement avec 1 seul paramètre.
+   * Attention, la définition peut être null pour les JdD qui sont leur propre catégorie.
    * @param array<mixed> $tree
    * @return (null|string|array<string,string>)
    */

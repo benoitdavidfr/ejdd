@@ -999,18 +999,18 @@ ign:
 conceptionWxS:
   title: intégration des serveurs WFS, TMS, WMS, ...
   wfs: |
-    Chaque serveur WFS correspond à un JdD de la catégorie FeatureServer.
-    Chaque type d'objets du WFS correspond à une section du JdD.
-    Un nom court du JdD est transformé en URL par un registre de FeatureServer.
+    Chaque serveur WFS correspond à un JdD du Gabarit Wfs.
+    Chaque FeatureType du WFS correspond à une collection du JdD.
+    Un paramètre url de la définition du JdD indique l'URL du service.
     ex: wfs-fr-ign-gpf -> https://data.geopf.fr/wfs/ows
-    Chaque type d'objets correspond à une couche L.UGeoJSONLayer dans MapDataset.
+    Chaque FeatureType correspond à une couche L.UGeoJSONLayer dans MapDataset.
   tile-servers: |
     Un JdD tile-servers contient comme sections les serveurs WFS, TMS ou WMTS connus stockés dans un fichier Yaml.
     Chaque serveur contient comme n-uplets les couches exposées avec les infos associées.
     Chaque couche exposée correspond à une couche L.TileLayer dans MapDataset.
 bbox:
   réflexion:
-    - est-ce que je peux trouver un moyen de gérer corrrectement les BBox de'objets ayants plus de 180° de large
+    - est-ce que je peux trouver un moyen de gérer corrrectement les BBox d'objets ayants plus de 180° de large
     - il faut que je distingue
       - la création intiale d'un BBox à partir de 2 Pts
       - l'extension d'un BBox existant avec un nv Pt

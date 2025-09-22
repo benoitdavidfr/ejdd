@@ -270,7 +270,7 @@
     &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
 ], &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;], &#039;Patrinat&#039; =&gt; &#039;Extract&#039;, &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]]]                            </span>
 </dt>
-<dd>Arbre des JdD.</dd>
+<dd>Arbre des JdD sous la forme [{dsName} =&gt; {defOfDataset}|{subTree}].</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="classes/Dataset-Dataset.html#constant_UNITS">UNITS</a>
@@ -369,7 +369,7 @@
     <span>
                                 &nbsp;: null|string|array&lt;string, string&gt;    </span>
 </dt>
-<dd>Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.</dd>
+<dd>Retourne la définition du jeu de données dont le nom est fourni en paramètre ou null, doit être appelé initialement avec 1 seul paramètre.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_dictOfDatasets">dictOfDatasets()</a>
@@ -561,11 +561,11 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">44</span>
+    <span class="phpdocumentor-element-found-in__line">51</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Arbre des JdD.</p>
+        <p class="phpdocumentor-summary">Arbre des JdD sous la forme [{dsName} =&gt; {defOfDataset}|{subTree}].</p>
 
     
     <code class="phpdocumentor-signature phpdocumentor-code ">
@@ -585,7 +585,14 @@
 </code>
 
 
-    
+        <section class="phpdocumentor-description"><p>{defOfDataset} peut être:</p>
+<ul>
+<li>null pour les JdD qui sont leur propre catégorie,</li>
+<li>string pour les JdD correspondant à un gabarit simple, ou</li>
+<li>array&lt;string,string&gt; pour les JdD correspondant à un gabarit paramétré.</li>
+</ul>
+</section>
+
     
     
 
@@ -602,7 +609,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">86</span>
+    <span class="phpdocumentor-element-found-in__line">93</span>
 
     </aside>
 
@@ -649,7 +656,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">100</span>
+    <span class="phpdocumentor-element-found-in__line">107</span>
 
     </aside>
 
@@ -689,7 +696,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">96</span>
+    <span class="phpdocumentor-element-found-in__line">103</span>
 
     </aside>
 
@@ -807,7 +814,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">94</span>
+    <span class="phpdocumentor-element-found-in__line">101</span>
 
     </aside>
 
@@ -845,7 +852,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">98</span>
+    <span class="phpdocumentor-element-found-in__line">105</span>
 
     </aside>
 
@@ -885,7 +892,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">95</span>
+    <span class="phpdocumentor-element-found-in__line">102</span>
 
     </aside>
 
@@ -972,7 +979,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">286</span>
+    <span class="phpdocumentor-element-found-in__line">293</span>
 
     </aside>
 
@@ -1011,7 +1018,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">143</span>
+    <span class="phpdocumentor-element-found-in__line">150</span>
 
     </aside>
 
@@ -1060,7 +1067,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">378</span>
+    <span class="phpdocumentor-element-found-in__line">385</span>
 
     </aside>
 
@@ -1116,11 +1123,11 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">123</span>
+    <span class="phpdocumentor-element-found-in__line">130</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne la définition du jeu de données dont le nom est passé en paramètre ou null, doit être appelé initialement avec 1 paramètre.</p>
+        <p class="phpdocumentor-summary">Retourne la définition du jeu de données dont le nom est fourni en paramètre ou null, doit être appelé initialement avec 1 seul paramètre.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -1129,7 +1136,7 @@
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Attention, la définition peut être null pour les JdD qui sont catégorie.</p>
+        <section class="phpdocumentor-description"><p>Attention, la définition peut être null pour les JdD qui sont leur propre catégorie.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -1174,7 +1181,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">106</span>
+    <span class="phpdocumentor-element-found-in__line">113</span>
 
     </aside>
 
@@ -1223,7 +1230,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">360</span>
+    <span class="phpdocumentor-element-found-in__line">367</span>
 
     </aside>
 
@@ -1258,7 +1265,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">375</span>
+    <span class="phpdocumentor-element-found-in__line">382</span>
 
     </aside>
 
@@ -1303,7 +1310,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">229</span>
+    <span class="phpdocumentor-element-found-in__line">236</span>
 
     </aside>
 
@@ -1363,7 +1370,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">140</span>
+    <span class="phpdocumentor-element-found-in__line">147</span>
 
     </aside>
 
@@ -1412,7 +1419,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">399</span>
+    <span class="phpdocumentor-element-found-in__line">406</span>
 
     </aside>
 
@@ -1461,7 +1468,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">409</span>
+    <span class="phpdocumentor-element-found-in__line">416</span>
 
     </aside>
 
@@ -1510,7 +1517,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">165</span>
+    <span class="phpdocumentor-element-found-in__line">172</span>
 
     </aside>
 
@@ -1624,7 +1631,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">275</span>
+    <span class="phpdocumentor-element-found-in__line">282</span>
 
     </aside>
 
@@ -1689,7 +1696,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">264</span>
+    <span class="phpdocumentor-element-found-in__line">271</span>
 
     </aside>
 
@@ -1745,7 +1752,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">252</span>
+    <span class="phpdocumentor-element-found-in__line">259</span>
 
     </aside>
 
@@ -1852,7 +1859,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">348</span>
+    <span class="phpdocumentor-element-found-in__line">355</span>
 
     </aside>
 
@@ -2010,7 +2017,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">337</span>
+    <span class="phpdocumentor-element-found-in__line">344</span>
 
     </aside>
 
@@ -2051,7 +2058,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">303</span>
+    <span class="phpdocumentor-element-found-in__line">310</span>
 
     </aside>
 
@@ -2106,7 +2113,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">389</span>
+    <span class="phpdocumentor-element-found-in__line">396</span>
 
     </aside>
 
@@ -2162,7 +2169,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">420</span>
+    <span class="phpdocumentor-element-found-in__line">427</span>
 
     </aside>
 

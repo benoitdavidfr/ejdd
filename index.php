@@ -50,7 +50,7 @@ Journal des modifications récentes du code
   - création d'une branche bugvalid
   - simplification de l'affichage des erreurs de non conformité pour éviter les bugs
   - hiérarchisation des JdD dans TREE à la place de REGISTRE
-  - merge de bugvalid, génération de la doc
+  - merge de bugvalid, génération de la doc, synchro sur GitHub
 18-21/9/2025:
   - ajout de la possibilité de définir des catégories de JdD paramétrées
   - modif de Wfs en catégorie paramétrée
@@ -437,6 +437,7 @@ class Main {
         if ($dataset->isValid(true, $_GET['nbreItems'] ?? 0, $_GET['nbreMaxErrors'] ?? 30)) {
           echo "Le JdD est conforme à son schéma.<br>\n";
         }
+        break;
       }
       /*
       case 'heteroUnion': { // Exemple d'union hétérogène

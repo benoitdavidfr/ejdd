@@ -1443,7 +1443,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AdefinitionOfADataset\u0028\u0029",
             "name": "definitionOfADataset",
-            "summary": "Retourne\u0020la\u0020d\u00E9finition\u0020du\u0020jeu\u0020de\u0020donn\u00E9es\u0020dont\u0020le\u0020nom\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre\u0020ou\u0020null,\u0020doit\u0020\u00EAtre\u0020appel\u00E9\u0020initialement\u0020avec\u00201\u0020param\u00E8tre.",
+            "summary": "Retourne\u0020la\u0020d\u00E9finition\u0020du\u0020jeu\u0020de\u0020donn\u00E9es\u0020dont\u0020le\u0020nom\u0020est\u0020fourni\u0020en\u0020param\u00E8tre\u0020ou\u0020null,\u0020doit\u0020\u00EAtre\u0020appel\u00E9\u0020initialement\u0020avec\u00201\u0020seul\u0020param\u00E8tre.",
             "url": "classes/Dataset-Dataset.html#method_definitionOfADataset"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003Aexists\u0028\u0029",
@@ -1553,7 +1553,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003ATREE",
             "name": "TREE",
-            "summary": "Arbre\u0020des\u0020JdD.",
+            "summary": "Arbre\u0020des\u0020JdD\u0020sous\u0020la\u0020forme\u0020\u005B\u007BdsName\u007D\u0020\u003D\u003E\u0020\u007BdefOfDataset\u007D\u007C\u007BsubTree\u007D\u005D.",
             "url": "classes/Dataset-Dataset.html#constant_TREE"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AUNITS",

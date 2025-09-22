@@ -3,14 +3,14 @@
 ## Besoins:
 Cette démarche répond aux besoins suivants :
   - utiliser facilement en Php des JdD habituels
-     - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
-     - carto mondiale simplifiée,
-     - ...
-   - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable,
-   - explorer ces JdD avant de les utiliser,
-   - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas en mémoire,
-   - cartographier les JdD en mode web,
-   - faire facilement des traitements ensemblistes comme des jointures et des projections.
+    - liste des départements, des régions, des D(r)eal, des DDT(M), COG, AdminExpress, liste des pays, ....
+    - carto mondiale simplifiée,
+    - ...
+  - associer à ces JdD une documentation sémantique et une spécification de structure vérifiable,
+  - explorer ces JdD avant de les utiliser,
+  - gérer efficacement des données un peu volumineuses comme des données géo., avec des collections qui ne tiennent pas en mémoire,
+  - cartographier les JdD en mode web,
+  - faire facilement des traitements ensemblistes comme des jointures et des projections.
 
 Cette démarche propose un cadre extensible dans 2 directions:
   - d'une part, ajouter facilement de nouveaux jeux de données
@@ -60,23 +60,24 @@ Cette démarche propose un cadre extensible dans 2 directions:
  - le **schéma JSON** d'une collection définit son exposition en Php (en non son stockage)
    en considérant un Generator Php comme soit un dictionnaire (object JSON), soit une liste (array JSON) selon que la clé
    est sigifiante ou n'est qu'un numéro d'ordre
- - la **catégorie d'un JdD** définit le comportement du JdD et finalement le code Php de sa manipulation,
-   elle permet de mutualiser le code Php entre différents jeux ayant le même comportement 
+ - la **gabarit d'un JdD** définit son comportement et finalement le code Php de sa manipulation,
+   il permet de mutualiser le code Php entre différents jeux ayant le même comportement 
  - je distingue
    - l'instanciation d'un JdD qui correspond à une utilisation en Php du JdD
    - de sa construction (Build) qui importe le JdD dans le système à partir d'une représentation externe
 
 ### Structuration en Php:
- - un JdD est instantié en Php par un objet de la classe Php correspondant à sa catégorie
- - une catégorie de JdD correspond à
-   - une classe Php héritant de Dataset et portant le nom de la catégorie
+ - un JdD est instantié en Php par un objet de la classe Php correspondant à son gabarit
+ - un gabarit de JdD correspond à
+   - une classe Php héritant de Dataset et portant le nom du gabarit,
    - un fichier Php ayant pour nom celui de la classe en minuscules et suivi de '.php' et comprenant 2 parties
-     - le début du fichier inclus par un require_once définit la classe Php de la catégorie
+     - le début du fichier inclus par un require_once définit la classe Php du gabarit
        - et est utilisée pour l'instantiation du JdD
-     - la fin du fichier correspond à une application de construction du JdD
+     - la fin du fichier correspond à une application de construction et test du JdD
        - qui est exécutée en exécutant le fichier Php
-       - qui définit une seconde classe ayant comme nom celui de la catégorie suivi de 'Build' et
+       - qui définit une seconde classe ayant comme nom celui du gabarit suivi de 'Build' et
        - qui définit une méthode statique main() qui est appelée à la fin du fichier
+ - un gabarit peut être paramétré, cad qu'à la création qqs paramètres sont fournis pour définir le JdD,
  - la classe Collection représente un itérable d'items qui peut
      - soit appartenir à un JdD (CollectionOfDs),
      - soit être générée dynamiquement par une opération ensembliste (join, projection, ...)
@@ -96,13 +97,13 @@ Cette démarche propose un cadre extensible dans 2 directions:
  - un langage, défini par une BNF, permet d'effectuer des requêtes sur les collections, fondées sur des opérateurs
    algébriques comme jointure, projection, ...
  - une requête peut être exécutée par Collection::query() -> ?Collection|Program
- - une collection peut être affichée pour obtenir ses MD avant d'être activée pour obtenir son contenu
+ - une collection peut être affichée pour voir sa définition avant d'être activée pour obtenir son contenu
 
 ### Carte:
  - un JdD MapDataset contient la définition de cartes
  - ces cartes peuvent être affichées par Leaflet
  - un mécanisme de feuilles de styles est mis en oeuvre pour styler les JdD
-   - chaque feuille de styles est considéré comme un JdD de la catégorie Styler
+   - chaque feuille de styles est considéré comme un JdD du gabarit Styler
 
 ## Perspectives
 ### Interopérabilité 
