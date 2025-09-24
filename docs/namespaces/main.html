@@ -302,6 +302,13 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+24/9/2025:
+  - amélioration de Wfs pour qu&#039;il traite correctement différents services
+    - pb de version de WFS, pb de format à utiliser pour GeoJSON
+  - attention à l&#039;utilisation des clés dans des produits ou jointures
+    - lorsque la clé est un no en séquence, il faut garantir qu&#039;elle permet de retrouver l&#039;item par getOneByKey()
+      même si un filtre est utilisé dans getItems()
+  - sinon retourner null comme clé dans getItems()
 22/9/2025:
   - création d&#039;une branche bugvalid
   - simplification de l&#039;affichage des erreurs de non conformité pour éviter les bugs
@@ -312,9 +319,9 @@ Journal des modifications récentes du code
   - modif de Wfs en catégorie paramétrée
   - ajout de la catégorie paramétrée WfsNs
 17/9/2025:
-  - amélioration de l&#039;exploreur
+  - amélioration de l&#039;explorateur
 16/9/2025:
-  - 1ère v. de l&#039;exploreur
+  - 1ère v. de l&#039;explorateur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
@@ -674,7 +681,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">305</span>
+    <span class="phpdocumentor-element-found-in__line">312</span>
 
     </aside>
 
@@ -737,6 +744,13 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+24/9/2025:
+  - amélioration de Wfs pour qu&#039;il traite correctement différents services
+    - pb de version de WFS, pb de format à utiliser pour GeoJSON
+  - attention à l&#039;utilisation des clés dans des produits ou jointures
+    - lorsque la clé est un no en séquence, il faut garantir qu&#039;elle permet de retrouver l&#039;item par getOneByKey()
+      même si un filtre est utilisé dans getItems()
+  - sinon retourner null comme clé dans getItems()
 22/9/2025:
   - création d&#039;une branche bugvalid
   - simplification de l&#039;affichage des erreurs de non conformité pour éviter les bugs
@@ -747,9 +761,9 @@ Journal des modifications récentes du code
   - modif de Wfs en catégorie paramétrée
   - ajout de la catégorie paramétrée WfsNs
 17/9/2025:
-  - amélioration de l&#039;exploreur
+  - amélioration de l&#039;explorateur
 16/9/2025:
-  - 1ère v. de l&#039;exploreur
+  - 1ère v. de l&#039;explorateur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php
@@ -962,7 +976,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">269</span>
+    <span class="phpdocumentor-element-found-in__line">276</span>
 
     </aside>
 

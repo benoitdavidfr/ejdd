@@ -7,146 +7,6 @@ namespace Dataset;
 require_once 'wfs.php';
 
 /**
- * Convertit des FeatureType descriptions en propriétés de schema JSON.
- *
- * Un objet est créé avec le retour de DescribeFeatureType de noms de FeatureType converti en SimpleXMLElement
- */
-class WfsNsProperties {
-  function __construct(readonly string $namespace, readonly \SimpleXMLElement $ftds) {}
-    
-  /** Convertit le type d'un champ de GML en GeoJSON.
-   * @return array<string,mixed>
-   */
-  private function fieldType(string $type): array {
-    return match($type) {
-      'xsd:string'=> ['type'=> ['string', 'null']],
-      'xsd:boolean'=> ['type'=>'boolean'],
-      'xsd:int'=> ['type'=> ['integer', 'null']],
-      'xsd:double'=> ['type'=> ['number', 'null']],
-      'xsd:date'=> [
-        'type'=> 'string',
-        'pattern'=> '^\d{4}-\d{2}-\d{2}Z$',
-      ],
-      'xsd:dateTime'=> ['type'=> $type],
-      'gml:MultiSurfacePropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['MultiPolygon'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      'gml:SurfacePropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['Polygon'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      'gml:CurvePropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['LineString'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      'gml:MultiCurvePropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['MultiLineString'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      'gml:PointPropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['Point'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      'gml:GeometryPropertyType'=> [
-        'type'=> 'object',
-        'required'=> ['type', 'coordinates'],
-        'properties'=> [
-          'description'=> "Traduction de $type",
-          'type'=> [
-            'enum'=> ['Polygon','MultiPolygon','LineString','MultiLineString','Point','MultiPoint'],
-          ],
-          'coordinates'=> [
-            'type'=> 'array',
-          ],
-        ],
-      ],
-      //default=>  throw new \Exception("type=$type"),
-      default=> ['type'=> $type],
-    };
-  }
-  
-  /** Construit les propriétés de chaque champ de chaque collection du JdD sous la forme [{collName}=< [{fieldName} => ['type'=> ...]]].
-   * @return array<string,array<string,mixed>>
-   */
-  function properties(): array {
-    //echo '<pre>$ftds='; print_r($this->ftds);
-    $eltNameFromTypes = [];
-    foreach ($this->ftds->element as $element) {
-      //echo '<pre>$element='; print_r($element);
-      //echo $element['type'];
-      $eltNameFromTypes[substr((string)$element['type'], strlen($this->namespace)+1)] = (string)$element['name'];
-    }
-    //echo '<pre>$eltNameFromTypes='; print_r($eltNameFromTypes);
-    
-    $props = [];
-    foreach ($this->ftds->complexType as $ftd) {
-      //echo '<pre>$ftd='; print_r($ftd);
-      $typeName = (string)$ftd['name'];
-      $eltName = $eltNameFromTypes[$typeName];
-      
-      //echo '<pre>xx='; print_r($ftd->complexContent);
-      foreach ($ftd->complexContent->extension->sequence->element as $fieldDescription) {
-        //echo '<pre>$fieldDescription='; print_r($fieldDescription);
-        $fieldName = (string)$fieldDescription['name'];
-        if (in_array($fieldName, ['geometrie','the_geom ']))
-          $fieldName = 'geometry';
-        $fieldType = $this->fieldType((string)$fieldDescription['type']);
-        $props[$eltName][$fieldName] = $fieldType;
-      }
-      //echo "<pre>props[$eltName]="; print_r($props[$eltName]);
-    }
-    //echo "<pre>properties()="; print_r($props);
-    return $props;
-  }
-};
-
-/**
  * Jeu de données correspondant aux FeatureTypes d'un espace de noms d'un serveur WFS.
  *
  * Le schéma de ce JdD défini les champs des n-uplets, ce qui permet de l'utiliser dans des requêtes.
@@ -337,7 +197,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
     ],
   ];
   
-  readonly string $wfsName;
+  readonly ?string $wfsName;
   readonly Wfs $wfs;
   readonly string $namespace;
   
@@ -360,7 +220,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
       ],
     ];
     $globalSchema = $this->wfs->cap->jsonSchemaOfTheDs();
-    $nsProperties = new WfsNsProperties($this->namespace, $this->wfs->describeFeatureTypes($this->namespace));
+    $nsProperties = $this->wfs->describeFeatureTypes($this->namespace);
     $properties = $nsProperties->properties();
     foreach ($globalSchema['properties'] as $ftName => $ftSchema) {
       if (substr($ftName, 0, strlen($this->namespace)+1) == $this->namespace.':') {
@@ -380,12 +240,19 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
   }
   
   /** Initialisation.
-   * @param array{'class'?:string,'wfsName':string,'namespace':string,'dsName':string} $params
+   * params doit comprendre un champ 'dsName' et soit un champ 'wfsName' soit un champ 'url'
+   * @param array{'class'?:string,'wfsName'?:string,'url'?:string,'namespace':string,'dsName':string} $params
    */
   function __construct(array $params) {
     //echo '<pre>$params='; print_r($params);
-    $this->wfsName = $params['wfsName'];
-    $this->wfs = Wfs::get($params['wfsName']);
+    if ($this->wfsName = $params['wfsName'] ?? null)
+      $this->wfs = Wfs::get($params['wfsName']);
+    elseif ($url = $params['url'] ?? null) {
+      $this->wfs = new Wfs(['url'=> $params['url'], 'dsName'=> $params['dsName']]);
+    }
+    else {
+      throw new \Exception("Paramètre wfsName ou url nécessaire");
+    }
     $this->namespace = $params['namespace'];
     $schema = $this->schema($params['dsName']);
     parent::__construct($params['dsName'], $schema, false);
@@ -438,7 +305,7 @@ class WfsNsBuild {
         echo "Rien à faire pour construire$_GET[dataset]<br>\n";
         echo "<h2>Menu</h2><ul>\n";
         echo "<li><a href='?action=print&dataset=$_GET[dataset]'>Affiche le jdd</a></li>\n";
-        echo "<li><a href='?action=nsProperties&dataset=$_GET[dataset]'>nsProperties</a></li>\n";
+        echo "<li><a href='?action=wfsProperties&dataset=$_GET[dataset]'>affiche l'objet WfsProperties</a></li>\n";
         echo "<li><a href='?action=properties&dataset=$_GET[dataset]'>",
                   "Test construction des propriétés de chaque champ de chaque collection du JdD sous la forme ",
                   "[{collName}=> [{fieldName} => ['type'=> ...]]]</a></li>\n";
@@ -450,16 +317,16 @@ class WfsNsBuild {
         echo '<pre>$bdcarto='; print_r($dataset);
         break;
       }
-      case 'nsProperties': {
+      case 'wfsProperties': { // affiche l'objet WfsProperties 
         $dataset = WfsNs::get($_GET['dataset']);
-        $nsProperties = new WfsNsProperties($dataset->namespace, $dataset->wfs->describeFeatureTypes($dataset->namespace));
-        echo '<pre>$nsProperties='; print_r($nsProperties);
+        $wfsProperties = $dataset->wfs->describeFeatureTypes($dataset->namespace);
+        echo '<pre>$wfsProperties='; print_r($wfsProperties);
         break;
       }
       case 'properties': {
         $dataset = WfsNs::get($_GET['dataset']);
-        $ftds = new WfsNsProperties($dataset->namespace, $dataset->wfs->describeFeatureTypes($dataset->namespace));
-        echo '<pre>properties()='; print_r($ftds->properties());
+        $wfsProperties = $dataset->wfs->describeFeatureTypes($dataset->namespace);
+        echo '<pre>properties()='; print_r($wfsProperties->properties());
         break;
       }
     }

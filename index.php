@@ -46,9 +46,16 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+25/9/2025:
+  - gestion dans Wfs des properties en WFS version 1.1.0
+  - ajout de la possibilité d'utiliser un Wfs ne générant pas du GeoJSON en effectuant la conversion de GML vers GeoJSON
 24/9/2025:
   - amélioration de Wfs pour qu'il traite correctement différents services
     - pb de version de WFS, pb de format à utiliser pour GeoJSON
+  - attention à l'utilisation des clés dans des produits ou jointures
+    - lorsque la clé est un no en séquence, il faut garantir qu'elle permet de retrouver l'item par getOneByKey()
+      même si un filtre est utilisé dans getItems()
+    - sinon retourner null comme clé dans getItems()
 22/9/2025:
   - création d'une branche bugvalid
   - simplification de l'affichage des erreurs de non conformité pour éviter les bugs
@@ -59,9 +66,9 @@ Journal des modifications récentes du code
   - modif de Wfs en catégorie paramétrée
   - ajout de la catégorie paramétrée WfsNs
 17/9/2025:
-  - amélioration de l'exploreur
+  - amélioration de l'explorateur
 16/9/2025:
-  - 1ère v. de l'exploreur
+  - 1ère v. de l'explorateur
 15/9/2025:
   - finalisation de GBox
   - amélioration de geojson.php

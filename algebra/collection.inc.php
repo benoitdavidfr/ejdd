@@ -74,16 +74,16 @@ abstract class Collection {
   
   /** L'accès aux items d'une collection par un Generator.
    * @param array<string,mixed> $filters filtres éventuels sur les n-uplets à renvoyer
-   * @return \Generator<int|string,array<mixed>>
+   * @return \Generator<int|string|null,array<mixed>>
    */
   abstract function getItems(array $filters=[]): \Generator;
 
-  /** Retournbe un n-uplet par sa clé.
+  /** Retournbe un item par sa clé, ou null si cette clé ne correspond pas à un item.
    * @return array<mixed>|string|null
    */ 
   abstract function getOneItemByKey(int|string $key): array|string|null;
   
-  /** Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.
+  /** Retourne la liste des items, avec leur clé, pour lesquels le field contient la valeur.
    * @return array<array<mixed>>
    */ 
   function getItemsOnValue(string $field, string $value): array {
@@ -94,7 +94,7 @@ abstract class Collection {
     return $result;
   }
 
-  /** Affiche les données de la collection.
+  /** Affiche les items de la collection.
    * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
    */
   function displayItems(array $options=[]): void {
@@ -122,7 +122,11 @@ abstract class Collection {
       if ($cols <> $cols_prec)
         echo '<th>',implode('</th><th>', $cols),"</th>\n";
       $cols_prec = $cols;
-      echo "<tr><td><a href='?action=display&collection=",urlencode($this->id()),"&key=$key'>$key</a></td>";
+      echo "<tr>";
+      if ($key !== null)
+        echo "<td><a href='?action=display&collection=",urlencode($this->id()),"&key=$key'>$key</a></td>";
+      else
+        echo "<td></td>\n";
       foreach ($tuple as $k => $v) {
         if ($v === null)
           $v = '';
@@ -352,9 +356,13 @@ class CollectionOfDs extends Collection {
   function properties(): array { return $this->schema->properties(); }
 
   /** La méthode getItems() est mise en oeuvre par le JdD.
-   * @return \Generator<int|string,array<mixed>>
+   * Si une collection est définie comme dict et que l'id de l'item n'est pas défini alors la valeur null
+   * est retournée comme identifiant.
+   * @return \Generator<int|string|null,array<mixed>>
    */
-  function getItems(array $filters=[]): \Generator { return Dataset::get($this->dsName)->getItems($this->name, $filters); }
+  function getItems(array $filters=[]): \Generator {
+    return Dataset::get($this->dsName)->getItems($this->name, $filters);
+  }
 
   /** La méthode getOneItemByKey() est mise en oeuvre par le JdD.
    * @return array<mixed>|string|null */ 

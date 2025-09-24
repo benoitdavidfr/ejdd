@@ -319,7 +319,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Affiche les données de la collection.</dd>
+<dd>Affiche les items de la collection.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Collection.html#method_displayProperties">displayProperties()</a>
@@ -352,7 +352,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Collection.html#method_getItems">getItems()</a>
     <span>
-                                &nbsp;: <abbr title="\Generator">Generator</abbr>&lt;int|string, array&lt;string|int, mixed&gt;&gt;    </span>
+                                &nbsp;: <abbr title="\Generator">Generator</abbr>&lt;int|string|null, array&lt;string|int, mixed&gt;&gt;    </span>
 </dt>
 <dd>L&#039;accès aux items d&#039;une collection par un Generator.</dd>
 
@@ -361,14 +361,14 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <span>
                                 &nbsp;: array&lt;string|int, array&lt;string|int, mixed&gt;&gt;    </span>
 </dt>
-<dd>Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.</dd>
+<dd>Retourne la liste des items, avec leur clé, pour lesquels le field contient la valeur.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Collection.html#method_getOneItemByKey">getOneItemByKey()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;|string|null    </span>
 </dt>
-<dd>Retournbe un n-uplet par sa clé.</dd>
+<dd>Retournbe un item par sa clé, ou null si cette clé ne correspond pas à un item.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Collection.html#method_id">id()</a>
@@ -562,7 +562,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">207</span>
+    <span class="phpdocumentor-element-found-in__line">211</span>
 
     </aside>
 
@@ -607,7 +607,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">160</span>
+    <span class="phpdocumentor-element-found-in__line">164</span>
 
     </aside>
 
@@ -656,7 +656,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Affiche les données de la collection.</p>
+        <p class="phpdocumentor-summary">Affiche les items de la collection.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -732,7 +732,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">197</span>
+    <span class="phpdocumentor-element-found-in__line">201</span>
 
     </aside>
 
@@ -784,7 +784,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">217</span>
+    <span class="phpdocumentor-element-found-in__line">221</span>
 
     </aside>
 
@@ -823,7 +823,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">262</span>
+    <span class="phpdocumentor-element-found-in__line">266</span>
 
     </aside>
 
@@ -880,7 +880,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-    <span class="phpdocumentor-signature__abstract">abstract</span>                <span class="phpdocumentor-signature__name">getItems</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">array&lt;string, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filters</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr>&lt;int|string, array&lt;string|int, mixed&gt;&gt;</span></code>
+    <span class="phpdocumentor-signature__abstract">abstract</span>                <span class="phpdocumentor-signature__name">getItems</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">array&lt;string, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filters</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr>&lt;int|string|null, array&lt;string|int, mixed&gt;&gt;</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -905,7 +905,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr>&lt;int|string, array&lt;string|int, mixed&gt;&gt;</span>
+        <span class="phpdocumentor-signature__response_type"><abbr title="\Generator">Generator</abbr>&lt;int|string|null, array&lt;string|int, mixed&gt;&gt;</span>
             </section>
 
 </article>
@@ -927,7 +927,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne la liste des n-uplets, avec leur clé, pour lesquels le field contient la valeur.</p>
+        <p class="phpdocumentor-summary">Retourne la liste des items, avec leur clé, pour lesquels le field contient la valeur.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -983,7 +983,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retournbe un n-uplet par sa clé.</p>
+        <p class="phpdocumentor-summary">Retournbe un item par sa clé, ou null si cette clé ne correspond pas à un item.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>

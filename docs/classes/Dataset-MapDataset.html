@@ -258,16 +258,43 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="classes/Dataset-Dataset.html#constant_TREE">TREE</a>
     <span>
-        &nbsp;= [&#039;Jeux de test&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null], &#039;Jeux mondiaux&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;], &#039;Jeux IGN&#039; =&gt; [
-    &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
-    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
-    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
-    &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
-    &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
-    // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
-    &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
-    &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
-], &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;], &#039;Patrinat&#039; =&gt; &#039;Extract&#039;, &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]]]                            </span>
+        &nbsp;= [
+    &#039;Jeux de test en local&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null],
+    &#039;Jeux mondiaux (en local)&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;],
+    &#039;Jeux IGN&#039; =&gt; [
+        &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
+        &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
+        &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
+        &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
+        &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
+        // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+        &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
+        &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
+    ],
+    &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;],
+    &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
+    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]],
+    // En test
+    &quot;Sandre&quot; =&gt; [
+        /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&amp;resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&amp;sortBy=relevance&amp;sortOrder=&amp;query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&amp;from=1&amp;to=30
+         */
+        &#039;BDTopage2025Wfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;],
+        &#039;BDTopage2025WfsNs&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;BDTopage2025Wfs&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+    ],
+    // A compléter
+    &#039;Sextant&#039; =&gt; [
+        // Page d&#039;info: https://sextant.ifremer.fr/Services/Inspire/Services-WFS
+        // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
+        &#039;SextantBiologie&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/biologie&#039;],
+        // DCE (Directive Cadre sur l&#039;Eau) -&gt; WFS 1.1.0
+        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;],
+        // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -&gt; WFS 1.1.0 
+        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;],
+    ],
+    // Serveurs Sextant 
+    // GéoLittoralWfs WFS 2.0.0 sans GeoJSON
+    &#039;GéoLittoralWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
+]                            </span>
 </dt>
 <dd>Arbre des JdD sous la forme [{dsName} =&gt; {defOfDataset}|{subTree}].</dd>
 
@@ -529,16 +556,43 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">TREE</span>
-    = <span class="phpdocumentor-signature__default-value">[&#039;Jeux de test&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null], &#039;Jeux mondiaux&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;], &#039;Jeux IGN&#039; =&gt; [
-    &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
-    &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
-    &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
-    &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
-    &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
-    // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
-    &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
-    &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
-], &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;], &#039;Patrinat&#039; =&gt; &#039;Extract&#039;, &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]]]</span>
+    = <span class="phpdocumentor-signature__default-value">[
+    &#039;Jeux de test en local&#039; =&gt; [&#039;DebugScripts&#039; =&gt; null, &#039;InseeCog&#039; =&gt; null, &#039;DeptReg&#039; =&gt; null, &#039;NomsCnig&#039; =&gt; null, &#039;NomsCtCnigC&#039; =&gt; null, &#039;Pays&#039; =&gt; null, &#039;MapDataset&#039; =&gt; null, &#039;AeCogPe&#039; =&gt; null],
+    &#039;Jeux mondiaux (en local)&#039; =&gt; [&#039;WorldEez&#039; =&gt; null, &#039;NE110mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE110mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE50mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mPhysical&#039; =&gt; &#039;GeoDataset&#039;, &#039;NE10mCultural&#039; =&gt; &#039;GeoDataset&#039;, &#039;NaturalEarth&#039; =&gt; &#039;Styler&#039;],
+    &#039;Jeux IGN&#039; =&gt; [
+        &#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;],
+        &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;],
+        &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;],
+        &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;],
+        &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;],
+        // catégorie paramétrée, BDCarto est un espace de noms de IgnWfs
+        &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;],
+        &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;],
+    ],
+    &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;],
+    &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
+    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]],
+    // En test
+    &quot;Sandre&quot; =&gt; [
+        /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&amp;resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&amp;sortBy=relevance&amp;sortOrder=&amp;query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&amp;from=1&amp;to=30
+         */
+        &#039;BDTopage2025Wfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;],
+        &#039;BDTopage2025WfsNs&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;BDTopage2025Wfs&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+    ],
+    // A compléter
+    &#039;Sextant&#039; =&gt; [
+        // Page d&#039;info: https://sextant.ifremer.fr/Services/Inspire/Services-WFS
+        // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
+        &#039;SextantBiologie&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/biologie&#039;],
+        // DCE (Directive Cadre sur l&#039;Eau) -&gt; WFS 1.1.0
+        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;],
+        // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -&gt; WFS 1.1.0 
+        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;],
+    ],
+    // Serveurs Sextant 
+    // GéoLittoralWfs WFS 2.0.0 sans GeoJSON
+    &#039;GéoLittoralWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
+]</span>
 </code>
 
 
@@ -566,7 +620,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">93</span>
+    <span class="phpdocumentor-element-found-in__line">139</span>
 
     </aside>
 
@@ -645,7 +699,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">107</span>
+    <span class="phpdocumentor-element-found-in__line">153</span>
 
     </aside>
 
@@ -727,7 +781,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">103</span>
+    <span class="phpdocumentor-element-found-in__line">149</span>
 
     </aside>
 
@@ -765,7 +819,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">101</span>
+    <span class="phpdocumentor-element-found-in__line">147</span>
 
     </aside>
 
@@ -803,7 +857,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">105</span>
+    <span class="phpdocumentor-element-found-in__line">151</span>
 
     </aside>
 
@@ -843,7 +897,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">102</span>
+    <span class="phpdocumentor-element-found-in__line">148</span>
 
     </aside>
 
@@ -930,7 +984,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">293</span>
+    <span class="phpdocumentor-element-found-in__line">341</span>
 
     </aside>
 
@@ -969,7 +1023,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">150</span>
+    <span class="phpdocumentor-element-found-in__line">196</span>
 
     </aside>
 
@@ -1018,7 +1072,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">385</span>
+    <span class="phpdocumentor-element-found-in__line">433</span>
 
     </aside>
 
@@ -1074,7 +1128,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">130</span>
+    <span class="phpdocumentor-element-found-in__line">176</span>
 
     </aside>
 
@@ -1132,7 +1186,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">113</span>
+    <span class="phpdocumentor-element-found-in__line">159</span>
 
     </aside>
 
@@ -1181,7 +1235,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">367</span>
+    <span class="phpdocumentor-element-found-in__line">415</span>
 
     </aside>
 
@@ -1216,7 +1270,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">382</span>
+    <span class="phpdocumentor-element-found-in__line">430</span>
 
     </aside>
 
@@ -1261,7 +1315,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">236</span>
+    <span class="phpdocumentor-element-found-in__line">282</span>
 
     </aside>
 
@@ -1321,7 +1375,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">147</span>
+    <span class="phpdocumentor-element-found-in__line">193</span>
 
     </aside>
 
@@ -1370,7 +1424,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">406</span>
+    <span class="phpdocumentor-element-found-in__line">454</span>
 
     </aside>
 
@@ -1419,7 +1473,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">416</span>
+    <span class="phpdocumentor-element-found-in__line">464</span>
 
     </aside>
 
@@ -1468,7 +1522,7 @@ Les cartes peuvent être dessinées à partir de l'IHM définie dans ce script.<
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">172</span>
+    <span class="phpdocumentor-element-found-in__line">218</span>
 
     </aside>
 
@@ -1582,7 +1636,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">282</span>
+    <span class="phpdocumentor-element-found-in__line">330</span>
 
     </aside>
 
@@ -1647,7 +1701,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">271</span>
+    <span class="phpdocumentor-element-found-in__line">319</span>
 
     </aside>
 
@@ -1703,7 +1757,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">259</span>
+    <span class="phpdocumentor-element-found-in__line">305</span>
 
     </aside>
 
@@ -1759,7 +1813,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">230</span>
+    <span class="phpdocumentor-element-found-in__line">276</span>
 
     </aside>
 
@@ -1810,7 +1864,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">355</span>
+    <span class="phpdocumentor-element-found-in__line">403</span>
 
     </aside>
 
@@ -1879,7 +1933,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">344</span>
+    <span class="phpdocumentor-element-found-in__line">392</span>
 
     </aside>
 
@@ -1920,7 +1974,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">310</span>
+    <span class="phpdocumentor-element-found-in__line">358</span>
 
     </aside>
 
@@ -1975,7 +2029,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">396</span>
+    <span class="phpdocumentor-element-found-in__line">444</span>
 
     </aside>
 
@@ -2031,7 +2085,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">427</span>
+    <span class="phpdocumentor-element-found-in__line">475</span>
 
     </aside>
 

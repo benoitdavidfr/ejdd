@@ -217,7 +217,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCache.html"><abbr title="\Dataset\WfsCache">WfsCache</abbr></a></dt><dd>Gère un cache des appels Http pour Wfs.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></dt><dd>Gère les Capabilities d&#039;un serveur WFS.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsGetRequest.html"><abbr title="\Dataset\WfsGetRequest">WfsGetRequest</abbr></a></dt><dd>Gère les requêtes GET au serveur.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Wfs.html"><abbr title="\Dataset\Wfs">Wfs</abbr></a></dt><dd>Wfs - Catégorie des Dataset WFS, chaque JdD correspond à un serveur WFS.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsBuild.html"><abbr title="\Dataset\WfsBuild">WfsBuild</abbr></a></dt>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-ConvertGmlToGeoJson.html"><abbr title="\Dataset\ConvertGmlToGeoJson">ConvertGmlToGeoJson</abbr></a></dt>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCache.html"><abbr title="\Dataset\WfsCache">WfsCache</abbr></a></dt><dd>Gère un cache des appels Http GET pour Wfs.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></dt><dd>Créé à partir du XML des capacités d&#039;un serveur WFS et les exploite pour en déduire notamment le schéma JSON du JdD.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></dt><dd>Retourne le paramètre outputFormat à utiliser dans GetFeature pour obtenir du GeoJSON.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a></dt><dd>Créé à partir du XML issu d&#039;une requête describeFeatureType et les exploite pour en déduire les propriétés de schema JSON.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsGetRequest.html"><abbr title="\Dataset\WfsGetRequest">WfsGetRequest</abbr></a></dt><dd>Exécute les requêtes GET au serveur.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Wfs.html"><abbr title="\Dataset\Wfs">Wfs</abbr></a></dt><dd>Wfs - Gabarit des Dataset WFS, chaque JdD correspond à un serveur WFS.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsBuild.html"><abbr title="\Dataset\WfsBuild">WfsBuild</abbr></a></dt>    </dl>
 
 
 
@@ -232,14 +232,36 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- voir les WFS
-  - Atlas Sandre - https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/home
-  - Sextant - https://sextant.ifremer.fr/Services/Inspire/Services-WFS
-  - GéoLittoral - https://geolittoral.din.developpement-durable.gouv.fr/wxs
-  
+  - pb de synchro entre la pagination et le début de la plage demandée
+    - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
+  - dans les properties, la geometry ne porte pas geometry comme nom !
+  - la classe fonctionne t&#039;elle avec des services WFS version 1.1 ?
+    - adapter WfsCap::outputFormatsForGetFeature() pour qu&#039;elle fonctionne en WFS 1.1, ex SextantDCE
+  - certains WFS ne sont pas capables de fournir du GeoJSON -&gt; prévoir une conversion de GML en GeoJSON ?
+  - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
+    - -&gt; pas évident
 EOT]                            </span>
 </dt>
 <dd>Actions à réaliser.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS">NOTE_ESPACES_DE_NOMS_WFS</a>
+    <span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+L&#039;utilisation d&#039;espaces de noms XML avec SimpleXML est compliquée car son affichage ne permet pas de visualiser les sous-éléments
+dans les différents espaces.
+J&#039;utilise donc un contournement un peu approximatif.
+Dans le XML, soit je remplace les &#039;:&#039; séparant le préfixe par &#039;__&#039;, soit je supprime ces préfixes.
+Cette 2ème solution ne fonctionne pas quand il existe des attributs utilisant un espace de nom comm &#039;xlink:href&#039;.
+
+Cette transformation et ce décodage XML sont cantonnés dans les classes:
+  - WfsCap qui analyse les capacités fournies en XML
+  - WfsProperties qui analyse le XML issu de DescribeFeatureType et qui est utilisé par WfsNs.
+
+Je pourrais utiliser des XPath avec SimpleXml, ce qui serait plus fiable.
+
+EOT]                            </span>
+</dt>
 
     </dl>
 
@@ -278,11 +300,58 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE_WFS</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-- voir les WFS
-  - Atlas Sandre - https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/home
-  - Sextant - https://sextant.ifremer.fr/Services/Inspire/Services-WFS
-  - GéoLittoral - https://geolittoral.din.developpement-durable.gouv.fr/wxs
-  
+  - pb de synchro entre la pagination et le début de la plage demandée
+    - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
+  - dans les properties, la geometry ne porte pas geometry comme nom !
+  - la classe fonctionne t&#039;elle avec des services WFS version 1.1 ?
+    - adapter WfsCap::outputFormatsForGetFeature() pour qu&#039;elle fonctionne en WFS 1.1, ex SextantDCE
+  - certains WFS ne sont pas capables de fournir du GeoJSON -&gt; prévoir une conversion de GML en GeoJSON ?
+  - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
+    - -&gt; pas évident
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_NOTE_ESPACES_DE_NOMS_WFS">
+        NOTE_ESPACES_DE_NOMS_WFS
+        <a href="namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">23</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">NOTE_ESPACES_DE_NOMS_WFS</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+L&#039;utilisation d&#039;espaces de noms XML avec SimpleXML est compliquée car son affichage ne permet pas de visualiser les sous-éléments
+dans les différents espaces.
+J&#039;utilise donc un contournement un peu approximatif.
+Dans le XML, soit je remplace les &#039;:&#039; séparant le préfixe par &#039;__&#039;, soit je supprime ces préfixes.
+Cette 2ème solution ne fonctionne pas quand il existe des attributs utilisant un espace de nom comm &#039;xlink:href&#039;.
+
+Cette transformation et ce décodage XML sont cantonnés dans les classes:
+  - WfsCap qui analyse les capacités fournies en XML
+  - WfsProperties qui analyse le XML issu de DescribeFeatureType et qui est utilisé par WfsNs.
+
+Je pourrais utiliser des XPath avec SimpleXml, ce qui serait plus fiable.
+
 EOT]</span>
 </code>
 
@@ -411,6 +480,7 @@ EOT]</span>
                 <li>
                     <ul class="phpdocumentor-list -clean">
                                                     <li class=""><a href="namespaces/dataset.html#constant_A_FAIRE_WFS">A_FAIRE_WFS</a></li>
+                                                    <li class=""><a href="namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS">NOTE_ESPACES_DE_NOMS_WFS</a></li>
                                             </ul>
                 </li>
             

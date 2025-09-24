@@ -89,17 +89,20 @@ abstract class Dataset {
     ],
     // En test
     "Sandre"=> [
+      /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&sortBy=relevance&sortOrder=&query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&from=1&to=30
+      */
       'BDTopage2025Wfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/topage2025'],
+      'BDTopage2025WfsNs'=> ['class'=> 'WfsNs', 'wfsName'=> 'BDTopage2025Wfs', 'namespace'=> 'sa'],
     ], // A compléter
     'Sextant'=> [
       // Page d'info: https://sextant.ifremer.fr/Services/Inspire/Services-WFS
-      // Biologie (habitats marins, halieutique, mammifères marins...)
-      'Biologie'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/biologie'],
-      // DCE (Directive Cadre sur l'Eau) -> WFS 1.1.0 
-      'DCE'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/dce'],
+      // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
+      'SextantBiologie'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/biologie'],
+      // DCE (Directive Cadre sur l'Eau) -> WFS 1.1.0
+      'SextantDCE'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/dce'],
       // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -> WFS 1.1.0 
-      'environnement_marin'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/environnement_marin'],
-      /*
+      'SextantEnvMarin'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/environnement_marin'],
+      /*{
   Euroshell (conchyliculture, aquaculture...)
   https://sextant.ifremer.fr/services/wfs/euroshell
 
@@ -127,8 +130,9 @@ abstract class Dataset {
 
   Surveillance littorale (réseaux de surveillance littorale actifs, historiques...)
   https://sextant.ifremer.fr/services/wfs/environnement_marin
-      */
+      }*/
     ], // Serveurs Sextant 
+    // GéoLittoralWfs WFS 2.0.0 sans GeoJSON
     'GéoLittoralWfs'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs'],
     /**/
   ];
@@ -301,9 +305,11 @@ abstract class Dataset {
   function implementedFilters(string $collName): array { return []; }
   
   /** L'accès aux items d'une collection du JdD par un Generator. Doit être redéfinie pour chaque Dataset.
+   * Si une collection est définie comme dict et que l'id de l'item n'est pas défini alors la valeur null
+   * est retournée comme identifiant.
    * @param string $collName - nom de la collection
    * @param array<string,mixed> $filters - filtres éventuels sur les items à renvoyer
-   * @return \Generator<string|int,array<mixed>>
+   * @return \Generator<string|int|null,array<mixed>>
    */
   abstract function getItems(string $collName, array $filters): \Generator;
   
