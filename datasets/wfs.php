@@ -9,10 +9,9 @@ namespace Dataset;
 const A_FAIRE_WFS = [
 <<<'EOT'
 Actions à réaliser:
-- voir les WFS
-  - Atlas Sandre - https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/home
-  - Sextant - https://sextant.ifremer.fr/Services/Inspire/Services-WFS
-  - GéoLittoral - https://geolittoral.din.developpement-durable.gouv.fr/wxs
+  - la classe fonctionne t'elle avec des services WFS version 1.1 ?
+  - tester si possibilité d'interroger en GeoJSON
+  - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
   
 EOT
 ];
@@ -24,7 +23,7 @@ use GeoJSON\Feed;
 use GeoJSON\Geometry;
 use BBox\GBox as BBox;
 
-/** Gère un cache des appels Http pour Wfs.
+/** Gère un cache des appels Http GET pour Wfs.
  * Les fichiers sont stockés dans WfsCache::PATH.
  */
 class WfsCache {
@@ -60,8 +59,10 @@ class WfsCache {
       $string = file_get_contents($url);
       if ($string === false)
         throw new \Exception("Ouverture $url impossible");
-      self::createDir($filePath);
-      file_put_contents($filePath, $string);
+      if ($string) {
+        self::createDir($filePath);
+        file_put_contents($filePath, $string);
+      }
       return $string;
     }
   }
@@ -93,22 +94,32 @@ class WfsCache {
 class WfsCap {
   function __construct(readonly string $dsName, readonly \SimpleXMLElement $elt) {}
   
+  /** Retourne la version du protocole WFS. */
+  function version(): string {
+    return (string)$this->elt->ows__ServiceIdentification->ows__ServiceTypeVersion;
+  }
+  
   /** Convertit un coin d'un WGS84BoundingBox en Position.
+   * Retourne [] ssi $WGS84BoundingBox vide
    * @return TPos */
-  static function corner2Pos(\SimpleXMLElement $corner): array {
-    if (!preg_match('!^([-\d\.E]+) ([-\d\.E]+)$!', $corner, $matches)) {
+  private static function corner2Pos(\SimpleXMLElement $corner): array {
+    if (preg_match('!^([-\d\.E]+) ([-\d\.E]+)$!', $corner, $matches))
+      return [floatval($matches[1]), floatval($matches[2])];
+    elseif (!$corner)
+      return [];
+    else
       throw new \Exception("No match sur '$corner'");
-    }
-    return [floatval($matches[1]), floatval($matches[2])];
   }
   
   /** Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.
-   * Attention, les WGS84BoundingBox sont souvent trop grands pour tenir dans un BBox.
+   * Retourne [] si $WGS84BoundingBox n'est pas défini.
    * @return array<int,number>
    */
-  static function WGS84BoundingBoxTo4Coordinates(\SimpleXMLElement $WGS84BoundingBox): array {
+  private static function WGS84BoundingBoxTo4Coordinates(\SimpleXMLElement $WGS84BoundingBox): array {
     $lc = self::corner2Pos($WGS84BoundingBox->ows__LowerCorner);
     $uc = self::corner2Pos($WGS84BoundingBox->ows__UpperCorner);
+    if (!$lc)
+      return [];
     $coords = [$lc[0], $lc[1], $uc[0], $uc[1]];
     //echo '<pre>WGS84BoundingBoxTo4Coordinates() returns '; print_r($coords); echo "</pre>\n";
     return $coords;
@@ -156,6 +167,37 @@ class WfsCap {
       'properties'=> $collections,
     ];
   }
+
+  /** Retourne la liste des paramètres outputFormat possibles pour GetFeature.
+   * @return list<string> */
+  function outputFormatsForGetFeature(): array {
+    $outputFormats = [];
+    foreach ($this->elt->ows__OperationsMetadata->ows__Operation as $op) {
+      if ($op['name'] == 'GetFeature') {
+        //echo "opération $op[name]:\n";
+        //print_r($op);
+        foreach ($op->ows__Parameter as $param) {
+          if ($param['name'] == 'outputFormat') {
+            //echo "  paramètre $param[name]:\n";
+            foreach ($param->ows__AllowedValues->ows__Value as $value) {
+              $outputFormats[] = (string)$value;
+            }
+          }
+        }
+      }
+    }
+    return $outputFormats;
+  }
+
+  /** Retourne le paramètre outputFormat à utiliser dans GetFeature pour obtenir du GeoJSON.
+   * Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat. */
+  function outputFormatForGetFeatureinGeoJson(): ?string {
+    foreach ($this->outputFormatsForGetFeature() as $outputFormat) {
+      if (substr($outputFormat, 0, strlen('application/json')) == 'application/json')
+        return $outputFormat;
+    }
+    return null;
+  }
 };
 
 /** Gère les requêtes GET au serveur. */
@@ -168,10 +210,20 @@ class WfsGetRequest {
       $this->name.'/cap.xml',
       $this->url.'?service=WFS&version=2.0.0&request=GetCapabilities'
     );
+    //*
     // Remplace les ':' des espaces de noms par '__' 
-    $cap = preg_replace('!<(/)?(([^:]+):)?!', '<$1$3__', $cap);
+    $cap = preg_replace('!<(/)?(([^:]+):)!', '<$1$3__', $cap);
+    // remise des 'http: qui ne sont pas des noms d'espaces de noms
+    $cap = preg_replace('!http__!', 'http:', $cap);
+    //echo "<pre>Contenu XML:\n",htmlentities($cap),"</pre>\n"; die();
+
     //header('Content-Type: application/xml'); die($cap);
-    $elt = simplexml_load_string($cap);
+    if (!($elt = simplexml_load_string($cap))) {
+      echo "<b>Erreur simplexml_load_string sur les capacités de $this->name</b><br>\n";
+      echo "<pre>Contenu XML:\n",htmlentities($cap),"</pre>\n";
+      throw new \Exception("Les capacités ne peuvent pas être transformées par simplexml_load_string()");
+    }
+    
     //echo '<pre>$elt='; print_r($elt);
     return $elt;
   }
@@ -193,7 +245,7 @@ class WfsGetRequest {
   /** Retourne l'extrait de collection sous la forme d'une FeatureCollection GeoJSON décodée.
    * @return TGeoJsonFeatureCollection
    */
-  function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox): array {
+  function getFeatures(string $ftName, int $start, int $count, string $outputFormat, ?BBox $bbox): array {
     //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
     if ($bbox) {
       // En WFS on précise le CRS du BBox qui doit être fourni en LatLon
@@ -209,7 +261,7 @@ class WfsGetRequest {
         ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$ftName"
         .'&srsName=urn:ogc:def:crs:EPSG::4326'
         .($bbox ? "&bbox=".implode(',',$bboxLatLon) : '')
-        ."&outputFormat=".urlencode('application/json')
+        ."&outputFormat=".urlencode($outputFormat)
         ."&startIndex=$start&count=$count"
     );
     return json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
@@ -218,13 +270,14 @@ class WfsGetRequest {
   /** Retourne le Feature ayant cet id ou null si aucun ne l'a.
    * @return ?TGeoJsonFeature
    */
-  function getFeature(string $ftName, string $id): ?array {
+  function getFeature(string $ftName, string $id, string $outputFormat): ?array {
+    $ftNameCache = str_replace(':','/', $ftName);
     $fcoll = WfsCache::get(
-      "$this->name/features/$ftName/id-$id.json",
+      "$this->name/features/$ftNameCache/id-$id.json",
       $this->url
         ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$ftName"
         .'&srsName=urn:ogc:def:crs:EPSG::4326'
-        ."&outputFormat=".urlencode('application/json')
+        ."&outputFormat=".urlencode($outputFormat)
         ."&featureID=$id"
     );
     $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
@@ -238,7 +291,7 @@ class WfsGetRequest {
   }
 };
 
-/** Wfs - Catégorie des Dataset WFS, chaque JdD correspond à un serveur WFS.
+/** Wfs - Gabarit des Dataset WFS, chaque JdD correspond à un serveur WFS.
  * L'URL du serveur est défini en paramètre lors de la création du Wfs et est stocké dans le REGISTRE de Dataset.
  * Les coordonnées sont toujours retournées en WGS84 LonLat.
  * Lorsqu'un filtre bbox est défini, ce bbox est passé au serveur WFS dans la requête.
@@ -259,6 +312,9 @@ class Wfs extends Dataset {
   function __construct(array $params) {
     $this->wfsReq = new WfsGetRequest($params['dsName'], $params['url']);
     $this->cap = new WfsCap($params['dsName'], $this->wfsReq->getCapabilities());
+    /*if (($version = $this->cap->version()) <> '2.0.0') {
+      throw new \Exception("Version WFS==$version, seule la version 2.0.0 est gérée");
+    }*/
     parent::__construct($params['dsName'], $this->cap->jsonSchemaOfTheDs(), true);
   }
   
@@ -285,15 +341,19 @@ class Wfs extends Dataset {
   function getItems(string $collName, array $filters=[]): \Generator {
     //echo "Appel de Wfs::getItems(collName=$collName, filters)<br>\n";
     $start = $filters['skip'] ?? 0;
+    if (!($outputFormat = $this->cap->outputFormatForGetFeatureinGeoJson())) {
+      throw new \Exception("outputFormatForGetFeatureinGeoJson inconnu");
+    }
     while (true) {
-      $fcoll = $this->wfsReq->getFeatures($collName, $start, self::COUNT, $filters['bbox'] ?? null);
+      $fcoll = $this->wfsReq->getFeatures($collName, $start, self::COUNT, $outputFormat, $filters['bbox'] ?? null);
+      //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
       if ($fcoll['numberMatched'] == 0) {
         //echo "Aucun résultat retourné<br>\n";
         return;
       }
       //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
       foreach ($fcoll['features'] as $feature) {
-        $id = $feature['id'];
+        $id = $feature['id'] ?? null;
         $geometry = $feature['geometry'];
         if (isset($feature['bbox'])) {
           $geometry['bbox'] = $feature['bbox'];
@@ -318,7 +378,10 @@ class Wfs extends Dataset {
    * @return array<mixed>|null
    */ 
   function getOneItemByKey(string $collName, string|int $id): array|null {
-    $feature = $this->wfsReq->getFeature($collName, $id);
+    if (!($outputFormat = $this->cap->outputFormatForGetFeatureinGeoJson())) {
+      throw new \Exception("outputFormatForGetFeatureinGeoJson inconnu");
+    }
+    $feature = $this->wfsReq->getFeature($collName, $id, $outputFormat);
     if (!$feature)
       return null;
 
@@ -359,6 +422,9 @@ class WfsBuild {
       case null: { // Menu 
         echo "<a href='?dataset=$_GET[dataset]&action=nameSpaces'>Accès aux données par les espaces de noms</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=cap'>Affiche les capacités WFS de $_GET[dataset]</a><br>\n";
+        echo "<a href='?dataset=$_GET[dataset]&action=version'>Affiche la version du WFS de $_GET[dataset]</a><br>\n";
+        echo "<a href='?dataset=$_GET[dataset]&action=outputFormatsForGetFeature'>",
+          "Affiche les formats possibles de sortie de GetFeature du WFS de $_GET[dataset]</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=colls'>Affiche les collections de l'objet $_GET[dataset]</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=getItemsOnBbox'>Test getItems sur bbox</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=listCRS'>Liste les CRS</a><br>\n";
@@ -410,8 +476,19 @@ class WfsBuild {
         break;
       }
       case 'cap': { // Affiche les capacités WFS de $_GET[dataset]
-        $fs = Wfs::get($_GET['dataset']);
-        echo '<pre>cap='; print_r($fs->cap->elt); echo "</pre>\n";
+        $wfs = Wfs::get($_GET['dataset']);
+        echo '<pre>cap='; print_r($wfs->cap->elt); echo "</pre>\n";
+        break;
+      }
+      case 'version': {
+        $wfs = Wfs::get($_GET['dataset']);
+        echo "version=",$wfs->cap->version(),"<br>\n";
+        break;
+      }
+      case 'outputFormatsForGetFeature': { // "Affiche les formats possibles de sortie de GetFeature du WFS de $_GET[dataset] 
+        $wfs = Wfs::get($_GET['dataset']);
+        echo '<pre>outputFormatsForGetFeature='; print_r($wfs->cap->outputFormatsForGetFeature());
+        echo "outputFormatForGetFeatureinGeoJson=",$wfs->cap->outputFormatForGetFeatureinGeoJson(),"\n";
         break;
       }
       case 'colls': { // Affiche les collections de l'objet $_GET[dataset]

@@ -1,0 +1,13 @@
+<map name="example-map-1">
+  <area
+    shape="circle"
+    coords="200,250,25"
+    href="page-2.html"
+    alt="circle example" />
+
+  <area
+    shape="rect"
+    coords="10, 5, 20, 15"
+    href="page-3.html"
+    alt="rectangle example" />
+</map>

@@ -49,7 +49,7 @@ abstract class Dataset {
    * - array<string,string> pour les JdD correspondant à un gabarit paramétré.
    */
   const TREE = [
-    'Jeux de test'=> [
+    'Jeux de test en local'=> [
       'DebugScripts'=> null,
       'InseeCog'=> null,
       'DeptReg'=> null,
@@ -59,7 +59,7 @@ abstract class Dataset {
       'MapDataset'=> null,
       'AeCogPe'=> null,
     ],
-    'Jeux mondiaux'=> [
+    'Jeux mondiaux (en local)'=> [
       'WorldEez'=> null,
       'NE110mPhysical'=> 'GeoDataset',
       'NE110mCultural'=> 'GeoDataset',
@@ -87,7 +87,49 @@ abstract class Dataset {
       'ShomTAcartesMarinesPapier'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLES_CARTES_PAPIER'],
       'ShomTAcartesMarinesS57'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_S57_WFSc'],
     ],
-    
+    // En test
+    "Sandre"=> [
+      'BDTopage2025Wfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/topage2025'],
+    ], // A compléter
+    'Sextant'=> [
+      // Page d'info: https://sextant.ifremer.fr/Services/Inspire/Services-WFS
+      // Biologie (habitats marins, halieutique, mammifères marins...)
+      'Biologie'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/biologie'],
+      // DCE (Directive Cadre sur l'Eau) -> WFS 1.1.0 
+      'DCE'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/dce'],
+      // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -> WFS 1.1.0 
+      'environnement_marin'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/environnement_marin'],
+      /*
+  Euroshell (conchyliculture, aquaculture...)
+  https://sextant.ifremer.fr/services/wfs/euroshell
+
+  Granulats marins (ressources minérales, halieutique, faune benthique,...)
+  https://sextant.ifremer.fr/services/wfs/granulats_marins
+
+  Nouvelle-Calédonie (multi-thématiques)
+  https://sextant.ifremer.fr/services/wfs/nouvelle_caledonie
+  https://sextant.ifremer.fr/services/wfs/nc
+
+  Nouvelle-Calédonie - projet Ambio (biodiversité)
+  https://sextant.ifremer.fr/services/wfs/ambio
+
+  Océan Indien (multi-thématiques)
+  https://sextant.ifremer.fr/services/wfs/ocean_indien
+
+  Océan Indien - Globice Réunion (mammifères marins)
+  https://sextant.ifremer.fr/services/wfs/globice
+
+  Océan Indien - Pêche palangrière (halieutique)
+  https://sextant.ifremer.fr/services/wfs/peche_palangriere
+
+  SISMER (données d'observation des campagnes à la mer...)
+  https://sextant.ifremer.fr/services/wfs/sismer
+
+  Surveillance littorale (réseaux de surveillance littorale actifs, historiques...)
+  https://sextant.ifremer.fr/services/wfs/environnement_marin
+      */
+    ], // Serveurs Sextant 
+    'GéoLittoralWfs'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs'],
     /**/
   ];
   const UNITS = [

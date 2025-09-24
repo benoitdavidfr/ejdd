@@ -46,6 +46,9 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+24/9/2025:
+  - amélioration de Wfs pour qu'il traite correctement différents services
+    - pb de version de WFS, pb de format à utiliser pour GeoJSON
 22/9/2025:
   - création d'une branche bugvalid
   - simplification de l'affichage des erreurs de non conformité pour éviter les bugs
