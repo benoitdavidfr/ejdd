@@ -194,7 +194,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    WfsNsProperties
+    WfsProperties
 
     
             <div class="phpdocumentor-element__package">
@@ -213,17 +213,15 @@
 </div>
 
         <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">14</span>
+    <span class="phpdocumentor-element-found-in__line">409</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Convertit des FeatureType descriptions en propriétés de schema JSON.</p>
+            <p class="phpdocumentor-summary">Exploite le XML issu d&#039;une requête describeFeatureType pour en déduire les propriétés de schema JSON.</p>
 
 
-    <section class="phpdocumentor-description"><p>Un objet est créé avec le retour de DescribeFeatureType de noms de FeatureType converti en SimpleXMLElement</p>
-</section>
 
 
 
@@ -233,7 +231,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/Dataset-WfsNsProperties.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsProperties.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -247,18 +245,24 @@
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/Dataset-WfsNsProperties.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsProperties.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsNsProperties.html#property_ftds">$ftds</a>
+    <a class="" href="classes/Dataset-WfsProperties.html#property_dsName">$dsName</a>
+    <span>
+                        &nbsp;: string            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    <a class="" href="classes/Dataset-WfsProperties.html#property_ftds">$ftds</a>
     <span>
                         &nbsp;: <abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>            </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsNsProperties.html#property_namespace">$namespace</a>
+    <a class="" href="classes/Dataset-WfsProperties.html#property_namespace">$namespace</a>
     <span>
                         &nbsp;: string            </span>
 </dt>
@@ -267,25 +271,25 @@
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/Dataset-WfsNsProperties.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsProperties.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsNsProperties.html#method___construct">__construct()</a>
+    <a class="" href="classes/Dataset-WfsProperties.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsNsProperties.html#method_properties">properties()</a>
+    <a class="" href="classes/Dataset-WfsProperties.html#method_properties">properties()</a>
     <span>
                                 &nbsp;: array&lt;string, array&lt;string, mixed&gt;&gt;    </span>
 </dt>
 <dd>Construit les propriétés de chaque champ de chaque collection du JdD sous la forme [{collName}=&lt; [{fieldName} =&gt; [&#039;type&#039;=&gt; ...]]].</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a class="" href="classes/Dataset-WfsNsProperties.html#method_fieldType">fieldType()</a>
+    <a class="" href="classes/Dataset-WfsProperties.html#method_fieldType">fieldType()</a>
     <span>
                                 &nbsp;: array&lt;string, mixed&gt;    </span>
 </dt>
@@ -301,7 +305,7 @@
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/Dataset-WfsNsProperties.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsProperties.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -311,17 +315,55 @@
             -public
                                                 -read-only                    "
 >
-    <h4 class="phpdocumentor-element__name" id="property_ftds">
-        $ftds
-        <a href="classes/Dataset-WfsNsProperties.html#property_ftds" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_dsName">
+        $dsName
+        <a href="classes/Dataset-WfsProperties.html#property_dsName" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">412</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__type">string</span>
+    <span class="phpdocumentor-signature__name">$dsName</span>
+    </code>
+
+    
+    
+    
+
+    
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -public
+                                                -read-only                    "
+>
+    <h4 class="phpdocumentor-element__name" id="property_ftds">
+        $ftds
+        <a href="classes/Dataset-WfsProperties.html#property_ftds" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">410</span>
 
     </aside>
 
@@ -351,15 +393,15 @@
 >
     <h4 class="phpdocumentor-element__name" id="property_namespace">
         $namespace
-        <a href="classes/Dataset-WfsNsProperties.html#property_namespace" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsProperties.html#property_namespace" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">412</span>
 
     </aside>
 
@@ -385,7 +427,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/Dataset-WfsNsProperties.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsProperties.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -396,20 +438,20 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/Dataset-WfsNsProperties.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsProperties.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">15</span>
+    <span class="phpdocumentor-element-found-in__line">412</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$namespace</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftds</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dsName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$namespace</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$xml</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -418,6 +460,13 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dsName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$namespace</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
@@ -425,8 +474,8 @@
                 
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$ftds</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr></span>
+                <span class="phpdocumentor-signature__argument__name">$xml</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -447,13 +496,13 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_properties">
         properties()
-        <a href="classes/Dataset-WfsNsProperties.html#method_properties" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsProperties.html#method_properties" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">117</span>
+    <span class="phpdocumentor-element-found-in__line">537</span>
 
     </aside>
 
@@ -466,7 +515,9 @@
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>Traitement spécifique pour les WFS 1.1.0 sans namespace car le type peut avoir parfois un namespace</p>
+</section>
+
     
     
 
@@ -486,13 +537,13 @@
 >
     <h4 class="phpdocumentor-element__name" id="method_fieldType">
         fieldType()
-        <a href="classes/Dataset-WfsNsProperties.html#method_fieldType" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsProperties.html#method_fieldType" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfsns.php"><a href="files/datasets-wfsns.html"><abbr title="datasets/wfsns.php">wfsns.php</abbr></a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">437</span>
 
     </aside>
 
@@ -533,7 +584,7 @@
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/datasets/wfsns.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/datasets/wfs.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -634,25 +685,26 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/Dataset-WfsNsProperties.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/Dataset-WfsNsProperties.html#toc-methods">Methods</a></li>
+                                                            <li><a href="classes/Dataset-WfsProperties.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/Dataset-WfsProperties.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/Dataset-WfsNsProperties.html#property_ftds">$ftds</a></li>
-                                                    <li class=""><a href="classes/Dataset-WfsNsProperties.html#property_namespace">$namespace</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsProperties.html#property_dsName">$dsName</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsProperties.html#property_ftds">$ftds</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsProperties.html#property_namespace">$namespace</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/Dataset-WfsNsProperties.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsNsProperties.html#method_properties">properties()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsNsProperties.html#method_fieldType">fieldType()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsProperties.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsProperties.html#method_properties">properties()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsProperties.html#method_fieldType">fieldType()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -672,7 +724,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/Dataset-WfsNsProperties.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Dataset-WfsProperties.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

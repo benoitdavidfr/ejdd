@@ -45,8 +45,6 @@ parameters:
     TIntFun: 'Closure(Interpret, AbstractSyntaxTree, mixed ...): mixed'
   paths:
     - index.php
-    #- datasets/dataset2.inc.php
-    #- algebra/collection2.inc.php
     - install.php
     - lib.php
     - geojson.php
@@ -78,7 +76,6 @@ parameters:
     - datasets/styler.php
     - datasets/wfs.php
     - datasets/wfsns.php
-    - datasets/wfsextract.php
     - datasets/extract.php
     - geom/pos.inc.php
     - geom/pbtype.php
@@ -90,6 +87,8 @@ parameters:
     - geom/tbox.php
     - geom/geojson.inc.php
     - geom/zoomlevel.php
+    - ogr/ogr2ogr.php
+    #- ogr/ograpi.php
     - drawing/drawing.php
     - drawing/gddrawing.php
     - drawing/llmap.php

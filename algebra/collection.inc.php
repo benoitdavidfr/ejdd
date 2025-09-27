@@ -202,7 +202,8 @@ abstract class Collection {
     $item = $this->getOneItemByKey($key);
     //echo '<pre>'.json_encode($item).'</pre>';
     $value = $item[$field];
-    echo '<pre>'.json_encode($value).'</pre>';
+    header('Content-Type: application/json');
+    echo json_encode($value);
   }
   
   /** Affiche les properties et données de la collection.
@@ -305,7 +306,7 @@ EOT
     $def['layers']['layerOfTheItem']['L.UGeoJSONLayer']['endpoint'] = "{gjsurl}/collections/$encodedCollId/items/".urlencode($key);
     
     $map = new AMapAndItsLayers($def);
-    $map->display();
+    //$map->display();
     return $map->draw();
   }
 };

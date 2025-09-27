@@ -296,13 +296,24 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+27/9/2025:
+  - amélioration de Wfs pour qu&#039;il fonctionne dans différents cas de figure
+    - Wfs 2.0.0 et Wfs 1.1.0
+    - cas où les FeatureTypes ne sont pas définis dans un espace de nom ou sont dans l&#039;espace par défaut
+    - avec retour en GeoJSON ou non
+    - tests sur différents cas
+26/9/2025:
+  - test de OgrApi, je n&#039;ai pas réussi à l&#039;utiliser.
+25/9/2025:
+  - gestion dans Wfs des properties en WFS version 1.1.0
+  - ajout de la possibilité d&#039;utiliser un Wfs ne générant pas du GeoJSON en effectuant la conversion de GML vers GeoJSON
 24/9/2025:
   - amélioration de Wfs pour qu&#039;il traite correctement différents services
     - pb de version de WFS, pb de format à utiliser pour GeoJSON
   - attention à l&#039;utilisation des clés dans des produits ou jointures
     - lorsque la clé est un no en séquence, il faut garantir qu&#039;elle permet de retrouver l&#039;item par getOneByKey()
       même si un filtre est utilisé dans getItems()
-  - sinon retourner null comme clé dans getItems()
+    - sinon retourner null comme clé dans getItems()
 22/9/2025:
   - création d&#039;une branche bugvalid
   - simplification de l&#039;affichage des erreurs de non conformité pour éviter les bugs
@@ -534,6 +545,9 @@ Lignes de commandes utiles
     ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Fenêtre root:
+    # fenetres root dans php84-bash
+    docker exec -it dockerc-php84-1 /bin/bash
   Pour committer le git:
     git commit -am &quot;{commentaire}&quot;
   Pour créer une branche et y basculer:
@@ -636,7 +650,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">312</span>
+    <span class="phpdocumentor-element-found-in__line">326</span>
 
     </aside>
 
@@ -699,13 +713,24 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+27/9/2025:
+  - amélioration de Wfs pour qu&#039;il fonctionne dans différents cas de figure
+    - Wfs 2.0.0 et Wfs 1.1.0
+    - cas où les FeatureTypes ne sont pas définis dans un espace de nom ou sont dans l&#039;espace par défaut
+    - avec retour en GeoJSON ou non
+    - tests sur différents cas
+26/9/2025:
+  - test de OgrApi, je n&#039;ai pas réussi à l&#039;utiliser.
+25/9/2025:
+  - gestion dans Wfs des properties en WFS version 1.1.0
+  - ajout de la possibilité d&#039;utiliser un Wfs ne générant pas du GeoJSON en effectuant la conversion de GML vers GeoJSON
 24/9/2025:
   - amélioration de Wfs pour qu&#039;il traite correctement différents services
     - pb de version de WFS, pb de format à utiliser pour GeoJSON
   - attention à l&#039;utilisation des clés dans des produits ou jointures
     - lorsque la clé est un no en séquence, il faut garantir qu&#039;elle permet de retrouver l&#039;item par getOneByKey()
       même si un filtre est utilisé dans getItems()
-  - sinon retourner null comme clé dans getItems()
+    - sinon retourner null comme clé dans getItems()
 22/9/2025:
   - création d&#039;une branche bugvalid
   - simplification de l&#039;affichage des erreurs de non conformité pour éviter les bugs
@@ -931,7 +956,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">276</span>
+    <span class="phpdocumentor-element-found-in__line">287</span>
 
     </aside>
 
@@ -962,6 +987,9 @@ Lignes de commandes utiles
     ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Fenêtre root:
+    # fenetres root dans php84-bash
+    docker exec -it dockerc-php84-1 /bin/bash
   Pour committer le git:
     git commit -am &quot;{commentaire}&quot;
   Pour créer une branche et y basculer:

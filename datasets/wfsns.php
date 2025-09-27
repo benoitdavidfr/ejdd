@@ -229,8 +229,11 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
           continue;*/
         if (isset(self::DOCS[$dsName][$ftName]['title']))
           $ftSchema['title'] = self::DOCS[$dsName][$ftName]['title'];
-        $ftSchema['patternProperties']['']['required'] = array_keys($properties[$ftName]);
-        $ftSchema['patternProperties']['']['properties'] = $properties[$ftName];
+        
+        // Il semble qu'il puisse y avoir des incohérences dans les serveurs, notamment SextantBiologie
+        //echo '<pre>'; print_r(array_keys($properties[$ftName]));
+        $ftSchema['patternProperties']['']['required'] = array_keys($properties[$ftName] ?? []);
+        $ftSchema['patternProperties']['']['properties'] = $properties[$ftName] ?? [];
         $schema['properties'][$ftName] = $ftSchema;
         $schema['required'][] = $ftName;
       }
@@ -260,7 +263,8 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
 
   static function get(string $dsName): self {
     $params = Dataset::definitionOfADataset($dsName);
-    return new self(['dsName'=> $dsName, 'wfsName'=> $params['wfsName'], 'namespace'=> $params['namespace']]);
+    $params['dsName'] = $dsName;
+    return new self($params);
   }  
   
   /** Retourne les filtres implémentés par getItems().
@@ -309,6 +313,7 @@ class WfsNsBuild {
         echo "<li><a href='?action=properties&dataset=$_GET[dataset]'>",
                   "Test construction des propriétés de chaque champ de chaque collection du JdD sous la forme ",
                   "[{collName}=> [{fieldName} => ['type'=> ...]]]</a></li>\n";
+        echo "<li><a href='wfs.php?dataset=$_GET[dataset]'>Appel de WfsBuild</a></li>\n";
         echo "</ul>\n";
         break;
       }

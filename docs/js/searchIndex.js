@@ -2171,25 +2171,25 @@ Search.appendIndex(
             "summary": "Actions\u0020\u00E0\u0020r\u00E9aliser.",
             "url": "namespaces/dataset.html#constant_A_FAIRE_WFS"
         },                {
+            "fqsen": "\\Dataset\\BUG_WFS",
+            "name": "BUG_WFS",
+            "summary": "",
+            "url": "namespaces/dataset.html#constant_BUG_WFS"
+        },                {
             "fqsen": "\\Dataset\\NOTE_ESPACES_DE_NOMS_WFS",
             "name": "NOTE_ESPACES_DE_NOMS_WFS",
             "summary": "",
             "url": "namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS"
         },                {
-            "fqsen": "\\Dataset\\ConvertGmlToGeoJson",
-            "name": "ConvertGmlToGeoJson",
-            "summary": "",
-            "url": "classes/Dataset-ConvertGmlToGeoJson.html"
-        },                {
-            "fqsen": "\\Dataset\\ConvertGmlToGeoJson\u003A\u003Aconvert\u0028\u0029",
-            "name": "convert",
-            "summary": "Convertit\u0020un\u0020fichier\u0020GML\u0020d\u0027une\u0020FeatureCollection\u0020en\u0020une\u0020FeatureCollection\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
-            "url": "classes/Dataset-ConvertGmlToGeoJson.html#method_convert"
-        },                {
             "fqsen": "\\Dataset\\WfsCache",
             "name": "WfsCache",
             "summary": "G\u00E8re\u0020un\u0020cache\u0020des\u0020appels\u0020Http\u0020GET\u0020pour\u0020Wfs.",
             "url": "classes/Dataset-WfsCache.html"
+        },                {
+            "fqsen": "\\Dataset\\WfsCache\u003A\u003AhttpResponseCode\u0028\u0029",
+            "name": "httpResponseCode",
+            "summary": "Extrait\u0020du\u0020\u0024http_response_header\u0020le\u0020code\u0020de\u0020retout\u0020Http.",
+            "url": "classes/Dataset-WfsCache.html#method_httpResponseCode"
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003AdirPath\u0028\u0029",
             "name": "dirPath",
@@ -2216,9 +2216,54 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-WfsCache.html#constant_PATH"
         },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat",
+            "name": "WfsOutputFormat",
+            "summary": "Choix\u0020du\u0020param\u00E8tre\u0020outputFormat\u0020pour\u0020GetFeature.",
+            "url": "classes/Dataset-WfsOutputFormat.html"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "Un\u0020objet\u0020est\u0020cr\u00E9\u00E9\u0020avec\u0020le\u0020format\u0020tel\u0020qu\u0027il\u0020est\u0020indiqu\u00E9\u0020dans\u0020les\u0020capacit\u00E9s\u0020du\u0020serveur\u0020WFS.",
+            "url": "classes/Dataset-WfsOutputFormat.html#method___construct"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "",
+            "url": "classes/Dataset-WfsOutputFormat.html#method___toString"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003Atype\u0028\u0029",
+            "name": "type",
+            "summary": "Indique\u0020si\u0020le\u0020format\u0020correspond\u0020\u00E0\u0020GeoJSON\u0020ou\u0020GML\u0020ou\u0020autre\u0020\u0028null\u0029.",
+            "url": "classes/Dataset-WfsOutputFormat.html#method_type"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003AsubType\u0028\u0029",
+            "name": "subType",
+            "summary": "Cherche\u0020\u00E0\u0020distinguer\u0020GML3\u0020de\u0020GML2.",
+            "url": "classes/Dataset-WfsOutputFormat.html#method_subType"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003Aext\u0028\u0029",
+            "name": "ext",
+            "summary": "Retourne\u0020l\u0027extension\u0020de\u0020nom\u0020de\u0020fichier\u0020correspondant\u0020au\u0020format.",
+            "url": "classes/Dataset-WfsOutputFormat.html#method_ext"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003AbestForGetFeature\u0028\u0029",
+            "name": "bestForGetFeature",
+            "summary": "Choisit\u0020le\u0020meilleur\u0020format\u0020pour\u0020GetFeature.",
+            "url": "classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003AGML_MIME",
+            "name": "GML_MIME",
+            "summary": "Liste\u0020de\u0020type\u0020MIME\u0020GML\u0020fr\u00E9quemment\u0020utilis\u00E9s\u0020en\u0020pr\u00E9cisant\u0020GML3\u0020ou\u0020GML2.",
+            "url": "classes/Dataset-WfsOutputFormat.html#constant_GML_MIME"
+        },                {
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A\u0024fmt",
+            "name": "fmt",
+            "summary": "",
+            "url": "classes/Dataset-WfsOutputFormat.html#property_fmt"
+        },                {
             "fqsen": "\\Dataset\\WfsCap",
             "name": "WfsCap",
-            "summary": "Cr\u00E9\u00E9\u0020\u00E0\u0020partir\u0020du\u0020XML\u0020des\u0020capacit\u00E9s\u0020d\u0027un\u0020serveur\u0020WFS\u0020et\u0020les\u0020exploite\u0020pour\u0020en\u0020d\u00E9duire\u0020notamment\u0020le\u0020sch\u00E9ma\u0020JSON\u0020du\u0020JdD.",
+            "summary": "Exploite\u0020le\u0020XML\u0020des\u0020capacit\u00E9s\u0020d\u0027un\u0020serveur\u0020WFS\u0020pour\u0020en\u0020d\u00E9duire\u0020notamment\u0020le\u0020sch\u00E9ma\u0020JSON\u0020du\u0020JdD.",
             "url": "classes/Dataset-WfsCap.html"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003A__construct\u0028\u0029",
@@ -2241,6 +2286,16 @@ Search.appendIndex(
             "summary": "Convertit\u0020un\u0020WGS84BoundingBox\u0020en\u00204\u0020coordonn\u00E9es\u0020xmin,ymin,xmax,ymax.",
             "url": "classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates"
         },                {
+            "fqsen": "\\Dataset\\WfsCap\u003A\u003AfeatureTypes\u0028\u0029",
+            "name": "featureTypes",
+            "summary": "Dict.\u0020des\u0020FeatureTypes\u0020Name\u0020\u003D\u003E\u0020FeatureType",
+            "url": "classes/Dataset-WfsCap.html#method_featureTypes"
+        },                {
+            "fqsen": "\\Dataset\\WfsCap\u003A\u003Anamespaces\u0028\u0029",
+            "name": "namespaces",
+            "summary": "Liste\u0020des\u0020espaces\u0020de\u0020noms\u0020des\u0020FeatureTypeNames.",
+            "url": "classes/Dataset-WfsCap.html#method_namespaces"
+        },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003AjsonSchemaOfTheDs\u0028\u0029",
             "name": "jsonSchemaOfTheDs",
             "summary": "Construit\u0020le\u0020schema\u0020JSON\u0020\u00E0\u0020partir\u0020des\u0020capacit\u00E9s.",
@@ -2261,39 +2316,9 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-WfsCap.html#property_dsName"
         },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat",
-            "name": "WfsOutputFormat",
-            "summary": "Retourne\u0020le\u0020param\u00E8tre\u0020outputFormat\u0020\u00E0\u0020utiliser\u0020dans\u0020GetFeature\u0020pour\u0020obtenir\u0020du\u0020GeoJSON.",
-            "url": "classes/Dataset-WfsOutputFormat.html"
-        },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Dataset-WfsOutputFormat.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__toString\u0028\u0029",
-            "name": "__toString",
-            "summary": "",
-            "url": "classes/Dataset-WfsOutputFormat.html#method___toString"
-        },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003Atype\u0028\u0029",
-            "name": "type",
-            "summary": "",
-            "url": "classes/Dataset-WfsOutputFormat.html#method_type"
-        },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003AbestForGetFeature\u0028\u0029",
-            "name": "bestForGetFeature",
-            "summary": "Choisi\u0020le\u0020meilleur\u0020format\u0020pour\u0020GetFeature.",
-            "url": "classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature"
-        },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A\u0024fmt",
-            "name": "fmt",
-            "summary": "",
-            "url": "classes/Dataset-WfsOutputFormat.html#property_fmt"
-        },                {
             "fqsen": "\\Dataset\\WfsProperties",
             "name": "WfsProperties",
-            "summary": "Cr\u00E9\u00E9\u0020\u00E0\u0020partir\u0020du\u0020XML\u0020issu\u0020d\u0027une\u0020requ\u00EAte\u0020describeFeatureType\u0020et\u0020les\u0020exploite\u0020pour\u0020en\u0020d\u00E9duire\u0020les\u0020propri\u00E9t\u00E9s\u0020de\u0020schema\u0020JSON.",
+            "summary": "Exploite\u0020le\u0020XML\u0020issu\u0020d\u0027une\u0020requ\u00EAte\u0020describeFeatureType\u0020pour\u0020en\u0020d\u00E9duire\u0020les\u0020propri\u00E9t\u00E9s\u0020de\u0020schema\u0020JSON.",
             "url": "classes/Dataset-WfsProperties.html"
         },                {
             "fqsen": "\\Dataset\\WfsProperties\u003A\u003A__construct\u0028\u0029",
@@ -2341,6 +2366,11 @@ Search.appendIndex(
             "summary": "Retourne\u0020le\u0020SimpleXMLElement\u0020correspondant\u0020aux\u0020capabilities.",
             "url": "classes/Dataset-WfsGetRequest.html#method_getCapabilities"
         },                {
+            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AsetVersion\u0028\u0029",
+            "name": "setVersion",
+            "summary": "",
+            "url": "classes/Dataset-WfsGetRequest.html#method_setVersion"
+        },                {
             "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AdescribeFeatureType\u0028\u0029",
             "name": "describeFeatureType",
             "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020conerti\u0020en\u0020WfsProperties.",
@@ -2355,6 +2385,11 @@ Search.appendIndex(
             "name": "getFeature",
             "summary": "Retourne\u0020le\u0020Feature\u0020ayant\u0020cet\u0020id\u0020ou\u0020null\u0020si\u0020aucun\u0020ne\u0020l\u0027a.",
             "url": "classes/Dataset-WfsGetRequest.html#method_getFeature"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A\u0024version",
+            "name": "version",
+            "summary": "La\u0020version\u0020WFS\u0020du\u0020serveur,\u0020initialement\u0020\u00E0\u0020null,\u0020peut\u0020\u00EAtre\u0020d\u00E9fini\u0020apr\u00E8s\u0020le\u0020GetCapabilities\u0020qui\u0020ne\u0020l\u0027utilise\u0020pas.",
+            "url": "classes/Dataset-WfsGetRequest.html#property_version"
         },                {
             "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A\u0024name",
             "name": "name",
@@ -2380,6 +2415,11 @@ Search.appendIndex(
             "name": "get",
             "summary": "Cr\u00E9e\u0020un\u0020Wfs\u0020\u00E0\u0020partir\u0020de\u0020son\u0020nom.\u0020Utile\u0020pour\u0020que\u0020PhpStan\u0020comprenne\u0020le\u0020type\u0020de\u0020l\u0027objet\u0020retourn\u00E9.",
             "url": "classes/Dataset-Wfs.html#method_get"
+        },                {
+            "fqsen": "\\Dataset\\Wfs\u003A\u003Acharacteristics\u0028\u0029",
+            "name": "characteristics",
+            "summary": "Retourne\u0020les\u0020caract\u00E9ristiques\u0020principales\u0020des\u0020serveurs\u0020pour\u0020les\u0020tests.",
+            "url": "classes/Dataset-Wfs.html#method_characteristics"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003AimplementedFilters\u0028\u0029",
             "name": "implementedFilters",
@@ -2418,43 +2458,13 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsBuild",
             "name": "WfsBuild",
-            "summary": "",
+            "summary": "Test\u0020de\u0020Wfs.",
             "url": "classes/Dataset-WfsBuild.html"
         },                {
             "fqsen": "\\Dataset\\WfsBuild\u003A\u003Amain\u0028\u0029",
             "name": "main",
             "summary": "",
             "url": "classes/Dataset-WfsBuild.html#method_main"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract",
-            "name": "WfsExtract",
-            "summary": "ABANDON,\u0020remplac\u00E9\u0020par\u0020WfsNs\u0020\u002D\u0020JdD\u0020WfsExtract\u0020\u002D\u0020Extrait\u0020des\u0020FeatureTypes\u0020d\u0027un\u0020Wfs\u0020d\u00E9finis\u0020par\u0020un\u0020pr\u00E9fixe\u0020sur\u0020le\u0020nom\u0020du\u0020FeatureType.",
-            "url": "classes/Dataset-WfsExtract.html"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/Dataset-WfsExtract.html#method___construct"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract\u003A\u003AimplementedFilters\u0028\u0029",
-            "name": "implementedFilters",
-            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getItems\u0028\u0029.",
-            "url": "classes/Dataset-WfsExtract.html#method_implementedFilters"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract\u003A\u003AgetItems\u0028\u0029",
-            "name": "getItems",
-            "summary": "L\u0027acc\u00E8s\u0020aux\u0020items\u0020d\u0027une\u0020collection\u0020du\u0020JdD\u0020par\u0020un\u0020Generator.\u0020A\u0020REVOIR\u0020pour\u0020descendre\u0020le\u0020bbox\u0020dans\u0020la\u0020geometry\u0020\u0021\u0021\u0021\nLes\u0020filtres\u0020possibles\u0020sont\u003A\n\u0020\u002D\u0020skip\u003A\u0020int\u0020\u002D\u0020nombre\u0020de\u0020n\u002Duplets\u0020\u00E0\u0020sauter\u0020au\u0020d\u00E9but\u0020pour\u0020permettre\u0020la\u0020pagination\n\u0020\u002D\u0020bbox\u003A\u0020BBox\u0020\u002D\u0020rectangle\u0020de\u0020s\u00E9lection\u0020des\u0020n\u002Duplets",
-            "url": "classes/Dataset-WfsExtract.html#method_getItems"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract\u003A\u003AgetOneItemByKey\u0028\u0029",
-            "name": "getOneItemByKey",
-            "summary": "Retourne\u0020l\u0027item\u0020ayant\u0020la\u0020cl\u00E9\u0020fournie.",
-            "url": "classes/Dataset-WfsExtract.html#method_getOneItemByKey"
-        },                {
-            "fqsen": "\\Dataset\\WfsExtract\u003A\u003AREGISTRE",
-            "name": "REGISTRE",
-            "summary": "Registre\u0020des\u0020serveurs\u0020WFS\u0020index\u00E9\u0020par\u0020le\u0020nom\u0020du\u0020JdD.",
-            "url": "classes/Dataset-WfsExtract.html#constant_REGISTRE"
         },                {
             "fqsen": "\\Dataset\\WfsNs",
             "name": "WfsNs",

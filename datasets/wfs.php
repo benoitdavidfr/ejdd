@@ -9,14 +9,33 @@ namespace Dataset;
 const A_FAIRE_WFS = [
 <<<'EOT'
 Actions à réaliser:
+  - tester de définir les Wfs SsNs comme WfsNs avec espace de noms ''
+  - ajouter la possibilité d'obtenir le nbre de features d'une collection. Ce pourrait être optionnel.
+  - pas certain que les serveurs WFS 1.1.0 sachent faire du skip, ce n'est pas dans le standard, peut être les outils en pratique le font
+  - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
   - pb de synchro entre la pagination et le début de la plage demandée
     - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
   - dans les properties, la geometry ne porte pas geometry comme nom !
-  - la classe fonctionne t'elle avec des services WFS version 1.1 ?
-    - adapter WfsCap::outputFormatsForGetFeature() pour qu'elle fonctionne en WFS 1.1, ex SextantDCE
-  - certains WFS ne sont pas capables de fournir du GeoJSON -> prévoir une conversion de GML en GeoJSON ?
   - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
     - -> pas évident
+    - fait dans le cas où l'id du Feature est le no de séquence
+EOT
+];
+
+const BUG_WFS = [
+  <<<'EOT'
+Pour effectuer les tests:
+  IgnWfs:          Wfs 2.0.0 aGeoJSON
+  BDTopage2025:    WfsNsUrl 2.0.0 aGeoJSON
+  SextantBiologie: WfsNsUrl 2.0.0 ssGeoJSON
+  SextantDCE:      Wfs 1.1.0 SsNs aGeoJSON
+  SextantEnvMarin: Wfs 1.1.0 SsNs aGeoJSON
+  GéoLittoral:     WfsNsUrl 2.0.0 ssGeoJSON
+
+Tests à effectuer:
+  - properties
+  - getFeaturesOnBBox
+  - skip
 EOT
 ];
 
@@ -24,9 +43,10 @@ const NOTE_ESPACES_DE_NOMS_WFS = [
 <<<'EOT'
 L'utilisation d'espaces de noms XML avec SimpleXML est compliquée car son affichage ne permet pas de visualiser les sous-éléments
 dans les différents espaces.
+Par ailleurs, les espaces sont différents en WFS 1.1.0 et en WFS 2.0.0.
 J'utilise donc un contournement un peu approximatif.
 Dans le XML, soit je remplace les ':' séparant le préfixe par '__', soit je supprime ces préfixes.
-Cette 2ème solution ne fonctionne pas quand il existe des attributs utilisant un espace de nom comm 'xlink:href'.
+Cette 2ème solution ne fonctionne pas quand il existe des attributs utilisant un espace de nom comme 'xlink:href'.
 
 Cette transformation et ce décodage XML sont cantonnés dans les classes:
   - WfsCap qui analyse les capacités fournies en XML
@@ -39,41 +59,28 @@ EOT
 
 require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
+require_once __DIR__.'/../ogr/ogr2ogr.php';
 
-use GeoJSON\Feed;
+//use GeoJSON\Feed;
 use GeoJSON\Geometry;
 use BBox\GBox as BBox;
-
-class ConvertGmlToGeoJson {
-  /** Convertit un fichier GML d'une FeatureCollection en une FeatureCollection GeoJSON décodée.
-   * @return TGeoJsonFeatureCollection
-   */
-  static function convert(string $srcPath): array {
-    echo "ConvertGmlToGeoJson::convert(path=$srcPath)<br>\n";
-    
-    $destPath = substr($srcPath, 0, -4).'.json';
-    if (!is_file($destPath)) {
-      $options = "-lco WRITE_BBOX=YES"
-                ." -lco COORDINATE_PRECISION=5"; // résolution 1m
-      $cmde = "ogr2ogr -f 'GeoJSON' $options $destPath $srcPath";
-      echo "$cmde<br>\n";
-      $ret = exec($cmde, $output, $result_code);
-      if ($result_code <> 0) {
-        echo '$ret='; var_dump($ret);
-        echo "result_code=$result_code<br>\n";
-        echo '<pre>$output'; print_r($output); echo "</pre>\n";
-      }
-    }
-    $json = file_get_contents($destPath);
-    return json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-  }
-};
+use Ogr\Ogr2ogr;
 
 /** Gère un cache des appels Http GET pour Wfs.
  * Les fichiers sont stockés dans WfsCache::PATH.
  */
 class WfsCache {
   const PATH = __DIR__.'/wfscache/';
+  
+  /** Extrait du $http_response_header le code de retout Http.
+   * @param list<string> $http_response_header
+   */ 
+  static function httpResponseCode(array $http_response_header): ?string {
+    if (!preg_match('!^HTTP/1\.. (\d{3}) !', $http_response_header[0], $matches))
+      return null;
+    else
+      return $matches[1];
+  }
   
   /** Retourne le chemin du répertoire contenant le fichier. */
   static function dirPath(string $filePath): string {
@@ -102,9 +109,18 @@ class WfsCache {
       return file_get_contents($filePath);
     }
     else {
-      $string = file_get_contents($url);
-      if ($string === false)
+      $context = stream_context_create([
+        'http'=> [
+          'ignore_errors'=> true,
+        ],
+      ]);
+      $string = file_get_contents($url, false, $context);
+      if (self::httpResponseCode($http_response_header) <> '200') {
+        echo "<pre>$url -> $string\n";
+        echo '$http_response_header='; print_r($http_response_header);
         throw new \Exception("Ouverture $url impossible");
+      }
+      
       if ($string) {
         self::createDir($filePath);
         file_put_contents($filePath, $string);
@@ -134,7 +150,90 @@ class WfsCache {
   }
 };
 
-/** Créé à partir du XML des capacités d'un serveur WFS et les exploite pour en déduire notamment le schéma JSON du JdD. */
+/** Choix du paramètre outputFormat pour GetFeature.
+ * Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat par exemple pour GeoJSON:
+ *  - IgnWfs -> application/json
+ *  - BDTopage2025Wfs -> application/json; subtype=geojson
+ *  - DCE -> application/vnd.geo+json
+ * Cette classe gère les différents libellés de format et choisit le meilleur format pour GetFeature.
+ */
+class WfsOutputFormat {
+  /** Liste de type MIME GML fréquemment utilisés en précisant GML3 ou GML2. */
+  const GML_MIME = [
+    'application/gml+xml; version=3.2'=> 'GML3',
+    'text/xml; subtype=gml/2.1.2'=> 'GML2',
+    'text/xml; subtype=gml/3.1.1'=> 'GML3',
+    'text/xml; subtype=gml/3.2'=> 'GML3',
+    'text/xml; subtype=gml/3.2.1'=> 'GML3',
+  ];
+  
+  /** Un objet est créé avec le format tel qu'il est indiqué dans les capacités du serveur WFS. */
+  function __construct(readonly string $fmt) {}
+  
+  function __toString(): string { return $this->fmt; }
+  
+  /** Indique si le format correspond à GeoJSON ou GML ou autre (null).
+   * @return 'GeoJSON'|'GML'|null */
+  function type(): ?string {
+    if (substr($this->fmt, 0, strlen('application/json')) == 'application/json')
+      return 'GeoJSON';
+    elseif ($this->fmt == 'application/vnd.geo+json')
+      return 'GeoJSON';
+    elseif (substr($this->fmt, 0, strlen('application/gml+xml')) == 'application/gml+xml')
+      return 'GML';
+    elseif (substr($this->fmt, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
+      return 'GML';
+    else
+      return null;
+  }
+  
+  /** Cherche à distinguer GML3 de GML2.
+   * @return 'GeoJSON'|'GML'|'GML3'|'GML2'|null */
+  function subType(): ?string {
+    if (substr($this->fmt, 0, strlen('application/json')) == 'application/json')
+      return 'GeoJSON';
+    elseif ($this->fmt == 'application/vnd.geo+json')
+      return 'GeoJSON';
+    elseif (substr($this->fmt, 0, strlen('application/gml+xml')) == 'application/gml+xml')
+      return self::GML_MIME[$this->fmt] ?? 'GML';
+    elseif (substr($this->fmt, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
+      return self::GML_MIME[$this->fmt] ?? 'GML';
+    else
+      return null;
+  }
+
+  /** Retourne l'extension de nom de fichier correspondant au format. */
+  function ext(): string {
+    return match($this->type()) {
+      'GeoJSON' => '.json',
+      'GML' => '.gml',
+      default => throw new \Exception("Pas d'extension pour $this->fmt"),
+    };
+  }
+    
+  /** Choisit le meilleur format pour GetFeature.
+   * Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML, sinon null.
+   */
+  static function bestForGetFeature(WfsCap $wfsCap): ?self {
+    $best = [];
+    foreach ($wfsCap->outputFormatsForGetFeature() as $of) {
+      if ($stype = $of->subType())
+        $best[$stype] = $of;
+    }
+    if (isset($best['GeoJSON']))
+      return $best['GeoJSON'];
+    elseif (isset($best['GML3']))
+      return $best['GML3'];
+    elseif (isset($best['GML2']))
+      return $best['GML2'];
+    elseif (isset($best['GML']))
+      return $best['GML'];
+    else
+      return null;
+  }
+};
+
+/** Exploite le XML des capacités d'un serveur WFS pour en déduire notamment le schéma JSON du JdD. */
 class WfsCap {
   readonly \SimpleXMLElement $elt;
   
@@ -187,6 +286,35 @@ class WfsCap {
     return $coords;
   }
   
+  /** Dict. des FeatureTypes Name => FeatureType
+   * @retuen array<string,mixed> */
+  function featureTypes(): array {
+    $featureTypes = [];
+    foreach ($this->elt->FeatureTypeList->FeatureType as $featureType) {
+      $ftname = str_replace('__', ':', (string)$featureType->Name);
+      $featureTypes[$ftname] = [
+        'title'=> str_replace('__', ':', (string)$featureType->Title),
+        'abstract'=> (string)$featureType->Abstract,
+        'DefaultCRS'=> (string)$featureType->DefaultCRS,
+        'WGS84BoundingBox'=> self::WGS84BoundingBoxTo4Coordinates($featureType->ows__WGS84BoundingBox),
+      ];
+    }
+    return $featureTypes;
+  }
+  
+  /** Liste des espaces de noms des FeatureTypeNames.
+   * @return list<string> */
+  function namespaces(): array {
+    $namespaces = [];
+    foreach (array_keys($this->featureTypes()) as $ftName) {
+      if (preg_match('!^([^:]+):!', $ftName, $matches))
+        $namespaces[$matches[1]] = 1;
+      else
+        $namespaces[''] = 1;
+    }
+    return array_keys($namespaces);
+  }
+  
   /** Construit le schema JSON à partir des capacités.
    * @return array<mixed> */
   function jsonSchemaOfTheDs(): array {
@@ -205,7 +333,7 @@ class WfsCap {
       ];*/ // sélection de noms de FT 
       //if (!in_array($ftname, $ftNames)) continue;
       $collections[$ftname] = [
-        'title'=> (string)str_replace('__', ':', (string)$featureType->Title),
+        'title'=> str_replace('__', ':', (string)$featureType->Title),
         'description'=> 'Abstract: '.(string)$featureType->Abstract
           ."\nDefaultCRS: ".(string)$featureType->DefaultCRS
           ."\nWGS84BoundingBox:"
@@ -277,49 +405,7 @@ class WfsCap {
   }
 };
 
-/** Retourne le paramètre outputFormat à utiliser dans GetFeature pour obtenir du GeoJSON.
- * Retourne null si GetFeature ne permet pas d'obtenir du GeoJSON.
- * Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat:
- *  - IgnWfs -> application/json
- *  - BDTopage2025Wfs -> application/json; subtype=geojson
- *  - DCE -> application/vnd.geo+json
- */
-class WfsOutputFormat {
-  function __construct(readonly string $fmt) {}
-  
-  function __toString(): string { return $this->fmt; }
-  
-  /** @return 'GeoJSON'|'GML'|null */
-  function type(): ?string {
-    if (substr($this->fmt, 0, strlen('application/json')) == 'application/json')
-      return 'GeoJSON';
-    elseif ($this->fmt == 'application/vnd.geo+json')
-      return 'GeoJSON';
-    elseif (substr($this->fmt, 0, strlen('application/gml+xml')) == 'application/gml+xml')
-      return 'GML';
-    elseif (substr($this->fmt, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
-      return 'GML';
-    else
-      return null;
-  }
-
-  /** Choisi le meilleur format pour GetFeature. */
-  static function bestForGetFeature(WfsCap $wfsCap): ?self {
-    $best = [];
-    foreach ($wfsCap->outputFormatsForGetFeature() as $of) {
-      if ($type = $of->type())
-        $best[$type] = $of;
-    }
-    if (isset($best['GeoJSON']))
-      return $best['GeoJSON'];
-    elseif (isset($best['GML']))
-      return $best['GML'];
-    else
-      return null;
-  }
-};
-
-/** Créé à partir du XML issu d'une requête describeFeatureType et les exploite pour en déduire les propriétés de schema JSON. */
+/** Exploite le XML issu d'une requête describeFeatureType pour en déduire les propriétés de schema JSON. */
 class WfsProperties {
   readonly \SimpleXMLElement $ftds;
   
@@ -355,6 +441,7 @@ class WfsProperties {
       'xsd:int'=> ['type'=> ['integer', 'null']],
       'long'=> ['type'=> ['integer', 'null']],
       'xsd:double'=> ['type'=> ['number', 'null']],
+      'double'=> ['type'=> ['number', 'null']],
       'xsd:date'=> [
         'type'=> 'string',
         'pattern'=> '^\d{4}-\d{2}-\d{2}Z$',
@@ -444,6 +531,7 @@ class WfsProperties {
   }
   
   /** Construit les propriétés de chaque champ de chaque collection du JdD sous la forme [{collName}=< [{fieldName} => ['type'=> ...]]].
+   * Traitement spécifique pour les WFS 1.1.0 sans namespace car le type peut avoir parfois un namespace
    * @return array<string,array<string,mixed>>
    */
   function properties(): array {
@@ -452,7 +540,15 @@ class WfsProperties {
     foreach ($this->ftds->element as $element) {
       //echo '<pre>$element='; print_r($element);
       //echo $element['type'];
-      $eltNameFromTypes[substr((string)$element['type'], strlen($this->namespace)+1)] = (string)$element['name'];
+      if ($this->namespace)
+        $eltNameFromTypes[substr((string)$element['type'], strlen($this->namespace)+1)] = (string)$element['name'];
+      else {
+        // Quand le name n'a pas de namespace, il arrive que le type en est un !!!
+        if (preg_match('!^[^:]*:(.*)$!', $element['type'], $matches))
+          $eltNameFromTypes[$matches[1]] = (string)$element['name'];
+        else
+          $eltNameFromTypes[(string)$element['type']] = (string)$element['name'];
+      }
     }
     //echo '<pre>$eltNameFromTypes='; print_r($eltNameFromTypes);
     
@@ -460,7 +556,9 @@ class WfsProperties {
     foreach ($this->ftds->complexType as $ftd) {
       //echo '<pre>$ftd='; print_r($ftd);
       $typeName = (string)$ftd['name'];
-      $eltName = $eltNameFromTypes[$typeName];
+      //echo "typeName=$typeName<br>\n";
+      if (!($eltName = $eltNameFromTypes[$typeName] ?? null))
+        throw new \Exception("$typeName absent de eltNameFromTypes");
       
       //echo '<pre>xx='; print_r($ftd->complexContent);
       foreach ($ftd->complexContent->extension->sequence->element as $fieldDescription) {
@@ -480,6 +578,9 @@ class WfsProperties {
 
 /** Exécute les requêtes GET au serveur. */
 class WfsGetRequest {
+  /** La version WFS du serveur, initialement à null, peut être défini après le GetCapabilities qui ne l'utilise pas. */
+  protected ?string $version=null;
+  
   function __construct(readonly string $name, readonly string $url) {}
   
   /** Retourne le SimpleXMLElement correspondant aux capabilities.
@@ -488,73 +589,98 @@ class WfsGetRequest {
   function getCapabilities(): WfsCap {
     $xml = WfsCache::get(
       $this->name.'/cap.xml',
-      $this->url.'?service=WFS&version=2.0.0&request=GetCapabilities'
+      $this->url.'?service=WFS&request=GetCapabilities'
     );
     return new WfsCap($this->name, $xml);
   }
+  
+  function setVersion(string $version): void { $this->version = $version; }
   
   /** Retourne le DescribeFeatureType des FeatureTypes de l'espace de noms conerti en WfsProperties.
    * @param list<string> $ftNames - les noms des FeatureTypes avec leur espace de nom
    */
   function describeFeatureType(string $namespace, array $ftNames): WfsProperties {
+    //echo "Appel de WfsGetRequest::describeFeatureType@$this->name(namespace=$namespace)<br>\n";
     $xml = WfsCache::get(
-      $this->name.'/ft/'.$namespace.'.xml',
-      $this->url."?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType&TYPENAMES=".implode(',', $ftNames)
+      $this->name.'/ft/'.($namespace ? $namespace : 'nonamespace').'.xml',
+      $this->url."?SERVICE=WFS&VERSION='.$this->version.'&REQUEST=DescribeFeatureType&TYPENAMES=".implode(',', $ftNames)
     );
     return new WfsProperties($this->name, $namespace, $xml);
   }
   
   /** Retourne l'extrait de collection sous la forme d'une FeatureCollection GeoJSON décodée.
+   * Testé sur
+   * - IgnWfs (WFS 2.0.0 avec GeoJSON)
+   * - SextantDCE (WFS 1.1.0 avec GeoJSON)
+   * - SextantBiologie (WFS 2.0.0 sans GeoJSON)
    * @return TGeoJsonFeatureCollection
    */
   function getFeatures(string $ftName, int $start, int $count, WfsOutputFormat $outputFormat, ?BBox $bbox): array {
     //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
-    if ($bbox) {
-      // En WFS on précise le CRS du BBox qui doit être fourni en LatLon
-      $bboxLatLon = $bbox->as4CoordsLatLon();
-      $bboxLatLon[] = 'urn:ogc:def:crs:EPSG::4326';
-      //echo "bboxLatLon=[".implode(',',$bboxLatLon)."]<br>\n";
-      Feed::log("bboxLatLon=[".implode(',',$bboxLatLon)."]\n");
-    }
-    $outputFormatType = $outputFormat->type();
-    $ext = match($outputFormatType) {
-      'GeoJSON' => '.json',
-      'GML' => '.gml',
-      default => throw new \Exception("Cas interdit"),
+    $epsg4326 = match($this->version) {
+        //'2.0.0' => 'http://www.opengis.net/def/crs/EPSG/0/4326', // forme refusée par SextantBiologie
+        '2.0.0' => 'EPSG:4326',
+        //'1.1.0' => 'urn:ogc:def:crs:EPSG:6.6:4326', // forme de srs recomandée par ChatGPT pour les WFS 1.1, ne marche pas
+        '1.1.0' => 'EPSG:4326', // expérimentalement sur SextantDCE, il faut cette forme
+        default => throw new \Exception("version $this->version non acceptée"),
     };
+    if ($bbox) {
+      $bboxAs4Coords = match($this->version) {
+        '2.0.0' => $bbox->as4CoordsLatLon(), // en WFS 2.0.0, les coordonnées doivent être fournies en LatLon
+        '1.1.0' => $bbox->as4Coords(), // en WFS 1.1.0 expérimentalement, je constate qu'il faut utiliser LonLat (au moins sur SextantDCE)
+        default => throw new \Exception("version $this->version non acceptée"),
+      };
+      // ajout du SRS utilisé pour le BBox
+      $bboxAs4Coords[] = $epsg4326;
+    }
     $ftNameCache = str_replace(':','/', $ftName);
-    $cachePath = "$this->name/features/$ftNameCache".($bbox?"/bbox$bbox":'/nobbox')."/$start-$count$ext";
+    $cachePath = "$this->name/features/$ftNameCache".($bbox?"/bbox$bbox":'/nobbox')."/$start-$count".$outputFormat->ext();
     $fcoll = WfsCache::get(
       $cachePath,
       $this->url
-        ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$ftName"
-        .'&srsName=urn:ogc:def:crs:EPSG::4326'
-        .($bbox ? "&bbox=".implode(',',$bboxLatLon) : '')
+        ."?service=WFS&version=".$this->version."&request=GetFeature&"
+        .match($this->version) {
+          '2.0.0' => "typeNames=$ftName",
+          '1.1.0' => "typeName=$ftName",
+          default => throw new \Exception("version $this->version non acceptée"),
+         }
+        ."&srsName=$epsg4326"
+        .($bbox ? "&bbox=".implode(',',$bboxAs4Coords) : '')
         ."&outputFormat=".urlencode($outputFormat)
-        ."&startIndex=$start&count=$count"
+        ."&startIndex=$start&"
+        .match($this->version) {
+          '2.0.0' => "count=$count",
+          '1.1.0' => "maxFeatures=$count",
+          default => throw new \Exception("version $this->version non acceptée"),
+        }
     );
-    return match($outputFormatType) {
-      'GeoJSON' => json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR),
-      'GML' => ConvertGmlToGeoJson::convert(WfsCache::PATH.$cachePath),
-      default => throw new \Exception("Cas interdit"),
-    };
+    // Si GetFeature a retourné du GML, il est converti en GeoJSON 
+    if ($outputFormat->type() == 'GML') {
+      $fcoll = Ogr2ogr::convertGmlToGeoJson(WfsCache::PATH.$cachePath);
+    }
+    return json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
   }
   
   /** Retourne le Feature ayant cet id ou null si aucun ne l'a.
    * @return ?TGeoJsonFeature
    */
-  function getFeature(string $ftName, string $id, string $outputFormat): ?array {
+  function getFeature(string $ftName, string $id, WfsOutputFormat $outputFormat): ?array {
     $ftNameCache = str_replace(':','/', $ftName);
+    $cachePath = "$this->name/features/$ftNameCache/id-$id".$outputFormat->ext();
     $fcoll = WfsCache::get(
-      "$this->name/features/$ftNameCache/id-$id.json",
+      $cachePath,
       $this->url
-        ."?service=WFS&version=2.0.0&request=GetFeature&typeNames=$ftName"
+        ."?service=WFS&version=".$this->version."&request=GetFeature&typeNames=$ftName"
         .'&srsName=urn:ogc:def:crs:EPSG::4326'
         ."&outputFormat=".urlencode($outputFormat)
         ."&featureID=$id"
     );
+    // Si GetFeature a retourné du GML, il est converti en GeoJSON 
+    if ($outputFormat->type() == 'GML') {
+      $fcoll = Ogr2ogr::convertGmlToGeoJson(WfsCache::PATH.$cachePath);
+    }
     $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
-    if ($fcoll['numberMatched'] == 0) {
+    if (count($fcoll['features']) == 0) {
       //echo "Aucun résultat retourné<br>\n";
       return null;
     }
@@ -582,6 +708,7 @@ class Wfs extends Dataset {
   function __construct(array $params) {
     $this->wfsReq = new WfsGetRequest($params['dsName'], $params['url']);
     $this->cap = $this->wfsReq->getCapabilities();
+    $this->wfsReq->setVersion($this->cap->version());
     /*if (($version = $this->cap->version()) <> '2.0.0') {
       throw new \Exception("Version WFS==$version, seule la version 2.0.0 est gérée");
     }*/
@@ -595,9 +722,27 @@ class Wfs extends Dataset {
     return new self(['dsName'=> $dsName, 'url'=> $def['url']]);
   }
   
+  /** Retourne les caractéristiques principales des serveurs pour les tests.
+   * @return array<string,mixed> */
+  function characteristics(): array {
+    $namespaces = $this->cap->namespaces();
+    if (!$namespaces)
+      $espacesDeNoms = "Aucun espace";
+    elseif ($namespaces == [''])
+      $espacesDeNoms = "1 espace ''";
+    elseif (count($namespaces) == 1)
+      $espacesDeNoms = "1 espace ".$namespaces[0];
+    else
+      $espacesDeNoms = count($namespaces)." espaces";
+    return [
+      'version'=> $this->cap->version(),
+      'GeoJSON'=> (WfsOutputFormat::bestForGetFeature($this->cap)->type() == 'GeoJSON') ? 'oui' : 'non',
+      'espacesDeNoms'=> $espacesDeNoms,
+    ];
+  }
+  
   /** Retourne les filtres implémentés par getItems().
-   * @return list<string>
-   */
+   * @return list<string> */
   function implementedFilters(string $collName): array { return ['skip', 'bbox']; }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
@@ -660,7 +805,7 @@ class Wfs extends Dataset {
    * @return array<mixed>|null
    */ 
   function getOneItemByKey(string $collName, string|int $id): array|null {
-    echo "getOneItemByKey(id=$id)<br>\n";
+    //echo "getOneItemByKey(id=$id)<br>\n";
     if (is_int($id) || is_numeric($id)) { // c'est un numéro en séquence
       $start = intval(floor($id/self::COUNT)*self::COUNT); // j'utilise getItems() pour avoir la bonne page
       echo "start=$start<br>\n";
@@ -706,8 +851,12 @@ class Wfs extends Dataset {
 if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Exemple d'utilisation pour debuggage 
 
 
-use Algebra\CollectionOfDs;
+require_once __DIR__.'/wfsns.php';
 
+use Algebra\CollectionOfDs;
+use Symfony\Component\Yaml\Yaml;
+
+/** Test de Wfs. */
 class WfsBuild {
   static function main(): void {
     if (isset($_GET['dataset']))
@@ -723,38 +872,51 @@ class WfsBuild {
         echo "<a href='?dataset=$_GET[dataset]&action=getItemsOnBbox'>Test getItems sur bbox</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=listCRS'>Liste les CRS</a><br>\n";
         echo "<a href='?dataset=$_GET[dataset]&action=delCache'>Efface le cache de $_GET[dataset]</a><br>\n";
+        echo "<a href='?action=listOutputFormats'>Liste les outputFormats des différents serveurs pour GetFeature</a><br>\n";
+        echo "<a href='?action=characteristics'>Liste les caractéristiques des différents serveurs</a><br>\n";
         break;
       }
-      case 'nameSpaces': { // Accède aux données par les espaces de noms
-        $wfs = Dataset::get($_GET['dataset']);
+      case 'nameSpaces': { // Accède aux données par les espaces de noms, fonctionne sur Wfs|WfsNs
+        $def = Dataset::dictOfDatasets()[$_GET['dataset']];
+        $wfs = ($def['class'] == 'Wfs') ? Dataset::get($_GET['dataset']) : WfsNs::get($_GET['dataset'])->wfs;
         if (!isset($_GET['ns'])) { // affiche les espaces de noms de $_GET['dataset']
           echo "<h2>Liste des espaces de noms</h2>\n";
-          $namespaces = [];
-          foreach (array_keys($wfs->collections) as $collName) {
-            if (!preg_match('!^([^:]+):!', $collName, $matches)) {
-              throw new \Exception("No match on '$collName'");
-            }
-            $namespaces[$matches[1]] = 1;
+          if (!($namespaces = $wfs->cap->namespaces())) {
+            echo "Il n'y a aucun espace de noms<br>\n";
+            die();
+          }
+          if (in_array('', $namespaces)) {
+            echo "Attention, certains FeatureTypes n'ont pas d'espace de noms<br>\n";
           }
           echo "<table border=1>\n",
                implode("\n", array_map(
-                 function($namespace) {
-                   return "<tr><td><a href='?dataset=$_GET[dataset]&action=$_GET[action]&ns=$namespace'>$namespace</a></td>"
-                         ."<td><a href='?dataset=$_GET[dataset]&action=describeFeatureTypes&ns=$namespace'>describeFeatureTypes</a></td>"
+                 function($ns) {
+                   return "<tr><td><a href='?dataset=$_GET[dataset]&action=$_GET[action]&ns=$ns'>".($ns ? $ns : "noNS")."</a></td>"
+                         ."<td><a href='?dataset=$_GET[dataset]&action=describeFeatureTypes&ns=$ns'>describeFeatureTypes</a></td>"
+                         ."<td><a href='?dataset=$_GET[dataset]&action=properties&ns=$ns'>properties</a></td>"
+                           ."<td><a href='?dataset=$_GET[dataset]&action=WfsNs&ns=$ns'>WfsNs</a></td>"
                          ."</tr>\n";
                  },
-                 array_keys($namespaces)
+                 $namespaces
                )),
                "</table>\n";
+          die();
         }
         else { // affiche les collections de l'espace de nom $_GET[ns]
-          echo "<h2>Liste des collections de l'espace $_GET[ns]</h2>\n";
-          foreach (array_keys($wfs->collections) as $collName) {
-            if (!preg_match('!^([^:]+):(.*)$!', $collName, $matches)) {
-              throw new \Exception("No match on '$collName'");
+          if ($_GET['ns'])
+            echo "<h2>Liste des collections ",$_GET['ns'] ? "de l'espace $_GET[ns]" : 'sans espace de noms',"</h2>\n";
+          else
+            echo "<h2>Liste des collections sans espace de noms</h2>\n";
+          foreach (array_keys($wfs->cap->featureTypes()) as $collName) {
+            if (preg_match('!^([^:]+):(.*)$!', $collName, $matches)) {
+              if ($matches[1] == $_GET['ns']) {
+                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$matches[2]</a><br>\n";
+              }
             }
-            if ($matches[1] == $_GET['ns']) {
-              echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$matches[2]</a><br>\n";
+            else { // le nom ne comporte pas d'espace de noms
+              if (!$_GET['ns']) {
+                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$collName</a><br>\n";
+              }
             }
           }
         }
@@ -794,82 +956,116 @@ class WfsBuild {
         }
         break;
       }
-      case 'describeFeatureTypes': {
+      case 'describeFeatureTypes': { // affiche le retour de describeFeatureTypes() pour un espace de noms 
         $wfs = Wfs::get($_GET['dataset']);
         echo'<pre>describeFeatureTypes='; print_r($wfs->describeFeatureTypes($_GET['ns']));
         break;
       }
-      case 'getItems': {
+      case 'properties': { // affiche les propriétés des FeatureType d'un espace de noms du Wfs 
+        $wfs = Wfs::get($_GET['dataset']);
+        $wfsProperties = $wfs->describeFeatureTypes($_GET['ns']);
+        echo "<pre>properties:\n"; echo Yaml::dump($wfsProperties->properties());
+        break;
+      }
+      case 'WfsNs': { // Crée un WfsNs à partir d'un Wfs et d'un espace de noms 
+        require_once __DIR__.'/wfsns.php';
+        $wfs = Wfs::get($_GET['dataset']);
+        $wfsNs = new WfsNs(['dsName'=> $_GET['dataset'], 'url'=> $wfs->wfsReq->url, 'namespace'=> $_GET['ns']]);
+        echo "<pre>wfsNs:\n"; print_r($wfsNs);
+        break;
+      }
+      case 'getItems': { // affiche les items d'un FeatureType du Wfs 
         $wfs = Wfs::get($_GET['dataset']);
         foreach ($wfs->getItems($_GET['ft']) as $item) {
           echo '<pre>$item='; print_r($item); echo "</pre>\n";
         }
         break;
       }
-      case 'getItemsOnBbox': {
+      case 'getItemsOnBbox': { // getItems avec BBox 
         echo "<h2>getItemsOnBbox</h2>\n";
+        $BBOXES = [
+          'LaRéunion'=> [55, -21, 56, -20],
+          "PACA"=> [4.23, 42.98, 7.72, 45.13],
+          "Bretagne"=> [-5.14, 47.28, -1.02, 48.87],
+        ];
+        if (!isset($_GET['bbox'])) {
+          echo "<h3>Choix d'un bbox</h3>\n";
+          foreach ($BBOXES as $title => $bbox) {
+            echo "<a href='?dataset=$_GET[dataset]&action=$_GET[action]&bbox=$title'>$title</a><br>\n";
+          }
+          die();
+        }
         $wfs = Wfs::get($_GET['dataset']);
         if (!isset($_GET['collName'])) {
+          echo "<h3>Choix d'une collection</h3>\n";
           foreach ($wfs->collections as $collName => $coll) {
-            echo "sur <a href='?dataset=$_GET[dataset]&action=$_GET[action]&collName=$collName'>$collName</a><br>\n";
+            echo "sur <a href='?dataset=$_GET[dataset]&action=$_GET[action]&bbox=$_GET[bbox]&collName=$collName'>$collName</a><br>\n";
           }
+          die();
         }
         else {
-          $bbox = BBox::from4Coords([55, -21, 56, -20]);
+          $bbox = BBox::from4Coords($BBOXES[$_GET['bbox']]);
+          $nbItems = 0;
           foreach ($wfs->getItems($_GET['collName'], ['bbox'=> $bbox]) as $item) {
             $item['geometry']['coordinates'] = [];
             echo '<pre>$item='; print_r($item); echo "</pre>\n";
+            if (++$nbItems >= 3) {
+              echo "Arrêt après 3 items.<br>\n";
+              break;
+            }
           }
         }
         break;
       }
       case 'listCRS': {
-        {/* CRS utilisés dans wfs-fr-ign-gpf
-            [urn:ogc:def:crs:EPSG::4326]
-            [urn:ogc:def:crs:EPSG::2154]
-            [urn:ogc:def:crs:EPSG::3857]
-            [urn:ogc:def:crs:EPSG::4471] => Array(
-                    [0] => IGNF_CARTO-FORMATIONS-VEGETALES_2016:formations_vegetales_d976_2016
-                    [1] => IGNF_CARTO-FORMATIONS-VEGETALES_2023:formations_vegetales_d976_2023
-                    [2] => batiment_gpkg_19-12-2024_wfs:batiment_mayotte
-            )
-            [urn:ogc:def:crs:EPSG::32620] => Array(
-                    [0] => PRSF_BDD_GLP_2023:prs_glp
-            )
-            [urn:ogc:def:crs:EPSG::2972] => Array(
-                    [0] => PRSF_BDD_GUF_2023:prs_guf
-                    [1] => ste_fr_carte_d973_gpkg_07-10-2024_wfs:geom_ste_guyane
-            )
-            [urn:ogc:def:crs:EPSG::2975] => Array(
-                    [0] => PRSF_BDD_REU_2023:prs_reu
-                    [1] => ste_fr_carte_d974_gpkg_07-10-2024_wfs:geom_ste_reunion
-            )
-            [urn:ogc:def:crs:EPSG::5490] => Array(
-                    [0] => communes_972:commune972
-                    [1] => ste_fr_carte_d971_972_gpkg_07-10-2024_wfs:geom_ste_guadeloupe
-                    [2] => ste_fr_carte_d971_972_gpkg_07-10-2024_wfs:geom_ste_martinique
-                    [3] => unesco_pelee_wfs:unesco_bien
-                    [4] => zonealertesecheresse972_gpkg_27-09-2024_wfs:972_Alerte_Secheresse
-            )
-            [urn:ogc:def:crs:EPSG::3944] => Array(
-                    [0] => points_altimetriques_mamp_v1_wfs:points_altimetriques
-                    [1] => points_altimetriques_mamp_v2_echantillons:points_altimetriques
-            )
-        */}
-        $fs = new Wfs($_GET['dataset']);
+        $wfs = Wfs::get($_GET['dataset']);
         $crs = [];
-        foreach ($fs->collections as $ftName => $ft) {
-          //echo "ftName=$ftName<br>\n";
-          //echo '<pre>'; print_r($ft);
-          $defaultCRS = $ft->schema->schema['defaultCRS'];
+        foreach ($wfs->cap->elt->FeatureTypeList->FeatureType as $featureType) {
+          //echo '<pre>$featureType='; print_r($featureType);
+          $defaultCRS = (string)$featureType->DefaultCRS;
+          $ftName = (string)$featureType->Name;
           //echo "ftName=$ftName -> defaultCRS=$defaultCRS<br>\n";
           $crs[$defaultCRS][] = $ftName;
         }
-        echo '<pre>'; print_r($crs);
+        echo '<pre>$defaultCRS='; print_r($crs);
         break;
       }
       case 'delCache': {
         WfsCache::delete($_GET['dataset']);
+        break;
+      }
+      case 'listOutputFormats': {
+        echo "<pre>\n";
+        $outputFormats = [];
+        foreach (Dataset::dictOfDatasets() as $dsName => $dsDef) {
+          if (is_array($dsDef) && in_array($dsDef['class'], ['Wfs','WfsNs']) && isset($dsDef['url'])) {
+            echo "dataset: $dsName\n";
+            if ($dsDef['class'] == 'Wfs')
+              $wfs = Wfs::get($dsName);
+            else
+              $wfs = WfsNs::get($dsName)->wfs;
+            foreach ($wfs->cap->outputFormatsForGetFeature() as $outputFormat) {
+              $outputFormats[(string)$outputFormat] = 1;
+            }
+          }
+        }
+        ksort($outputFormats);
+        print_r($outputFormats);
+        break;
+      }
+      case 'characteristics': {
+        echo "<h2>Caractéristiques des serveurs WFS</h2><pre>\n";
+        foreach (Dataset::dictOfDatasets() as $dsName => $dsDef) {
+          if (is_array($dsDef) && in_array($dsDef['class'], ['Wfs','WfsNs']) && isset($dsDef['url'])) {
+            //echo "dataset: $dsName\n";
+            if ($dsDef['class'] == 'Wfs')
+              $wfs = Wfs::get($dsName);
+            else
+              $wfs = WfsNs::get($dsName)->wfs;
+            //print_r($wfs->characteristics());
+            echo Yaml::dump([$dsName => array_merge(['class'=> $dsDef['class']], $wfs->characteristics())]);
+          }
+        }
         break;
       }
       default: throw new \Exception("Action $_GET[action] inconnue");

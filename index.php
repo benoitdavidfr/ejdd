@@ -46,6 +46,14 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+27/9/2025:
+  - amélioration de Wfs pour qu'il fonctionne dans différents cas de figure
+    - Wfs 2.0.0 et Wfs 1.1.0
+    - cas où les FeatureTypes ne sont pas définis dans un espace de nom ou sont dans l'espace par défaut
+    - avec retour en GeoJSON ou non
+    - tests sur différents cas
+26/9/2025:
+  - test de OgrApi, je n'ai pas réussi à l'utiliser.
 25/9/2025:
   - gestion dans Wfs des properties en WFS version 1.1.0
   - ajout de la possibilité d'utiliser un Wfs ne générant pas du GeoJSON en effectuant la conversion de GML vers GeoJSON
@@ -297,6 +305,9 @@ Lignes de commandes utiles
     ../phpDocumentor.phar -f *.php,algebra/*.php,datasets/*.php,geom/*.php,drawing/*.php --target docs
   Fenêtre Php8.2:
     docker exec -it --user=www-data dockerc-php82-1 /bin/bash
+  Fenêtre root:
+    # fenetres root dans php84-bash
+    docker exec -it dockerc-php84-1 /bin/bash
   Pour committer le git:
     git commit -am "{commentaire}"
   Pour créer une branche et y basculer:

@@ -194,7 +194,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    WfsCap
+    WfsOutputFormat
 
     
             <div class="phpdocumentor-element__package">
@@ -215,13 +215,21 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">237</span>
+    <span class="phpdocumentor-element-found-in__line">160</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Exploite le XML des capacités d&#039;un serveur WFS pour en déduire notamment le schéma JSON du JdD.</p>
+            <p class="phpdocumentor-summary">Choix du paramètre outputFormat pour GetFeature.</p>
 
 
+    <section class="phpdocumentor-description"><p>Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat par exemple pour GeoJSON:</p>
+<ul>
+<li>IgnWfs -&gt; application/json</li>
+<li>BDTopage2025Wfs -&gt; application/json; subtype=geojson</li>
+<li>DCE -&gt; application/vnd.geo+json
+Cette classe gère les différents libellés de format et choisit le meilleur format pour GetFeature.</li>
+</ul>
+</section>
 
 
 
@@ -231,7 +239,7 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/Dataset-WfsCap.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsOutputFormat.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -241,100 +249,133 @@
 
 
 
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/Dataset-WfsOutputFormat.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#constant_GML_MIME">GML_MIME</a>
+    <span>
+        &nbsp;= [&#039;application/gml+xml; version=3.2&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/2.1.2&#039; =&gt; &#039;GML2&#039;, &#039;text/xml; subtype=gml/3.1.1&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/3.2&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/3.2.1&#039; =&gt; &#039;GML3&#039;]                            </span>
+</dt>
+<dd>Liste de type MIME GML fréquemment utilisés en précisant GML3 ou GML2.</dd>
+
+    </dl>
 
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/Dataset-WfsCap.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsOutputFormat.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsCap.html#property_dsName">$dsName</a>
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#property_fmt">$fmt</a>
     <span>
                         &nbsp;: string            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsCap.html#property_elt">$elt</a>
-    <span>
-                        &nbsp;: <abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>            </span>
 </dt>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/Dataset-WfsCap.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsOutputFormat.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method___construct">__construct()</a>
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
+<dd>Un objet est créé avec le format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_featureTypes">featureTypes()</a>
-    <span>
-                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
-</dt>
-<dd>Dict. des FeatureTypes Name =&gt; FeatureType</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_jsonSchemaOfTheDs">jsonSchemaOfTheDs()</a>
-    <span>
-                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
-</dt>
-<dd>Construit le schema JSON à partir des capacités.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_namespaces">namespaces()</a>
-    <span>
-                                &nbsp;: array&lt;int, string&gt;    </span>
-</dt>
-<dd>Liste des espaces de noms des FeatureTypeNames.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_outputFormatsForGetFeature">outputFormatsForGetFeature()</a>
-    <span>
-                                &nbsp;: array&lt;int, <a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&gt;    </span>
-</dt>
-<dd>Retourne la liste des paramètres outputFormat possibles pour GetFeature.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsCap.html#method_version">version()</a>
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method___toString">__toString()</a>
     <span>
                                 &nbsp;: string    </span>
 </dt>
-<dd>Retourne la version du protocole WFS.</dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a class="" href="classes/Dataset-WfsCap.html#method_corner2Pos">corner2Pos()</a>
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature">bestForGetFeature()</a>
     <span>
-                                &nbsp;: <abbr title="\Dataset\TPos">TPos</abbr>    </span>
+                                &nbsp;: self|null    </span>
 </dt>
-<dd>Convertit un coin d&#039;un WGS84BoundingBox en Position.</dd>
+<dd>Choisit le meilleur format pour GetFeature.</dd>
 
-            <dt class="phpdocumentor-table-of-contents__entry -method -private">
-    <a class="" href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates">WGS84BoundingBoxTo4Coordinates()</a>
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method_ext">ext()</a>
     <span>
-                                &nbsp;: array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;    </span>
+                                &nbsp;: string    </span>
 </dt>
-<dd>Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.</dd>
+<dd>Retourne l&#039;extension de nom de fichier correspondant au format.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method_subType">subType()</a>
+    <span>
+                                &nbsp;: "GeoJSON"|"GML"|"GML3"|"GML2"|null    </span>
+</dt>
+<dd>Cherche à distinguer GML3 de GML2.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#method_type">type()</a>
+    <span>
+                                &nbsp;: "GeoJSON"|"GML"|null    </span>
+</dt>
+<dd>Indique si le format correspond à GeoJSON ou GML ou autre (null).</dd>
 
     </dl>
 
 
 
         
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="classes/Dataset-WfsOutputFormat.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_GML_MIME">
+        GML_MIME
+        <a href="classes/Dataset-WfsOutputFormat.html#constant_GML_MIME" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">162</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Liste de type MIME GML fréquemment utilisés en précisant GML3 ou GML2.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">GML_MIME</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;application/gml+xml; version=3.2&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/2.1.2&#039; =&gt; &#039;GML2&#039;, &#039;text/xml; subtype=gml/3.1.1&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/3.2&#039; =&gt; &#039;GML3&#039;, &#039;text/xml; subtype=gml/3.2.1&#039; =&gt; &#039;GML3&#039;]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+            </section>
 
         
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/Dataset-WfsCap.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsOutputFormat.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -344,9 +385,9 @@
             -public
                                                 -read-only                    "
 >
-    <h4 class="phpdocumentor-element__name" id="property_dsName">
-        $dsName
-        <a href="classes/Dataset-WfsCap.html#property_dsName" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_fmt">
+        $fmt
+        <a href="classes/Dataset-WfsOutputFormat.html#property_fmt" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
@@ -354,7 +395,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">240</span>
+    <span class="phpdocumentor-element-found-in__line">171</span>
 
     </aside>
 
@@ -363,45 +404,7 @@
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__type">string</span>
-    <span class="phpdocumentor-signature__name">$dsName</span>
-    </code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                -read-only                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_elt">
-        $elt
-        <a href="classes/Dataset-WfsCap.html#property_elt" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                        <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">238</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr></span>
-    <span class="phpdocumentor-signature__name">$elt</span>
+    <span class="phpdocumentor-signature__name">$fmt</span>
     </code>
 
     
@@ -418,7 +421,7 @@
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/Dataset-WfsCap.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsOutputFormat.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -429,20 +432,21 @@
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/Dataset-WfsCap.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsOutputFormat.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">240</span>
+    <span class="phpdocumentor-element-found-in__line">171</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Un objet est créé avec le format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dsName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$xml</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fmt</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -451,14 +455,7 @@
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$dsName</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$xml</span>
+                <span class="phpdocumentor-signature__argument__name">$fmt</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
@@ -478,197 +475,22 @@
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_featureTypes">
-        featureTypes()
-        <a href="classes/Dataset-WfsCap.html#method_featureTypes" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method___toString">
+        __toString()
+        <a href="classes/Dataset-WfsOutputFormat.html#method___toString" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">291</span>
+    <span class="phpdocumentor-element-found-in__line">173</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Dict. des FeatureTypes Name =&gt; FeatureType</p>
-
+    
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">featureTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="classes/Dataset-WfsCap.html#method_featureTypes#tags" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">retuen</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>array&lt;string,mixed&gt;</p>
-</section>
-
-                                    </dd>
-                                            </dl>
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_jsonSchemaOfTheDs">
-        jsonSchemaOfTheDs()
-        <a href="classes/Dataset-WfsCap.html#method_jsonSchemaOfTheDs" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">320</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Construit le schema JSON à partir des capacités.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">jsonSchemaOfTheDs</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_namespaces">
-        namespaces()
-        <a href="classes/Dataset-WfsCap.html#method_namespaces" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">307</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Liste des espaces de noms des FeatureTypeNames.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">namespaces</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, string&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-    
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;int, string&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_outputFormatsForGetFeature">
-        outputFormatsForGetFeature()
-        <a href="classes/Dataset-WfsCap.html#method_outputFormatsForGetFeature" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">364</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne la liste des paramètres outputFormat possibles pour GetFeature.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">outputFormatsForGetFeature</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, <a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&gt;</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <section class="phpdocumentor-description"><p>Fonctionne en WFS version 2.0.0 ou 1.1.0</p>
-</section>
-
-    
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;int, <a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&gt;</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_version">
-        version()
-        <a href="classes/Dataset-WfsCap.html#method_version" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">259</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne la version du protocole WFS.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">version</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+                    <span class="phpdocumentor-signature__name">__toString</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -688,38 +510,38 @@
                     <article
         class="phpdocumentor-element
             -method
-            -private
+            -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_corner2Pos">
-        corner2Pos()
-        <a href="classes/Dataset-WfsCap.html#method_corner2Pos" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_bestForGetFeature">
+        bestForGetFeature()
+        <a href="classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">266</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Convertit un coin d&#039;un WGS84BoundingBox en Position.</p>
+        <p class="phpdocumentor-summary">Choisit le meilleur format pour GetFeature.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">corner2Pos</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$corner</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TPos">TPos</abbr></span></code>
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">bestForGetFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wfsCap</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Retourne [] ssi $WGS84BoundingBox vide</p>
+        <section class="phpdocumentor-description"><p>Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML, sinon null.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$corner</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr></span>
+                <span class="phpdocumentor-signature__argument__name">$wfsCap</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -732,58 +554,124 @@
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TPos">TPos</abbr></span>
+        <span class="phpdocumentor-signature__response_type">self|null</span>
             </section>
 
 </article>
                     <article
         class="phpdocumentor-element
             -method
-            -private
-                                    -static                    "
+            -public
+                                                        "
 >
-    <h4 class="phpdocumentor-element__name" id="method_WGS84BoundingBoxTo4Coordinates">
-        WGS84BoundingBoxTo4Coordinates()
-        <a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_ext">
+        ext()
+        <a href="classes/Dataset-WfsOutputFormat.html#method_ext" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">279</span>
+    <span class="phpdocumentor-element-found-in__line">206</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Convertit un WGS84BoundingBox en 4 coordonnées xmin,ymin,xmax,ymax.</p>
+        <p class="phpdocumentor-summary">Retourne l&#039;extension de nom de fichier correspondant au format.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">private</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">WGS84BoundingBoxTo4Coordinates</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$WGS84BoundingBox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;</span></code>
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">ext</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Retourne [] si $WGS84BoundingBox n'est pas défini.</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$WGS84BoundingBox</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\SimpleXMLElement">SimpleXMLElement</abbr></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
+    
+    
     
 
     
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">array&lt;int, <abbr title="\Dataset\number">number</abbr>&gt;</span>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_subType">
+        subType()
+        <a href="classes/Dataset-WfsOutputFormat.html#method_subType" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">192</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Cherche à distinguer GML3 de GML2.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">subType</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">"GeoJSON"|"GML"|"GML3"|"GML2"|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">"GeoJSON"|"GML"|"GML3"|"GML2"|null</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_type">
+        type()
+        <a href="classes/Dataset-WfsOutputFormat.html#method_type" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">177</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Indique si le format correspond à GeoJSON ou GML ou autre (null).</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">type</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">"GeoJSON"|"GML"|null</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">"GeoJSON"|"GML"|null</span>
             </section>
 
 </article>
@@ -894,30 +782,34 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/Dataset-WfsCap.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/Dataset-WfsCap.html#toc-methods">Methods</a></li>
+                                        <li><a href="classes/Dataset-WfsOutputFormat.html#toc-constants">Constants</a></li>
+                                                            <li><a href="classes/Dataset-WfsOutputFormat.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/Dataset-WfsOutputFormat.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/Dataset-WfsOutputFormat.html#constant_GML_MIME">GML_MIME</a></li>
+                                            </ul>
+                </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/Dataset-WfsCap.html#property_dsName">$dsName</a></li>
-                                                    <li class=""><a href="classes/Dataset-WfsCap.html#property_elt">$elt</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsOutputFormat.html#property_fmt">$fmt</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_featureTypes">featureTypes()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_jsonSchemaOfTheDs">jsonSchemaOfTheDs()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_namespaces">namespaces()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_outputFormatsForGetFeature">outputFormatsForGetFeature()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_version">version()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_corner2Pos">corner2Pos()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsCap.html#method_WGS84BoundingBoxTo4Coordinates">WGS84BoundingBoxTo4Coordinates()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method___toString">__toString()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature">bestForGetFeature()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method_ext">ext()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method_subType">subType()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsOutputFormat.html#method_type">type()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -937,7 +829,7 @@
     </section>
 </section>
         </div>
-        <a href="classes/Dataset-WfsCap.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Dataset-WfsOutputFormat.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 
