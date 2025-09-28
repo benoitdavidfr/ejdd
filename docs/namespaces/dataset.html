@@ -225,16 +225,10 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-  - tester de définir les Wfs SsNs comme WfsNs avec espace de noms &#039;&#039;
   - ajouter la possibilité d&#039;obtenir le nbre de features d&#039;une collection. Ce pourrait être optionnel.
-  - pas certain que les serveurs WFS 1.1.0 sachent faire du skip, ce n&#039;est pas dans le standard, peut être les outils en pratique le font
   - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
   - pb de synchro entre la pagination et le début de la plage demandée
     - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
-  - dans les properties, la geometry ne porte pas geometry comme nom !
-  - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
-    - -&gt; pas évident
-    - fait dans le cas où l&#039;id du Feature est le no de séquence
 EOT]                            </span>
 </dt>
 <dd>Actions à réaliser.</dd>
@@ -247,7 +241,7 @@ Pour effectuer les tests:
   IgnWfs:          Wfs 2.0.0 aGeoJSON
   BDTopage2025:    WfsNsUrl 2.0.0 aGeoJSON
   SextantBiologie: WfsNsUrl 2.0.0 ssGeoJSON
-  SextantDCE:      Wfs 1.1.0 SsNs aGeoJSON
+  SextantDCE:      WfsNsUrl 1.1.0 SsNs aGeoJSON
   SextantEnvMarin: Wfs 1.1.0 SsNs aGeoJSON
   GéoLittoral:     WfsNsUrl 2.0.0 ssGeoJSON
 
@@ -275,6 +269,20 @@ Cette transformation et ce décodage XML sont cantonnés dans les classes:
 
 Je pourrais utiliser des XPath avec SimpleXml, ce qui serait plus fiable.
 
+EOT]                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="namespaces/dataset.html#constant_NOTE_SRS_WFS">NOTE_SRS_WFS</a>
+    <span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+La définition des identifiants pour les srs est particculièrement chaotique.
+Le SRS est nécessaire à 2 endroits:
+  1) dans la requête GetFeature pour indiquer dans quel SRS la géométrie est demandée
+     il est cependant possible que le format GeoJSON impose un SRS CRS:84
+     et par ailleurs qd on récupère du GML la conversion en GeoJSON peut gérer la conversion des coordonnées
+  2) en &quot;5° coordonnée&quot; dans le bbox passé dans GetFeature
+ChatGPT indiquait que de nombreux serveurs sont mal configurés et exposent des SRS incorrects
 EOT]                            </span>
 </dt>
 
@@ -314,16 +322,10 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE_WFS</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-  - tester de définir les Wfs SsNs comme WfsNs avec espace de noms &#039;&#039;
   - ajouter la possibilité d&#039;obtenir le nbre de features d&#039;une collection. Ce pourrait être optionnel.
-  - pas certain que les serveurs WFS 1.1.0 sachent faire du skip, ce n&#039;est pas dans le standard, peut être les outils en pratique le font
   - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
   - pb de synchro entre la pagination et le début de la plage demandée
     - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
-  - dans les properties, la geometry ne porte pas geometry comme nom !
-  - éviter les requêtes pour un feature sur identifiant et réutiliser le résultat des requêtes paginées
-    - -&gt; pas évident
-    - fait dans le cas où l&#039;id du Feature est le no de séquence
 EOT]</span>
 </code>
 
@@ -345,7 +347,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">25</span>
+    <span class="phpdocumentor-element-found-in__line">19</span>
 
     </aside>
 
@@ -360,7 +362,7 @@ Pour effectuer les tests:
   IgnWfs:          Wfs 2.0.0 aGeoJSON
   BDTopage2025:    WfsNsUrl 2.0.0 aGeoJSON
   SextantBiologie: WfsNsUrl 2.0.0 ssGeoJSON
-  SextantDCE:      Wfs 1.1.0 SsNs aGeoJSON
+  SextantDCE:      WfsNsUrl 1.1.0 SsNs aGeoJSON
   SextantEnvMarin: Wfs 1.1.0 SsNs aGeoJSON
   GéoLittoral:     WfsNsUrl 2.0.0 ssGeoJSON
 
@@ -389,7 +391,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">42</span>
+    <span class="phpdocumentor-element-found-in__line">36</span>
 
     </aside>
 
@@ -413,6 +415,45 @@ Cette transformation et ce décodage XML sont cantonnés dans les classes:
 
 Je pourrais utiliser des XPath avec SimpleXml, ce qui serait plus fiable.
 
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_NOTE_SRS_WFS">
+        NOTE_SRS_WFS
+        <a href="namespaces/dataset.html#constant_NOTE_SRS_WFS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">54</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">NOTE_SRS_WFS</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+La définition des identifiants pour les srs est particculièrement chaotique.
+Le SRS est nécessaire à 2 endroits:
+  1) dans la requête GetFeature pour indiquer dans quel SRS la géométrie est demandée
+     il est cependant possible que le format GeoJSON impose un SRS CRS:84
+     et par ailleurs qd on récupère du GML la conversion en GeoJSON peut gérer la conversion des coordonnées
+  2) en &quot;5° coordonnée&quot; dans le bbox passé dans GetFeature
+ChatGPT indiquait que de nombreux serveurs sont mal configurés et exposent des SRS incorrects
 EOT]</span>
 </code>
 
@@ -543,6 +584,7 @@ EOT]</span>
                                                     <li class=""><a href="namespaces/dataset.html#constant_A_FAIRE_WFS">A_FAIRE_WFS</a></li>
                                                     <li class=""><a href="namespaces/dataset.html#constant_BUG_WFS">BUG_WFS</a></li>
                                                     <li class=""><a href="namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS">NOTE_ESPACES_DE_NOMS_WFS</a></li>
+                                                    <li class=""><a href="namespaces/dataset.html#constant_NOTE_SRS_WFS">NOTE_SRS_WFS</a></li>
                                             </ul>
                 </li>
             

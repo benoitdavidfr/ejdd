@@ -215,13 +215,16 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">580</span>
+    <span class="phpdocumentor-element-found-in__line">598</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">Exécute les requêtes GET au serveur.</p>
 
 
+    <section class="phpdocumentor-description"><p>A sa construction, la prop. version n'étant pas définie, seule le GetCapabilities est possible.
+Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requêtes sont possibles.</p>
+</section>
 
 
 
@@ -315,6 +318,7 @@
     <span>
                                 &nbsp;: void    </span>
 </dt>
+<dd>Défini la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</dd>
 
     </dl>
 
@@ -346,7 +350,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">584</span>
+    <span class="phpdocumentor-element-found-in__line">602</span>
 
     </aside>
 
@@ -384,7 +388,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">584</span>
+    <span class="phpdocumentor-element-found-in__line">602</span>
 
     </aside>
 
@@ -422,7 +426,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">582</span>
+    <span class="phpdocumentor-element-found-in__line">600</span>
 
     </aside>
 
@@ -466,7 +470,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">584</span>
+    <span class="phpdocumentor-element-found-in__line">602</span>
 
     </aside>
 
@@ -517,7 +521,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">602</span>
+    <span class="phpdocumentor-element-found-in__line">621</span>
 
     </aside>
 
@@ -546,7 +550,7 @@
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><ul>
-<li>les noms des FeatureTypes avec leur espace de nom</li>
+<li>les noms des FeatureTypes avec leur espace de noms</li>
 </ul>
 </section>
 
@@ -577,7 +581,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">589</span>
+    <span class="phpdocumentor-element-found-in__line">607</span>
 
     </aside>
 
@@ -618,7 +622,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">667</span>
+    <span class="phpdocumentor-element-found-in__line">692</span>
 
     </aside>
 
@@ -681,7 +685,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">618</span>
+    <span class="phpdocumentor-element-found-in__line">634</span>
 
     </aside>
 
@@ -694,12 +698,7 @@
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Testé sur</p>
-<ul>
-<li>IgnWfs (WFS 2.0.0 avec GeoJSON)</li>
-<li>SextantDCE (WFS 1.1.0 avec GeoJSON)</li>
-<li>SextantBiologie (WFS 2.0.0 sans GeoJSON)</li>
-</ul>
+        <section class="phpdocumentor-description"><p>Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -765,11 +764,12 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">597</span>
+    <span class="phpdocumentor-element-found-in__line">616</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Défini la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setVersion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$version</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>

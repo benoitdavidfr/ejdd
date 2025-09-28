@@ -9,14 +9,17 @@ require_once 'wfs.php';
 /**
  * Jeu de données correspondant aux FeatureTypes d'un espace de noms d'un serveur WFS.
  *
+ * Cet espace de noms peut être '', ce qui signifie que les noms des FeatureTypes ne comprennent pas d'espace de noms.
  * Le schéma de ce JdD défini les champs des n-uplets, ce qui permet de l'utiliser dans des requêtes.
- * Le serveur Wfs est défini par un JdD Wfs dans le REGISTRE de Dataset.
- * L'espace de noms est défini par un JdD Wfs dans le REGISTRE de Dataset.
+ * Soit l'objet est défini avec le paramètre 'wfsName' qui désigne un objets Wfs dans le registre de Dataset,
+ * soit l'objet est défini avec le paramètre 'url' qui contient l'url du serveur WFS.
+ * L'espace de noms est défini par le paramètre 'namespace'.
  * Les noms des collections ne comprennent plus le nom de l'espace de noms.
  */
 class WfsNs extends Dataset {
-  /** Documentation complémentaire remplaçant les titres et desc ription par défaut. */
+  /** Documentation complémentaire remplaçant les titres et descriptions par défaut. */
   const DOCS = [
+    // Serveur IGN
     'AdminExpress-COG-Carto-PE' => [
       'title'=> "Admin Express COG Carto petite échelle (dernière édition) de l'IGN",
       'description'=> [
@@ -110,8 +113,6 @@ Plus précisément, l'édition N du Différentiel BD TOPO® en vigueur contient 
       'description'=> [
         "Mesure en faveur de l'environnement permettant de contrebalancer les dommages qui lui sont causés par un projet et qui n'ont pu être évités ou limités par d'autres moyens."
       ],
-      'source'=> 'IgnWfs',
-      'prefix'=> 'MESURES_COMPENSATOIRES:',
     ],
     'RPG'=> [
       'title'=> "Registre parcellaire graphique, Une base de données géographiques servant de référence à l'instruction des aides de la politique agricole commune (PAC)",
@@ -123,16 +124,46 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
       'source'=> 'IgnWfs',
       'prefix'=> 'RPG.LATEST:',
     ],
+
+    // Serveur du Shom
     'ShomTAcartesMarinesRaster'=> [
       'title'=> "Tableau d'assemblage des cartes marines raster (GeoTiff) réparties en fonction de leur échelle",
-      'description'=> ["Le tableau est décomposé en 4 sous-tableaux:
+      'description'=> [
+        "Le tableau est décomposé en 4 sous-tableaux:
 - cartes générales dont l'échelle est inférieure à 1:800 000
 - cartes Océans & Traversées dont l'échelle est comprise entre 1:300 000 et 1:800 000)
 - cartes côtières dont l'échelle est comprise entre 1:30 000 et 1:300 000)
 - cartes des Ports & Mouillages dont l'échelle est supérieure à 1:30 000)
-      "],
+"
+      ],
       'grille_geotiff_800'=> [
         'title'=> "Tableau d'assemblage des cartes marines raster générales (échelle inférieure à 1:800 000)",
+        'fields'=> [
+          'name'=> [
+            'description'=> "titre de la carte avec son no au début",
+          ],
+          'id_md'=> [
+            'description'=> "identifiant des méta-données",
+          ],
+          'scale'=> [
+            'description'=> "dénominateur de l'échelle",
+          ],
+          'fid'=> [
+            'description'=> "identique à name ?",
+          ],
+          'carte_id'=> [
+            'description'=> "numéro de la carte sur 4 chiffres",
+          ],
+          'img'=> [
+            'description'=> "url de l'imagette",
+          ],
+          'date'=> [
+            'description'=> "date de dernière mise à jour en format dd/mm/yyyy",
+          ],
+          'majsem'=> [
+            'description'=> "semaine de la mise à jour dans le GAN",
+          ],
+        ],
       ],
       'grille_geotiff_300_800'=> [
         'title'=> "Tableau d'assemblage des cartes marines raster Océans & Traversées (échelle entre 1:300 000 et 1:800 000)",
@@ -167,7 +198,8 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
     ],
     'ShomTAcartesMarinesS57'=> [
       'title'=> "Tableau d'assemblage des cartes marines numériques vectorielles au format S-57 réparties en fonction de leur échelle",
-      'description'=> ["Plus qu’une simple photocopie des cartes papier (comme les cartes raster), la carte numérique au format S-57 est une base de données contenant une description détaillée de chaque objet (marque de balisage, épave, sonde, secteur de feu, zones réglementées etc.). Ceci permet d’ordonner les informations de la carte et d’y accéder de manière intelligente en fonction de la zone et du mode de navigation, tout en diminuant le volume (environ 1 Mo pour une carte).
+      'description'=> [
+        "Plus qu’une simple photocopie des cartes papier (comme les cartes raster), la carte numérique au format S-57 est une base de données contenant une description détaillée de chaque objet (marque de balisage, épave, sonde, secteur de feu, zones réglementées etc.). Ceci permet d’ordonner les informations de la carte et d’y accéder de manière intelligente en fonction de la zone et du mode de navigation, tout en diminuant le volume (environ 1 Mo pour une carte).
         Les cartes sont classées en 6 catégories en fonction de leur échelle :
 - Cat 1 : Vue d'ensemble < 1:1 500 000
 - Cat 2 : Générale 1:350 000 - 1:1 500 000
@@ -175,7 +207,8 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
 - Cat 4 : Approches 1:22 000 - 1:90 000
 - Cat 5 : Portuaire 1:4 000 - 1:22 000
 - Cat 6 : Amarrage > 1:4 000
-"],
+"
+      ],
       'catalogues57_1'=> [
         'title'=> "Tableau d'assemblage des cartes marines numériques vectorielles d'ensemble (échelle inférieure à 1:1 500 000)"
       ],
@@ -193,6 +226,278 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
       ],
       'catalogues57_6'=> [
         'title'=> "Tableau d'assemblage des cartes marines numériques vectorielles d'amarrage (échelle supérieure à 1:4 000)"
+      ],
+    ],
+    'ShomTAdallesRastersMarine'=> [
+      'title'=> "Tableaux d'assemblage de RasterMARINE",
+      'description'=> [
+        "RasterMARINE est un produit image, issu de l'assemblage des cartes marines, géoréférencé et dallé. Les cartes marines sont assemblées le long d'une ligne de raccord de manière à supprimer les zones de données non cartographiques (habillage, titre, tableau des courants de marée...). Le produit est constitué de 4 assemblages en fonction des échelles:
+
+ - RasterMARINE1M est issu des cartes marines de la gamme d'échelle du 1:800 000 au 1:4 000 000 et est découpé en dalles de 5° x 5°,
+ - RasterMARINE400 est issu des cartes marines de la gamme d'échelle du 1:300 000 au 1:600 000 et est découpé en dalles de 5° x 5°,
+ - RasterMARINE150 est issu des cartes marines de la gamme d'échelle du 1:100 000 au 1:250 000 et est découpé en dalles de 0.25° x 0.25°,
+ - RasterMARINE50 est issu des cartes marines de la gamme d'échelle du 1:30 000 au 1:90 000 et est découpé en dalles de 0.25° x 0.25°,
+ - RasterMARINE20 est issu des cartes marines de la gamme d'échelle du 1:5 000 au 1:30 000 et est découpé en dalles de 0.25° x 0.25°.
+"
+      ],
+      'grille_assemblage_rm_1m'=> [
+        'title'=> "Tableau d'assemblage de RasterMARINE1M issu des cartes marines de la gamme d'échelle du 1:800 000 au 1:4 000 000",
+      ],
+      'grille_assemblage_rm_400'=> [
+        'title'=> "Tableau d'assemblage de RasterMARINE400 issu des cartes marines de la gamme d'échelle du 1:300 000 au 1:600 000",
+      ],
+      'grille_assemblage_rm_150'=> [
+        'title'=> "Tableau d'assemblage de RasterMARINE150 issu des cartes marines de la gamme d'échelle du 1:100 000 au 1:250 000",
+      ],
+      'grille_assemblage_rm_50'=> [
+        'title'=> "Tableau d'assemblage de RasterMARINE50 issu des cartes marines de la gamme d'échelle du 1:30 000 au 1:90 000",
+      ],
+      'grille_assemblage_rm_20'=> [
+        'title'=> "Tableau d'assemblage de RasterMARINE20 issu des cartes marines de la gamme d'échelle du 1:5 000 au 1:30 000",
+      ],
+    ],
+    'DamLimitCatNavigation'=> [
+      'title'=> "Limites de navigation par les navires professionnels",
+      'description'=> ["Limites de navigation par les navires professionnels"],
+      'categorie2_lines_3857'=> ['title'=> "Catégorie 2 de navigation par les navires professionnels"],
+      'categorie3_lines_3857'=> ['title'=> "Catégorie 3 de navigation par les navires professionnels"],
+      'categorie4_lines_3857'=> ['title'=> "Catégorie 4 de navigation par les navires professionnels"],
+      'categorie5_lines_3857'=> ['title'=> "Catégorie 5 de navigation par les navires professionnels"],
+    ],
+    'DamClassZonesMar'=> [
+      'title'=> "Zones maritimes",
+      'description'=> ["Zones maritimes"],
+      'classeb_lines_3857'=> ['title'=> "Classe B des zones maritimes"],
+      'classec_polygone_3857'=> ['title'=> "Classe C des zones maritimes"],
+      'classed_polygone_3857'=> ['title'=> "Classe D des zones maritimes"],
+    ],
+    'ShomDelMar'=> [
+      'title'=> "Délimitations maritimes",
+      'description'=> ["Délimitations maritimes"],
+      'au_baseline'=> ['title'=> "lignes de base droites"],
+      'au_maritimeboundary_agreedmaritimeboundary'=> ['title'=> "délimitation établie par un accord entre Etats"],
+      'au_maritimeboundary_contiguouszone'=> ['title'=> "limite extérieure de la zone contiguë"],
+      'au_maritimeboundary_continentalshelf'=> ['title'=> "limite extérieure du plateau continental"],
+      'au_maritimeboundary_economicexclusivezone'=> ['title'=> "limite extérieure de la ZEE"],
+      'au_maritimeboundary_nonagreedmaritimeboundary'=> ['title'=> "limite d'espace maritime revendiqué par la France sans accord"],
+      'au_maritimeboundary_territorialsea'=> ['title'=> "limite extérieure de la mer territoriale"],
+    ],
+    'ShomEspacesMaritimes'=> [
+      'title'=> "Espaces maritimes de souveraineté ou de juridiction",
+      'description'=> ["Espaces maritimes de souveraineté ou de juridiction"],
+      'au_territorial_sea'=> ['title'=> "mer territoriale"],
+      'au_contiguous_zone'=> ['title'=> "zone contiguë"],
+      'au_exclusive_economic_zone'=> ['title'=> "ZEE"],
+      'au_continental_shelf'=> ['title'=> "plateau continental"],
+    ],
+    'ShomDST'=> [
+      'title'=> "Dispositifs de séparation du trafic",
+      'description'=> ["Dispositifs de séparation du trafic"],
+      'dwrtpt'=> ['title'=> "Sections de routes en eau profonde"],
+      'istzne'=> ['title'=> "Zones de navigation côtière"],
+      'prcare'=> ['title'=> "Zones de prudence"],
+      'rdocal_lne'=> ['title'=> "Lignes d’appel radio"],
+      'tselne'=> ['title'=> "Lignes de séparation du trafic"],
+      'tsezne'=> ['title'=> "Zones de séparation du trafic"],
+      'tssbnd'=> ['title'=> "Limites de dispositif de séparation du trafic"],
+      'tsslpt'=> ['title'=> "Couloirs de circulation"],
+      'twrtpt'=> ['title'=> "Routes à double sens de circulation"],
+    ],
+    'ShomLimitesSaluresEaux'=> [
+      'title'=> "Limites de salure des eaux",
+      'description'=> [
+        "Le point de cessation de salure des eaux constitue, dans les estuaires, la frontière entre le champ d’application de la réglementation de la pêche maritime et de la pêche fluviale. Cette limite est en principe fixée par décret.
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+      ],
+      'lse_3857_arc'=> ['title'=> "Limites de salure des eaux (linéaire)"],
+      'lse_3857_point'=> ['title'=> "Limites de salure des eaux (ponctuel)"],
+    ],
+    'ShomLimitesInscriptionMaritimes'=> [
+      'title'=> "Limites des affaires maritimes",
+      'description'=> [
+        "Premier obstacle physique à la navigation maritime locale. A son aval, la navigation est «maritime», à son amont, la navigation est «fluviale», avec des conséquences en matière de normes de sécurité des navires, de police de la navigation, de qualification et de régime social des personnels (marine marchande ou batellerie). Elle délimite également l’exercice de la pêche en estuaire (statut des pêcheurs).
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+      ],
+      'lim_3857_arc'=> ['title'=> " Limites des affaires maritimes (linéaire)"],
+      'lim_3857_point'=> ['title'=> "Limites des affaires maritimes (ponctuel)"],
+      'xxx'=> ['title'=> "yyyy"],
+    ],
+    'ShomLimitesTransversalesMer'=> [
+      'title'=> "Limites transversales de la mer",
+      'description'=> [
+        "Dans les estuaires, elle distingue le domaine public maritime (à son aval) du domaine public fluvial (si le cours d’eau considéré est domanial) ou du domaine privé des riverains (à son amont). Elle constitue la véritable limite de la mer (en droit interne) et sert de référence pour déterminer les communes « riveraines de la mer » au sens de la loi du 3 janvier 1986, loi « littoral ». En application des décrets n°2004-112 du 6 février 2004 et n° 2005-1514 du 6 décembre 2005, elle détermine les zones de responsabilités respectives des préfets (en amont) et des représentants de l’Etat en mer (en aval – préfets maritimes et délégués du gouvernement pour l’action de l’Etat en mer outre-mer).
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+      ],
+      'ltm_3857_arc'=> ['title'=> "Limites transversales de la mer (linéaire)"],
+      'ltm_3857_point'=> ['title'=> "Limites transversales de la mer (ponctuel)"],
+    ],
+    'ShomLimitesPeche'=> [
+      'title'=> "Limites relatives à la pêche",
+      'description'=> ["Limites relatives à la pêche"],
+      'limite_3milles_peche_wgs84_epsg4326'=> [
+        'title'=> "Limite des 3 milles marins relative à la pêche",
+        'description'=> [
+          "Le décret n° 2014-1608 du 26 décembre 2014 a codifié la partie réglementaire du livre IX du code rural et de la pêche maritime. L’article D922-16 du code rural et de la pêche maritime établit une interdiction de l’usage des filets remorqués à moins de trois milles marins de la laisse de basse mer du continent et de celles des îles et îlots émergeant en permanence.
+  Dans le cas particulier de Mayotte, et conformément à l’article 61 de l’arrêté préfectoral n° 2018-681 du 30 juillet 2018 portant réglementation de l’exercice de la pêche maritime dans les eaux du département de Mayotte, cette limite est définie à 3 milles marins des lignes de base.
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+        ],
+      ],
+      'limite_6milles_bande_cotiere_peche_wgs84_epsg4326'=> [
+        'title'=> "Limite intérieure de la bande côtière de pêche (6 M)",
+        'description'=> [
+          "Le Règlement (UE) n° 1380/2013 du Parlement européen et du Conseil du 11 décembre 2013, dans le paragraphe 2 de son Article 5, autorise les États membres à établir des bandes côtières de pêche le long de leur littoral. Ces zones permettent aux États membres de restreindre la pêche de certaines espèces à certains États membres et suivant des règles établies (quotas, saison de pêche limitée). La description des bandes côtières de pêche pour la France est établie dans la partie 6 de l’Annexe 1. La bande côtière de pêche s’étend de la limite située à 6 milles marins des lignes de base jusqu’à la limite située à 12 milles marins de ces mêmes lignes de base. Seules des portions du littoral de la France métropolitaine sont concernées.
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+        ],
+      ],
+      'limite_100milles_peche_outre_mer_wgs84_epsg4326'=> [
+        'title'=> "Limite de pêche en Outre-Mer (100 M)",
+        'description'=> [
+          "Le titre V du livre IX du code rural et de la pêche maritime définit les dispositions relatives à l’Outre-mer. Les articles R951-14 et R953-5 en particulier définissent pour certaines collectivités d’Outre-mer une limite à 100 milles marins des lignes de base. A l’intérieur de cette limite, la pêche est limitée aux navires immatriculés dans les ports de ces collectivités d'Outre-mer, sauf dérogation accordée par l’État. Ces limitations ne s'appliquent pas aux navires immatriculés dans l'Union européenne pêchant traditionnellement dans ces eaux, pour autant que ces navires ne dépassent pas l'effort de pêche qui y est traditionnellement exercé.
+Source: https://limitesmaritimes.gouv.fr/glossaire/"
+        ],
+      ],
+      'xxx'=> ['title'=> "yyyy"],
+    ],
+    'ShomRAP'=> [
+      'title'=> "Limite de la redevance d'archéologie préventive",
+    ],
+    'ShomLimTM'=> [
+      'title'=> "Limite terre-mer",
+      ''=> "      Limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_ligne
+      Emprise maximale de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_polygones
+      Segments fictifs de fermeture de la limite terre-mer	LIMTM_2154_WFS:limite_terre_mer_france_metropolitaine_fermetureslimar"
+    ],
+    'ShomLimTraitCoteHR'=> [
+      'title'=> "Trait de Côte Haute Résolution",
+    ],
+    
+    // Serveurs du Sandre
+    'BDTopage2025'=> [
+      'title'=> "BD Topage® - 2025",
+      'description'=> [
+        "Un référentiel hydrographique vise à décrire les entités hydrographiques présentes sur le territoire français afin de constituer un référentiel national permettant de localiser des données relatives à l’eau.
+
+La BD TOPAGE® vise à passer d’un référentiel hydrographique français à moyenne échelle (la BD CARTHAGE®) à un référentiel à grande échelle (métrique), plus exhaustif, conforme à la directive INSPIRE et compatible avec le référentiel à grande échelle (RGE®) de l’IGN.
+
+La BD TOPAGE® vise à répondre aux besoins communs de l’ensemble des acteurs du SIE et doit leur permettre d’échanger et de mutualiser à toutes les échelles sur les éléments hydrographiques de surface du territoire national.
+Il est aussi motivé par l'obligation de mise en conformité à la directive INSPIRE.
+
+La BD TOPAGE® regroupe les jeux de données :
+- des cours d'eau ;
+- des plans d'eau ;
+- des surfaces élémentaires ;
+- des tronçons hydrographiques ;
+- des bassins hydrographiques (moyenne échelle) ;
+- des bassins versant topographiques (moyenne échelle) ;
+- des nœuds hydrographiques ;
+- des laisses des eaux (moyenne échelle).
+"
+      ],
+    ],
+    'SandreOdp'=> [
+      'title'=> "Stations de traitement des eaux usées - Ouvrages de dépollution",
+      'description'=> [
+        "Le référentiel des Stations de traitement des eaux décrit les ouvrages impliqués dans la dépollution des eaux usées. Les différents concepts définis dans le scénario d'échange du référentiel Stations de traitement des eaux usées du Sandre sont diffusés par ce service."
+      ],
+    ],
+    'MasseDEauVrap2010'=> [
+      'title'=> "Masses d'eau - Version rapportage 2010 (MasseDEau_vrap2010)",
+      'description'=> [
+        "Ce Jeu de données des masses d'eau, version rapportage 2010, correspond aux référentiels géographiques suivants:
+
+- Masse d'eau souterraine - version Rapportage 2010
+- Polygones élémentaires de masse d'eau - version Rapportage 2010
+- Masse d'eau cours d'eau - version Rapportage 2010
+- Tronçons élémentaires de masse d'eau cours d'eau - Version Rapportage 2010
+- Masse d'eau plan d'eau - version Rapportage 2010
+- Masse d'eau de transition - version Rapportage 2010
+
+Les scénarios d'échanges géographiques sont diffusés via les fiches de métadonnées de données et sur le site Sandre.
+"
+      ],
+    ],
+    'MasseDEauVrap2016'=> [
+      'title'=> "Masses d'eau - Version Rapportage 2016 - France entière (MasseDEauVrap2016).",
+      'description'=> [
+        "Ce Jeu de données des masses d'eau, version rapportage 2010, correspond aux référentiels géographiques suivants:
+
+- Masse d'eau souterraine - version Rapportage 2016
+- Polygones élémentaires de masse d'eau - version Rapportage 2016
+- Masse d'eau cours d'eau - version Rapportage 2016
+- Tronçons élémentaires de masse d'eau cours d'eau - Version Rapportage 2016
+- Masse d'eau plan d'eau - version Rapportage 2016
+- Masse d'eau de transition - version Rapportage 2016
+
+Les scénarios d'échanges géographiques sont diffusés via les fiches de métadonnées de données et sur le site Sandre.
+"
+      ],
+    ],
+    'SandreZagri'=> [
+      'title'=> "Zones relatives aux ressources agricoles",
+      'description'=> [
+        "Le référentiel des zones relatives aux ressources agricoles correspond aux référentiels géographiques suivants:
+
+    - Zones de production et de reparcage conchylicole
+
+    Les scénarios d'échanges géographiques sont diffusés via les fiches de métadonnées de données et sur le site Sandre.
+"
+      ],
+    ],
+    'SandreMdo'=> [
+      'title'=> "Masses d'eau (MDO)",
+      'description'=> [
+        "Le référentiel du thème masses d'eau (MDO) correspond aux référentiels géographiques suivants:
+ - Bassin DCE Administratif
+ - Sous Bassin DCE Administratif
+ - Contexte Piscicole 
+ - Hydroecorégions de niveau 1 (HER-1) 
+ - Hydroecorégions de niveau 2 (HER-2)
+
+Les scénarios d'échanges géographiques sont diffusés via les fiches de métadonnées de données et sur le site Sandre."
+      ],
+    ],
+    'SandreZrpe'=> [
+      'title'=> "Zones de régulation pour l'environnement (ZRPE)",
+      'description'=> [
+        "Le éférentiel Sandre national des zones de régulation pour l'environnement (ZRPE) correspond aux référentiels géographiques suivants:
+- Zones de répartition des eaux 
+- Zones protégées de la DCE 
+- Zones sensibles 
+- Zones vulnérables 
+- Zones d'action renforcée 
+- Périmètres de gestion collective
+
+Les scénarios d'échanges géographiques sont diffusés via les fiches de métadonnées de données et sur le site Sandre.*/
+"
+      ],
+    ],
+
+    // Serveurs Sextant
+    'SextantBiologie'=> [
+      'title'=> "Données de l'Ifremer sur la thématique Biologie (habitats marins, halieutique, mammifères marins...)",
+    ],
+    'SextantDCE'=> [
+      'title'=> "Données de l'Ifremer sur la thématique Directive Cadre sur l'Eau (DCE)",
+    ],
+    'SextantEnvMarin'=> [
+      'title'=> "Données de l'Ifremer sur la thématique Surveillance littorale (réseaux de surveillance littorale actifs, historiques...)",
+    ],
+    'SextantGranulatsMarins'=> [
+      'title'=> "Données de l'Ifremer sur la thématique Granulats marins",
+    ],
+    'SextantSISMER'=> [
+      'title'=> "Données de l'Ifremer sur la thématique SISMER (données d'observation des campagnes à la mer...)",
+    ],
+    'SextantEuroshell'=> [
+      'title'=> "Données du projet Euroshell (conchyliculture, aquaculture...)",
+    ],
+
+    'GéoLittoral'=> [
+      'title'=> "Géolittoral, portail des données sur la mer et le littoral du Ministère en charge de l’environnement",
+      'description'=> [
+        "Géolittoral est le portail des données sur la mer et le littoral du Ministère en charge de l’environnement. Il diffuse notamment les données géographiques produites dans le cadre de l’accomplissement des politiques publiques portées par le Ministère et a vocation à couvrir la totalité des espaces maritimes et littoraux français. Il met également à disposition des informations et des documents de nature à expliciter ces politiques et leur mise en œuvre.
+Le Cerema assure la mission d'administration fonctionnelle du site.
+"
       ],
     ],
   ];
@@ -223,15 +528,21 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
     $nsProperties = $this->wfs->describeFeatureTypes($this->namespace);
     $properties = $nsProperties->properties();
     foreach ($globalSchema['properties'] as $ftName => $ftSchema) {
-      if (substr($ftName, 0, strlen($this->namespace)+1) == $this->namespace.':') {
-        $ftName = substr($ftName, strlen($this->namespace)+1);
+      if ((substr($ftName, 0, strlen($this->namespace)+1) == $this->namespace.':') || !$this->namespace) {
+        if ($this->namespace)
+          $ftName = substr($ftName, strlen($this->namespace)+1);
         /*if (!in_array($ftName, ['chef_lieu_de_collectivite_territoriale','collectivite_territoriale']))
           continue;*/
         if (isset(self::DOCS[$dsName][$ftName]['title']))
           $ftSchema['title'] = self::DOCS[$dsName][$ftName]['title'];
+        if (isset(self::DOCS[$dsName][$ftName]['description']))
+          $ftSchema['description'] = self::DOCS[$dsName][$ftName]['description'][0];
         
-        // Il semble qu'il puisse y avoir des incohérences dans les serveurs, notamment SextantBiologie
         //echo '<pre>'; print_r(array_keys($properties[$ftName]));
+        foreach ($properties[$ftName] ?? [] as $pName => $prop) {
+          if (isset(self::DOCS[$dsName][$ftName]['fields'][$pName]['description']))
+            $properties[$ftName][$pName]['description'] = self::DOCS[$dsName][$ftName]['fields'][$pName]['description'];
+        }
         $ftSchema['patternProperties']['']['required'] = array_keys($properties[$ftName] ?? []);
         $ftSchema['patternProperties']['']['properties'] = $properties[$ftName] ?? [];
         $schema['properties'][$ftName] = $ftSchema;
@@ -250,13 +561,15 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
     //echo '<pre>$params='; print_r($params);
     if ($this->wfsName = $params['wfsName'] ?? null)
       $this->wfs = Wfs::get($params['wfsName']);
-    elseif ($url = $params['url'] ?? null) {
+    elseif ($url = $params['url'] ?? null)
       $this->wfs = new Wfs(['url'=> $params['url'], 'dsName'=> $params['dsName']]);
-    }
-    else {
+    else
       throw new \Exception("Paramètre wfsName ou url nécessaire");
-    }
+    if (!isset($params['namespace']))
+      throw new \Exception("Paramètre namespace nécessaire");
     $this->namespace = $params['namespace'];
+    if (!($params['dsName'] ?? null))
+      throw new \Exception("Paramètre dsName nécessaire");
     $schema = $this->schema($params['dsName']);
     parent::__construct($params['dsName'], $schema, false);
   }
@@ -279,7 +592,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
    */
   function getItems(string $collName, array $filters): \Generator {
     //echo "Appel de WfsNs::getItems($collName=$collName, filters)<br>\n";
-    foreach ($this->wfs->getItems($this->namespace.':'.$collName, $filters) as $id => $tuple) {
+    foreach ($this->wfs->getItems(($this->namespace ? $this->namespace.':' : '').$collName, $filters) as $id => $tuple) {
       //echo "WfsNs::getItems($collName=$collName, filters)-> yield id=$id<br>\n";
       yield $id => $tuple;
     }
@@ -290,7 +603,7 @@ La version anonymisée diffusée ici dans le cadre du service public de mise à 
    * @return array<mixed>|string|null
    */ 
   function getOneItemByKey(string $collName, string|int $key): array|string|null {
-    return $this->wfs->getOneItemByKey($this->namespace.':'.$collName, $key);
+    return $this->wfs->getOneItemByKey(($this->namespace ? $this->namespace.':' : '').$collName, $key);
   }
 };
 

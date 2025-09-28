@@ -218,7 +218,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">697</span>
+    <span class="phpdocumentor-element-found-in__line">724</span>
 
     </aside>
 
@@ -226,6 +226,8 @@
 
 
     <section class="phpdocumentor-description"><p>L'URL du serveur est défini en paramètre lors de la création du Wfs et est stocké dans le registre de Dataset.
+Le schéma ne fournit pas les propriétés de chaque collection car certains ont beaucoup de collections et ce serait peu efficace ;
+pour avoir ces propriéts utiliser WfsNs qui se limite à un espace de noms.
 Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
 </section>
 
@@ -269,13 +271,18 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     &#039;Jeux IGN&#039; =&gt; [&#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;], &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;], &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;], &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;], &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;], &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;], &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;]],
     &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;],
     &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]],
+    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;], &#039;ShomTAdallesRastersMarine&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_RASTER_MARINE&#039;], &#039;DamLimitCatNavigation&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DAM_LIMIT_CAT_NAVIGATION_WFS&#039;], &#039;DamClassZonesMar&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DAM_CLASS_ZONES_MAR_WFS&#039;], &#039;ShomDelMar&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DELMAR_BDD_WFS&#039;], &#039;ShomEspacesMaritimes&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;ESPACES_MARITIMES_BDD_WFS&#039;], &#039;ShomDST&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DST_BDD_WFS&#039;], &#039;ShomLimitesSaluresEaux&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_SALURE_EAUX_WFS&#039;], &#039;ShomLimitesInscriptionMaritimes&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITE_INSCRIPTION_MARITIMES_WFS&#039;], &#039;ShomLimitesTransversalesMer&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_TRANSVERSALES_MER_WFS&#039;], &#039;ShomLimitesPeche&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_PECHE_BDD_WFS&#039;], &#039;ShomRAP&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;RAP_BDD_WFS&#039;], &#039;ShomLimTM&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMTM_2154_WFS&#039;], &#039;ShomLimTraitCoteHR&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;TCHR_3857_WFS&#039;]],
     // En test
-    &quot;Sandre&quot; =&gt; [
-        /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&amp;resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&amp;sortBy=relevance&amp;sortOrder=&amp;query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&amp;from=1&amp;to=30
-         */
-        //&#039;BDTopage2025Wfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;],
+    &quot;Référentiels Sandre (SIEau)&quot; =&gt; [
+        // semble être un regroupement de tous les FeatureTypes, avec des erreurs
+        //&#039;geo&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://services.sandre.eaufrance.fr/geo/sandre&#039;, &#039;namespace&#039;=&gt; &#039;sa&#039;],
         &#039;BDTopage2025&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreOdp&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/odp&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;MasseDEauVrap2010&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2010&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreZagri&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/zagri&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreMdo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/mdo&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;MasseDEauVrap2016&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2016&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreZrpe&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/zrpe&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
     ],
     // A compléter
     &#039;Sextant&#039; =&gt; [
@@ -283,9 +290,15 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
         // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
         &#039;SextantBiologie&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/biologie&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
         // DCE (Directive Cadre sur l&#039;Eau) -&gt; WFS 1.1.0 sans espace de noms
-        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;],
+        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
         // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -&gt; WFS 1.1.0 
-        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;],
+        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
+        // Granulats marins (ressources minérales, halieutique, faune benthique,...)
+        &#039;SextantGranulatsMarins&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/granulats_marins&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
+        // SISMER (données d&#039;observation des campagnes à la mer...)
+        &#039;SextantSISMER&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/sismer&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+        // Service WFS du projet Euroshell (conchyliculture, aquaculture...)
+        &#039;SextantEuroshell&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/euroshell&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
     ],
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
@@ -381,7 +394,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <span>
                                 &nbsp;: array&lt;string, mixed&gt;    </span>
 </dt>
-<dd>Retourne les caractéristiques principales des serveurs pour les tests.</dd>
+<dd>Retourne les caractéristiques principales du serveurs pour des tests.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Dataset.html#method_class">class()</a>
@@ -558,7 +571,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">699</span>
+    <span class="phpdocumentor-element-found-in__line">726</span>
 
     </aside>
 
@@ -607,13 +620,18 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     &#039;Jeux IGN&#039; =&gt; [&#039;IgnWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://data.geopf.fr/wfs/ows&#039;], &#039;AdminExpress-COG-Carto-PE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO-PE.LATEST&#039;], &#039;AdminExpress-COG-Carto-ME&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;ADMINEXPRESS-COG-CARTO.LATEST&#039;], &#039;LimitesAdminExpress&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_ADMINISTRATIVES_EXPRESS.LATEST&#039;], &#039;BDCarto&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDCARTO_V5&#039;], &#039;BDTopo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;BDTOPO_V3&#039;], &#039;RPG&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;RPG.LATEST&#039;]],
     &#039;MesuresCompensatoires&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;IgnWfs&#039;, &#039;namespace&#039; =&gt; &#039;MESURES_COMPENSATOIRES&#039;],
     &#039;Patrinat&#039; =&gt; &#039;Extract&#039;,
-    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;]],
+    &#039;Jeux Shom&#039; =&gt; [&#039;ShomWfs&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://services.data.shom.fr/INSPIRE/wfs&#039;], &#039;Shom&#039; =&gt; &#039;Extract&#039;, &#039;ShomTAcartesMarinesRaster&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;CARTES_MARINES_GRILLE&#039;], &#039;ShomTAcartesMarinesPapier&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLES_CARTES_PAPIER&#039;], &#039;ShomTAcartesMarinesS57&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_S57_WFSc&#039;], &#039;ShomTAdallesRastersMarine&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;GRILLE_RASTER_MARINE&#039;], &#039;DamLimitCatNavigation&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DAM_LIMIT_CAT_NAVIGATION_WFS&#039;], &#039;DamClassZonesMar&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DAM_CLASS_ZONES_MAR_WFS&#039;], &#039;ShomDelMar&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DELMAR_BDD_WFS&#039;], &#039;ShomEspacesMaritimes&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;ESPACES_MARITIMES_BDD_WFS&#039;], &#039;ShomDST&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;DST_BDD_WFS&#039;], &#039;ShomLimitesSaluresEaux&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_SALURE_EAUX_WFS&#039;], &#039;ShomLimitesInscriptionMaritimes&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITE_INSCRIPTION_MARITIMES_WFS&#039;], &#039;ShomLimitesTransversalesMer&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_TRANSVERSALES_MER_WFS&#039;], &#039;ShomLimitesPeche&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMITES_PECHE_BDD_WFS&#039;], &#039;ShomRAP&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;RAP_BDD_WFS&#039;], &#039;ShomLimTM&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;LIMTM_2154_WFS&#039;], &#039;ShomLimTraitCoteHR&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;wfsName&#039; =&gt; &#039;ShomWfs&#039;, &#039;namespace&#039; =&gt; &#039;TCHR_3857_WFS&#039;]],
     // En test
-    &quot;Sandre&quot; =&gt; [
-        /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&amp;resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&amp;sortBy=relevance&amp;sortOrder=&amp;query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&amp;from=1&amp;to=30
-         */
-        //&#039;BDTopage2025Wfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;],
+    &quot;Référentiels Sandre (SIEau)&quot; =&gt; [
+        // semble être un regroupement de tous les FeatureTypes, avec des erreurs
+        //&#039;geo&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://services.sandre.eaufrance.fr/geo/sandre&#039;, &#039;namespace&#039;=&gt; &#039;sa&#039;],
         &#039;BDTopage2025&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/topage2025&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreOdp&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/odp&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;MasseDEauVrap2010&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2010&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreZagri&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/zagri&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreMdo&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/mdo&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;MasseDEauVrap2016&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2016&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
+        &#039;SandreZrpe&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://services.sandre.eaufrance.fr/geo/zrpe&#039;, &#039;namespace&#039; =&gt; &#039;sa&#039;],
     ],
     // A compléter
     &#039;Sextant&#039; =&gt; [
@@ -621,9 +639,15 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
         // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
         &#039;SextantBiologie&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/biologie&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
         // DCE (Directive Cadre sur l&#039;Eau) -&gt; WFS 1.1.0 sans espace de noms
-        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;],
+        &#039;SextantDCE&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/dce&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
         // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -&gt; WFS 1.1.0 
-        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;],
+        &#039;SextantEnvMarin&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/environnement_marin&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
+        // Granulats marins (ressources minérales, halieutique, faune benthique,...)
+        &#039;SextantGranulatsMarins&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/granulats_marins&#039;, &#039;namespace&#039; =&gt; &#039;&#039;],
+        // SISMER (données d&#039;observation des campagnes à la mer...)
+        &#039;SextantSISMER&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/sismer&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+        // Service WFS du projet Euroshell (conchyliculture, aquaculture...)
+        &#039;SextantEuroshell&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://sextant.ifremer.fr/services/wfs/euroshell&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
     ],
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
@@ -657,7 +681,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">140</span>
+    <span class="phpdocumentor-element-found-in__line">153</span>
 
     </aside>
 
@@ -704,7 +728,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">703</span>
+    <span class="phpdocumentor-element-found-in__line">730</span>
 
     </aside>
 
@@ -743,7 +767,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">154</span>
+    <span class="phpdocumentor-element-found-in__line">167</span>
 
     </aside>
 
@@ -783,7 +807,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">150</span>
+    <span class="phpdocumentor-element-found-in__line">163</span>
 
     </aside>
 
@@ -821,7 +845,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">148</span>
+    <span class="phpdocumentor-element-found-in__line">161</span>
 
     </aside>
 
@@ -859,7 +883,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">152</span>
+    <span class="phpdocumentor-element-found-in__line">165</span>
 
     </aside>
 
@@ -899,7 +923,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">149</span>
+    <span class="phpdocumentor-element-found-in__line">162</span>
 
     </aside>
 
@@ -937,7 +961,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">701</span>
+    <span class="phpdocumentor-element-found-in__line">728</span>
 
     </aside>
 
@@ -981,7 +1005,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">708</span>
+    <span class="phpdocumentor-element-found-in__line">735</span>
 
     </aside>
 
@@ -1026,7 +1050,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">342</span>
+    <span class="phpdocumentor-element-found-in__line">355</span>
 
     </aside>
 
@@ -1065,11 +1089,11 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">727</span>
+    <span class="phpdocumentor-element-found-in__line">754</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne les caractéristiques principales des serveurs pour les tests.</p>
+        <p class="phpdocumentor-summary">Retourne les caractéristiques principales du serveurs pour des tests.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -1104,7 +1128,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">197</span>
+    <span class="phpdocumentor-element-found-in__line">210</span>
 
     </aside>
 
@@ -1153,7 +1177,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">434</span>
+    <span class="phpdocumentor-element-found-in__line">447</span>
 
     </aside>
 
@@ -1209,7 +1233,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">177</span>
+    <span class="phpdocumentor-element-found-in__line">190</span>
 
     </aside>
 
@@ -1267,7 +1291,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">840</span>
+    <span class="phpdocumentor-element-found-in__line">871</span>
 
     </aside>
 
@@ -1316,7 +1340,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">160</span>
+    <span class="phpdocumentor-element-found-in__line">173</span>
 
     </aside>
 
@@ -1365,7 +1389,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">416</span>
+    <span class="phpdocumentor-element-found-in__line">429</span>
 
     </aside>
 
@@ -1400,7 +1424,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">431</span>
+    <span class="phpdocumentor-element-found-in__line">444</span>
 
     </aside>
 
@@ -1445,7 +1469,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">283</span>
+    <span class="phpdocumentor-element-found-in__line">296</span>
 
     </aside>
 
@@ -1505,7 +1529,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">194</span>
+    <span class="phpdocumentor-element-found-in__line">207</span>
 
     </aside>
 
@@ -1554,7 +1578,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">455</span>
+    <span class="phpdocumentor-element-found-in__line">468</span>
 
     </aside>
 
@@ -1603,7 +1627,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">465</span>
+    <span class="phpdocumentor-element-found-in__line">478</span>
 
     </aside>
 
@@ -1652,7 +1676,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">719</span>
+    <span class="phpdocumentor-element-found-in__line">746</span>
 
     </aside>
 
@@ -1701,7 +1725,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">762</span>
+    <span class="phpdocumentor-element-found-in__line">789</span>
 
     </aside>
 
@@ -1777,7 +1801,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">331</span>
+    <span class="phpdocumentor-element-found-in__line">344</span>
 
     </aside>
 
@@ -1842,7 +1866,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">807</span>
+    <span class="phpdocumentor-element-found-in__line">838</span>
 
     </aside>
 
@@ -1898,7 +1922,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">746</span>
+    <span class="phpdocumentor-element-found-in__line">773</span>
 
     </aside>
 
@@ -1947,7 +1971,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">277</span>
+    <span class="phpdocumentor-element-found-in__line">290</span>
 
     </aside>
 
@@ -1998,7 +2022,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">404</span>
+    <span class="phpdocumentor-element-found-in__line">417</span>
 
     </aside>
 
@@ -2067,7 +2091,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">393</span>
+    <span class="phpdocumentor-element-found-in__line">406</span>
 
     </aside>
 
@@ -2108,7 +2132,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">359</span>
+    <span class="phpdocumentor-element-found-in__line">372</span>
 
     </aside>
 
@@ -2163,7 +2187,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">445</span>
+    <span class="phpdocumentor-element-found-in__line">458</span>
 
     </aside>
 
@@ -2219,7 +2243,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">476</span>
+    <span class="phpdocumentor-element-found-in__line">489</span>
 
     </aside>
 

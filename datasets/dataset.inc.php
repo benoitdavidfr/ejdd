@@ -86,50 +86,63 @@ abstract class Dataset {
       'ShomTAcartesMarinesRaster'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'CARTES_MARINES_GRILLE'],
       'ShomTAcartesMarinesPapier'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLES_CARTES_PAPIER'],
       'ShomTAcartesMarinesS57'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_S57_WFSc'],
+      'ShomTAdallesRastersMarine'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'GRILLE_RASTER_MARINE'],
+      'DamLimitCatNavigation'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'DAM_LIMIT_CAT_NAVIGATION_WFS'],
+      'DamClassZonesMar'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'DAM_CLASS_ZONES_MAR_WFS'],
+      'ShomDelMar'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'DELMAR_BDD_WFS'],
+      'ShomEspacesMaritimes'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'ESPACES_MARITIMES_BDD_WFS'],
+      'ShomDST'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'DST_BDD_WFS'],
+      'ShomLimitesSaluresEaux'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'LIMITES_SALURE_EAUX_WFS'],
+      'ShomLimitesInscriptionMaritimes'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'LIMITE_INSCRIPTION_MARITIMES_WFS'],
+      'ShomLimitesTransversalesMer'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'LIMITES_TRANSVERSALES_MER_WFS'],
+      'ShomLimitesPeche'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'LIMITES_PECHE_BDD_WFS'],
+      'ShomRAP'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'RAP_BDD_WFS'],
+      'ShomLimTM'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'LIMTM_2154_WFS'],
+      'ShomLimTraitCoteHR'=> ['class'=> 'WfsNs', 'wfsName'=> 'ShomWfs', 'namespace'=> 'TCHR_3857_WFS'],
     ],
     // En test
-    "Sandre"=> [
-      /* Liste des services: https://www.sandre.eaufrance.fr/atlas/srv/fre/catalog.search#/search?isTemplate=n&resourceTemporalDateRange=%7B%22range%22:%7B%22resourceTemporalDateRange%22:%7B%22gte%22:null,%22lte%22:null,%22relation%22:%22intersects%22%7D%7D%7D&sortBy=relevance&sortOrder=&query_string=%7B%22resourceType%22:%7B%22service%22:true%7D,%22availableInServices%22:%7B%22availableInDownloadService%22:%22%2BlinkProtocol:%2FOGC:WFS.*%2F%22%7D,%22tag.default%22:%7B%22WFS%22:true%7D%7D&from=1&to=30
-      */
-      //'BDTopage2025Wfs'=> ['class'=> 'Wfs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/topage2025'],
+    "Référentiels Sandre (SIEau)"=> [
+      // semble être un regroupement de tous les FeatureTypes, avec des erreurs
+      //'geo'=> ['class'=> 'Wfs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/sandre', 'namespace'=> 'sa'],
       'BDTopage2025'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/topage2025', 'namespace'=> 'sa'],
+      'SandreOdp'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/odp', 'namespace'=> 'sa'],
+      'MasseDEauVrap2010'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2010', 'namespace'=> 'sa'],
+      'SandreZagri'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/zagri', 'namespace'=> 'sa'],
+      'SandreMdo'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/mdo', 'namespace'=> 'sa'],
+      'MasseDEauVrap2016'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/MasseDEau_VRAP2016', 'namespace'=> 'sa'],
+      'SandreZrpe'=> ['class'=> 'WfsNs', 'url'=> 'https://services.sandre.eaufrance.fr/geo/zrpe', 'namespace'=> 'sa'],
     ], // A compléter
     'Sextant'=> [
       // Page d'info: https://sextant.ifremer.fr/Services/Inspire/Services-WFS
       // Biologie (habitats marins, halieutique, mammifères marins...), V2.0 mais pas de GeoJSON
       'SextantBiologie'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/biologie', 'namespace'=>'ms'],
       // DCE (Directive Cadre sur l'Eau) -> WFS 1.1.0 sans espace de noms
-      'SextantDCE'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/dce'],
+      'SextantDCE'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/dce', 'namespace'=>''],
       // Surveillance littorale (réseaux de surveillance littorale actifs, historiques...) -> WFS 1.1.0 
-      'SextantEnvMarin'=> ['class'=> 'Wfs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/environnement_marin'],
+      'SextantEnvMarin'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/environnement_marin', 'namespace'=>''],
+      // Granulats marins (ressources minérales, halieutique, faune benthique,...)
+      'SextantGranulatsMarins'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/granulats_marins', 'namespace'=>''],
+      // SISMER (données d'observation des campagnes à la mer...)
+      'SextantSISMER'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/sismer', 'namespace'=>'ms'],
+      // Service WFS du projet Euroshell (conchyliculture, aquaculture...)
+      'SextantEuroshell'=> ['class'=> 'WfsNs', 'url'=> 'https://sextant.ifremer.fr/services/wfs/euroshell', 'namespace'=>'ms'],
       /*{
-  Euroshell (conchyliculture, aquaculture...)
-  https://sextant.ifremer.fr/services/wfs/euroshell
+        Autres serveurs non intégrés:
+        Nouvelle-Calédonie (multi-thématiques)
+        https://sextant.ifremer.fr/services/wfs/nouvelle_caledonie
+        https://sextant.ifremer.fr/services/wfs/nc
 
-  Granulats marins (ressources minérales, halieutique, faune benthique,...)
-  https://sextant.ifremer.fr/services/wfs/granulats_marins
+        Nouvelle-Calédonie - projet Ambio (biodiversité)
+        https://sextant.ifremer.fr/services/wfs/ambio
 
-  Nouvelle-Calédonie (multi-thématiques)
-  https://sextant.ifremer.fr/services/wfs/nouvelle_caledonie
-  https://sextant.ifremer.fr/services/wfs/nc
+        Océan Indien (multi-thématiques)
+        https://sextant.ifremer.fr/services/wfs/ocean_indien
 
-  Nouvelle-Calédonie - projet Ambio (biodiversité)
-  https://sextant.ifremer.fr/services/wfs/ambio
+        Océan Indien - Globice Réunion (mammifères marins)
+        https://sextant.ifremer.fr/services/wfs/globice
 
-  Océan Indien (multi-thématiques)
-  https://sextant.ifremer.fr/services/wfs/ocean_indien
-
-  Océan Indien - Globice Réunion (mammifères marins)
-  https://sextant.ifremer.fr/services/wfs/globice
-
-  Océan Indien - Pêche palangrière (halieutique)
-  https://sextant.ifremer.fr/services/wfs/peche_palangriere
-
-  SISMER (données d'observation des campagnes à la mer...)
-  https://sextant.ifremer.fr/services/wfs/sismer
-
-  Surveillance littorale (réseaux de surveillance littorale actifs, historiques...)
-  https://sextant.ifremer.fr/services/wfs/environnement_marin
+        Océan Indien - Pêche palangrière (halieutique)
+        https://sextant.ifremer.fr/services/wfs/peche_palangriere
       }*/
     ], // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -> GeoJSON

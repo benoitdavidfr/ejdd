@@ -48,7 +48,7 @@ Journal des modifications récentes du code
 ------------------------------------------
 27/9/2025:
   - amélioration de Wfs pour qu'il fonctionne dans différents cas de figure
-    - Wfs 2.0.0 et Wfs 1.1.0
+    - version Wfs 2.0.0 et 1.1.0
     - cas où les FeatureTypes ne sont pas définis dans un espace de nom ou sont dans l'espace par défaut
     - avec retour en GeoJSON ou non
     - tests sur différents cas

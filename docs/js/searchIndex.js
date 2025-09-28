@@ -2181,6 +2181,11 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/dataset.html#constant_NOTE_ESPACES_DE_NOMS_WFS"
         },                {
+            "fqsen": "\\Dataset\\NOTE_SRS_WFS",
+            "name": "NOTE_SRS_WFS",
+            "summary": "",
+            "url": "namespaces/dataset.html#constant_NOTE_SRS_WFS"
+        },                {
             "fqsen": "\\Dataset\\WfsCache",
             "name": "WfsCache",
             "summary": "G\u00E8re\u0020un\u0020cache\u0020des\u0020appels\u0020Http\u0020GET\u0020pour\u0020Wfs.",
@@ -2210,6 +2215,11 @@ Search.appendIndex(
             "name": "delete",
             "summary": "Efface\u0020le\u0020contenu\u0020du\u0020r\u00E9pertoire\u0020dont\u0020le\u0020path\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre.",
             "url": "classes/Dataset-WfsCache.html#method_delete"
+        },                {
+            "fqsen": "\\Dataset\\WfsCache\u003A\u003ANOCACHE",
+            "name": "NOCACHE",
+            "summary": "",
+            "url": "classes/Dataset-WfsCache.html#constant_NOCACHE"
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003APATH",
             "name": "PATH",
@@ -2288,7 +2298,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003AfeatureTypes\u0028\u0029",
             "name": "featureTypes",
-            "summary": "Dict.\u0020des\u0020FeatureTypes\u0020Name\u0020\u003D\u003E\u0020FeatureType",
+            "summary": "Dict.\u0020des\u0020FeatureTypes\u0020Name\u0020\u003D\u003E\u0020diff\u00E9rentes\u0020infos.",
             "url": "classes/Dataset-WfsCap.html#method_featureTypes"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003Anamespaces\u0028\u0029",
@@ -2368,7 +2378,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AsetVersion\u0028\u0029",
             "name": "setVersion",
-            "summary": "",
+            "summary": "D\u00E9fini\u0020la\u0020version\u0020du\u0020protocole\u0020WFS\u0020du\u0020serveur,\u0020ce\u0020qui\u0020autorise\u0020les\u0020requ\u00EAtes\u0020autres\u0020que\u0020GetCapabilities.",
             "url": "classes/Dataset-WfsGetRequest.html#method_setVersion"
         },                {
             "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AdescribeFeatureType\u0028\u0029",
@@ -2418,7 +2428,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003Acharacteristics\u0028\u0029",
             "name": "characteristics",
-            "summary": "Retourne\u0020les\u0020caract\u00E9ristiques\u0020principales\u0020des\u0020serveurs\u0020pour\u0020les\u0020tests.",
+            "summary": "Retourne\u0020les\u0020caract\u00E9ristiques\u0020principales\u0020du\u0020serveurs\u0020pour\u0020des\u0020tests.",
             "url": "classes/Dataset-Wfs.html#method_characteristics"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003AimplementedFilters\u0028\u0029",
@@ -2503,7 +2513,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003ADOCS",
             "name": "DOCS",
-            "summary": "Documentation\u0020compl\u00E9mentaire\u0020rempla\u00E7ant\u0020les\u0020titres\u0020et\u0020desc\u0020ription\u0020par\u0020d\u00E9faut.",
+            "summary": "Documentation\u0020compl\u00E9mentaire\u0020rempla\u00E7ant\u0020les\u0020titres\u0020et\u0020descriptions\u0020par\u0020d\u00E9faut.",
             "url": "classes/Dataset-WfsNs.html#constant_DOCS"
         },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024wfsName",
