@@ -58,7 +58,7 @@ Le SRS est nécessaire à 2 endroits:
      il est cependant possible que le format GeoJSON impose un SRS CRS:84
      et par ailleurs qd on récupère du GML la conversion en GeoJSON peut gérer la conversion des coordonnées
   2) en "5° coordonnée" dans le bbox passé dans GetFeature
-ChatGPT indiquait que de nombreux serveurs sont mal configurés et exposent des SRS incorrects
+ChatGPT indiquait que de nombreux serveurs sont mal configurés et exposent des SRS incorrects, cela me semble faux.
 EOT
 ];
 

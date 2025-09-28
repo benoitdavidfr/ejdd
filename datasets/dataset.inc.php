@@ -147,7 +147,7 @@ abstract class Dataset {
     ], // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -> GeoJSON
     //'GéoLittoralWfs'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs'],
-    'GéoLittoral'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs', 'namespace'=>'ms'],
+    'GéoLittoral'=> ['class'=> 'WfsNs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs', 'namespace'=>'ms'],
     /**/
   ];
   const UNITS = [
