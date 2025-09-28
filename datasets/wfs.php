@@ -654,7 +654,7 @@ class WfsGetRequestFull extends WfsGetRequestLight {
    * @return TGeoJsonFeatureCollection
    */
   function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox): array {
-    echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
+    //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
     if ($bbox) {
       $bboxAs4Coords = match($this->version) {
         '2.0.0' => $bbox->as4CoordsLatLon(), // en WFS 2.0.0, les coordonnées doivent être fournies en LatLon
@@ -668,7 +668,7 @@ class WfsGetRequestFull extends WfsGetRequestLight {
     }
     // Je décide de ne pas mettre en cache les requêtes utilisant un BBox
     $cachePath = $bbox ? null : "$this->name/features/".str_replace(':','/', $ftName)."/$start-$count".$this->outputFormat->ext();
-    echo "cachePath=$cachePath<br>\n";
+    //echo "cachePath=$cachePath<br>\n";
     $fcoll = WfsCache::get(
       $cachePath,
       $this->url
@@ -735,7 +735,7 @@ class WfsGetRequestFull extends WfsGetRequestLight {
 
   /* Retourne le nb de Features de la collection. */
   function getNbOfFeatures(string $ftName): int {
-    echo "Appel de WfsGetRequest::getNbOfFeatures(ftName=$ftName)<br>\n";
+    //echo "Appel de WfsGetRequest::getNbOfFeatures(ftName=$ftName)<br>\n";
     { // J'essaie d'abord si le retour GeoJSON comporte une propriété totalFeatures
       // Je réutilise la 1ère page
       $firstFeatures = $this->getFeatures($ftName, 0, Wfs::SIZE_OF_PAGE, null);
