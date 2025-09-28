@@ -1,0 +1,12 @@
+LISEZ-MOI
+---------
+Tentative le 26/9/2025, d'utiliser https://github.com/dvzgeo/php_ogr pour utiliser l'API d'OGR.
+J'ai construit la librairie et l'ai installée dans Php.
+L'exemple ogr2tab.php génère une erreur.
+Par ailleurs PhpStan plante avec l'erreur:
+  Child process error (exit code 139): Segmentation fault  
+   while running parallel worker                           
+
+De plus, je trouve ogr2tab.php très mal écrit comme exemple, et cela ne préfigure pas d'une utilisation simple de php_ogr.
+
+J'abandonne donc !
