@@ -113,7 +113,6 @@ Cette démarche propose un cadre extensible dans 2 directions:
  - de plus, cette solution pourrait être un client Php de services API Features, un point d'accès API Features serait vu
    comme un Dataset
  - un mécanisme de copie/synchronisation pourrait être mis en place
- - une première approche est mise en oeuvre sur les serveurs WFS de la GPF IGN et du Shom
 
 ## Mise en oeuvre:
 ### Sous répertoires et fichiers
@@ -122,10 +121,13 @@ Les fichiers de code sont répartis dans les répertoires suivants:
  - [les classes définissant l'algèbre des collections, y.c. les classes définissant le parser du langage](algebra)
  - [les classes définissant les jeux de données](datasets)
  - [les classes définissant la géométrie](geom)
+ - [la classe simplifiant l'utilisation d'ogr2ogr](ogr)
  - [les classes permettant de dessiner des objets](drawing)
 
 De plus:
  - le répertoire `lib` contient des fichiers Php ajoutant des fonctionnalités
+ - le répertoire `docs` contient la documentation générée par phpDocumentor
  - le répertoire `leaflet` contient des fichiers utilisés par Leaflet
  - le script `index.php` fournit l'IHM générale de l'appli
- - le script `geojson.php` expose en GeoJSON les JdD et leurs Collections
+ - le script `geojson.php` expose en GeoJSON les JdD et leurs Collections et est utilisé par Leaflet
+ - le script `explorer.php` propose une IHM pour requêter les collections
