@@ -46,6 +46,9 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+28/9/2025:
+  - amélioration de Wfs
+  - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml
 27/9/2025:
   - amélioration de Wfs pour qu'il fonctionne dans différents cas de figure
     - version Wfs 2.0.0 et 1.1.0
