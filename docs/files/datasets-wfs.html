@@ -197,7 +197,8 @@
             <p class="phpdocumentor-summary">Wfs - Catégorie des Dataset WFS.</p>
 
         
-            <section class="phpdocumentor-description"><p>Fonctionne en articulation avec WfsNs qui définit un jeu de données correspondant aux FeatureTypes d'un espace de noms d'un serveur WFS.</p>
+            <section class="phpdocumentor-description"><p>Fonctionne en articulation avec WfsNs qui définit un jeu de données ayant pour collections les FeatureTypes d'un espace de noms
+d'un serveur WFS.</p>
 </section>
 
         
@@ -219,7 +220,7 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCache.html"><abbr title="\Dataset\WfsCache">WfsCache</abbr></a></dt><dd>Gère un cache des appels Http GET pour Wfs.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></dt><dd>Choix du paramètre outputFormat pour GetFeature.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></dt><dd>Exploite le XML des capacités d&#039;un serveur WFS pour en déduire notamment le schéma JSON du JdD.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a></dt><dd>Exploite le XML issu d&#039;une requête describeFeatureType pour en déduire les propriétés de schema JSON.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsGetRequest.html"><abbr title="\Dataset\WfsGetRequest">WfsGetRequest</abbr></a></dt><dd>Exécute les requêtes GET au serveur.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Wfs.html"><abbr title="\Dataset\Wfs">Wfs</abbr></a></dt><dd>Wfs - Gabarit des Dataset WFS, chaque JdD correspond à un serveur WFS.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsBuild.html"><abbr title="\Dataset\WfsBuild">WfsBuild</abbr></a></dt><dd>Test de Wfs.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCache.html"><abbr title="\Dataset\WfsCache">WfsCache</abbr></a></dt><dd>Gère un cache des appels Http GET pour Wfs.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></dt><dd>Choix du paramètre outputFormat pour les requêtes WFS GetFeature.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></dt><dd>Exploite le XML des capacités d&#039;un serveur WFS pour en déduire différentes infos dont le schéma JSON du JdD.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a></dt><dd>Exploite le XML issu d&#039;une requête describeFeatureType pour en déduire les propriétés de schema JSON.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsGetRequestLight.html"><abbr title="\Dataset\WfsGetRequestLight">WfsGetRequestLight</abbr></a></dt><dd>Un WfsGetRequesXXX exécute les requêtes GET au serveur ; WfsGetRequestLight permet d&#039;exécuter uniquement la requête GetCapabilities.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsGetRequestFull.html"><abbr title="\Dataset\WfsGetRequestFull">WfsGetRequestFull</abbr></a></dt><dd>Un WfsGetRequestFull est complété par des infos issues du GetCapbilities pour exécuter les autres requêtes.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-Wfs.html"><abbr title="\Dataset\Wfs">Wfs</abbr></a></dt><dd>Gabarit de JdD ayant pour collections les FeatureTypes d&#039;un serveur WFS.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Dataset-WfsBuild.html"><abbr title="\Dataset\WfsBuild">WfsBuild</abbr></a></dt><dd>Test de Wfs.</dd>    </dl>
 
 
 
@@ -234,10 +235,7 @@
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-  - ajouter la possibilité d&#039;obtenir le nbre de features d&#039;une collection. Ce pourrait être optionnel.
   - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
-  - pb de synchro entre la pagination et le début de la plage demandée
-    - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
 EOT]                            </span>
 </dt>
 <dd>Actions à réaliser.</dd>
@@ -319,7 +317,7 @@ EOT]                            </span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10</span>
+    <span class="phpdocumentor-element-found-in__line">11</span>
 
     </aside>
 
@@ -332,10 +330,7 @@ EOT]                            </span>
     <span class="phpdocumentor-signature__name">A_FAIRE_WFS</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
-  - ajouter la possibilité d&#039;obtenir le nbre de features d&#039;une collection. Ce pourrait être optionnel.
   - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
-  - pb de synchro entre la pagination et le début de la plage demandée
-    - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
 EOT]</span>
 </code>
 
@@ -357,7 +352,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">20</span>
+    <span class="phpdocumentor-element-found-in__line">18</span>
 
     </aside>
 
@@ -401,7 +396,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">37</span>
+    <span class="phpdocumentor-element-found-in__line">35</span>
 
     </aside>
 
@@ -446,7 +441,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">55</span>
+    <span class="phpdocumentor-element-found-in__line">53</span>
 
     </aside>
 

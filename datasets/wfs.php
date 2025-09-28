@@ -1,6 +1,7 @@
 <?php
 /** Wfs - Catégorie des Dataset WFS.
- * Fonctionne en articulation avec WfsNs qui définit un jeu de données correspondant aux FeatureTypes d'un espace de noms d'un serveur WFS.
+ * Fonctionne en articulation avec WfsNs qui définit un jeu de données ayant pour collections les FeatureTypes d'un espace de noms
+ * d'un serveur WFS.
  *
  * @package Dataset
  */
@@ -10,10 +11,7 @@ namespace Dataset;
 const A_FAIRE_WFS = [
 <<<'EOT'
 Actions à réaliser:
-  - ajouter la possibilité d'obtenir le nbre de features d'une collection. Ce pourrait être optionnel.
   - quand je récupère du GML, je pourrais ne pas imposer de srs et demander à ogr2ogr de faire la conversion de srs
-  - pb de synchro entre la pagination et le début de la plage demandée
-    - si dans getItems() start ne correspond pas à un début de page, les caches sont multipliés
 EOT
 ];
 
@@ -77,8 +75,10 @@ use Ogr\Ogr2ogr;
  * Les fichiers sont stockés dans WfsCache::PATH.
  */
 class WfsCache {
-  //const NOCACHE = true; // suspension du cache notamment pour des tests
+  /** Permet d'actibver ou de suspendre facilement le cache, par exemple pour des tests. */
   const NOCACHE = false; // activation du cache en fonctionnement normal
+  //const NOCACHE = true; // suspension du cache notamment pour des tests
+  /** Chemin du stockage des fichiers du cache. */
   const PATH = __DIR__.'/wfscache/';
   
   /** Extrait du $http_response_header le code de retout Http.
@@ -108,7 +108,7 @@ class WfsCache {
     }
   }
   
-  /** Lecture d'un flux.
+  /** Lecture d'un flux défini par $url en utilisant le fichier de cache $filePath s'il n'est pas null.
    * @param ?string $filePath - chemin du fichier du cache relatif à PATH ou null si pas de cache
    * @param string $url - URL du flux à lire
    */
@@ -145,7 +145,7 @@ class WfsCache {
     return $string;
   }
   
-  /** Efface le contenu du répertoire dont le path est passé en paramètre. */
+  /** Efface récursivement le contenu du répertoire dont le path est passé en paramètre. */
   static function delete(string $dirPath): void {
     $dir = dir(self::PATH.$dirPath);
     while ($entry = $dir->read()){
@@ -166,11 +166,12 @@ class WfsCache {
   }
 };
 
-/** Choix du paramètre outputFormat pour GetFeature.
+/** Choix du paramètre outputFormat pour les requêtes WFS GetFeature.
  * Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat par exemple pour GeoJSON:
  *  - IgnWfs -> application/json
  *  - BDTopage2025Wfs -> application/json; subtype=geojson
  *  - DCE -> application/vnd.geo+json
+ *
  * Cette classe gère les différents libellés de format et choisit le meilleur format pour GetFeature.
  */
 class WfsOutputFormat {
@@ -183,21 +184,22 @@ class WfsOutputFormat {
     'text/xml; subtype=gml/3.2.1'=> 'GML3',
   ];
   
-  /** Un objet est créé avec le format tel qu'il est indiqué dans les capacités du serveur WFS. */
-  function __construct(readonly string $fmt) {}
+  /** Un objet est créé avec le libellé du format tel qu'il est indiqué dans les capacités du serveur WFS.
+   * @param string $label - le libellé du format tel qu'il est indiqué dans les capacités du serveur WFS. */
+  function __construct(readonly string $label) {}
   
-  function __toString(): string { return $this->fmt; }
+  function __toString(): string { return $this->label; }
   
   /** Indique si le format correspond à GeoJSON ou GML ou autre (null).
    * @return 'GeoJSON'|'GML'|null */
   function type(): ?string {
-    if (substr($this->fmt, 0, strlen('application/json')) == 'application/json')
+    if (substr($this->label, 0, strlen('application/json')) == 'application/json')
       return 'GeoJSON';
-    elseif ($this->fmt == 'application/vnd.geo+json')
+    elseif ($this->label == 'application/vnd.geo+json')
       return 'GeoJSON';
-    elseif (substr($this->fmt, 0, strlen('application/gml+xml')) == 'application/gml+xml')
+    elseif (substr($this->label, 0, strlen('application/gml+xml')) == 'application/gml+xml')
       return 'GML';
-    elseif (substr($this->fmt, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
+    elseif (substr($this->label, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
       return 'GML';
     else
       return null;
@@ -206,14 +208,14 @@ class WfsOutputFormat {
   /** Cherche à distinguer GML3 de GML2.
    * @return 'GeoJSON'|'GML'|'GML3'|'GML2'|null */
   function subType(): ?string {
-    if (substr($this->fmt, 0, strlen('application/json')) == 'application/json')
+    if (substr($this->label, 0, strlen('application/json')) == 'application/json')
       return 'GeoJSON';
-    elseif ($this->fmt == 'application/vnd.geo+json')
+    elseif ($this->label == 'application/vnd.geo+json')
       return 'GeoJSON';
-    elseif (substr($this->fmt, 0, strlen('application/gml+xml')) == 'application/gml+xml')
-      return self::GML_MIME[$this->fmt] ?? 'GML';
-    elseif (substr($this->fmt, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
-      return self::GML_MIME[$this->fmt] ?? 'GML';
+    elseif (substr($this->label, 0, strlen('application/gml+xml')) == 'application/gml+xml')
+      return self::GML_MIME[$this->label] ?? 'GML';
+    elseif (substr($this->label, 0, strlen('text/xml; subtype=gml')) == 'text/xml; subtype=gml')
+      return self::GML_MIME[$this->label] ?? 'GML';
     else
       return null;
   }
@@ -223,14 +225,14 @@ class WfsOutputFormat {
     return match($this->type()) {
       'GeoJSON' => '.json',
       'GML' => '.gml',
-      default => throw new \Exception("Pas d'extension pour $this->fmt"),
+      default => throw new \Exception("Pas d'extension pour $this->label"),
     };
   }
     
   /** Choisit le meilleur format pour GetFeature.
-   * Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML, sinon null.
+   * Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML
    */
-  static function bestForGetFeature(WfsCap $wfsCap): ?self {
+  static function bestForGetFeature(WfsCap $wfsCap): self {
     $best = [];
     foreach ($wfsCap->outputFormatsForGetFeature() as $of) {
       if ($stype = $of->subType())
@@ -245,14 +247,19 @@ class WfsOutputFormat {
     elseif (isset($best['GML']))
       return $best['GML'];
     else
-      return null;
+      throw new \Exception("Le serveur ne permet de fournir ni GeoJSON, ni GML");
   }
 };
 
-/** Exploite le XML des capacités d'un serveur WFS pour en déduire notamment le schéma JSON du JdD. */
+/** Exploite le XML des capacités d'un serveur WFS pour en déduire différentes infos dont le schéma JSON du JdD. */
 class WfsCap {
+  /** @var \SimpleXMLElement $elt - le XML converti en SimpleXMLElement après suppression des espaces de noms. */
   readonly \SimpleXMLElement $elt;
   
+  /** Initialise l'objet à partir du XML retourné par la requête GetCapabilities au serveur.
+   * Les préfixes des espaces de noms sont remplacés par {prefix}__
+   * @param string $dsName - le nom du JdD.
+   * @param string $xml - le XML des capacités. */
   function __construct(readonly string $dsName, string $xml) {
     // Remplace les ':' des préfixes des espaces de noms par '__' 
     $xml = preg_replace('!<(/)?(([^:]+):)!', '<$1$3__', $xml);
@@ -271,9 +278,15 @@ class WfsCap {
     $this->elt = $elt;
   }
   
-  /** Retourne la version du protocole WFS. */
+  /** Retourne la version du protocole WFS.
+   * @return '2.0.0'|'1.1.0'
+   */
   function version(): string {
-    return (string)$this->elt->ows__ServiceIdentification->ows__ServiceTypeVersion;
+    $version = (string)$this->elt->ows__ServiceIdentification->ows__ServiceTypeVersion;
+    if (!in_array($version, ['2.0.0','1.1.0'])) {
+      throw new \Exception("Version WFS==$version, seules les versions 2.0.0 et 1.1.1 sont gérées");
+    }
+    return $version;
   }
   
   /** Convertit un coin d'un WGS84BoundingBox en Position.
@@ -302,7 +315,7 @@ class WfsCap {
     return $coords;
   }
   
-  /** Dict. des FeatureTypes Name => différentes infos.
+  /** Dict. des FeatureTypes [{Name} => différentes infos].
    * @return array<string,mixed> */
   function featureTypes(): array {
     $featureTypes = [];
@@ -318,7 +331,7 @@ class WfsCap {
     return $featureTypes;
   }
   
-  /** Liste des espaces de noms des FeatureTypeNames.
+  /** Liste les espaces de noms des FeatureTypeNames.
    * @return list<string> */
   function namespaces(): array {
     $namespaces = [];
@@ -423,8 +436,12 @@ class WfsCap {
 
 /** Exploite le XML issu d'une requête describeFeatureType pour en déduire les propriétés de schema JSON. */
 class WfsProperties {
+  /** @var \SimpleXMLElement $ftds - le XML issu de la requête converti en SimpleXMLElement. */
   readonly \SimpleXMLElement $ftds;
   
+  /** @param string $dsName - le nom du JdD
+   * @param string $namespace - le nom de l'espace de noms
+   * @param string $xml - le XML issu de la requête describeFeatureType */
   function __construct(readonly string $dsName, readonly string $namespace, string $xml) {
     //echo '<pre>',htmlentities($xml);
     if (1) { // @phpstan-ignore if.alwaysTrue 
@@ -592,19 +609,14 @@ class WfsProperties {
   }
 };
 
-/** Exécute les requêtes GET au serveur.
- * A sa construction, la prop. version n'étant pas définie, seule le GetCapabilities est possible.
- * Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requêtes sont possibles.
- */
-class WfsGetRequest {
-  /** La version WFS du serveur, initialement à null, peut être défini après le GetCapabilities qui ne l'utilise pas. */
-  protected ?string $version=null;
-  
+/** Un WfsGetRequesXXX exécute les requêtes GET au serveur ; WfsGetRequestLight permet d'exécuter uniquement la requête GetCapabilities. */
+class WfsGetRequestLight {
+  /**
+   * @param string $name - le nom du JdD
+   * @param string $url - l'URL du serveurs WFS */
   function __construct(readonly string $name, readonly string $url) {}
   
-  /** Retourne le SimpleXMLElement correspondant aux capabilities.
-   * Les préfixes des espaces de noms sont remplacés par {prefix}__
-   */
+  /** Retourne le WfsCap correspondant aux capacités du serveur. */
   function getCapabilities(): WfsCap {
     $xml = WfsCache::get(
       $this->name.'/cap.xml',
@@ -612,9 +624,17 @@ class WfsGetRequest {
     );
     return new WfsCap($this->name, $xml);
   }
-  
-  /** Défini la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities. */
-  function setVersion(string $version): void { $this->version = $version; }
+};
+
+/** Un WfsGetRequestFull est complété par des infos issues du GetCapbilities pour exécuter les autres requêtes. */
+class WfsGetRequestFull extends WfsGetRequestLight {
+  /** 
+   * @param ('2.0.0'|'1.1.0') $version - la versioon du protocole WFS du serveur
+   * @param WfsOutputFormat $outputFormat - le format de sortie à utiliser pour GetFeature
+   */
+  function __construct(WfsGetRequestLight $light, readonly string $version, readonly WfsOutputFormat $outputFormat) {
+    parent::__construct($light->name, $light->url);
+  }
   
   /** Retourne le DescribeFeatureType des FeatureTypes de l'espace de noms conerti en WfsProperties.
    * @param list<string> $ftNames - les noms des FeatureTypes avec leur espace de noms
@@ -628,27 +648,27 @@ class WfsGetRequest {
     return new WfsProperties($this->name, $namespace, $xml);
   }
   
-  /** Retourne l'extrait de collection sous la forme d'une FeatureCollection GeoJSON décodée.
-   * Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON
+  /** Retourne la sélection de Features de la collection sous la forme d'une FeatureCollection GeoJSON décodée.
+   * Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON.
+   * Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le retour est effectué en GeoJSON ou en GML.
    * @return TGeoJsonFeatureCollection
    */
-  function getFeatures(string $ftName, int $start, int $count, WfsOutputFormat $outputFormat, ?BBox $bbox): array {
-    //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
-    // Expérimentalement, c'est la meilleure forme de SRS à utiliser !
+  function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox): array {
+    echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
     if ($bbox) {
       $bboxAs4Coords = match($this->version) {
         '2.0.0' => $bbox->as4CoordsLatLon(), // en WFS 2.0.0, les coordonnées doivent être fournies en LatLon
         '1.1.0' => $bbox->as4Coords(), // en WFS 1.1.0 expérimentalement, je constate qu'il faut utiliser LonLat (au moins sur SextantDCE)
-        default => throw new \Exception("version $this->version non acceptée"),
       };
       // ajout du SRS utilisé pour le BBox
       $bboxAs4Coords[] = match($this->version) {
         '2.0.0' => 'urn:ogc:def:crs:EPSG::4326', // en WFS 2.0.0, 'EPSG:4326' ne fonctionne pas, par contre l'urn fonctionne
         '1.1.0' => 'EPSG:4326', // en WFS 1.1.0 expérimentalement, c'est l'inverse
-        default => throw new \Exception("version $this->version non acceptée"),
       };
     }
-    $cachePath = $bbox ? null : "$this->name/features/".str_replace(':','/', $ftName)."/$start-$count".$outputFormat->ext();
+    // Je décide de ne pas mettre en cache les requêtes utilisant un BBox
+    $cachePath = $bbox ? null : "$this->name/features/".str_replace(':','/', $ftName)."/$start-$count".$this->outputFormat->ext();
+    echo "cachePath=$cachePath<br>\n";
     $fcoll = WfsCache::get(
       $cachePath,
       $this->url
@@ -656,20 +676,18 @@ class WfsGetRequest {
         .match($this->version) {
           '2.0.0' => "typeNames=$ftName",
           '1.1.0' => "typeName=$ftName",
-          default => throw new \Exception("version $this->version non acceptée"),
          }
         ."&srsName=EPSG:4326"
         .($bbox ? "&bbox=".implode(',',$bboxAs4Coords) : '')
-        ."&outputFormat=".urlencode($outputFormat)
+        ."&outputFormat=".urlencode($this->outputFormat)
         ."&startIndex=$start&"
         .match($this->version) {
           '2.0.0' => "count=$count",
           '1.1.0' => "maxFeatures=$count",
-          default => throw new \Exception("version $this->version non acceptée"),
         }
     );
     // Si GetFeature a retourné du GML, il est converti en GeoJSON 
-    if ($outputFormat->type() == 'GML') {
+    if ($this->outputFormat->type() == 'GML') {
       if ($cachePath && is_file(WfsCache::PATH.$cachePath)) {
         $fcoll = Ogr2ogr::convertGmlToGeoJson(WfsCache::PATH.$cachePath);
       }
@@ -690,19 +708,19 @@ class WfsGetRequest {
   /** Retourne le Feature ayant cet id ou null si aucun ne l'a.
    * @return ?TGeoJsonFeature
    */
-  function getFeature(string $ftName, string $id, WfsOutputFormat $outputFormat): ?array {
+  function getFeature(string $ftName, string $id): ?array {
     $ftNameCache = str_replace(':','/', $ftName);
-    $cachePath = "$this->name/features/$ftNameCache/id-$id".$outputFormat->ext();
+    $cachePath = "$this->name/features/$ftNameCache/id-$id".$this->outputFormat->ext();
     $fcoll = WfsCache::get(
       $cachePath,
       $this->url
         ."?service=WFS&version=".$this->version."&request=GetFeature&typeNames=$ftName"
         .'&srsName=EPSG:4326'
-        ."&outputFormat=".urlencode($outputFormat)
+        ."&outputFormat=".urlencode($this->outputFormat)
         ."&featureID=$id"
     );
     // Si GetFeature a retourné du GML, il est converti en GeoJSON 
-    if ($outputFormat->type() == 'GML') {
+    if ($this->outputFormat->type() == 'GML') {
       $fcoll = Ogr2ogr::convertGmlToGeoJson(WfsCache::PATH.$cachePath);
     }
     $fcoll = json_decode($fcoll, true, 512, JSON_THROW_ON_ERROR);
@@ -714,19 +732,50 @@ class WfsGetRequest {
       return $fcoll['features'][0];
     }
   }
+
+  /* Retourne le nb de Features de la collection. */
+  function getNbOfFeatures(string $ftName): int {
+    echo "Appel de WfsGetRequest::getNbOfFeatures(ftName=$ftName)<br>\n";
+    { // J'essaie d'abord si le retour GeoJSON comporte une propriété totalFeatures
+      // Je réutilise la 1ère page
+      $firstFeatures = $this->getFeatures($ftName, 0, Wfs::SIZE_OF_PAGE, null);
+      if (isset($firstFeatures['totalFeatures']))
+        return $firstFeatures['totalFeatures'];
+    }
+    
+    { // Sinon je fais une requête GetFeature &resultType=hits
+      $url = $this->url
+            ."?service=WFS&version=".$this->version."&request=GetFeature&"
+            .match($this->version) {
+              '2.0.0' => "typeNames=$ftName",
+              '1.1.0' => "typeName=$ftName",
+             }
+            .'&resultType=hits';
+      //echo "url=$url<br>\n";
+      $cachePath = "$this->name/features/".str_replace(':','/', $ftName)."/hits.gml";
+      $hits = WfsCache::get(
+        $cachePath,
+        $url
+      );
+      //echo "<pre>",htmlentities($hits),"</pre>\n";
+      if (!preg_match('! (numberMatched|numberOfFeatures)="(\d+)"!', $hits, $matches))
+        throw new \Exception("Neither numberMatched, nor numberOfFeatures found");
+      return (int)$matches[2];
+    }
+  }
 };
 
-/** Wfs - Gabarit des Dataset WFS, chaque JdD correspond à un serveur WFS.
- * L'URL du serveur est défini en paramètre lors de la création du Wfs et est stocké dans le registre de Dataset.
- * Le schéma ne fournit pas les propriétés de chaque collection car certains ont beaucoup de collections et ce serait peu efficace ;
- * pour avoir ces propriéts utiliser WfsNs qui se limite à un espace de noms.
- * Les coordonnées sont toujours retournées en WGS84 LonLat.
+/** Gabarit de JdD ayant pour collections les FeatureTypes d'un serveur WFS.
+ * L'URL du serveur est stocké dans le registre de Dataset et passé en paramètre lors de la création du Wfs.
+ * Le schéma ne fournit pas les propriétés de chaque collection car certains Wfs ont beaucoup de collections et ce serait peu efficace ;
+ * pour avoir ces propriétés utiliser WfsNs qui limite les collections à un espace de noms.
+ * Les coordonnées géographiques sont toujours retournées en WGS84 LonLat.
  */
 class Wfs extends Dataset {
   /** Nbre de features par page pour getItems(). */
-  const COUNT = 20;
-  /** Le gestionnaire de requêtes. */
-  readonly WfsGetRequest $wfsReq;
+  const SIZE_OF_PAGE = 50; // 100 -> page de 1,7 Mo
+  /** @param WfsGetRequestFull $wfsReq - Le gestionnaire de requêtes complet. */
+  readonly WfsGetRequestFull $wfsReq;
   /** Les capacités du serveur WFS. */
   readonly WfsCap $cap;
   
@@ -734,12 +783,9 @@ class Wfs extends Dataset {
    * @param array{'class'?:string,'url':string,'dsName':string} $params
    */
   function __construct(array $params) {
-    $this->wfsReq = new WfsGetRequest($params['dsName'], $params['url']);
-    $this->cap = $this->wfsReq->getCapabilities();
-    $this->wfsReq->setVersion($this->cap->version());
-    if (!in_array($version = $this->cap->version(), ['2.0.0','1.1.0'])) {
-      throw new \Exception("Version WFS==$version, seules les versions 2.0.0 et 1.1.1 sont gérées");
-    }
+    $wfsReq = new WfsGetRequestLight($params['dsName'], $params['url']);
+    $this->cap = $wfsReq->getCapabilities();
+    $this->wfsReq = new WfsGetRequestFull($wfsReq, $this->cap->version(), WfsOutputFormat::bestForGetFeature($this->cap));
     parent::__construct($params['dsName'], $this->cap->jsonSchemaOfTheDs(), true);
   }
   
@@ -778,7 +824,7 @@ class Wfs extends Dataset {
    * si l'id du feature n'est pas défini alors
    *   si aucun filtre autre que skip est utilisé alors l'identifiant est le no en séquence
    *   sinon la valeur null est retournée comme identifiant.
-   * Une pagination est utilisée définie par COUNT pour requêter les features.
+   * Une pagination est utilisée définie par SIZE_OF_PAGE pour requêter les features.
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - bbox: BBox - rectangle de sélection des n-uplets
@@ -790,12 +836,12 @@ class Wfs extends Dataset {
   function getItems(string $collName, array $filters=[]): \Generator {
     //echo "Appel de Wfs::getItems(collName=$collName, filters)<br>\n";
     $start = $filters['skip'] ?? 0;
-    if (!($outputFormat = WfsOutputFormat::bestForGetFeature($this->cap))) {
-      throw new \Exception("Le serveur ne permet de fournir ni GeoJSON, ni GML");
-    }
-    
+    // $start n'est pas forcément au début d'une page, $startOfPage est le début de la page contenant l'item no $start
+    $startOfPage = intval(floor($start/self::SIZE_OF_PAGE) * self::SIZE_OF_PAGE);
+    //echo "start = $start, startOfPage = $startOfPage<br>\n";
     while (true) {
-      $fcoll = $this->wfsReq->getFeatures($collName, $start, self::COUNT, $outputFormat, $filters['bbox'] ?? null);
+      // Je vais chercher une page démarrant sur un multiple de self::SIZE_OF_PAGE
+      $fcoll = $this->wfsReq->getFeatures($collName, $startOfPage, self::SIZE_OF_PAGE, $filters['bbox'] ?? null);
       //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
       if (count($fcoll['features']) == 0) {
         //echo "Aucun résultat retourné<br>\n";
@@ -803,6 +849,12 @@ class Wfs extends Dataset {
       }
       //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
       foreach ($fcoll['features'] as $feature) {
+        // si $startOfPage est différent de start, j'itère sans retourner d'item
+        if ($startOfPage < $start) {
+          //echo "startOfPage=$startOfPage < start=$start -> continue<br>\n";
+          $startOfPage++;
+          continue;
+        }
         if (!($id = $feature['id'] ?? null)) { // si id n'est pas défini
           if ((array_keys($filters) == ['skip']) || (array_keys($filters) == [])) { // si pas d'autre filtre que skip
             $id = $start; // alors id est le no en sequence
@@ -819,10 +871,11 @@ class Wfs extends Dataset {
         //echo "Wfs::getItems(collName=$collName, filters) yield $id<br>\n";
         yield $id => $tuple;
         $start++;
+        $startOfPage++;
       }
-      // Si getFeatures() a retourné moins de COUNT features alors c'est qu'il n'y en a plus
+      // Si getFeatures() a retourné moins de SIZE_OF_PAGE features alors c'est qu'il n'y en a plus
       // Ce test fonctionne quand le serveur a retourné du GML et que numberMatched n'est pas défini
-      if (count($fcoll['features']) < self::COUNT)
+      if (count($fcoll['features']) < self::SIZE_OF_PAGE)
         return;
       unset($fcoll['features']);
       //echo '<pre>$fcoll='; print_r($fcoll); echo "</pre>\n";
@@ -839,7 +892,7 @@ class Wfs extends Dataset {
   function getOneItemByKey(string $collName, string|int $id): array|null {
     //echo "getOneItemByKey(id=$id)<br>\n";
     if (is_int($id) || is_numeric($id)) { // c'est un numéro en séquence
-      $start = intval(floor($id/self::COUNT)*self::COUNT); // j'utilise getItems() pour avoir la bonne page
+      $start = intval(floor($id/self::SIZE_OF_PAGE)*self::SIZE_OF_PAGE); // j'utilise getItems() pour avoir la bonne page
       echo "start=$start<br>\n";
       foreach ($this->getItems($collName, ['skip'=> $start]) as $id2 => $feature) {
         if ($id2 == $id)
@@ -848,10 +901,7 @@ class Wfs extends Dataset {
       return null;
     }
     else { // c'est un vrai id alors GetFeature par id
-      if (!($outputFormat = WfsOutputFormat::bestForGetFeature($this->cap))) {
-        throw new \Exception("Le serveur ne permet de fournir ni GeoJSON, ni GML");
-      }
-      $feature = $this->wfsReq->getFeature($collName, $id, $outputFormat);
+      $feature = $this->wfsReq->getFeature($collName, $id);
       if (!$feature)
         return null;
 
@@ -877,6 +927,9 @@ class Wfs extends Dataset {
     }
     return $this->wfsReq->describeFeatureType($namespace, $ftNames);
   }
+
+  /** Retourne le nombre d'items de la collection. */ 
+  function getNbOfItems(string $collName): int { return $this->wfsReq->getNbOfFeatures($collName); }
 };
 
 
@@ -929,7 +982,7 @@ class WfsBuild {
                    return "<tr><td><a href='?dataset=$_GET[dataset]&action=$_GET[action]&ns=$ns'>".($ns ? $ns : "noNS")."</a></td>"
                          ."<td><a href='?dataset=$_GET[dataset]&action=describeFeatureTypes&ns=$ns'>describeFeatureTypes</a></td>"
                          ."<td><a href='?dataset=$_GET[dataset]&action=properties&ns=$ns'>properties</a></td>"
-                           ."<td><a href='?dataset=$_GET[dataset]&action=WfsNs&ns=$ns'>WfsNs</a></td>"
+                         ."<td><a href='?dataset=$_GET[dataset]&action=WfsNs&ns=$ns'>WfsNs</a></td>"
                          ."</tr>\n";
                  },
                  $namespaces
@@ -942,12 +995,14 @@ class WfsBuild {
           foreach (array_keys($wfs->cap->featureTypes()) as $collName) {
             if (preg_match('!^([^:]+):(.*)$!', $collName, $matches)) {
               if ($matches[1] == $_GET['ns']) {
-                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$matches[2]</a><br>\n";
+                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$matches[2]</a> ",
+                     "(<a href='?action=nbOfFeatures&dataset=$_GET[dataset]&collection=$collName'>nbOfFeatures</a>)<br>\n";
               }
             }
             else { // le nom ne comporte pas d'espace de noms
               if (!$_GET['ns']) {
-                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$collName</a><br>\n";
+                echo "<a href='?action=display&collection=$_GET[dataset].$collName'>$collName</a> ",
+                     "(<a href='?action=nbOfFeatures&dataset=$_GET[dataset]&collection=$collName'>nbOfFeatures</a>)<br>\n";
               }
             }
           }
@@ -963,6 +1018,12 @@ class WfsBuild {
         }
         break;
       }
+      case 'nbOfFeatures': {
+        $wfs = Wfs::get($_GET['dataset']);
+        echo '<pre>nbOfFeatures=',$wfs->wfsReq->getNbOfFeatures($_GET['collection']),"</pre>\n";
+        echo '<pre>nbOfItems=',$wfs->getNbOfItems($_GET['collection']),"</pre>\n";
+        break;
+      }
       case 'cap': { // Affiche les capacités WFS de $_GET[dataset]
         $wfs = Wfs::get($_GET['dataset']);
         echo '<pre>cap='; print_r($wfs->cap->elt); echo "</pre>\n";
@@ -976,7 +1037,7 @@ class WfsBuild {
       case 'outputFormatsForGetFeature': { // "Affiche les formats possibles de sortie de GetFeature du WFS de $_GET[dataset] 
         $wfs = Wfs::get($_GET['dataset']);
         echo '<pre>outputFormatsForGetFeature='; print_r($wfs->cap->outputFormatsForGetFeature());
-        echo "bestOutputFormatForGetFeature=",WfsOutputFormat::bestForGetFeature($wfs->cap) ?? 'null',"\n";
+        echo "bestOutputFormatForGetFeature=",WfsOutputFormat::bestForGetFeature($wfs->cap),"\n";
         break;
       }
       case 'colls': { // Affiche les collections de l'objet $_GET[dataset]

@@ -147,7 +147,7 @@ abstract class Dataset {
     ], // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -> GeoJSON
     //'GéoLittoralWfs'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs'],
-    'GéoLittoral'=> ['class'=> 'WfsNs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs', 'namespace'=>'ms'],
+    'GéoLittoral'=> ['class'=> 'Wfs', 'url'=> 'https://geolittoral.din.developpement-durable.gouv.fr/wxs', 'namespace'=>'ms'],
     /**/
   ];
   const UNITS = [
@@ -348,7 +348,12 @@ abstract class Dataset {
         $result[$k] = $tuple;
     return $result;
   }
-    
+  
+  /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.
+   * Devrait être redéfinie par les Dataset si cette info. est disponible.
+   */ 
+  function getNbOfItems(string $collName): int { return -1; }
+  
   /** Construit le JdD sous la forme d'un array.
    * @return array<mixed>
    */

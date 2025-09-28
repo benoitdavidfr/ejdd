@@ -94,6 +94,11 @@ abstract class Collection {
     return $result;
   }
 
+  /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.
+   * Devrait être redéfinie par les Dataset si cette info. est disponible.
+   */ 
+  function getNbOfItems(): int { return -1; }
+  
   /** Affiche les items de la collection.
    * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
    */
@@ -148,6 +153,7 @@ abstract class Collection {
     echo "</table>\n";
     if (in_array('skip', $this->implementedFilters()) && ($i >= $nbPerPage)) {
       $skip += $i;
+      $nbItems = $this->getNbOfItems();
       echo "<a href='?action=display&collection=",urlencode($this->id()),
              isset($_GET['predicate']) ? "&predicate=".urlencode($_GET['predicate']) : '',
              "&skip=$skip",
@@ -156,7 +162,7 @@ abstract class Collection {
            "Suivants (skip=$skip)</a>, ";
       echo "<a href='?action=display&collection=",urlencode($this->id()),
             isset($options['predicate']) ? "&predicate=".urlencode($options['predicate']) : '',
-            "&nbPerPage=all'>Tous</a><br>\n";
+            "&nbPerPage=all'>Tous",(($nbItems >= 0) ? " ($nbItems)" : ''),"</a><br>\n";
     }
   }
 
@@ -361,9 +367,7 @@ class CollectionOfDs extends Collection {
    * est retournée comme identifiant.
    * @return \Generator<int|string|null,array<mixed>>
    */
-  function getItems(array $filters=[]): \Generator {
-    return Dataset::get($this->dsName)->getItems($this->name, $filters);
-  }
+  function getItems(array $filters=[]): \Generator { return Dataset::get($this->dsName)->getItems($this->name, $filters); }
 
   /** La méthode getOneItemByKey() est mise en oeuvre par le JdD.
    * @return array<mixed>|string|null */ 
@@ -377,6 +381,11 @@ class CollectionOfDs extends Collection {
     return Dataset::get($this->dsName)->getItemsOnValue($this->name, $field, $value);
   }
 
+  /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.
+   * Devrait être redéfinie par les Dataset si cette info. est disponible.
+   */ 
+  function getNbOfItems(): int { return Dataset::get($this->dsName)->getNbOfItems($this->name); }
+  
   /** Affiche les MD et données de la collection.
    * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
    */

@@ -364,6 +364,13 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
 <dd>Retourne la liste des items, avec leur clé, pour lesquels le field contient la valeur.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Collection.html#method_getNbOfItems">getNbOfItems()</a>
+    <span>
+                                &nbsp;: int    </span>
+</dt>
+<dd>Retourne le nombre d&#039;items de la collection, ou -1 si cette info n&#039;est pas disponible.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Collection.html#method_getOneItemByKey">getOneItemByKey()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;|string|null    </span>
@@ -562,7 +569,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">212</span>
+    <span class="phpdocumentor-element-found-in__line">218</span>
 
     </aside>
 
@@ -607,7 +614,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">164</span>
+    <span class="phpdocumentor-element-found-in__line">170</span>
 
     </aside>
 
@@ -652,7 +659,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">100</span>
+    <span class="phpdocumentor-element-found-in__line">105</span>
 
     </aside>
 
@@ -732,7 +739,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">201</span>
+    <span class="phpdocumentor-element-found-in__line">207</span>
 
     </aside>
 
@@ -784,7 +791,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">222</span>
+    <span class="phpdocumentor-element-found-in__line">228</span>
 
     </aside>
 
@@ -823,7 +830,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">267</span>
+    <span class="phpdocumentor-element-found-in__line">273</span>
 
     </aside>
 
@@ -962,6 +969,47 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
         <span class="phpdocumentor-signature__response_type">array&lt;string|int, array&lt;string|int, mixed&gt;&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_getNbOfItems">
+        getNbOfItems()
+        <a href="classes/Algebra-Collection.html#method_getNbOfItems" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/collection.inc.php"><a href="files/algebra-collection-inc.html"><abbr title="algebra/collection.inc.php">collection.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">100</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le nombre d&#039;items de la collection, ou -1 si cette info n&#039;est pas disponible.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getNbOfItems</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Devrait être redéfinie par les Dataset si cette info. est disponible.</p>
+</section>
+
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">int</span>
             </section>
 
 </article>
@@ -1319,6 +1367,7 @@ Par ailleurs elle peut définir les méthodes suivantes:</li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_drawItem">drawItem()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_getItems">getItems()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_getItemsOnValue">getItemsOnValue()</a></li>
+                                            <li class=""><a href="classes/Algebra-Collection.html#method_getNbOfItems">getNbOfItems()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_getOneItemByKey">getOneItemByKey()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_id">id()</a></li>
                                             <li class=""><a href="classes/Algebra-Collection.html#method_implementedFilters">implementedFilters()</a></li>

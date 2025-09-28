@@ -218,17 +218,17 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">725</span>
+    <span class="phpdocumentor-element-found-in__line">774</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Wfs - Gabarit des Dataset WFS, chaque JdD correspond à un serveur WFS.</p>
+            <p class="phpdocumentor-summary">Gabarit de JdD ayant pour collections les FeatureTypes d&#039;un serveur WFS.</p>
 
 
-    <section class="phpdocumentor-description"><p>L'URL du serveur est défini en paramètre lors de la création du Wfs et est stocké dans le registre de Dataset.
-Le schéma ne fournit pas les propriétés de chaque collection car certains ont beaucoup de collections et ce serait peu efficace ;
-pour avoir ces propriéts utiliser WfsNs qui se limite à un espace de noms.
-Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
+    <section class="phpdocumentor-description"><p>L'URL du serveur est stocké dans le registre de Dataset et passé en paramètre lors de la création du Wfs.
+Le schéma ne fournit pas les propriétés de chaque collection car certains Wfs ont beaucoup de collections et ce serait peu efficace ;
+pour avoir ces propriétés utiliser WfsNs qui limite les collections à un espace de noms.
+Les coordonnées géographiques sont toujours retournées en WGS84 LonLat.</p>
 </section>
 
 
@@ -256,9 +256,9 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="classes/Dataset-Wfs.html#constant_COUNT">COUNT</a>
+    <a class="" href="classes/Dataset-Wfs.html#constant_SIZE_OF_PAGE">SIZE_OF_PAGE</a>
     <span>
-        &nbsp;= 20                            </span>
+        &nbsp;= 50                            </span>
 </dt>
 <dd>Nbre de features par page pour getItems().</dd>
 
@@ -303,7 +303,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
     //&#039;GéoLittoralWfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
-    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
 ]                            </span>
 </dt>
 <dd>Arbre des JdD sous la forme [{dsName} =&gt; {defOfDataset}|{subTree}].</dd>
@@ -363,9 +363,8 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a class="" href="classes/Dataset-Wfs.html#property_wfsReq">$wfsReq</a>
     <span>
-                        &nbsp;: <a href="classes/Dataset-WfsGetRequest.html"><abbr title="\Dataset\WfsGetRequest">WfsGetRequest</abbr></a>            </span>
+                        &nbsp;: <a href="classes/Dataset-WfsGetRequestFull.html"><abbr title="\Dataset\WfsGetRequestFull">WfsGetRequestFull</abbr></a>            </span>
 </dt>
-<dd>Le gestionnaire de requêtes.</dd>
 
     </dl>
 
@@ -495,6 +494,13 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
 <dd>Retourne la liste des items avec leur clé, ayant pour champ field la valeur fournie.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Wfs.html#method_getNbOfItems">getNbOfItems()</a>
+    <span>
+                                &nbsp;: int    </span>
+</dt>
+<dd>Retourne le nombre d&#039;items de la collection.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-Wfs.html#method_getOneItemByKey">getOneItemByKey()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;|null    </span>
@@ -562,16 +568,16 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
 
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_COUNT">
-        COUNT
-        <a href="classes/Dataset-Wfs.html#constant_COUNT" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_SIZE_OF_PAGE">
+        SIZE_OF_PAGE
+        <a href="classes/Dataset-Wfs.html#constant_SIZE_OF_PAGE" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">727</span>
+    <span class="phpdocumentor-element-found-in__line">776</span>
 
     </aside>
 
@@ -581,8 +587,8 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">COUNT</span>
-    = <span class="phpdocumentor-signature__default-value">20</span>
+    <span class="phpdocumentor-signature__name">SIZE_OF_PAGE</span>
+    = <span class="phpdocumentor-signature__default-value">50</span>
 </code>
 
 
@@ -652,7 +658,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
     //&#039;GéoLittoralWfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
-    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
 ]</span>
 </code>
 
@@ -728,7 +734,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">731</span>
+    <span class="phpdocumentor-element-found-in__line">780</span>
 
     </aside>
 
@@ -961,16 +967,15 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">729</span>
+    <span class="phpdocumentor-element-found-in__line">778</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Le gestionnaire de requêtes.</p>
-
+    
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/Dataset-WfsGetRequest.html"><abbr title="\Dataset\WfsGetRequest">WfsGetRequest</abbr></a></span>
+            <span class="phpdocumentor-signature__type"><a href="classes/Dataset-WfsGetRequestFull.html"><abbr title="\Dataset\WfsGetRequestFull">WfsGetRequestFull</abbr></a></span>
     <span class="phpdocumentor-signature__name">$wfsReq</span>
     </code>
 
@@ -1005,7 +1010,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">736</span>
+    <span class="phpdocumentor-element-found-in__line">785</span>
 
     </aside>
 
@@ -1050,7 +1055,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">355</span>
+    <span class="phpdocumentor-element-found-in__line">360</span>
 
     </aside>
 
@@ -1089,7 +1094,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">755</span>
+    <span class="phpdocumentor-element-found-in__line">801</span>
 
     </aside>
 
@@ -1177,7 +1182,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">447</span>
+    <span class="phpdocumentor-element-found-in__line">452</span>
 
     </aside>
 
@@ -1291,7 +1296,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">872</span>
+    <span class="phpdocumentor-element-found-in__line">922</span>
 
     </aside>
 
@@ -1389,7 +1394,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">429</span>
+    <span class="phpdocumentor-element-found-in__line">434</span>
 
     </aside>
 
@@ -1424,7 +1429,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">444</span>
+    <span class="phpdocumentor-element-found-in__line">449</span>
 
     </aside>
 
@@ -1578,7 +1583,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">468</span>
+    <span class="phpdocumentor-element-found-in__line">473</span>
 
     </aside>
 
@@ -1627,7 +1632,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">478</span>
+    <span class="phpdocumentor-element-found-in__line">483</span>
 
     </aside>
 
@@ -1676,7 +1681,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">747</span>
+    <span class="phpdocumentor-element-found-in__line">793</span>
 
     </aside>
 
@@ -1725,7 +1730,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">790</span>
+    <span class="phpdocumentor-element-found-in__line">836</span>
 
     </aside>
 
@@ -1742,7 +1747,7 @@ Les coordonnées sont toujours retournées en WGS84 LonLat.</p>
 si l'id du feature n'est pas défini alors
 si aucun filtre autre que skip est utilisé alors l'identifiant est le no en séquence
 sinon la valeur null est retournée comme identifiant.
-Une pagination est utilisée définie par COUNT pour requêter les features.
+Une pagination est utilisée définie par SIZE_OF_PAGE pour requêter les features.
 Les filtres possibles sont:</p>
 <ul>
 <li>skip: int - nombre de n-uplets à sauter au début pour permettre la pagination</li>
@@ -1858,6 +1863,55 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getNbOfItems">
+        getNbOfItems()
+        <a href="classes/Dataset-Wfs.html#method_getNbOfItems" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">932</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le nombre d&#039;items de la collection.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getNbOfItems</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$collName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$collName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getOneItemByKey">
         getOneItemByKey()
         <a href="classes/Dataset-Wfs.html#method_getOneItemByKey" class="headerlink"><i class="fas fa-link"></i></a>
@@ -1866,7 +1920,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">839</span>
+    <span class="phpdocumentor-element-found-in__line">892</span>
 
     </aside>
 
@@ -1922,7 +1976,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">774</span>
+    <span class="phpdocumentor-element-found-in__line">820</span>
 
     </aside>
 
@@ -2022,7 +2076,7 @@ Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">417</span>
+    <span class="phpdocumentor-element-found-in__line">422</span>
 
     </aside>
 
@@ -2091,7 +2145,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">406</span>
+    <span class="phpdocumentor-element-found-in__line">411</span>
 
     </aside>
 
@@ -2132,7 +2186,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">372</span>
+    <span class="phpdocumentor-element-found-in__line">377</span>
 
     </aside>
 
@@ -2187,7 +2241,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">458</span>
+    <span class="phpdocumentor-element-found-in__line">463</span>
 
     </aside>
 
@@ -2243,7 +2297,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">489</span>
+    <span class="phpdocumentor-element-found-in__line">494</span>
 
     </aside>
 
@@ -2379,7 +2433,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/Dataset-Wfs.html#constant_COUNT">COUNT</a></li>
+                                                    <li class=""><a href="classes/Dataset-Wfs.html#constant_SIZE_OF_PAGE">SIZE_OF_PAGE</a></li>
                                                     <li class=""><a href="classes/Dataset-Dataset.html#constant_TREE">TREE</a></li>
                                                     <li class=""><a href="classes/Dataset-Dataset.html#constant_UNITS">UNITS</a></li>
                                             </ul>
@@ -2418,6 +2472,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
                                             <li class=""><a href="classes/Dataset-Wfs.html#method_get">get()</a></li>
                                             <li class=""><a href="classes/Dataset-Wfs.html#method_getItems">getItems()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_getItemsOnValue">getItemsOnValue()</a></li>
+                                            <li class=""><a href="classes/Dataset-Wfs.html#method_getNbOfItems">getNbOfItems()</a></li>
                                             <li class=""><a href="classes/Dataset-Wfs.html#method_getOneItemByKey">getOneItemByKey()</a></li>
                                             <li class=""><a href="classes/Dataset-Wfs.html#method_implementedFilters">implementedFilters()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_isAvailable">isAvailable()</a></li>

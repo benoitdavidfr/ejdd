@@ -215,20 +215,20 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">176</span>
+    <span class="phpdocumentor-element-found-in__line">177</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Choix du paramètre outputFormat pour GetFeature.</p>
+            <p class="phpdocumentor-summary">Choix du paramètre outputFormat pour les requêtes WFS GetFeature.</p>
 
 
     <section class="phpdocumentor-description"><p>Les différents serveurs WFS n'utilisent pas le même paramètre outputFormat par exemple pour GeoJSON:</p>
 <ul>
 <li>IgnWfs -&gt; application/json</li>
 <li>BDTopage2025Wfs -&gt; application/json; subtype=geojson</li>
-<li>DCE -&gt; application/vnd.geo+json
-Cette classe gère les différents libellés de format et choisit le meilleur format pour GetFeature.</li>
+<li>DCE -&gt; application/vnd.geo+json</li>
 </ul>
+<p>Cette classe gère les différents libellés de format et choisit le meilleur format pour GetFeature.</p>
 </section>
 
 
@@ -272,7 +272,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsOutputFormat.html#property_fmt">$fmt</a>
+    <a class="" href="classes/Dataset-WfsOutputFormat.html#property_label">$label</a>
     <span>
                         &nbsp;: string            </span>
 </dt>
@@ -290,7 +290,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd>Un objet est créé avec le format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</dd>
+<dd>Un objet est créé avec le libellé du format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-WfsOutputFormat.html#method___toString">__toString()</a>
@@ -301,7 +301,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-WfsOutputFormat.html#method_bestForGetFeature">bestForGetFeature()</a>
     <span>
-                                &nbsp;: self|null    </span>
+                                &nbsp;: self    </span>
 </dt>
 <dd>Choisit le meilleur format pour GetFeature.</dd>
 
@@ -347,7 +347,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">178</span>
+    <span class="phpdocumentor-element-found-in__line">179</span>
 
     </aside>
 
@@ -385,9 +385,9 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
             -public
                                                 -read-only                    "
 >
-    <h4 class="phpdocumentor-element__name" id="property_fmt">
-        $fmt
-        <a href="classes/Dataset-WfsOutputFormat.html#property_fmt" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="property_label">
+        $label
+        <a href="classes/Dataset-WfsOutputFormat.html#property_label" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
@@ -395,7 +395,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">187</span>
+    <span class="phpdocumentor-element-found-in__line">189</span>
 
     </aside>
 
@@ -404,7 +404,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__type">string</span>
-    <span class="phpdocumentor-signature__name">$fmt</span>
+    <span class="phpdocumentor-signature__name">$label</span>
     </code>
 
     
@@ -438,15 +438,15 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">187</span>
+    <span class="phpdocumentor-element-found-in__line">189</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Un objet est créé avec le format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</p>
+        <p class="phpdocumentor-summary">Un objet est créé avec le libellé du format tel qu&#039;il est indiqué dans les capacités du serveur WFS.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fmt</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$label</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -455,11 +455,15 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$fmt</span>
+                <span class="phpdocumentor-signature__argument__name">$label</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><ul>
+<li>le libellé du format tel qu'il est indiqué dans les capacités du serveur WFS.</li>
+</ul>
+</section>
+
             </dd>
             </dl>
 
@@ -483,7 +487,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">189</span>
+    <span class="phpdocumentor-element-found-in__line">191</span>
 
     </aside>
 
@@ -521,7 +525,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">233</span>
+    <span class="phpdocumentor-element-found-in__line">235</span>
 
     </aside>
 
@@ -529,12 +533,12 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">bestForGetFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wfsCap</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self|null</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">bestForGetFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$wfsCap</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">self</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML, sinon null.</p>
+        <section class="phpdocumentor-description"><p>Si possible utilise GeoJSON, sinon GML3, sinon GML2, sinon GML</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -554,7 +558,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type">self|null</span>
+        <span class="phpdocumentor-signature__response_type">self</span>
             </section>
 
 </article>
@@ -572,7 +576,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">222</span>
+    <span class="phpdocumentor-element-found-in__line">224</span>
 
     </aside>
 
@@ -611,7 +615,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">208</span>
+    <span class="phpdocumentor-element-found-in__line">210</span>
 
     </aside>
 
@@ -650,7 +654,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">193</span>
+    <span class="phpdocumentor-element-found-in__line">195</span>
 
     </aside>
 
@@ -797,7 +801,7 @@ Cette classe gère les différents libellés de format et choisit le meilleur fo
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/Dataset-WfsOutputFormat.html#property_fmt">$fmt</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsOutputFormat.html#property_label">$label</a></li>
                                             </ul>
                 </li>
             

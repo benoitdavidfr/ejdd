@@ -9,7 +9,7 @@ require_once 'wfs.php';
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Jeu de données correspondant aux FeatureTypes d'un espace de noms d'un serveur WFS.
+ * Gabarit de Jeu de données ayant pour collections les FeatureTypes d'un espace de noms d'un serveur WFS.
  *
  * Cet espace de noms peut être '', ce qui signifie que les noms des FeatureTypes ne comprennent pas d'espace de noms.
  * Le schéma de ce JdD défini les champs des n-uplets, ce qui permet de l'utiliser dans des requêtes.
@@ -132,6 +132,11 @@ class WfsNs extends Dataset {
    */ 
   function getOneItemByKey(string $collName, string|int $key): array|string|null {
     return $this->wfs->getOneItemByKey(($this->namespace ? $this->namespace.':' : '').$collName, $key);
+  }
+
+  /** Retourne le nombre d'items de la collection. */ 
+  function getNbOfItems(string $collName): int {
+    return $this->wfs->getNbOfItems(($this->namespace ? $this->namespace.':' : '').$collName);
   }
 };
 

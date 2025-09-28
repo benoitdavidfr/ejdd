@@ -49,6 +49,8 @@ Journal des modifications récentes du code
 28/9/2025:
   - amélioration de Wfs
   - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml
+  - ajout de la possibilité d'obtenir le nbre d'Items d'une collection, fonctionnalité optionnelle implémentée sur Wfs et WfsNs
+  - gestion dans Wfs de la synchro entre la page d'affichage et la page de cache
 27/9/2025:
   - amélioration de Wfs pour qu'il fonctionne dans différents cas de figure
     - version Wfs 2.0.0 et 1.1.0
@@ -387,6 +389,8 @@ class Main {
           echo "<h2>Liens</h2><ul>\n";
           echo "<li><a href='docs/' target='_blank'>Doc de l'appli</a></li>\n";
           echo "<li><a href='https://github.com/benoitdavidfr/ejdd' target='_blank'>Lien vers le GitHub</a></li>\n";
+          echo "<li><a href='https://docs.geoserver.org/main/en/user/services/wfs/index.html' target='_blank'>",
+               "Lien vers la doc GeoServer sur WFS</a></li>\n";
           echo "<li><a href='https://leafletjs.com/' target='_blank'>Lien vers leafletjs.com utilisé pour les cartes</a></li>\n";
           echo "<li><a href='https://github.com/BenjaminVadant/leaflet-ugeojson' target='_blank'>",
                 "Lien vers le plugin Leaflet uGeoJSON Layer</a></li>\n";

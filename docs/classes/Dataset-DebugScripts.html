@@ -504,7 +504,7 @@
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
     //&#039;GéoLittoralWfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
-    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
 ]                            </span>
 </dt>
 <dd>Arbre des JdD sous la forme [{dsName} =&gt; {defOfDataset}|{subTree}].</dd>
@@ -665,6 +665,13 @@
                                 &nbsp;: array&lt;string|int, array&lt;string|int, mixed&gt;&gt;    </span>
 </dt>
 <dd>Retourne la liste des items avec leur clé, ayant pour champ field la valeur fournie.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Dataset-Dataset.html#method_getNbOfItems">getNbOfItems()</a>
+    <span>
+                                &nbsp;: int    </span>
+</dt>
+<dd>Retourne le nombre d&#039;items de la collection, ou -1 si cette info n&#039;est pas disponible.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-DebugScripts.html#method_getOneItemByKey">getOneItemByKey()</a>
@@ -1055,7 +1062,7 @@
     // Serveurs Sextant 
     // GéoLittoral WFS 2.0.0 sans GeoJSON, prototype de test de la conversion GML -&gt; GeoJSON
     //&#039;GéoLittoralWfs&#039;=&gt; [&#039;class&#039;=&gt; &#039;Wfs&#039;, &#039;url&#039;=&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;],
-    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;WfsNs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
+    &#039;GéoLittoral&#039; =&gt; [&#039;class&#039; =&gt; &#039;Wfs&#039;, &#039;url&#039; =&gt; &#039;https://geolittoral.din.developpement-durable.gouv.fr/wxs&#039;, &#039;namespace&#039; =&gt; &#039;ms&#039;],
 ]</span>
 </code>
 
@@ -1374,7 +1381,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">355</span>
+    <span class="phpdocumentor-element-found-in__line">360</span>
 
     </aside>
 
@@ -1462,7 +1469,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">447</span>
+    <span class="phpdocumentor-element-found-in__line">452</span>
 
     </aside>
 
@@ -1625,7 +1632,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">429</span>
+    <span class="phpdocumentor-element-found-in__line">434</span>
 
     </aside>
 
@@ -1660,7 +1667,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">444</span>
+    <span class="phpdocumentor-element-found-in__line">449</span>
 
     </aside>
 
@@ -1814,7 +1821,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">468</span>
+    <span class="phpdocumentor-element-found-in__line">473</span>
 
     </aside>
 
@@ -1863,7 +1870,7 @@
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">478</span>
+    <span class="phpdocumentor-element-found-in__line">483</span>
 
     </aside>
 
@@ -2083,6 +2090,57 @@ Les filtres possibles sont:</p>
             -public
                                                         "
 >
+    <h4 class="phpdocumentor-element__name" id="method_getNbOfItems">
+        getNbOfItems()
+        <a href="classes/Dataset-Dataset.html#method_getNbOfItems" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">355</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne le nombre d&#039;items de la collection, ou -1 si cette info n&#039;est pas disponible.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">getNbOfItems</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$collName</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>Devrait être redéfinie par les Dataset si cette info. est disponible.</p>
+</section>
+
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$collName</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
     <h4 class="phpdocumentor-element__name" id="method_getOneItemByKey">
         getOneItemByKey()
         <a href="classes/Dataset-DebugScripts.html#method_getOneItemByKey" class="headerlink"><i class="fas fa-link"></i></a>
@@ -2254,7 +2312,7 @@ Les filtres possibles sont:</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">417</span>
+    <span class="phpdocumentor-element-found-in__line">422</span>
 
     </aside>
 
@@ -2323,7 +2381,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">406</span>
+    <span class="phpdocumentor-element-found-in__line">411</span>
 
     </aside>
 
@@ -2364,7 +2422,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">372</span>
+    <span class="phpdocumentor-element-found-in__line">377</span>
 
     </aside>
 
@@ -2419,7 +2477,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">458</span>
+    <span class="phpdocumentor-element-found-in__line">463</span>
 
     </aside>
 
@@ -2475,7 +2533,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/dataset.inc.php"><a href="files/datasets-dataset-inc.html"><abbr title="datasets/dataset.inc.php">dataset.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">489</span>
+    <span class="phpdocumentor-element-found-in__line">494</span>
 
     </aside>
 
@@ -2647,6 +2705,7 @@ S'arrête dès qu'une collection n'est pas conforme.</p>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_get">get()</a></li>
                                             <li class=""><a href="classes/Dataset-DebugScripts.html#method_getItems">getItems()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_getItemsOnValue">getItemsOnValue()</a></li>
+                                            <li class=""><a href="classes/Dataset-Dataset.html#method_getNbOfItems">getNbOfItems()</a></li>
                                             <li class=""><a href="classes/Dataset-DebugScripts.html#method_getOneItemByKey">getOneItemByKey()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_implementedFilters">implementedFilters()</a></li>
                                             <li class=""><a href="classes/Dataset-Dataset.html#method_isAvailable">isAvailable()</a></li>

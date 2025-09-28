@@ -215,14 +215,14 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">599</span>
+    <span class="phpdocumentor-element-found-in__line">618</span>
 
     </aside>
 
             <p class="phpdocumentor-summary">Exécute les requêtes GET au serveur.</p>
 
 
-    <section class="phpdocumentor-description"><p>A sa construction, la prop. version n'étant pas définie, seule le GetCapabilities est possible.
+    <section class="phpdocumentor-description"><p>A sa construction, la prop. version n'étant pas définie, seul le GetCapabilities est possible.
 Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requêtes sont possibles.</p>
 </section>
 
@@ -265,9 +265,15 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -protected">
+    <a class="" href="classes/Dataset-WfsGetRequest.html#property_outputFormat">$outputFormat</a>
+    <span>
+                        &nbsp;: <a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>|null            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
     <a class="" href="classes/Dataset-WfsGetRequest.html#property_version">$version</a>
     <span>
-                        &nbsp;: string|null            </span>
+                        &nbsp;: "2.0.0"|"1.1.0"|null            </span>
 </dt>
 <dd>La version WFS du serveur, initialement à null, peut être défini après le GetCapabilities qui ne l&#039;utilise pas.</dd>
 
@@ -297,7 +303,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <span>
                                 &nbsp;: <a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a>    </span>
 </dt>
-<dd>Retourne le SimpleXMLElement correspondant aux capabilities.</dd>
+<dd>Retourne le WfsCap correspondant aux capacités du serveur.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Dataset-WfsGetRequest.html#method_getFeature">getFeature()</a>
@@ -314,11 +320,11 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 <dd>Retourne l&#039;extrait de collection sous la forme d&#039;une FeatureCollection GeoJSON décodée.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_setVersion">setVersion()</a>
+    <a class="" href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat">setVersionAndOutputFormat()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd>Défini la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</dd>
+<dd>Définit la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</dd>
 
     </dl>
 
@@ -350,7 +356,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">603</span>
+    <span class="phpdocumentor-element-found-in__line">625</span>
 
     </aside>
 
@@ -388,7 +394,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">603</span>
+    <span class="phpdocumentor-element-found-in__line">625</span>
 
     </aside>
 
@@ -416,6 +422,48 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
             -protected
                                                                     "
 >
+    <h4 class="phpdocumentor-element__name" id="property_outputFormat">
+        $outputFormat
+        <a href="classes/Dataset-WfsGetRequest.html#property_outputFormat" class="headerlink"><i class="fas fa-link"></i></a>
+
+        <span class="phpdocumentor-element__modifiers">
+                                            </span>
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">623</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+        <span class="phpdocumentor-signature__visibility">protected</span>
+            <span class="phpdocumentor-signature__type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>|null</span>
+    <span class="phpdocumentor-signature__name">$outputFormat</span>
+     = <span class="phpdocumentor-signature__default-value">null</span></code>
+
+    
+        <section class="phpdocumentor-description"><ul>
+<li>le format à utiliser pour getFeature.</li>
+</ul>
+</section>
+
+    
+
+    
+
+    
+
+</article>
+                    <article
+        class="
+            phpdocumentor-element
+            -property
+            -protected
+                                                                    "
+>
     <h4 class="phpdocumentor-element__name" id="property_version">
         $version
         <a href="classes/Dataset-WfsGetRequest.html#property_version" class="headerlink"><i class="fas fa-link"></i></a>
@@ -426,7 +474,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">601</span>
+    <span class="phpdocumentor-element-found-in__line">621</span>
 
     </aside>
 
@@ -435,7 +483,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
         <span class="phpdocumentor-signature__visibility">protected</span>
-            <span class="phpdocumentor-signature__type">string|null</span>
+            <span class="phpdocumentor-signature__type">"2.0.0"|"1.1.0"|null</span>
     <span class="phpdocumentor-signature__name">$version</span>
      = <span class="phpdocumentor-signature__default-value">null</span></code>
 
@@ -470,7 +518,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">603</span>
+    <span class="phpdocumentor-element-found-in__line">625</span>
 
     </aside>
 
@@ -521,7 +569,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">622</span>
+    <span class="phpdocumentor-element-found-in__line">647</span>
 
     </aside>
 
@@ -581,11 +629,11 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">608</span>
+    <span class="phpdocumentor-element-found-in__line">628</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Retourne le SimpleXMLElement correspondant aux capabilities.</p>
+        <p class="phpdocumentor-summary">Retourne le WfsCap correspondant aux capacités du serveur.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
@@ -594,9 +642,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Les préfixes des espaces de noms sont remplacés par {prefix}__</p>
-</section>
-
+    
     
     
 
@@ -622,7 +668,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">693</span>
+    <span class="phpdocumentor-element-found-in__line">719</span>
 
     </aside>
 
@@ -630,7 +676,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputFormat</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeature">TGeoJsonFeature</abbr>|null</span></code>
+                    <span class="phpdocumentor-signature__name">getFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeature">TGeoJsonFeature</abbr>|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -648,13 +694,6 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$id</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$outputFormat</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -685,7 +724,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">635</span>
+    <span class="phpdocumentor-element-found-in__line">661</span>
 
     </aside>
 
@@ -693,12 +732,13 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getFeatures</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$start</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$count</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputFormat</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-GBox.html"><abbr title="\BBox\GBox">GBox</abbr></a>|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bbox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr></span></code>
+                    <span class="phpdocumentor-signature__name">getFeatures</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$start</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$count</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-GBox.html"><abbr title="\BBox\GBox">GBox</abbr></a>|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bbox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr></span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
     
-        <section class="phpdocumentor-description"><p>Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON</p>
+        <section class="phpdocumentor-description"><p>Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON.
+Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le serveur retourne du GeoJSON ou du GML.</p>
 </section>
 
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
@@ -720,13 +760,6 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$count</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$outputFormat</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -756,23 +789,23 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
             -public
                                                         "
 >
-    <h4 class="phpdocumentor-element__name" id="method_setVersion">
-        setVersion()
-        <a href="classes/Dataset-WfsGetRequest.html#method_setVersion" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_setVersionAndOutputFormat">
+        setVersionAndOutputFormat()
+        <a href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">617</span>
+    <span class="phpdocumentor-element-found-in__line">639</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Défini la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</p>
+        <p class="phpdocumentor-summary">Définit la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setVersion</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$version</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+                    <span class="phpdocumentor-signature__name">setVersionAndOutputFormat</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">"2.0.0"|"1.1.0"&nbsp;</span><span class="phpdocumentor-signature__argument__name">$version</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputFormat</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -782,7 +815,14 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$version</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                : <span class="phpdocumentor-signature__argument__return-type">"2.0.0"|"1.1.0"</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$outputFormat</span>
+                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
@@ -912,6 +952,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
                     <ul class="phpdocumentor-list -clean">
                                                     <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_name">$name</a></li>
                                                     <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_url">$url</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_outputFormat">$outputFormat</a></li>
                                                     <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_version">$version</a></li>
                                             </ul>
                 </li>
@@ -924,7 +965,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
                                             <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getCapabilities">getCapabilities()</a></li>
                                             <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getFeature">getFeature()</a></li>
                                             <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getFeatures">getFeatures()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_setVersion">setVersion()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat">setVersionAndOutputFormat()</a></li>
                                     </ul>
             </li>
                     </ul>

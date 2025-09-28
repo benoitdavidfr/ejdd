@@ -51,6 +51,11 @@ Search.appendIndex(
             "summary": "Retourne\u0020la\u0020liste\u0020des\u0020items,\u0020avec\u0020leur\u0020cl\u00E9,\u0020pour\u0020lesquels\u0020le\u0020field\u0020contient\u0020la\u0020valeur.",
             "url": "classes/Algebra-Collection.html#method_getItemsOnValue"
         },                {
+            "fqsen": "\\Algebra\\Collection\u003A\u003AgetNbOfItems\u0028\u0029",
+            "name": "getNbOfItems",
+            "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection,\u0020ou\u0020\u002D1\u0020si\u0020cette\u0020info\u0020n\u0027est\u0020pas\u0020disponible.",
+            "url": "classes/Algebra-Collection.html#method_getNbOfItems"
+        },                {
             "fqsen": "\\Algebra\\Collection\u003A\u003AdisplayItems\u0028\u0029",
             "name": "displayItems",
             "summary": "Affiche\u0020les\u0020items\u0020de\u0020la\u0020collection.",
@@ -140,6 +145,11 @@ Search.appendIndex(
             "name": "getItemsOnValue",
             "summary": "La\u0020m\u00E9thode\u0020getItemsOnValue\u0028\u0029\u0020est\u0020mise\u0020en\u0020oeuvre\u0020par\u0020le\u0020JdD.",
             "url": "classes/Algebra-CollectionOfDs.html#method_getItemsOnValue"
+        },                {
+            "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003AgetNbOfItems\u0028\u0029",
+            "name": "getNbOfItems",
+            "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection,\u0020ou\u0020\u002D1\u0020si\u0020cette\u0020info\u0020n\u0027est\u0020pas\u0020disponible.",
+            "url": "classes/Algebra-CollectionOfDs.html#method_getNbOfItems"
         },                {
             "fqsen": "\\Algebra\\CollectionOfDs\u003A\u003Adisplay\u0028\u0029",
             "name": "display",
@@ -1496,6 +1506,11 @@ Search.appendIndex(
             "summary": "Retourne\u0020la\u0020liste\u0020des\u0020items\u0020avec\u0020leur\u0020cl\u00E9,\u0020ayant\u0020pour\u0020champ\u0020field\u0020la\u0020valeur\u0020fournie.",
             "url": "classes/Dataset-Dataset.html#method_getItemsOnValue"
         },                {
+            "fqsen": "\\Dataset\\Dataset\u003A\u003AgetNbOfItems\u0028\u0029",
+            "name": "getNbOfItems",
+            "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection,\u0020ou\u0020\u002D1\u0020si\u0020cette\u0020info\u0020n\u0027est\u0020pas\u0020disponible.",
+            "url": "classes/Dataset-Dataset.html#method_getNbOfItems"
+        },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AasArray\u0028\u0029",
             "name": "asArray",
             "summary": "Construit\u0020le\u0020JdD\u0020sous\u0020la\u0020forme\u0020d\u0027un\u0020array.",
@@ -2208,32 +2223,32 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003Aget\u0028\u0029",
             "name": "get",
-            "summary": "Lecture\u0020d\u0027un\u0020flux.",
+            "summary": "Lecture\u0020d\u0027un\u0020flux\u0020d\u00E9fini\u0020par\u0020\u0024url\u0020en\u0020utilisant\u0020le\u0020fichier\u0020de\u0020cache\u0020\u0024filePath\u0020s\u0027il\u0020n\u0027est\u0020pas\u0020null.",
             "url": "classes/Dataset-WfsCache.html#method_get"
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003Adelete\u0028\u0029",
             "name": "delete",
-            "summary": "Efface\u0020le\u0020contenu\u0020du\u0020r\u00E9pertoire\u0020dont\u0020le\u0020path\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre.",
+            "summary": "Efface\u0020r\u00E9cursivement\u0020le\u0020contenu\u0020du\u0020r\u00E9pertoire\u0020dont\u0020le\u0020path\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre.",
             "url": "classes/Dataset-WfsCache.html#method_delete"
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003ANOCACHE",
             "name": "NOCACHE",
-            "summary": "",
+            "summary": "Permet\u0020d\u0027actibver\u0020ou\u0020de\u0020suspendre\u0020facilement\u0020le\u0020cache,\u0020par\u0020exemple\u0020pour\u0020des\u0020tests.",
             "url": "classes/Dataset-WfsCache.html#constant_NOCACHE"
         },                {
             "fqsen": "\\Dataset\\WfsCache\u003A\u003APATH",
             "name": "PATH",
-            "summary": "",
+            "summary": "Chemin\u0020du\u0020stockage\u0020des\u0020fichiers\u0020du\u0020cache.",
             "url": "classes/Dataset-WfsCache.html#constant_PATH"
         },                {
             "fqsen": "\\Dataset\\WfsOutputFormat",
             "name": "WfsOutputFormat",
-            "summary": "Choix\u0020du\u0020param\u00E8tre\u0020outputFormat\u0020pour\u0020GetFeature.",
+            "summary": "Choix\u0020du\u0020param\u00E8tre\u0020outputFormat\u0020pour\u0020les\u0020requ\u00EAtes\u0020WFS\u0020GetFeature.",
             "url": "classes/Dataset-WfsOutputFormat.html"
         },                {
             "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "Un\u0020objet\u0020est\u0020cr\u00E9\u00E9\u0020avec\u0020le\u0020format\u0020tel\u0020qu\u0027il\u0020est\u0020indiqu\u00E9\u0020dans\u0020les\u0020capacit\u00E9s\u0020du\u0020serveur\u0020WFS.",
+            "summary": "Un\u0020objet\u0020est\u0020cr\u00E9\u00E9\u0020avec\u0020le\u0020libell\u00E9\u0020du\u0020format\u0020tel\u0020qu\u0027il\u0020est\u0020indiqu\u00E9\u0020dans\u0020les\u0020capacit\u00E9s\u0020du\u0020serveur\u0020WFS.",
             "url": "classes/Dataset-WfsOutputFormat.html#method___construct"
         },                {
             "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A__toString\u0028\u0029",
@@ -2266,19 +2281,19 @@ Search.appendIndex(
             "summary": "Liste\u0020de\u0020type\u0020MIME\u0020GML\u0020fr\u00E9quemment\u0020utilis\u00E9s\u0020en\u0020pr\u00E9cisant\u0020GML3\u0020ou\u0020GML2.",
             "url": "classes/Dataset-WfsOutputFormat.html#constant_GML_MIME"
         },                {
-            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A\u0024fmt",
-            "name": "fmt",
+            "fqsen": "\\Dataset\\WfsOutputFormat\u003A\u003A\u0024label",
+            "name": "label",
             "summary": "",
-            "url": "classes/Dataset-WfsOutputFormat.html#property_fmt"
+            "url": "classes/Dataset-WfsOutputFormat.html#property_label"
         },                {
             "fqsen": "\\Dataset\\WfsCap",
             "name": "WfsCap",
-            "summary": "Exploite\u0020le\u0020XML\u0020des\u0020capacit\u00E9s\u0020d\u0027un\u0020serveur\u0020WFS\u0020pour\u0020en\u0020d\u00E9duire\u0020notamment\u0020le\u0020sch\u00E9ma\u0020JSON\u0020du\u0020JdD.",
+            "summary": "Exploite\u0020le\u0020XML\u0020des\u0020capacit\u00E9s\u0020d\u0027un\u0020serveur\u0020WFS\u0020pour\u0020en\u0020d\u00E9duire\u0020diff\u00E9rentes\u0020infos\u0020dont\u0020le\u0020sch\u00E9ma\u0020JSON\u0020du\u0020JdD.",
             "url": "classes/Dataset-WfsCap.html"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "",
+            "summary": "Initialise\u0020l\u0027objet\u0020\u00E0\u0020partir\u0020du\u0020XML\u0020retourn\u00E9\u0020par\u0020la\u0020requ\u00EAte\u0020GetCapabilities\u0020au\u0020serveur.",
             "url": "classes/Dataset-WfsCap.html#method___construct"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003Aversion\u0028\u0029",
@@ -2298,12 +2313,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003AfeatureTypes\u0028\u0029",
             "name": "featureTypes",
-            "summary": "Dict.\u0020des\u0020FeatureTypes\u0020Name\u0020\u003D\u003E\u0020diff\u00E9rentes\u0020infos.",
+            "summary": "Dict.\u0020des\u0020FeatureTypes\u0020\u005B\u007BName\u007D\u0020\u003D\u003E\u0020diff\u00E9rentes\u0020infos\u005D.",
             "url": "classes/Dataset-WfsCap.html#method_featureTypes"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003Anamespaces\u0028\u0029",
             "name": "namespaces",
-            "summary": "Liste\u0020des\u0020espaces\u0020de\u0020noms\u0020des\u0020FeatureTypeNames.",
+            "summary": "Liste\u0020les\u0020espaces\u0020de\u0020noms\u0020des\u0020FeatureTypeNames.",
             "url": "classes/Dataset-WfsCap.html#method_namespaces"
         },                {
             "fqsen": "\\Dataset\\WfsCap\u003A\u003AjsonSchemaOfTheDs\u0028\u0029",
@@ -2361,59 +2376,74 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-WfsProperties.html#property_namespace"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequest",
-            "name": "WfsGetRequest",
-            "summary": "Ex\u00E9cute\u0020les\u0020requ\u00EAtes\u0020GET\u0020au\u0020serveur.",
-            "url": "classes/Dataset-WfsGetRequest.html"
+            "fqsen": "\\Dataset\\WfsGetRequestLight",
+            "name": "WfsGetRequestLight",
+            "summary": "Un\u0020WfsGetRequesXXX\u0020ex\u00E9cute\u0020les\u0020requ\u00EAtes\u0020GET\u0020au\u0020serveur\u0020\u003B\u0020WfsGetRequestLight\u0020permet\u0020d\u0027ex\u00E9cuter\u0020uniquement\u0020la\u0020requ\u00EAte\u0020GetCapabilities.",
+            "url": "classes/Dataset-WfsGetRequestLight.html"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequest.html#method___construct"
+            "url": "classes/Dataset-WfsGetRequestLight.html#method___construct"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AgetCapabilities\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003AgetCapabilities\u0028\u0029",
             "name": "getCapabilities",
-            "summary": "Retourne\u0020le\u0020SimpleXMLElement\u0020correspondant\u0020aux\u0020capabilities.",
-            "url": "classes/Dataset-WfsGetRequest.html#method_getCapabilities"
+            "summary": "Retourne\u0020le\u0020WfsCap\u0020correspondant\u0020aux\u0020capacit\u00E9s\u0020du\u0020serveur.",
+            "url": "classes/Dataset-WfsGetRequestLight.html#method_getCapabilities"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AsetVersion\u0028\u0029",
-            "name": "setVersion",
-            "summary": "D\u00E9fini\u0020la\u0020version\u0020du\u0020protocole\u0020WFS\u0020du\u0020serveur,\u0020ce\u0020qui\u0020autorise\u0020les\u0020requ\u00EAtes\u0020autres\u0020que\u0020GetCapabilities.",
-            "url": "classes/Dataset-WfsGetRequest.html#method_setVersion"
-        },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AdescribeFeatureType\u0028\u0029",
-            "name": "describeFeatureType",
-            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020conerti\u0020en\u0020WfsProperties.",
-            "url": "classes/Dataset-WfsGetRequest.html#method_describeFeatureType"
-        },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AgetFeatures\u0028\u0029",
-            "name": "getFeatures",
-            "summary": "Retourne\u0020l\u0027extrait\u0020de\u0020collection\u0020sous\u0020la\u0020forme\u0020d\u0027une\u0020FeatureCollection\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
-            "url": "classes/Dataset-WfsGetRequest.html#method_getFeatures"
-        },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003AgetFeature\u0028\u0029",
-            "name": "getFeature",
-            "summary": "Retourne\u0020le\u0020Feature\u0020ayant\u0020cet\u0020id\u0020ou\u0020null\u0020si\u0020aucun\u0020ne\u0020l\u0027a.",
-            "url": "classes/Dataset-WfsGetRequest.html#method_getFeature"
-        },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A\u0024version",
-            "name": "version",
-            "summary": "La\u0020version\u0020WFS\u0020du\u0020serveur,\u0020initialement\u0020\u00E0\u0020null,\u0020peut\u0020\u00EAtre\u0020d\u00E9fini\u0020apr\u00E8s\u0020le\u0020GetCapabilities\u0020qui\u0020ne\u0020l\u0027utilise\u0020pas.",
-            "url": "classes/Dataset-WfsGetRequest.html#property_version"
-        },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A\u0024name",
+            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A\u0024name",
             "name": "name",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequest.html#property_name"
+            "url": "classes/Dataset-WfsGetRequestLight.html#property_name"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequest\u003A\u003A\u0024url",
+            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A\u0024url",
             "name": "url",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequest.html#property_url"
+            "url": "classes/Dataset-WfsGetRequestLight.html#property_url"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull",
+            "name": "WfsGetRequestFull",
+            "summary": "Un\u0020WfsGetRequestFull\u0020est\u0020compl\u00E9t\u00E9\u0020par\u0020des\u0020infos\u0020issues\u0020du\u0020GetCapbilities\u0020pour\u0020ex\u00E9cuter\u0020les\u0020autres\u0020requ\u00EAtes.",
+            "url": "classes/Dataset-WfsGetRequestFull.html"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/Dataset-WfsGetRequestFull.html#method___construct"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AdescribeFeatureType\u0028\u0029",
+            "name": "describeFeatureType",
+            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020conerti\u0020en\u0020WfsProperties.",
+            "url": "classes/Dataset-WfsGetRequestFull.html#method_describeFeatureType"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetFeatures\u0028\u0029",
+            "name": "getFeatures",
+            "summary": "Retourne\u0020la\u0020s\u00E9lection\u0020de\u0020Features\u0020de\u0020la\u0020collection\u0020sous\u0020la\u0020forme\u0020d\u0027une\u0020FeatureCollection\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
+            "url": "classes/Dataset-WfsGetRequestFull.html#method_getFeatures"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetFeature\u0028\u0029",
+            "name": "getFeature",
+            "summary": "Retourne\u0020le\u0020Feature\u0020ayant\u0020cet\u0020id\u0020ou\u0020null\u0020si\u0020aucun\u0020ne\u0020l\u0027a.",
+            "url": "classes/Dataset-WfsGetRequestFull.html#method_getFeature"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetNbOfFeatures\u0028\u0029",
+            "name": "getNbOfFeatures",
+            "summary": "",
+            "url": "classes/Dataset-WfsGetRequestFull.html#method_getNbOfFeatures"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A\u0024version",
+            "name": "version",
+            "summary": "",
+            "url": "classes/Dataset-WfsGetRequestFull.html#property_version"
+        },                {
+            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A\u0024outputFormat",
+            "name": "outputFormat",
+            "summary": "",
+            "url": "classes/Dataset-WfsGetRequestFull.html#property_outputFormat"
         },                {
             "fqsen": "\\Dataset\\Wfs",
             "name": "Wfs",
-            "summary": "Wfs\u0020\u002D\u0020Gabarit\u0020des\u0020Dataset\u0020WFS,\u0020chaque\u0020JdD\u0020correspond\u0020\u00E0\u0020un\u0020serveur\u0020WFS.",
+            "summary": "Gabarit\u0020de\u0020JdD\u0020ayant\u0020pour\u0020collections\u0020les\u0020FeatureTypes\u0020d\u0027un\u0020serveur\u0020WFS.",
             "url": "classes/Dataset-Wfs.html"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003A__construct\u0028\u0029",
@@ -2451,14 +2481,19 @@ Search.appendIndex(
             "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020converti\u0020en\u0020WfsProperties.",
             "url": "classes/Dataset-Wfs.html#method_describeFeatureTypes"
         },                {
-            "fqsen": "\\Dataset\\Wfs\u003A\u003ACOUNT",
-            "name": "COUNT",
+            "fqsen": "\\Dataset\\Wfs\u003A\u003AgetNbOfItems\u0028\u0029",
+            "name": "getNbOfItems",
+            "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection.",
+            "url": "classes/Dataset-Wfs.html#method_getNbOfItems"
+        },                {
+            "fqsen": "\\Dataset\\Wfs\u003A\u003ASIZE_OF_PAGE",
+            "name": "SIZE_OF_PAGE",
             "summary": "Nbre\u0020de\u0020features\u0020par\u0020page\u0020pour\u0020getItems\u0028\u0029.",
-            "url": "classes/Dataset-Wfs.html#constant_COUNT"
+            "url": "classes/Dataset-Wfs.html#constant_SIZE_OF_PAGE"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003A\u0024wfsReq",
             "name": "wfsReq",
-            "summary": "Le\u0020gestionnaire\u0020de\u0020requ\u00EAtes.",
+            "summary": "",
             "url": "classes/Dataset-Wfs.html#property_wfsReq"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003A\u0024cap",
@@ -2478,7 +2513,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\WfsNs",
             "name": "WfsNs",
-            "summary": "Jeu\u0020de\u0020donn\u00E9es\u0020correspondant\u0020aux\u0020FeatureTypes\u0020d\u0027un\u0020espace\u0020de\u0020noms\u0020d\u0027un\u0020serveur\u0020WFS.",
+            "summary": "Gabarit\u0020de\u0020Jeu\u0020de\u0020donn\u00E9es\u0020ayant\u0020pour\u0020collections\u0020les\u0020FeatureTypes\u0020d\u0027un\u0020espace\u0020de\u0020noms\u0020d\u0027un\u0020serveur\u0020WFS.",
             "url": "classes/Dataset-WfsNs.html"
         },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024DOCS",
@@ -2515,6 +2550,11 @@ Search.appendIndex(
             "name": "getOneItemByKey",
             "summary": "Retourne\u0020l\u0027item\u0020ayant\u0020la\u0020cl\u00E9\u0020fournie.\u0020Devrait\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020les\u0020Dataset\u0020s\u0027il\u0020existe\u0020un\u0020algo.\u0020plus\u0020performant.",
             "url": "classes/Dataset-WfsNs.html#method_getOneItemByKey"
+        },                {
+            "fqsen": "\\Dataset\\WfsNs\u003A\u003AgetNbOfItems\u0028\u0029",
+            "name": "getNbOfItems",
+            "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection.",
+            "url": "classes/Dataset-WfsNs.html#method_getNbOfItems"
         },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024wfsName",
             "name": "wfsName",
