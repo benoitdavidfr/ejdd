@@ -2481,6 +2481,11 @@ Search.appendIndex(
             "summary": "Jeu\u0020de\u0020donn\u00E9es\u0020correspondant\u0020aux\u0020FeatureTypes\u0020d\u0027un\u0020espace\u0020de\u0020noms\u0020d\u0027un\u0020serveur\u0020WFS.",
             "url": "classes/Dataset-WfsNs.html"
         },                {
+            "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024DOCS",
+            "name": "DOCS",
+            "summary": "Documentation\u0020compl\u00E9mentaire\u0020rempla\u00E7ant\u0020les\u0020titres\u0020et\u0020descriptions\u0020par\u0020d\u00E9faut.",
+            "url": "classes/Dataset-WfsNs.html#property_DOCS"
+        },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003Aschema\u0028\u0029",
             "name": "schema",
             "summary": "Fabrique\u0020le\u0020schema.",
@@ -2510,11 +2515,6 @@ Search.appendIndex(
             "name": "getOneItemByKey",
             "summary": "Retourne\u0020l\u0027item\u0020ayant\u0020la\u0020cl\u00E9\u0020fournie.\u0020Devrait\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020les\u0020Dataset\u0020s\u0027il\u0020existe\u0020un\u0020algo.\u0020plus\u0020performant.",
             "url": "classes/Dataset-WfsNs.html#method_getOneItemByKey"
-        },                {
-            "fqsen": "\\Dataset\\WfsNs\u003A\u003ADOCS",
-            "name": "DOCS",
-            "summary": "Documentation\u0020compl\u00E9mentaire\u0020rempla\u00E7ant\u0020les\u0020titres\u0020et\u0020descriptions\u0020par\u0020d\u00E9faut.",
-            "url": "classes/Dataset-WfsNs.html#constant_DOCS"
         },                {
             "fqsen": "\\Dataset\\WfsNs\u003A\u003A\u0024wfsName",
             "name": "wfsName",
