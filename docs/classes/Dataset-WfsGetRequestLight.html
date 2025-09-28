@@ -194,7 +194,7 @@
 
     <article class="phpdocumentor-element -class">
         <h2 class="phpdocumentor-content__title">
-    WfsGetRequest
+    WfsGetRequestLight
 
     
             <div class="phpdocumentor-element__package">
@@ -215,16 +215,13 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">618</span>
+    <span class="phpdocumentor-element-found-in__line">613</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Exécute les requêtes GET au serveur.</p>
+            <p class="phpdocumentor-summary">Un WfsGetRequesXXX exécute les requêtes GET au serveur ; WfsGetRequestLight permet d&#039;exécuter uniquement la requête GetCapabilities.</p>
 
 
-    <section class="phpdocumentor-description"><p>A sa construction, la prop. version n'étant pas définie, seul le GetCapabilities est possible.
-Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requêtes sont possibles.</p>
-</section>
 
 
 
@@ -234,7 +231,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 
 <h3 id="toc">
     Table of Contents
-    <a href="classes/Dataset-WfsGetRequest.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsGetRequestLight.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
@@ -248,83 +245,42 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 
 <h4 id="toc-properties">
     Properties
-    <a href="classes/Dataset-WfsGetRequest.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsGetRequestLight.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#property_name">$name</a>
+    <a class="" href="classes/Dataset-WfsGetRequestLight.html#property_name">$name</a>
     <span>
                         &nbsp;: string            </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#property_url">$url</a>
+    <a class="" href="classes/Dataset-WfsGetRequestLight.html#property_url">$url</a>
     <span>
                         &nbsp;: string            </span>
 </dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#property_outputFormat">$outputFormat</a>
-    <span>
-                        &nbsp;: <a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>|null            </span>
-</dt>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -protected">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#property_version">$version</a>
-    <span>
-                        &nbsp;: "2.0.0"|"1.1.0"|null            </span>
-</dt>
-<dd>La version WFS du serveur, initialement à null, peut être défini après le GetCapabilities qui ne l&#039;utilise pas.</dd>
 
     </dl>
 
 <h4 id="toc-methods">
     Methods
-    <a href="classes/Dataset-WfsGetRequest.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Dataset-WfsGetRequestLight.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method___construct">__construct()</a>
+    <a class="" href="classes/Dataset-WfsGetRequestLight.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_describeFeatureType">describeFeatureType()</a>
-    <span>
-                                &nbsp;: <a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a>    </span>
-</dt>
-<dd>Retourne le DescribeFeatureType des FeatureTypes de l&#039;espace de noms conerti en WfsProperties.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_getCapabilities">getCapabilities()</a>
+    <a class="" href="classes/Dataset-WfsGetRequestLight.html#method_getCapabilities">getCapabilities()</a>
     <span>
                                 &nbsp;: <a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a>    </span>
 </dt>
 <dd>Retourne le WfsCap correspondant aux capacités du serveur.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_getFeature">getFeature()</a>
-    <span>
-                                &nbsp;: <abbr title="\Dataset\TGeoJsonFeature">TGeoJsonFeature</abbr>|null    </span>
-</dt>
-<dd>Retourne le Feature ayant cet id ou null si aucun ne l&#039;a.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_getFeatures">getFeatures()</a>
-    <span>
-                                &nbsp;: <abbr title="\Dataset\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr>    </span>
-</dt>
-<dd>Retourne l&#039;extrait de collection sous la forme d&#039;une FeatureCollection GeoJSON décodée.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat">setVersionAndOutputFormat()</a>
-    <span>
-                                &nbsp;: void    </span>
-</dt>
-<dd>Définit la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</dd>
 
     </dl>
 
@@ -336,7 +292,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <section class="phpdocumentor-properties">
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
-            <a href="classes/Dataset-WfsGetRequest.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsGetRequestLight.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -348,7 +304,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 >
     <h4 class="phpdocumentor-element__name" id="property_name">
         $name
-        <a href="classes/Dataset-WfsGetRequest.html#property_name" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsGetRequestLight.html#property_name" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
@@ -356,7 +312,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">625</span>
+    <span class="phpdocumentor-element-found-in__line">617</span>
 
     </aside>
 
@@ -386,7 +342,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 >
     <h4 class="phpdocumentor-element__name" id="property_url">
         $url
-        <a href="classes/Dataset-WfsGetRequest.html#property_url" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsGetRequestLight.html#property_url" class="headerlink"><i class="fas fa-link"></i></a>
 
         <span class="phpdocumentor-element__modifiers">
                         <small class="phpdocumentor-element__modifier">read-only</small>                    </span>
@@ -394,7 +350,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">625</span>
+    <span class="phpdocumentor-element-found-in__line">617</span>
 
     </aside>
 
@@ -415,93 +371,12 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
     
 
 </article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -protected
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_outputFormat">
-        $outputFormat
-        <a href="classes/Dataset-WfsGetRequest.html#property_outputFormat" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">623</span>
-
-    </aside>
-
-    
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">protected</span>
-            <span class="phpdocumentor-signature__type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>|null</span>
-    <span class="phpdocumentor-signature__name">$outputFormat</span>
-     = <span class="phpdocumentor-signature__default-value">null</span></code>
-
-    
-        <section class="phpdocumentor-description"><ul>
-<li>le format à utiliser pour getFeature.</li>
-</ul>
-</section>
-
-    
-
-    
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -protected
-                                                                    "
->
-    <h4 class="phpdocumentor-element__name" id="property_version">
-        $version
-        <a href="classes/Dataset-WfsGetRequest.html#property_version" class="headerlink"><i class="fas fa-link"></i></a>
-
-        <span class="phpdocumentor-element__modifiers">
-                                            </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">621</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">La version WFS du serveur, initialement à null, peut être défini après le GetCapabilities qui ne l&#039;utilise pas.</p>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-        <span class="phpdocumentor-signature__visibility">protected</span>
-            <span class="phpdocumentor-signature__type">"2.0.0"|"1.1.0"|null</span>
-    <span class="phpdocumentor-signature__name">$version</span>
-     = <span class="phpdocumentor-signature__default-value">null</span></code>
-
-    
-    
-    
-
-    
-
-    
-
-</article>
             </section>
 
             <section class="phpdocumentor-methods">
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
-            <a href="classes/Dataset-WfsGetRequest.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+            <a href="classes/Dataset-WfsGetRequestLight.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
                     <article
@@ -512,13 +387,13 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 >
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
-        <a href="classes/Dataset-WfsGetRequest.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsGetRequestLight.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">625</span>
+    <span class="phpdocumentor-element-found-in__line">617</span>
 
     </aside>
 
@@ -538,67 +413,19 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><ul>
+<li>le nom du JdD</li>
+</ul>
+</section>
+
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$url</span>
                 : <span class="phpdocumentor-signature__argument__return-type">string</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_describeFeatureType">
-        describeFeatureType()
-        <a href="classes/Dataset-WfsGetRequest.html#method_describeFeatureType" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">647</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne le DescribeFeatureType des FeatureTypes de l&#039;espace de noms conerti en WfsProperties.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">describeFeatureType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$namespace</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftNames</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a></span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$namespace</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$ftNames</span>
-                : <span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><ul>
-<li>les noms des FeatureTypes avec leur espace de noms</li>
+<li>l'URL du serveurs WFS</li>
 </ul>
 </section>
 
@@ -609,11 +436,7 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 
     
 
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/Dataset-WfsProperties.html"><abbr title="\Dataset\WfsProperties">WfsProperties</abbr></a></span>
-            </section>
-
+    
 </article>
                     <article
         class="phpdocumentor-element
@@ -623,13 +446,13 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
 >
     <h4 class="phpdocumentor-element__name" id="method_getCapabilities">
         getCapabilities()
-        <a href="classes/Dataset-WfsGetRequest.html#method_getCapabilities" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/Dataset-WfsGetRequestLight.html#method_getCapabilities" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">628</span>
+    <span class="phpdocumentor-element-found-in__line">620</span>
 
     </aside>
 
@@ -653,187 +476,6 @@ Une fois cette prop. renseignée, grâce au GetCapabilities, les autres requête
         <span class="phpdocumentor-signature__response_type"><a href="classes/Dataset-WfsCap.html"><abbr title="\Dataset\WfsCap">WfsCap</abbr></a></span>
             </section>
 
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_getFeature">
-        getFeature()
-        <a href="classes/Dataset-WfsGetRequest.html#method_getFeature" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">719</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne le Feature ayant cet id ou null si aucun ne l&#039;a.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getFeature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$id</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeature">TGeoJsonFeature</abbr>|null</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$ftName</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$id</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeature">TGeoJsonFeature</abbr>|null</span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_getFeatures">
-        getFeatures()
-        <a href="classes/Dataset-WfsGetRequest.html#method_getFeatures" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">661</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Retourne l&#039;extrait de collection sous la forme d&#039;une FeatureCollection GeoJSON décodée.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getFeatures</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ftName</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$start</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$count</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-GBox.html"><abbr title="\BBox\GBox">GBox</abbr></a>|null&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bbox</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr></span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-        <section class="phpdocumentor-description"><p>Testé sur WFS 2.0.0 et 1.1.0, avec ou sans GeoJSON.
-Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le serveur retourne du GeoJSON ou du GML.</p>
-</section>
-
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$ftName</span>
-                : <span class="phpdocumentor-signature__argument__return-type">string</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$start</span>
-                : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$count</span>
-                : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$bbox</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/BBox-GBox.html"><abbr title="\BBox\GBox">GBox</abbr></a>|null</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-
-            <section>
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><abbr title="\Dataset\TGeoJsonFeatureCollection">TGeoJsonFeatureCollection</abbr></span>
-            </section>
-
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_setVersionAndOutputFormat">
-        setVersionAndOutputFormat()
-        <a href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="datasets/wfs.php"><a href="files/datasets-wfs.html"><abbr title="datasets/wfs.php">wfs.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">639</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Définit la version du protocole WFS du serveur, ce qui autorise les requêtes autres que GetCapabilities.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">setVersionAndOutputFormat</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">"2.0.0"|"1.1.0"&nbsp;</span><span class="phpdocumentor-signature__argument__name">$version</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$outputFormat</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
-
-    <div class="phpdocumentor-label-line">
-        </div>
-    
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$version</span>
-                : <span class="phpdocumentor-signature__argument__return-type">"2.0.0"|"1.1.0"</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$outputFormat</span>
-                : <span class="phpdocumentor-signature__argument__return-type"><a href="classes/Dataset-WfsOutputFormat.html"><abbr title="\Dataset\WfsOutputFormat">WfsOutputFormat</abbr></a></span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                
-            </dd>
-            </dl>
-
-    
-
-    
-
-    
 </article>
             </section>
 
@@ -942,30 +584,24 @@ Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le ser
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                            <li><a href="classes/Dataset-WfsGetRequest.html#toc-properties">Properties</a></li>
-                                                            <li><a href="classes/Dataset-WfsGetRequest.html#toc-methods">Methods</a></li>
+                                                            <li><a href="classes/Dataset-WfsGetRequestLight.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/Dataset-WfsGetRequestLight.html#toc-methods">Methods</a></li>
                                     </ul>
             </li>
             
                             <li class="phpdocumentor-on-this-page-section__title">Properties</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_name">$name</a></li>
-                                                    <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_url">$url</a></li>
-                                                    <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_outputFormat">$outputFormat</a></li>
-                                                    <li class=""><a href="classes/Dataset-WfsGetRequest.html#property_version">$version</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsGetRequestLight.html#property_name">$name</a></li>
+                                                    <li class=""><a href="classes/Dataset-WfsGetRequestLight.html#property_url">$url</a></li>
                                             </ul>
                 </li>
             
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method___construct">__construct()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_describeFeatureType">describeFeatureType()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getCapabilities">getCapabilities()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getFeature">getFeature()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_getFeatures">getFeatures()</a></li>
-                                            <li class=""><a href="classes/Dataset-WfsGetRequest.html#method_setVersionAndOutputFormat">setVersionAndOutputFormat()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsGetRequestLight.html#method___construct">__construct()</a></li>
+                                            <li class=""><a href="classes/Dataset-WfsGetRequestLight.html#method_getCapabilities">getCapabilities()</a></li>
                                     </ul>
             </li>
                     </ul>
@@ -985,7 +621,7 @@ Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le ser
     </section>
 </section>
         </div>
-        <a href="classes/Dataset-WfsGetRequest.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Dataset-WfsGetRequestLight.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 
