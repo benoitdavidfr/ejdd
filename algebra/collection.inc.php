@@ -84,14 +84,12 @@ abstract class Collection {
   abstract function getOneItemByKey(int|string $key): array|string|null;
   
   /** Retourne la liste des items, avec leur clé, pour lesquels le field contient la valeur.
-   * @return array<array<mixed>>
+   * @return \Generator<string|int|null,array<mixed>>
    */ 
-  function getItemsOnValue(string $field, string $value): array {
-    $result = [];
+  function getItemsOnValue(string $field, string $value): \Generator {
     foreach ($this->getItems() as $k => $item)
       if ($item[$field] == $value)
-        $result[$k] = $item;
-    return $result;
+        yield $k => $item;
   }
 
   /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.
@@ -103,6 +101,7 @@ abstract class Collection {
    * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
    */
   function displayItems(array $options=[]): void {
+    //echo "<pre>displayItems(options="; print_r($options); echo ")</pre>\n";
     $skip = $options['skip'] ?? 0;
     $nbPerPage = match($options['nbPerPage'] ?? null) {
       null => self::NB_TUPLES_PER_PAGE, // si le paramètre n'est pas défini alors la valeur par défaut est utilisée
@@ -376,11 +375,12 @@ class CollectionOfDs extends Collection {
   }
 
   /** La méthode getItemsOnValue() est mise en oeuvre par le JdD.
-   * @return array<array<mixed>> */ 
-  function getItemsOnValue(string $field, string $value): array {
+   * @return \Generator<string|int|null,array<mixed>>
+   */
+  function getItemsOnValue(string $field, string $value): \Generator {
     return Dataset::get($this->dsName)->getItemsOnValue($this->name, $field, $value);
   }
-
+  
   /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.
    * Devrait être redéfinie par les Dataset si cette info. est disponible.
    */ 
@@ -390,6 +390,7 @@ class CollectionOfDs extends Collection {
    * @param array{'skip'?: integer,'nbPerPage'?: int|'all', 'predicate'?: string} $options 
    */
   function display(array $options=[]): void {
+    //echo "<pre>CollectionOfDs::display(options="; print_r($options); echo ")</pre>\n";
     echo '<h2>',$this->title," (<a href='?action=draw&collection=",$this->id(),"'>Carte</a>)</h2>\n";
     echo "<h3>Description</h3>\n";
     echo str_replace("\n", "<br>\n", $this->schema->schema['description']);

@@ -309,7 +309,7 @@ abstract class Dataset {
     echo "</ul>\n";
   }
   
-  /** Retourne les filtres implémentés par getTuples(). Peut être redéfinie par chaque Dataset.
+  /** Retourne les filtres implémentés par getItems(). Peut être redéfinie par chaque Dataset.
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
    *  - rect: Rect - rectangle de sélection des n-uplets
@@ -339,14 +339,12 @@ abstract class Dataset {
   
   /** Retourne la liste des items avec leur clé, ayant pour champ field la valeur fournie.
    * Devrait être redéfinie par les Dataset s'il existe un algo. plus performant.
-   * @return array<array<mixed>>
-   */ 
-  function getItemsOnValue(string $collection, string $field, string $value): array {
-    $result = [];
-    foreach ($this->getItems($collection, []) as $k => $tuple)
-      if ($tuple[$field] == $value)
-        $result[$k] = $tuple;
-    return $result;
+   * @return \Generator<string|int|null,array<mixed>>
+   */
+  function getItemsOnValue(string $collName, string $field, string $value): \Generator {
+    foreach ($this->getItems($collName, []) as $k => $item)
+      if ($item[$field] == $value)
+        yield $k => $item;
   }
   
   /** Retourne le nombre d'items de la collection, ou -1 si cette info n'est pas disponible.

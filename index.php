@@ -25,15 +25,13 @@ Actions à réaliser:
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
   - proposer une mécanisme de recopie en local d'un JdD ou d'une partie
-- dans l'affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter CQL ? partiellement ?
   - https://portal.ogc.org/files/96288#cql-bnf
-- réfléchir à un un bouquets de services OGC API Features
+- réfléchir à un bouquet de services OGC API Features
   - ptDAccès = Dataset | Query
     - collection
     - item
 - catalogage des données ?
-- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
   - voir pourquoi c'est lent, ca remet en cause la méthode
 - transférer les JdD géo. en GeoDataset
@@ -46,6 +44,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+29/9/2025:
+  - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter 
 28/9/2025:
   - amélioration de Wfs
   - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml

@@ -25,7 +25,7 @@ use BBox\GBox as GeoBox; // utilise GBox
  * Pour qu'un champ géométrique soit considéré en GeoJSON comme une géométrie, il doit s'appeler 'geometry'.
  */
 class Feed {
-  /** Affiche la doc en mode web. */
+  /** Retourne la doc pour le mode web. */
   static function DOC(): string {
     return <<<'EOT'
 Ce script, qui peut être appelé en mode web ou en CLI, génère un flux GeoJSON d'une collection ou d'un item de cette collection.
@@ -227,7 +227,7 @@ EOT;
     die("\n  ]\n}\n");
   }
   
-  /** Fournit la doc en mode CLI. */
+  /** Affiche la doc en mode CLI. */
   static function usage(string $cmde='geojson.php'): void {
     echo "usage:\n",
          "  php $cmde - fournit cette aide et liste les jeux de données\n",

@@ -5,7 +5,7 @@
  */
 
 if (!preg_match('!^8\.4!', phpversion())) {
-  echo "Erreur, Cette application nécessite Php 8.4<br>\n";
+  echo "Erreur, Cette application nécessite Php 8.4, la version de Php utilisée est ",phpversion(),"<br>\n";
   die();
 }
 

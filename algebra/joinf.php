@@ -63,7 +63,9 @@ class JoinF extends Collection {
       if (!isset($tuple1[$this->field1])) {
         throw new \Exception("Champ $this->field1 non défini dans ".$this->coll1->id());
       }
-      $tuples2 = $this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]);
+      $tuples2 = [];
+      foreach ($this->coll2->getItemsOnValue($this->field2, $tuple1[$this->field1]) as $key2 => $tuple2)
+        $tuples2[$key2] = $tuple2;
       //echo "getItemsOnValue($this->field2,".$tuple1[$this->field1].")<br>\n";
       switch ($this->type) {
         case 'InnerJoin': {
