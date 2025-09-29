@@ -1,0 +1,42 @@
+Reconstitution de la spec de CQLv1:
+===================================
+
+Extrait de OGC 07-045r1
+-----------------------
+The following conditions must be met by the supported query language:
+  • support for the logical operators:
+    o And
+    o Or
+    o Not
+  • support for the comparison operators: 
+    o EqualTo
+    o NotEqualTo
+    o LessThan
+    o GreaterThan
+    o LessThanOrEqualTo
+    o GreaterThanOrEqualTo 
+    o Like
+    o NullCheck
+  • support for the following expressions:
+    o property name 
+    o literal
+  • support for the following spatial operators36: 
+    o Intersects
+    o Disjoint
+    o BBOX
+
+Exemples CQL/ECQL de GeoServer (https://docs.geoserver.org/2.23.x/en/user/tutorials/cql/cql_tutorial.html)
+----------------------------------------------------------------------------------------------------------
+PERSONS > 15000000
+PERSONS BETWEEN 1000000 AND 3000000
+STATE_NAME = 'California'
+STATE_NAME LIKE 'N%'
+MALE > FEMALE
+Arithmetic expressions can be computed using the +, -, *, / operators. The filter UNEMPLOY / (EMPLOYED + UNEMPLOY) > 0.07
+STATE_NAME IN ('New York', 'California', 'Montana', 'Texas')
+strToLowerCase(STATE_NAME) like '%m%'
+The states that intersect the (-90,40,-60,45) bounding box: BBOX(the_geom, -90, 40, -60, 45)
+Select the states that do not intersect the bounding box:
+  DISJOINT(the_geom, POLYGON((-90 40, -90 45, -60 45, -60 40, -90 40)))
+The full list of geometric predicates is:
+ - EQUALS, DISJOINT, INTERSECTS, TOUCHES, CROSSES, WITHIN, CONTAINS, OVERLAPS, RELATE, DWITHIN, BEYOND.

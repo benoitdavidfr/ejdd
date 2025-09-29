@@ -65,14 +65,34 @@ EOT
 
 const NOTE_QUERY_LANGUAGE_WFS = [
   <<<'EOT'
-Il semble que différents langages de requêtes peuvent être utilisés pour interroger un serveur WFS:
-  - Filter Encoding, défini par OGC 09-026r1 and ISO 19143:2010, sous le titre "OpenGIS Filter Encoding 2.0 Encoding Standard"
+Différents langages de requêtes peuvent être utilisés pour interroger un serveur WFS:
+  - "OpenGIS Filter Encoding 2.0 Encoding Standard", OGC 09-026r1 and ISO 19143:2010
   - "Filter Encoding Implementation Specification", Version: 1.0.0, OGC 02-059, 17-MAY-2001
   - "OGC® Filter Encoding 2.0 Encoding Standard", version 2.0.3, OGC 09-026r2, 2014-08-18
   - "OGC API - Features - Part 3: Filtering and the Common Query Language (CQL)", Draft, https://portal.ogc.org/files/96288, 2020,
     correspondant à CQL2
-  - je n'ai pas trouvé de spécification de CQL v1
-J'ai utilisé CQL v1 car je n'ai pas réussi à utiliser Filter Encoding.
+  - "OpenGIS® Catalogue Services Specification 2.0.2 - ISO Metadata Application Profile: Corrigendum" (OGC 07-045r1)
+    contient le passage suivant sur CQL:
+      The interoperability goal is supported by the specification of a minimal abstract query (predicate) language, which must be supported by
+      all compliant OGC Catalogue Services. This query language is called OGC_Common Catalogue Query Language (CQL) (see [OGC 07-006]). 
+      It supports nested Boolean queries, text matching operations, temporal data types, and geospatial operators. CQL assists the consumer 
+      in the discovery of datasets of interest at all sites supporting the OGC Catalogue Services.
+      OGC Filter Encoding is an XML based encoding of the OGC_Common Query Language. This query language (Version 1.1.0) must be supported 
+      by all catalogue instances of this profile in order to support search interoperability. In addition, the plain textual encoding of CQL 
+      version 2.0 may be supported. The capabilities document of the catalogue instance shall describe all supported query languages 
+      (see Capabilities Document in Annex E) .
+  - https://docs.geoserver.org/2.23.x/en/user/tutorials/cql/cql_tutorial.html
+  - j'ai trouvé OGC 07-006 qui contient une BNF de CQLv1.
+
+CQLv1 a été repris par CQLv2 dans OGC API Features mais semble uniquement un draft.
+J'ai utilisé dans Wfs CQL v1 car je n'ai pas réussi à utiliser Filter Encoding.
+
+Il serait intéressant que Wfs sache traiter les predicate.
+Les predicate pourraient être transformés en CQLv1.
+A priori, il n'y a pas beaucoup de différence a l'exception de match.
+Supprimer match de predicate ?
+Je pourrais me fixer comme contrainte que predicate soit transformable en CQLv1.
+
 EOT,
 ];
 

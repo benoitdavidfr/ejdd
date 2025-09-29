@@ -4,6 +4,17 @@
  */
 namespace Algebra;
 
+const A_FAIRE_PREDICATE = [
+  <<<'EOT'
+- modifier Predicate pour qu'un prédicat exprimé dans Predicate soit transformable en CQLv1 [OGC 07-006r1].
+  - a priori seul match pose pbs car différent de like
+  - je pourrais supprimer match, ou lancer une erreur lorsque j'essaie de transformer un predicate avec match en CQLv1
+  - cela permettrait à Wfs d'annoncer qu'il implémente le filtre predicate
+  - une autre solution serait d'aligner predicate sur CQLv2 mais CQLv2 est récent et il y a peu de chance qu'il soit mis en oeuvre
+    dans les vieux serveurs Wfs
+EOT
+];
+
 require_once __DIR__.'/query.php';
 require_once __DIR__.'/skipbracket.php';
 
@@ -186,7 +197,7 @@ abstract class Predicate {
   abstract function eval(array $tuples): bool;
 };
 
-/** Prédicat de comparaison d'un champ du n-uplet avec une constante, prédicat {name} {comparator} {constant}.
+/** Prédicat de comparaison d'un champ du n-uplet avec une constante, prédicat {name} {comparator} {literal}.
  * Le champ utilisé doit être défini dans le n-uplet, sinon une exception est lancée. */
 class PredicateConstant extends Predicate {
   /** @param string $field - nom du champ
@@ -211,7 +222,7 @@ class PredicateConstant extends Predicate {
   }
 };
 
-/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {constant} {comparator} {field}. */
+/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {literal} {comparator} {field}. */
 class PredicateConstantInv extends PredicateConstant {
   function __construct(Constant $constant, Comparator $comp, string $field) { parent::__construct($field, $comp, $constant); }
   
@@ -297,11 +308,11 @@ class PredicateParser {
   /** La BNF utilisée dans un souci de documentation. */
   const BNF = [
     <<<'EOT'
-{predicate} ::= {fieldName} {comparator} {constant}
-              | {constant} {comparator} {fieldName}
+{predicate} ::= {fieldName} {comparator} {literal}
+              | {literal} {comparator} {fieldName}
               | {fieldName} {comparator} {fieldName}
               | '(' {predicate} ')' {junction} '(' {predicate} ')'
-{constant} ::=  {float}
+{literal} ::=  {float}
               | {integer}
               | {string}
               | {geojson}         // une string GeoJSON conforme au RFC représentant une primitive géométrique simple
@@ -344,7 +355,7 @@ EOT
    * @param list<string> $path - chemin des appels */
   static function predicate(array $path, string &$text0): ?Predicate {
     $path[] = 'predicate';
-    { // {predicate} ::= {fieldName} {comparator} {constant}
+    { // {predicate} ::= {fieldName} {comparator} {literal}
       $text = $text0;
       if (($field = Query::token($path, '{fieldName}', $text))
         && ($comparator = self::comparator($path, $text))
@@ -354,10 +365,10 @@ EOT
         $text0 = $text;
         return new PredicateConstant($field, $comparator, $constant);
       }
-      Query::addTrace($path, "échec {predicate} ::= {fieldName} {comparator} {constant}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {fieldName} {comparator} {literal}", $text0);
     }
     
-    { // {predicate} ::= {constant} {comparator} {fieldName}
+    { // {predicate} ::= {literal} {comparator} {fieldName}
       $text = $text0;
       if (($constant = self::constant($path, $text))
         && ($comparator = self::comparator($path, $text))
@@ -367,7 +378,7 @@ EOT
         $text0 = $text;
         return new PredicateConstantInv($constant, $comparator, $field);
       }
-      Query::addTrace($path, "échec {predicate} ::= {constant} {comparator} {fieldName}", $text0);
+      Query::addTrace($path, "échec {predicate} ::= {literal} {comparator} {fieldName}", $text0);
     }
     
     { // {predicate} ::= {name} {comparator} {name}
@@ -407,14 +418,14 @@ EOT
   /** @param list<string> $path - chemin des appels */
   static function constant(array $path, string &$text0): ?Constant {
     $path[] = 'constant';
-    { // {constant} ::= {float}
+    { // {literal} ::= {float}
       if ($value = self::token($path, '{float}', $text0)) {
         Query::addTrace($path, "succès {float}", $text0);
         return new Constant('float', $value);
       }
     }
     
-    { // {constant} ::= {integer}
+    { // {literal} ::= {integer}
       if ($value = self::token($path, '{integer}', $text0)) {
         Query::addTrace($path, "succès {integer}", $text0);
         //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
@@ -422,14 +433,14 @@ EOT
       }
     }
 
-    { // {constant} ::= {string}
+    { // {literal} ::= {string}
       if ($value = self::token($path, '{string}', $text0)) {
         Query::addTrace($path, "succès {string}", $text0);
         return new Constant('string', substr($value, 1, -1));
       }
     }
     
-    { // {constant} ::= {geojson}
+    { // {literal} ::= {geojson}
       if ((substr($text0, 0, 1) == '{')
         && ($json = SkipBracket::skip($text0))
           && ($geojson = json_decode($json, true)))
@@ -440,7 +451,7 @@ EOT
       }
     }
     
-    { // {constant} ::= '[' {number} ',' {number}' ',' {number}' ',' {number}' ']'     // bbox
+    { // {literal} ::= '[' {number} ',' {number}' ',' {number}' ',' {number}' ']'     // bbox
       $text = $text0;
       $numbers = [];
       if (Query::pmatch('\[', $text)
@@ -459,7 +470,7 @@ EOT
       }
     }
     
-    { // {constant} ::= '[' {number} ',' {number}' ']'                                 // point
+    { // {literal} ::= '[' {number} ',' {number}' ']'                                 // point
       $text = $text0;
       $numbers = [];
       if (Query::pmatch('\[', $text)

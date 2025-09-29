@@ -45,7 +45,8 @@ const JOURNAL = [
 Journal des modifications récentes du code
 ------------------------------------------
 29/9/2025:
-  - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter 
+  - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter étant trop complexe
+  - réflexion autour de CQLv1 et de la convergence avec Predicate
 28/9/2025:
   - amélioration de Wfs
   - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml
