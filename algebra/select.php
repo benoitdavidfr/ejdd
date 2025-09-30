@@ -93,23 +93,23 @@ class SelectTest {
       //*
       "InseeCog.v_region_2025.NCC match '!FRANCE!' (cas d'une collection acceptant predicate)" => [
         'collection'=> CollectionOfDs::get('InseeCog.v_region_2025'),
-        'predicate'=> new PredicateConstant('NCC', new Comparator('match'), new Constant('string', '!FRANCE!')),
+        'predicate'=> new PredicateLiteral('NCC', new Comparator('match'), new Literal('string', '!FRANCE!')),
       ],
       "DeptReg.régions.nom match '!France!' (cas d'une collection n'acceptant pas predicate)" => [
         'collection'=> CollectionOfDs::get('DeptReg.régions'),
-        'predicate'=> new PredicateConstant('nom', new Comparator('match'), new Constant('string', '!France!')),
+        'predicate'=> new PredicateLiteral('nom', new Comparator('match'), new Literal('string', '!France!')),
       ],
       "SimpleOnLineColl where stringField='stringValue'" => [
         'collection'=> OnLineColl::examples()['Simple1'],
-        'predicate'=> new PredicateConstant('stringField', new Comparator('='), new Constant('string', 'stringValue')),
+        'predicate'=> new PredicateLiteral('stringField', new Comparator('='), new Literal('string', 'stringValue')),
       ],
       "SimpleOnLineColl  where stringField<>'stringValue'" => [
         'collection'=> OnLineColl::examples()['Simple1'],
-        'predicate'=> new PredicateConstant('stringField', new Comparator('<>'), new Constant('string', 'stringValue')),
+        'predicate'=> new PredicateLiteral('stringField', new Comparator('<>'), new Literal('string', 'stringValue')),
       ],
       "SimpleOnLineColl where float < 4 (construit à la main)" => [
         'collection'=> OnLineColl::examples()['Simple1'],
-        'predicate'=> new PredicateConstant('float', new Comparator('<'), new Constant('int', '4')),
+        'predicate'=> new PredicateLiteral('float', new Comparator('<'), new Literal('int', '4')),
       ],
       "SimpleOnLineColl where float < 4 (avec fromText())" => [
         'collection'=> OnLineColl::examples()['Simple1'],

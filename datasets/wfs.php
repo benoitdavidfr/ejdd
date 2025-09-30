@@ -87,11 +87,7 @@ Différents langages de requêtes peuvent être utilisés pour interroger un ser
 CQLv1 a été repris par CQLv2 dans OGC API Features mais semble uniquement un draft.
 J'ai utilisé dans Wfs CQL v1 car je n'ai pas réussi à utiliser Filter Encoding.
 
-Il serait intéressant que Wfs sache traiter les predicate.
-Les predicate pourraient être transformés en CQLv1.
-A priori, il n'y a pas beaucoup de différence a l'exception de match.
-Supprimer match de predicate ?
-Je pourrais me fixer comme contrainte que predicate soit transformable en CQLv1.
+Wfs accepte les prédicats dans getItems() mais certains prédicats ne sont pas compatibles avec CQL v1 et leur traduction génère une exception.
 
 EOT,
 ];
@@ -100,6 +96,10 @@ require_once __DIR__.'/dataset.inc.php';
 require_once __DIR__.'/../geom/geojson.inc.php';
 require_once __DIR__.'/../ogr/ogr2ogr.php';
 
+use Algebra\Predicate;
+use Algebra\PredicateLiteral;
+use Algebra\Comparator;
+use Algebra\Literal;
 //use GeoJSON\Feed;
 use GeoJSON\Geometry;
 use BBox\GBox as BBox;
@@ -668,7 +668,7 @@ EOT;
 };*/
 //OgcFilter2::test();
 
-/** Définition de OGC CQL v1. */
+/** Définition de OGC CQL v1. * /
 class OgcCqlV1 {
   function __construct(readonly string $query) {}
   
@@ -678,7 +678,7 @@ class OgcCqlV1 {
     $value = str_replace("'", "''", $value); // testé expérimentalement sur IgnWfs
     return new self("$propName = '$value'");
   }
-};
+};*/
 
 /** Un WfsRequesXXX exécute les requêtes GET au serveur ; WfsRequestLight permet d'exécuter uniquement la requête GetCapabilities. */
 class WfsRequestLight {
@@ -723,7 +723,7 @@ class WfsRequestFull extends WfsRequestLight {
    * Les propriétés de la FeatureCollection ne sont pas les mêmes selon que le retour est effectué en GeoJSON ou en GML.
    * @return TGeoJsonFeatureCollection
    */
-  function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox, ?OgcCqlV1 $cqlFilter): array {
+  function getFeatures(string $ftName, int $start, int $count, ?BBox $bbox, ?Predicate $predicate): array {
     //echo "Appel de WfsGetRequest::getFeatures(ftName=$ftName, start=$start, count=$count, bbox=$bbox)<br>\n";
     if ($bbox) {
       $bboxAs4Coords = match($this->version) {
@@ -736,15 +736,15 @@ class WfsRequestFull extends WfsRequestLight {
         '1.1.0' => 'EPSG:4326', // en WFS 1.1.0 expérimentalement, c'est l'inverse
       };
     }
-    // Je décide de ne pas mettre en cache les requêtes utilisant un BBox ou $propValue
-    $cachePath = ($bbox||$cqlFilter)? null : "$this->name/features/".str_replace(':','/', $ftName)."/$start-$count".$this->outputFormat->ext();
+    // Je décide de ne pas mettre en cache les requêtes utilisant un BBox ou un $predicate
+    $cachePath = ($bbox||$predicate)? null : "$this->name/features/".str_replace(':','/', $ftName)."/$start-$count".$this->outputFormat->ext();
     //echo "cachePath=$cachePath<br>\n";
     $url = $this->url
           ."?service=WFS&version=".$this->version."&request=GetFeature"
           .'&'.match($this->version) {'2.0.0' => 'typeNames', '1.1.0' => 'typeName='}."=$ftName"
           ."&srsName=EPSG:4326"
           .($bbox ? "&bbox=".implode(',',$bboxAs4Coords) : '')
-          .($cqlFilter ? "&cql_filter=".urlencode($cqlFilter) : '')
+          .($predicate ? "&cql_filter=".urlencode($predicate->toCqlV1()) : '')
           ."&outputFormat=".urlencode($this->outputFormat)
           ."&startIndex=$start"
           .'&'.match($this->version) {'2.0.0' => "count", '1.1.0' => "maxFeatures"}."=$count";
@@ -881,7 +881,7 @@ class Wfs extends Dataset {
   
   /** Retourne les filtres implémentés par getItems().
    * @return list<string> */
-  function implementedFilters(string $collName): array { return ['skip', 'bbox']; }
+  function implementedFilters(string $collName): array { return ['skip', 'bbox', 'predicate']; }
   
   /** L'accès aux items d'une collection du JdD par un Generator.
    * Pour chaque Feature, le serveur WFS retourne l'id qui est utilisé comme clé de l'item ;
@@ -891,22 +891,23 @@ class Wfs extends Dataset {
    * Une pagination est utilisée définie par SIZE_OF_PAGE pour requêter les features.
    * Les filtres possibles sont:
    *  - skip: int - nombre de n-uplets à sauter au début pour permettre la pagination
-   *  - bbox: BBox - rectangle de sélection des n-uplets
-   *  - fieldValue [{field} => {value}] - couple champ, valeur
+   *  - bbox: BBox - bbox de sélection des n-uplets
+   *  - predicate: Predicate - prédicat de sélection des n-uplets
    * Lorsqu'un filtre bbox est défini, il est passé au serveur WFS dans la requête.
+   * Lorsqu'un filtre prédicat est défini, il est passé au serveur WFS dans la requête comme expression CQL v1.
    * @param string $collName - nom de la collection
-   * @param array{'skip'?:int,'bbox'?:BBox,'cqlv1'?:OgcCqlV1} $filters - filtres éventuels sur les items à retourner
+   * @param array{'skip'?:int,'bbox'?:BBox,'predicate'?:Predicate} $filters - filtres éventuels sur les items à retourner
    * @return \Generator<int|string|null,array<mixed>>
    */
   function getItems(string $collName, array $filters=[]): \Generator {
-    //echo "Appel de Wfs::getItems(collName=$collName, filters)<br>\n";
+    //echo "Appel de Wfs::getItems(collName=$collName, filters="; print_r($filters); echo ")<br>\n";
     $start = $filters['skip'] ?? 0;
     // $start n'est pas forcément au début d'une page, $startOfPage est le début de la page contenant l'item no $start
     $startOfPage = intval(floor($start/self::SIZE_OF_PAGE) * self::SIZE_OF_PAGE);
     //echo "start = $start, startOfPage = $startOfPage<br>\n";
     while (true) {
       // Je vais chercher une page démarrant sur un multiple de self::SIZE_OF_PAGE
-      $fcoll = $this->wfsReq->getFeatures($collName, $startOfPage, self::SIZE_OF_PAGE, $filters['bbox'] ?? null, $filters['cqlv1'] ?? null);
+      $fcoll = $this->wfsReq->getFeatures($collName, $startOfPage, self::SIZE_OF_PAGE, $filters['bbox'] ?? null, $filters['predicate'] ?? null);
       //echo "<pre>fcoll="; print_r($fcoll); echo "</pre>\n";
       if (count($fcoll['features']) == 0) {
         //echo "Aucun résultat retourné<br>\n";
@@ -987,7 +988,12 @@ class Wfs extends Dataset {
    * @return \Generator<string|int|null,array<mixed>>
    */ 
   function getItemsOnValue(string $collName, string $property, string $value): \Generator {
-    return $this->getItems($collName, ['cqlv1'=> OgcCqlV1::propertyEqualValue($property, $value)]);
+    $literal = new Literal('string', $value);
+    if (is_numeric($value)) {
+      $literal = new Literal('float', $value);
+    }
+    $predicate = new PredicateLiteral($property, new Comparator('='), $literal);
+    return $this->getItems($collName, ['predicate'=> $predicate]);
   }
 
   /** Retourne le nombre d'items de la collection. */ 

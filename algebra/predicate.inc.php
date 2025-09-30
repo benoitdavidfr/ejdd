@@ -1,12 +1,13 @@
 <?php
 /** Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec Query.
+ * Predicate est a peu près aligné sur CQL v1 [OGC 07-006r1], il peut être transformé en CQLv1 avec qqs exceptions.
  * @package Algebra
  */
 namespace Algebra;
 
 const A_FAIRE_PREDICATE = [
   <<<'EOT'
-- modifier Predicate pour qu'un prédicat exprimé dans Predicate soit transformable en CQLv1 [OGC 07-006r1].
+- modifier Predicate pour qu'un prédicat exprimé dans Predicate soit transformable en CQLv1
   - a priori seul match pose pbs car différent de like
   - je pourrais supprimer match, ou lancer une erreur lorsque j'essaie de transformer un predicate avec match en CQLv1
   - cela permettrait à Wfs d'annoncer qu'il implémente le filtre predicate
@@ -24,14 +25,20 @@ use BBox\BBox as GeoBox;
 #use BBox\GBox as GeoBox;
 use BBox\NONE;
 
-/** Constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.
+/** Littéral défini par son type et sa valeur stockée comme string et utilisée dans les prédicats.
  * Le format pour bboxInJSON est une liste de 4 coordonnées (xmin,ymin,xmax,ymax) codée en JSON.
  */
-class Constant {
+class Literal {
+  readonly string $value;
   /** @param ('string'|'int'|'float'|'bboxInJSON') $type */
-  function __construct(readonly string $type, readonly string $value) {}
+  function __construct(readonly string $type, string $value) {
+    if ($type == 'int')
+      $this->value = str_replace('_', '', $value); // supprime les '_' des entiers
+    else
+      $this->value = $value;
+  }
   
-  /** Génère le texte à partir duquel la constante peut être reconstruit. */
+  /** Génère le texte à partir duquel le littéral peut être reconstruit. */
   function id(): string {
     return match ($this->type) {
       'float', 'int', 'bboxInJSON' => $this->value,
@@ -39,6 +46,14 @@ class Constant {
     };
   }
 
+  function toCqlV1(): string {
+    return match ($this->type) {
+      'float', 'int',  => $this->value,
+      'string' => "'".str_replace("'", "''", $this->value)."'",
+      'bboxInJSON' => throw new \Exception("TO BE COMPLETED"),
+    };
+  }
+  
   /** Conversion dans une valeur fonction du type. */
   function value(): string|int|float|GeoBox {
     return match ($this->type) {
@@ -110,7 +125,7 @@ class Comparator {
         break;
       }
       case 'includes': {
-        // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
+        // Les paramètres sont soit des BBox s'ils proviennent d'un Littéral, soit des prim. GeoJSON décodées
         // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
         if (is_array($left)) { // cas d'un GeoJSON décodé
           $left = ($left['bbox'] ?? null) ? GeoBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
@@ -128,7 +143,7 @@ class Comparator {
         break;
       }
       case 'intersects': {
-        // Les paramètres sont soit des BBox s'ils proviennent d'une constante, soit des prim. GeoJSON décodées
+        // Les paramètres sont soit des BBox s'ils proviennent d'un littéral, soit des prim. GeoJSON décodées
         // s'ils proviennent d'un champ de n-uplet. La prim. GeoJSON peut ou non comporter un champ bbox.
         if (is_array($left)) { // cas d'un GeoJSON décodé
           $left = ($left['bbox'] ?? null) ? GeoBox::from4Coords($left['bbox']) : Geometry::create($left)->bbox();
@@ -150,9 +165,9 @@ class Comparator {
   }
 };
 
-/** Un Predicat est une expression logique évaluable sur 1 n-uplet.
+/** Un Predicat est une expression logique évaluable sur 1 n-uplet, a peu près aligné sur CQL v1 [OGC 07-006r1].
  * Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
- * L'expression est représentée une imbrication d'objets des différentes classes.
+ * L'expression est représentée un aobjet ou un abre d'objets des différentes classes.
  * Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.
  */
 abstract class Predicate {
@@ -178,7 +193,7 @@ abstract class Predicate {
     $form = "<h3>Prédicat</h3>\n<table border=1><form>";
     foreach ($getKeys as $k)
       if (isset($_GET[$k]))
-        $form .= "<input type='hidden' name='$k' value='".urlencode($_GET[$k])."'>\n";
+        $form .= "<input type='hidden' name='$k' value='".$_GET[$k]."'>\n";
     $form .= "<tr><td>Prédicat</td>"
             ."<td><input type='text' name='predicate' size=140 value=\""
               .htmlentities($_GET['predicate'] ?? '')."\"></td>\n"
@@ -191,22 +206,33 @@ abstract class Predicate {
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
   abstract function id(): string;
   
+  function __toString(): string { return $this->id(); }
+  
+  /** Retourne une chaine conforme CQL v1. */
+  abstract function toCqlV1(): string;
+  
   /** Evalue le prédicat sur 1 n-uplet correspondant évent. au merge des n-uplets.
    * @param array<string,mixed>  $tuples
    */
   abstract function eval(array $tuples): bool;
 };
 
-/** Prédicat de comparaison d'un champ du n-uplet avec une constante, prédicat {name} {comparator} {literal}.
+/** Prédicat de comparaison d'un champ du n-uplet avec un littéral, prédicat {name} {comparator} {literal}.
  * Le champ utilisé doit être défini dans le n-uplet, sinon une exception est lancée. */
-class PredicateConstant extends Predicate {
+class PredicateLiteral extends Predicate {
   /** @param string $field - nom du champ
    *  @param Comparator $comp - définition de l'opération de comparaison
-   *  @param Constant $constant - la constante */
-  function __construct(readonly string $field, readonly Comparator $comp, readonly Constant $constant) {}
-
+   *  @param Literal $literal - le littéral */
+  function __construct(readonly string $field, readonly Comparator $comp, readonly Literal $literal) {}
+  
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->field.' '.$this->comp->id().' '.$this->constant->id(); }
+  function id(): string { return $this->field.' '.$this->comp->id().' '.$this->literal->id(); }
+  
+  function toCqlV1(): string {
+    if ($this->comp->compOp == 'match')
+      throw new \Exception("Le comaprateur 'match' n'est pas autorisé en CQL v1");
+    return $this->field.' '.$this->comp->id().' '.$this->literal->toCqlV1();
+  }
   
   /** Evaluation du prédicat sur 1 n-uplet. */
   function eval(array $tuples): bool {
@@ -216,18 +242,20 @@ class PredicateConstant extends Predicate {
     if (($val = $tuples[$this->field] ?? null) === null)
       throw new \Exception("field $this->field absent");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = $this->comp->eval($val, $this->constant->value());
+    $result = $this->comp->eval($val, $this->literal->value());
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
 };
 
-/** Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {literal} {comparator} {field}. */
-class PredicateConstantInv extends PredicateConstant {
-  function __construct(Constant $constant, Comparator $comp, string $field) { parent::__construct($field, $comp, $constant); }
+/** Prédicat identique à PredicateLiteral où les 2 valeurs sont inversées, cad {literal} {comparator} {field}. */
+class PredicateLiteralInv extends PredicateLiteral {
+  function __construct(Literal $literal, Comparator $comp, string $field) { parent::__construct($field, $comp, $literal); }
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
-  function id(): string { return $this->constant->id().' '.$this->comp->id().' '.$this->field; }
+  function id(): string { return $this->literal->id().' '.$this->comp->id().' '.$this->field; }
+
+  function toCqlV1(): string { return parent::toCqlV1(); }
 
   /** Evaluation du prédicat sur 1 n-uplet. */
   function eval(array $tuples): bool {
@@ -237,7 +265,7 @@ class PredicateConstantInv extends PredicateConstant {
     if (($val = $tuples[$this->field] ?? null) === null)
       throw new \Exception("field $this->field absent");
     //echo "<pre>Predicate::eval() avec\n",'$this=>'; print_r($this);
-    $result = $this->comp->eval($this->constant->value(), $val);
+    $result = $this->comp->eval($this->literal->value(), $val);
     //echo "result=",$result ? 'vrai':'faux',"<br>\n";
     return $result;
   }
@@ -254,6 +282,8 @@ class PredicateField extends Predicate {
   
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
   function id(): string { return $this->field1.' '.$this->comparator->id().' '.$this->field2; }
+
+  function toCqlV1(): string { return $this->id(); }
 
   /** Evalue le prédicat sur 1 n-uplet correspondant évent. au merge des n-uplets.
    * @param array<string,mixed>  $tuples
@@ -283,6 +313,8 @@ class PredicateJunction extends Predicate {
   /** Génère le texte à partir duquel le prédicat peut être reconstruit. */
   function id(): string { return '('.$this->leftPredicate->id().') '.$this->junction.' ('.$this->rightPredicate->id().')'; }
 
+  function toCqlV1(): string { return '('.$this->leftPredicate->toCqlV1().') '.$this->junction.' ('.$this->rightPredicate->toCqlV1().')'; }
+
   /** Evalue le prédicat sur 1 n-uplet correspondant au merge des n-uplets.
    * @param array<string,mixed>  $tuples
   */
@@ -300,9 +332,9 @@ class PredicateParser {
   /** Les tokens ajoutés. */
   const TOKENS = [
     '{float}'=> '[0-9]+\.[0-9]+',
-    '{integer}'=> '[0-9]+',
+    '{integer}'=> '[-+]?[1-9][0-9_]*',
     '{string}'=> '("[^"]*"|\'[^\']*\')',
-    '{comparator}'=> '(=|<>|<|<=|>|>=|match|includes|intersects)',
+    '{comparator}'=> '(=|<>|<=|<|>=|>|match|includes|intersects)',
     '{junction}'=> '(and|or)',
   ];
   /** La BNF utilisée dans un souci de documentation. */
@@ -359,24 +391,24 @@ EOT
       $text = $text0;
       if (($field = Query::token($path, '{fieldName}', $text))
         && ($comparator = self::comparator($path, $text))
-          && ($constant = self::constant($path, $text))
+          && ($literal = self::literal($path, $text))
       ) {
         Query::addTrace($path, "succès", $text);
         $text0 = $text;
-        return new PredicateConstant($field, $comparator, $constant);
+        return new PredicateLiteral($field, $comparator, $literal);
       }
       Query::addTrace($path, "échec {predicate} ::= {fieldName} {comparator} {literal}", $text0);
     }
     
     { // {predicate} ::= {literal} {comparator} {fieldName}
       $text = $text0;
-      if (($constant = self::constant($path, $text))
+      if (($literal = self::literal($path, $text))
         && ($comparator = self::comparator($path, $text))
           && ($field = Query::token($path, '{name}', $text))
       ) {
         Query::addTrace($path, "succès", $text);
         $text0 = $text;
-        return new PredicateConstantInv($constant, $comparator, $field);
+        return new PredicateLiteralInv($literal, $comparator, $field);
       }
       Query::addTrace($path, "échec {predicate} ::= {literal} {comparator} {fieldName}", $text0);
     }
@@ -416,27 +448,27 @@ EOT
   }
   
   /** @param list<string> $path - chemin des appels */
-  static function constant(array $path, string &$text0): ?Constant {
-    $path[] = 'constant';
+  static function literal(array $path, string &$text0): ?Literal {
+    $path[] = 'literal';
     { // {literal} ::= {float}
       if ($value = self::token($path, '{float}', $text0)) {
         Query::addTrace($path, "succès {float}", $text0);
-        return new Constant('float', $value);
+        return new Literal('float', $value);
       }
     }
     
     { // {literal} ::= {integer}
       if ($value = self::token($path, '{integer}', $text0)) {
         Query::addTrace($path, "succès {integer}", $text0);
-        //echo "constant ="; print_r(new Constant('int', $value)); echo "<br>\n";
-        return new Constant('int', $value);
+        //echo "literal ="; print_r(new Literal('int', $value)); echo "<br>\n";
+        return new Literal('int', $value);
       }
     }
 
     { // {literal} ::= {string}
       if ($value = self::token($path, '{string}', $text0)) {
         Query::addTrace($path, "succès {string}", $text0);
-        return new Constant('string', substr($value, 1, -1));
+        return new Literal('string', substr($value, 1, -1));
       }
     }
     
@@ -447,7 +479,7 @@ EOT
       {
         Query::addTrace($path, "succès {geojson}", $text0);
         $bbox = $geojson['bbox'] ?? Geometry::create($geojson)->bbox()->as4Coords();
-        return new Constant('bboxInJSON', json_encode($bbox));
+        return new Literal('bboxInJSON', json_encode($bbox));
       }
     }
     
@@ -466,7 +498,7 @@ EOT
       {
         Query::addTrace($path, "succès {bbox}", $text);
         $text0 = $text;
-        return new Constant('bboxInJSON', json_encode($numbers));
+        return new Literal('bboxInJSON', json_encode($numbers));
       }
     }
     
@@ -482,7 +514,7 @@ EOT
         Query::addTrace($path, "succès {point}", $text);
         $text0 = $text;
         // Un point est un BBox ayant ses 2 coins identiques
-        return new Constant('bboxInJSON', json_encode([$numbers[0], $numbers[1], $numbers[0], $numbers[1]]));
+        return new Literal('bboxInJSON', json_encode([$numbers[0], $numbers[1], $numbers[0], $numbers[1]]));
       }
     }
     
@@ -590,7 +622,7 @@ class PredicateTest {
           die();
         }
         
-        echo PredicateConstant::form();
+        echo PredicateLiteral::form();
         
         if (!isset($_GET['predicate']))
           break;

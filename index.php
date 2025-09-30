@@ -44,6 +44,8 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+30/9/2025:
+  - mise en oeuvre de predicate dans Wfs, ce qui signifie que l'on peut utiliser un prédicat pour sélectionner des n-uplets dans un serveur Wfs
 29/9/2025:
   - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter étant trop complexe
   - réflexion autour de CQLv1 et de la convergence avec Predicate
@@ -419,9 +421,10 @@ class Main {
         break;
       }
       case 'display': { // affichage du contenu du JdD ou de la collection ou d'un item ou d'une valeur 
-        if (!isset($_GET['collection']))
+        if (!isset($_GET['collection'])) // Affichage du JdD
           Dataset::get($_GET['dataset'])->display();
-        elseif (!isset($_GET['key'])) {
+        elseif (!isset($_GET['key'])) { // Affichage de la collection
+          //echo "<pre>_GET="; print_r($_GET); echo "</pre>\n";
           $options = array_merge(
             isset($_GET['skip']) ? ['skip'=> $_GET['skip']] : [],
             isset($_GET['nbPerPage']) ? ['nbPerPage'=> $_GET['nbPerPage']] : [],
