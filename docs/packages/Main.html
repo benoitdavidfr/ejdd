@@ -118,15 +118,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -221,10 +221,28 @@
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/main.html#constant_A_FAIRE">A_FAIRE</a>
+    <a class="" href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a>
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
 Actions à réaliser:
+- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
+  - c&#039;est notament le cas des FT des wfs
+    - ca vaudrait le coût de récupérer les propriétés des FT
+- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
+- améliorer l&#039;affichage des JdD, collections et champs
+- l&#039;affichage d&#039;un item ne fonctionne pas
+EOT]                            </span>
+</dt>
+<dd>Actions à réaliser.</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="namespaces/main.html#constant_BACKLOG">BACKLOG</a>
+    <span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+Actions à réaliser:
+- améliorer l&#039;IHM de explorer
+  - l&#039;idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+  - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
 - réfléchir à un opérateur de tri
 - il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
@@ -240,34 +258,17 @@ Actions à réaliser:
     - une vue peut être utilisée dans un autre vue
 - dataset comme client API Features
   - proposer une mécanisme de recopie en local d&#039;un JdD ou d&#039;une partie
-- dans l&#039;affichage par tuple, afficher la géométrie en la dessinant sur une carte
 - implémenter CQL ? partiellement ?
   - https://portal.ogc.org/files/96288#cql-bnf
-- réfléchir à un un bouquets de services OGC API Features
+- réfléchir à un bouquet de services OGC API Features
   - ptDAccès = Dataset | Query
     - collection
     - item
 - catalogage des données ?
-- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
 - faire une catégorie SpreadSheet, y transférer les JdD concernés
   - voir pourquoi c&#039;est lent, ca remet en cause la méthode
 - transférer les JdD géo. en GeoDataset
 - publi sur internet ?
-EOT]                            </span>
-</dt>
-<dd>Actions à réaliser.</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a>
-    <span>
-        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-Actions à réaliser:
-- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
-  - c&#039;est notament le cas des FT des wfs
-    - ca vaudrait le coût de récupérer les propriétés des FT
-- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
-- améliorer l&#039;affichage des JdD, collections et champs
-- l&#039;affichage d&#039;un item ne fonctionne pas
 EOT]                            </span>
 </dt>
 <dd>Actions à réaliser.</dd>
@@ -302,6 +303,16 @@ EOT]                            </span>
         &nbsp;= [&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+1/10/2025:
+  - réflexion pour améliorer l&#039;IHM de explorer
+    - l&#039;idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+    - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
+30/9/2025:
+  - mise en oeuvre de predicate dans Wfs, ce qui signifie que l&#039;on peut utiliser un prédicat pour sélectionner des n-uplets dans un serveur Wfs
+  - correction du bug de caractères en fin de requête dans explorer, il faut supprimer les caractères &quot;\r&quot;
+29/9/2025:
+  - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter étant trop complexe
+  - réflexion autour de CQLv1 et de la convergence avec Predicate
 28/9/2025:
   - amélioration de Wfs
   - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml
@@ -589,68 +600,6 @@ EOT]                            </span>
 
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_A_FAIRE">
-        A_FAIRE
-        <a href="namespaces/main.html#constant_A_FAIRE" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">10</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Actions à réaliser.</p>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">A_FAIRE</span>
-    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-Actions à réaliser:
-- réfléchir à un opérateur de tri
-- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
-- mettre en MD les description dans les schémas
-- revoir les datasets initiaux
-  - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
-- comment tracer les requêtes, properties, schema ?
-  - quoi afficher ?
-- écrire le cas d&#039;un prédicat plus complexe dans JoinP
-- prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
-  - documenter la vue
-    - de la vue elle même, pourquoi elle a été conçue, ...
-    - des données utilisées
-    - une vue peut être utilisée dans un autre vue
-- dataset comme client API Features
-  - proposer une mécanisme de recopie en local d&#039;un JdD ou d&#039;une partie
-- dans l&#039;affichage par tuple, afficher la géométrie en la dessinant sur une carte
-- implémenter CQL ? partiellement ?
-  - https://portal.ogc.org/files/96288#cql-bnf
-- réfléchir à un un bouquets de services OGC API Features
-  - ptDAccès = Dataset | Query
-    - collection
-    - item
-- catalogage des données ?
-- transférer le filtrage par rectangle de geojson.php dans GeoDataset::getTuples()
-- faire une catégorie SpreadSheet, y transférer les JdD concernés
-  - voir pourquoi c&#039;est lent, ca remet en cause la méthode
-- transférer les JdD géo. en GeoDataset
-- publi sur internet ?
-EOT]</span>
-</code>
-
-
-    
-    
-    
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_A_FAIRE_EXPLORER">
         A_FAIRE_EXPLORER
         <a href="namespaces/main.html#constant_A_FAIRE_EXPLORER" class="headerlink"><i class="fas fa-link"></i></a>
@@ -691,6 +640,69 @@ EOT]</span>
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_BACKLOG">
+        BACKLOG
+        <a href="namespaces/main.html#constant_BACKLOG" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">10</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Actions à réaliser.</p>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">BACKLOG</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+Actions à réaliser:
+- améliorer l&#039;IHM de explorer
+  - l&#039;idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+  - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
+- réfléchir à un opérateur de tri
+- il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
+- mettre en MD les description dans les schémas
+- revoir les datasets initiaux
+  - créer une catagorie Yaml de JdD stocké dans un fichier Yaml
+- comment tracer les requêtes, properties, schema ?
+  - quoi afficher ?
+- écrire le cas d&#039;un prédicat plus complexe dans JoinP
+- prévoir un mécanisme de stockage des vues, évolution d&#039;extract ?
+  - documenter la vue
+    - de la vue elle même, pourquoi elle a été conçue, ...
+    - des données utilisées
+    - une vue peut être utilisée dans un autre vue
+- dataset comme client API Features
+  - proposer une mécanisme de recopie en local d&#039;un JdD ou d&#039;une partie
+- implémenter CQL ? partiellement ?
+  - https://portal.ogc.org/files/96288#cql-bnf
+- réfléchir à un bouquet de services OGC API Features
+  - ptDAccès = Dataset | Query
+    - collection
+    - item
+- catalogage des données ?
+- faire une catégorie SpreadSheet, y transférer les JdD concernés
+  - voir pourquoi c&#039;est lent, ca remet en cause la méthode
+- transférer les JdD géo. en GeoDataset
+- publi sur internet ?
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_GITHUB">
         GITHUB
         <a href="namespaces/main.html#constant_GITHUB" class="headerlink"><i class="fas fa-link"></i></a>
@@ -700,7 +712,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">331</span>
+    <span class="phpdocumentor-element-found-in__line">342</span>
 
     </aside>
 
@@ -749,7 +761,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">44</span>
+    <span class="phpdocumentor-element-found-in__line">45</span>
 
     </aside>
 
@@ -763,6 +775,16 @@ EOT]</span>
     = <span class="phpdocumentor-signature__default-value">[&#039;récents&#039; =&gt; [&lt;&lt;&lt;&#039;EOT&#039;
 Journal des modifications récentes du code
 ------------------------------------------
+1/10/2025:
+  - réflexion pour améliorer l&#039;IHM de explorer
+    - l&#039;idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+    - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
+30/9/2025:
+  - mise en oeuvre de predicate dans Wfs, ce qui signifie que l&#039;on peut utiliser un prédicat pour sélectionner des n-uplets dans un serveur Wfs
+  - correction du bug de caractères en fin de requête dans explorer, il faut supprimer les caractères &quot;\r&quot;
+29/9/2025:
+  - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter étant trop complexe
+  - réflexion autour de CQLv1 et de la convergence avec Predicate
 28/9/2025:
   - amélioration de Wfs
   - transfert de la doc de WfsNs dans le fichier wfsnsdoc.yaml
@@ -1011,7 +1033,7 @@ EOT]]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="index.php"><a href="files/index.html">index.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">292</span>
+    <span class="phpdocumentor-element-found-in__line">303</span>
 
     </aside>
 
@@ -1184,8 +1206,8 @@ EOT]</span>
                             <li class="phpdocumentor-on-this-page-section__title">Constants</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/main.html#constant_A_FAIRE">A_FAIRE</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a></li>
+                                                    <li class=""><a href="namespaces/main.html#constant_BACKLOG">BACKLOG</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_GITHUB">GITHUB</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_JOURNAL">JOURNAL</a></li>
                                                     <li class=""><a href="namespaces/main.html#constant_LIGNE_DE_COMMANDE">LIGNE_DE_COMMANDE</a></li>

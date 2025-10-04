@@ -118,15 +118,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -197,7 +197,9 @@
             <p class="phpdocumentor-summary">Définition de prédicats sur les n-uplets et du parser adhoc en harmonie avec Query.</p>
 
         
-        
+            <section class="phpdocumentor-description"><p>Predicate est a peu près aligné sur CQL v1 [OGC 07-006r1], il peut être transformé en CQLv1 avec qqs exceptions.</p>
+</section>
+
         
 
 
@@ -217,10 +219,30 @@
 
     </h4>
     <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Constant.html"><abbr title="\Algebra\Constant">Constant</abbr></a></dt><dd>Constante définie par son type et sa valeur stockée comme string et utilisée dans les prédicats.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Comparator.html"><abbr title="\Algebra\Comparator">Comparator</abbr></a></dt><dd>Comparaison entre 2 valeurs retournant un bouléen, utilisé dans les prédicats, défini par une string.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Predicate.html"><abbr title="\Algebra\Predicate">Predicate</abbr></a></dt><dd>Un Predicat est une expression logique évaluable sur 1 n-uplet.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateConstant.html"><abbr title="\Algebra\PredicateConstant">PredicateConstant</abbr></a></dt><dd>Prédicat de comparaison d&#039;un champ du n-uplet avec une constante, prédicat {name} {comparator} {constant}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateConstantInv.html"><abbr title="\Algebra\PredicateConstantInv">PredicateConstantInv</abbr></a></dt><dd>Prédicat identique à PredicateConstant où les 2 valeurs sont inversées, cad {constant} {comparator} {field}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateField.html"><abbr title="\Algebra\PredicateField">PredicateField</abbr></a></dt><dd>Prédicat de comparaison de 2 champs entre eux. Prédicat {name} {comparator} {name}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateJunction.html"><abbr title="\Algebra\PredicateJunction">PredicateJunction</abbr></a></dt><dd>Prédicat de conjonction ou de disjonction sur 2 prédicats. {predicate} ::= &#039;(&#039;{predicate}&#039;)&#039; {junction} &#039;(&#039;{predicate}&#039;)&#039;</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateParser.html"><abbr title="\Algebra\PredicateParser">PredicateParser</abbr></a></dt><dd>Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser de requêtes Query.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateTest.html"><abbr title="\Algebra\PredicateTest">PredicateTest</abbr></a></dt><dd>Test de la classe Predicate.</dd>    </dl>
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Literal.html"><abbr title="\Algebra\Literal">Literal</abbr></a></dt><dd>Littéral défini par son type et sa valeur stockée comme string et utilisée dans les prédicats.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Comparator.html"><abbr title="\Algebra\Comparator">Comparator</abbr></a></dt><dd>Comparaison entre 2 valeurs retournant un bouléen, utilisé dans les prédicats, défini par une string.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-Predicate.html"><abbr title="\Algebra\Predicate">Predicate</abbr></a></dt><dd>Un Predicat est une expression logique évaluable sur 1 n-uplet, a peu près aligné sur CQL v1 [OGC 07-006r1].</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateLiteral.html"><abbr title="\Algebra\PredicateLiteral">PredicateLiteral</abbr></a></dt><dd>Prédicat de comparaison d&#039;un champ du n-uplet avec un littéral, prédicat {name} {comparator} {literal}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateLiteralInv.html"><abbr title="\Algebra\PredicateLiteralInv">PredicateLiteralInv</abbr></a></dt><dd>Prédicat identique à PredicateLiteral où les 2 valeurs sont inversées, cad {literal} {comparator} {field}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateField.html"><abbr title="\Algebra\PredicateField">PredicateField</abbr></a></dt><dd>Prédicat de comparaison de 2 champs entre eux. Prédicat {name} {comparator} {name}.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateJunction.html"><abbr title="\Algebra\PredicateJunction">PredicateJunction</abbr></a></dt><dd>Prédicat de conjonction ou de disjonction sur 2 prédicats. {predicate} ::= &#039;(&#039;{predicate}&#039;)&#039; {junction} &#039;(&#039;{predicate}&#039;)&#039;</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateParser.html"><abbr title="\Algebra\PredicateParser">PredicateParser</abbr></a></dt><dd>Le parser des prédicats, fonctionne de la même manière et en harmonie avec le parser de requêtes Query.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Algebra-PredicateTest.html"><abbr title="\Algebra\PredicateTest">PredicateTest</abbr></a></dt><dd>Test de la classe Predicate.</dd>    </dl>
 
 
 
+<h4 id="toc-constants">
+    Constants
+    <a href="files/algebra-predicate-inc.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="namespaces/algebra.html#constant_A_FAIRE_PREDICATE">A_FAIRE_PREDICATE</a>
+    <span>
+        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
+- modifier Predicate pour qu&#039;un prédicat exprimé dans Predicate soit transformable en CQLv1
+  - a priori seul match pose pbs car différent de like
+  - je pourrais supprimer match, ou lancer une erreur lorsque j&#039;essaie de transformer un predicate avec match en CQLv1
+  - cela permettrait à Wfs d&#039;annoncer qu&#039;il implémente le filtre predicate
+  - une autre solution serait d&#039;aligner predicate sur CQLv2 mais CQLv2 est récent et il y a peu de chance qu&#039;il soit mis en oeuvre
+    dans les vieux serveurs Wfs
+EOT]                            </span>
+</dt>
+
+    </dl>
 
 
 
@@ -228,6 +250,51 @@
 
 
         
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="files/algebra-predicate-inc.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_A_FAIRE_PREDICATE">
+        A_FAIRE_PREDICATE
+        <a href="namespaces/algebra.html#constant_A_FAIRE_PREDICATE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">8</span>
+
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">A_FAIRE_PREDICATE</span>
+    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
+- modifier Predicate pour qu&#039;un prédicat exprimé dans Predicate soit transformable en CQLv1
+  - a priori seul match pose pbs car différent de like
+  - je pourrais supprimer match, ou lancer une erreur lorsque j&#039;essaie de transformer un predicate avec match en CQLv1
+  - cela permettrait à Wfs d&#039;annoncer qu&#039;il implémente le filtre predicate
+  - une autre solution serait d&#039;aligner predicate sur CQLv2 mais CQLv2 est récent et il y a peu de chance qu&#039;il soit mis en oeuvre
+    dans les vieux serveurs Wfs
+EOT]</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+            </section>
 
         
         <div class="phpdocumentor-modal" id="source-view">
@@ -336,9 +403,16 @@
             <li>
                 <ul class="phpdocumentor-list -clean">
                                                                                                         <li><a href="files/algebra-predicate-inc.html#toc-classes">Classes</a></li>
-                                                                                                                    </ul>
+                                                                                                        <li><a href="files/algebra-predicate-inc.html#toc-constants">Constants</a></li>
+                                                        </ul>
             </li>
 
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="namespaces/algebra.html#constant_A_FAIRE_PREDICATE">A_FAIRE_PREDICATE</a></li>
+                                            </ul>
+                </li>
             
                     </ul>
     </section>

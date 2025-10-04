@@ -118,15 +118,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -215,7 +215,7 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">288</span>
+    <span class="phpdocumentor-element-found-in__line">331</span>
 
     </aside>
 
@@ -251,11 +251,11 @@
     <a class="" href="classes/Algebra-PredicateParser.html#constant_BNF">BNF</a>
     <span>
         &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-{predicate} ::= {fieldName} {comparator} {constant}
-              | {constant} {comparator} {fieldName}
+{predicate} ::= {fieldName} {comparator} {literal}
+              | {literal} {comparator} {fieldName}
               | {fieldName} {comparator} {fieldName}
               | &#039;(&#039; {predicate} &#039;)&#039; {junction} &#039;(&#039; {predicate} &#039;)&#039;
-{constant} ::=  {float}
+{literal} ::=  {float}
               | {integer}
               | {string}
               | {geojson}         // une string GeoJSON conforme au RFC représentant une primitive géométrique simple
@@ -269,7 +269,7 @@ EOT]                            </span>
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a class="" href="classes/Algebra-PredicateParser.html#constant_TOKENS">TOKENS</a>
     <span>
-        &nbsp;= [&#039;{float}&#039; =&gt; &#039;[0-9]+\.[0-9]+&#039;, &#039;{integer}&#039; =&gt; &#039;[0-9]+&#039;, &#039;{string}&#039; =&gt; &#039;(&quot;[^&quot;]*&quot;|\&#039;[^\&#039;]*\&#039;)&#039;, &#039;{comparator}&#039; =&gt; &#039;(=|&lt;&gt;|&lt;|&lt;=|&gt;|&gt;=|match|includes|intersects)&#039;, &#039;{junction}&#039; =&gt; &#039;(and|or)&#039;]                            </span>
+        &nbsp;= [&#039;{float}&#039; =&gt; &#039;[0-9]+\.[0-9]+&#039;, &#039;{integer}&#039; =&gt; &#039;[-+]?[1-9][0-9_]*&#039;, &#039;{string}&#039; =&gt; &#039;(&quot;[^&quot;]*&quot;|\&#039;[^\&#039;]*\&#039;)&#039;, &#039;{comparator}&#039; =&gt; &#039;(=|&lt;&gt;|&lt;=|&lt;|&gt;=|&gt;|match|includes|intersects)&#039;, &#039;{junction}&#039; =&gt; &#039;(and|or)&#039;]                            </span>
 </dt>
 <dd>Les tokens ajoutés.</dd>
 
@@ -291,9 +291,9 @@ EOT]                            </span>
 <dd>{comparator} n&#039;est pas un nonterminal mais correspond à la classe Comparator, d&#039;où ce traitement.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a class="" href="classes/Algebra-PredicateParser.html#method_constant">constant()</a>
+    <a class="" href="classes/Algebra-PredicateParser.html#method_literal">literal()</a>
     <span>
-                                &nbsp;: <a href="classes/Algebra-Constant.html"><abbr title="\Algebra\Constant">Constant</abbr></a>|null    </span>
+                                &nbsp;: <a href="classes/Algebra-Literal.html"><abbr title="\Algebra\Literal">Literal</abbr></a>|null    </span>
 </dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
@@ -344,7 +344,7 @@ EOT]                            </span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">298</span>
+    <span class="phpdocumentor-element-found-in__line">341</span>
 
     </aside>
 
@@ -356,11 +356,11 @@ EOT]                            </span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">BNF</span>
     = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-{predicate} ::= {fieldName} {comparator} {constant}
-              | {constant} {comparator} {fieldName}
+{predicate} ::= {fieldName} {comparator} {literal}
+              | {literal} {comparator} {fieldName}
               | {fieldName} {comparator} {fieldName}
               | &#039;(&#039; {predicate} &#039;)&#039; {junction} &#039;(&#039; {predicate} &#039;)&#039;
-{constant} ::=  {float}
+{literal} ::=  {float}
               | {integer}
               | {string}
               | {geojson}         // une string GeoJSON conforme au RFC représentant une primitive géométrique simple
@@ -388,7 +388,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">290</span>
+    <span class="phpdocumentor-element-found-in__line">333</span>
 
     </aside>
 
@@ -399,7 +399,7 @@ EOT]</span>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">TOKENS</span>
-    = <span class="phpdocumentor-signature__default-value">[&#039;{float}&#039; =&gt; &#039;[0-9]+\.[0-9]+&#039;, &#039;{integer}&#039; =&gt; &#039;[0-9]+&#039;, &#039;{string}&#039; =&gt; &#039;(&quot;[^&quot;]*&quot;|\&#039;[^\&#039;]*\&#039;)&#039;, &#039;{comparator}&#039; =&gt; &#039;(=|&lt;&gt;|&lt;|&lt;=|&gt;|&gt;=|match|includes|intersects)&#039;, &#039;{junction}&#039; =&gt; &#039;(and|or)&#039;]</span>
+    = <span class="phpdocumentor-signature__default-value">[&#039;{float}&#039; =&gt; &#039;[0-9]+\.[0-9]+&#039;, &#039;{integer}&#039; =&gt; &#039;[-+]?[1-9][0-9_]*&#039;, &#039;{string}&#039; =&gt; &#039;(&quot;[^&quot;]*&quot;|\&#039;[^\&#039;]*\&#039;)&#039;, &#039;{comparator}&#039; =&gt; &#039;(=|&lt;&gt;|&lt;=|&lt;|&gt;=|&gt;|match|includes|intersects)&#039;, &#039;{junction}&#039; =&gt; &#039;(and|or)&#039;]</span>
 </code>
 
 
@@ -434,7 +434,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">484</span>
+    <span class="phpdocumentor-element-found-in__line">527</span>
 
     </aside>
 
@@ -486,22 +486,22 @@ EOT]</span>
             -public
                                     -static                    "
 >
-    <h4 class="phpdocumentor-element__name" id="method_constant">
-        constant()
-        <a href="classes/Algebra-PredicateParser.html#method_constant" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="method_literal">
+        literal()
+        <a href="classes/Algebra-PredicateParser.html#method_literal" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">408</span>
+    <span class="phpdocumentor-element-found-in__line">451</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">constant</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$text0</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Algebra-Constant.html"><abbr title="\Algebra\Constant">Constant</abbr></a>|null</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">literal</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;int, string&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$path</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$text0</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/Algebra-Literal.html"><abbr title="\Algebra\Literal">Literal</abbr></a>|null</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -535,7 +535,7 @@ EOT]</span>
 
             <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-        <span class="phpdocumentor-signature__response_type"><a href="classes/Algebra-Constant.html"><abbr title="\Algebra\Constant">Constant</abbr></a>|null</span>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/Algebra-Literal.html"><abbr title="\Algebra\Literal">Literal</abbr></a>|null</span>
             </section>
 
 </article>
@@ -553,7 +553,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">496</span>
+    <span class="phpdocumentor-element-found-in__line">539</span>
 
     </aside>
 
@@ -612,7 +612,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">345</span>
+    <span class="phpdocumentor-element-found-in__line">388</span>
 
     </aside>
 
@@ -674,7 +674,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">337</span>
+    <span class="phpdocumentor-element-found-in__line">380</span>
 
     </aside>
 
@@ -725,7 +725,7 @@ EOT]</span>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">316</span>
+    <span class="phpdocumentor-element-found-in__line">359</span>
 
     </aside>
 
@@ -902,7 +902,7 @@ EOT]</span>
             <li>
                 <ul class="phpdocumentor-list -clean">
                                             <li class=""><a href="classes/Algebra-PredicateParser.html#method_comparator">comparator()</a></li>
-                                            <li class=""><a href="classes/Algebra-PredicateParser.html#method_constant">constant()</a></li>
+                                            <li class=""><a href="classes/Algebra-PredicateParser.html#method_literal">literal()</a></li>
                                             <li class=""><a href="classes/Algebra-PredicateParser.html#method_number">number()</a></li>
                                             <li class=""><a href="classes/Algebra-PredicateParser.html#method_predicate">predicate()</a></li>
                                             <li class=""><a href="classes/Algebra-PredicateParser.html#method_start">start()</a></li>

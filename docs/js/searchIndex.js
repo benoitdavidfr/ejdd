@@ -601,30 +601,40 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Algebra-OnLineCollTest.html#method_main"
         },                {
-            "fqsen": "\\Algebra\\Constant",
-            "name": "Constant",
-            "summary": "Constante\u0020d\u00E9finie\u0020par\u0020son\u0020type\u0020et\u0020sa\u0020valeur\u0020stock\u00E9e\u0020comme\u0020string\u0020et\u0020utilis\u00E9e\u0020dans\u0020les\u0020pr\u00E9dicats.",
-            "url": "classes/Algebra-Constant.html"
+            "fqsen": "\\Algebra\\A_FAIRE_PREDICATE",
+            "name": "A_FAIRE_PREDICATE",
+            "summary": "",
+            "url": "namespaces/algebra.html#constant_A_FAIRE_PREDICATE"
         },                {
-            "fqsen": "\\Algebra\\Constant\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Algebra\\Literal",
+            "name": "Literal",
+            "summary": "Litt\u00E9ral\u0020d\u00E9fini\u0020par\u0020son\u0020type\u0020et\u0020sa\u0020valeur\u0020stock\u00E9e\u0020comme\u0020string\u0020et\u0020utilis\u00E9e\u0020dans\u0020les\u0020pr\u00E9dicats.",
+            "url": "classes/Algebra-Literal.html"
+        },                {
+            "fqsen": "\\Algebra\\Literal\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Algebra-Constant.html#method___construct"
+            "url": "classes/Algebra-Literal.html#method___construct"
         },                {
-            "fqsen": "\\Algebra\\Constant\u003A\u003Aid\u0028\u0029",
+            "fqsen": "\\Algebra\\Literal\u003A\u003Aid\u0028\u0029",
             "name": "id",
-            "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020la\u0020constante\u0020peut\u0020\u00EAtre\u0020reconstruit.",
-            "url": "classes/Algebra-Constant.html#method_id"
+            "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020litt\u00E9ral\u0020peut\u0020\u00EAtre\u0020reconstruit.",
+            "url": "classes/Algebra-Literal.html#method_id"
         },                {
-            "fqsen": "\\Algebra\\Constant\u003A\u003A\u0024value",
+            "fqsen": "\\Algebra\\Literal\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "",
+            "url": "classes/Algebra-Literal.html#method_toCqlV1"
+        },                {
+            "fqsen": "\\Algebra\\Literal\u003A\u003A\u0024value",
             "name": "value",
             "summary": "",
-            "url": "classes/Algebra-Constant.html#property_value"
+            "url": "classes/Algebra-Literal.html#property_value"
         },                {
-            "fqsen": "\\Algebra\\Constant\u003A\u003A\u0024type",
+            "fqsen": "\\Algebra\\Literal\u003A\u003A\u0024type",
             "name": "type",
             "summary": "",
-            "url": "classes/Algebra-Constant.html#property_type"
+            "url": "classes/Algebra-Literal.html#property_type"
         },                {
             "fqsen": "\\Algebra\\Comparator",
             "name": "Comparator",
@@ -658,7 +668,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Algebra\\Predicate",
             "name": "Predicate",
-            "summary": "Un\u0020Predicat\u0020est\u0020une\u0020expression\u0020logique\u0020\u00E9valuable\u0020sur\u00201\u0020n\u002Duplet.",
+            "summary": "Un\u0020Predicat\u0020est\u0020une\u0020expression\u0020logique\u0020\u00E9valuable\u0020sur\u00201\u0020n\u002Duplet,\u0020a\u0020peu\u0020pr\u00E8s\u0020align\u00E9\u0020sur\u0020CQL\u0020v1\u0020\u005BOGC\u002007\u002D006r1\u005D.",
             "url": "classes/Algebra-Predicate.html"
         },                {
             "fqsen": "\\Algebra\\Predicate\u003A\u003AfromText\u0028\u0029",
@@ -676,65 +686,85 @@ Search.appendIndex(
             "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020pr\u00E9dicat\u0020peut\u0020\u00EAtre\u0020reconstruit.",
             "url": "classes/Algebra-Predicate.html#method_id"
         },                {
+            "fqsen": "\\Algebra\\Predicate\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "",
+            "url": "classes/Algebra-Predicate.html#method___toString"
+        },                {
+            "fqsen": "\\Algebra\\Predicate\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "Retourne\u0020une\u0020chaine\u0020conforme\u0020CQL\u0020v1.",
+            "url": "classes/Algebra-Predicate.html#method_toCqlV1"
+        },                {
             "fqsen": "\\Algebra\\Predicate\u003A\u003Aeval\u0028\u0029",
             "name": "eval",
             "summary": "Evalue\u0020le\u0020pr\u00E9dicat\u0020sur\u00201\u0020n\u002Duplet\u0020correspondant\u0020\u00E9vent.\u0020au\u0020merge\u0020des\u0020n\u002Duplets.",
             "url": "classes/Algebra-Predicate.html#method_eval"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant",
-            "name": "PredicateConstant",
-            "summary": "Pr\u00E9dicat\u0020de\u0020comparaison\u0020d\u0027un\u0020champ\u0020du\u0020n\u002Duplet\u0020avec\u0020une\u0020constante,\u0020pr\u00E9dicat\u0020\u007Bname\u007D\u0020\u007Bcomparator\u007D\u0020\u007Bconstant\u007D.",
-            "url": "classes/Algebra-PredicateConstant.html"
+            "fqsen": "\\Algebra\\PredicateLiteral",
+            "name": "PredicateLiteral",
+            "summary": "Pr\u00E9dicat\u0020de\u0020comparaison\u0020d\u0027un\u0020champ\u0020du\u0020n\u002Duplet\u0020avec\u0020un\u0020litt\u00E9ral,\u0020pr\u00E9dicat\u0020\u007Bname\u007D\u0020\u007Bcomparator\u007D\u0020\u007Bliteral\u007D.",
+            "url": "classes/Algebra-PredicateLiteral.html"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Algebra-PredicateConstant.html#method___construct"
+            "url": "classes/Algebra-PredicateLiteral.html#method___construct"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003Aid\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003Aid\u0028\u0029",
             "name": "id",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020pr\u00E9dicat\u0020peut\u0020\u00EAtre\u0020reconstruit.",
-            "url": "classes/Algebra-PredicateConstant.html#method_id"
+            "url": "classes/Algebra-PredicateLiteral.html#method_id"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003Aeval\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "Retourne\u0020une\u0020chaine\u0020conforme\u0020CQL\u0020v1.",
+            "url": "classes/Algebra-PredicateLiteral.html#method_toCqlV1"
+        },                {
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003Aeval\u0028\u0029",
             "name": "eval",
             "summary": "Evaluation\u0020du\u0020pr\u00E9dicat\u0020sur\u00201\u0020n\u002Duplet.",
-            "url": "classes/Algebra-PredicateConstant.html#method_eval"
+            "url": "classes/Algebra-PredicateLiteral.html#method_eval"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003A\u0024field",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003A\u0024field",
             "name": "field",
             "summary": "",
-            "url": "classes/Algebra-PredicateConstant.html#property_field"
+            "url": "classes/Algebra-PredicateLiteral.html#property_field"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003A\u0024comp",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003A\u0024comp",
             "name": "comp",
             "summary": "",
-            "url": "classes/Algebra-PredicateConstant.html#property_comp"
+            "url": "classes/Algebra-PredicateLiteral.html#property_comp"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstant\u003A\u003A\u0024constant",
-            "name": "constant",
+            "fqsen": "\\Algebra\\PredicateLiteral\u003A\u003A\u0024literal",
+            "name": "literal",
             "summary": "",
-            "url": "classes/Algebra-PredicateConstant.html#property_constant"
+            "url": "classes/Algebra-PredicateLiteral.html#property_literal"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstantInv",
-            "name": "PredicateConstantInv",
-            "summary": "Pr\u00E9dicat\u0020identique\u0020\u00E0\u0020PredicateConstant\u0020o\u00F9\u0020les\u00202\u0020valeurs\u0020sont\u0020invers\u00E9es,\u0020cad\u0020\u007Bconstant\u007D\u0020\u007Bcomparator\u007D\u0020\u007Bfield\u007D.",
-            "url": "classes/Algebra-PredicateConstantInv.html"
+            "fqsen": "\\Algebra\\PredicateLiteralInv",
+            "name": "PredicateLiteralInv",
+            "summary": "Pr\u00E9dicat\u0020identique\u0020\u00E0\u0020PredicateLiteral\u0020o\u00F9\u0020les\u00202\u0020valeurs\u0020sont\u0020invers\u00E9es,\u0020cad\u0020\u007Bliteral\u007D\u0020\u007Bcomparator\u007D\u0020\u007Bfield\u007D.",
+            "url": "classes/Algebra-PredicateLiteralInv.html"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstantInv\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteralInv\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Algebra-PredicateConstantInv.html#method___construct"
+            "url": "classes/Algebra-PredicateLiteralInv.html#method___construct"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstantInv\u003A\u003Aid\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteralInv\u003A\u003Aid\u0028\u0029",
             "name": "id",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020pr\u00E9dicat\u0020peut\u0020\u00EAtre\u0020reconstruit.",
-            "url": "classes/Algebra-PredicateConstantInv.html#method_id"
+            "url": "classes/Algebra-PredicateLiteralInv.html#method_id"
         },                {
-            "fqsen": "\\Algebra\\PredicateConstantInv\u003A\u003Aeval\u0028\u0029",
+            "fqsen": "\\Algebra\\PredicateLiteralInv\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "Retourne\u0020une\u0020chaine\u0020conforme\u0020CQL\u0020v1.",
+            "url": "classes/Algebra-PredicateLiteralInv.html#method_toCqlV1"
+        },                {
+            "fqsen": "\\Algebra\\PredicateLiteralInv\u003A\u003Aeval\u0028\u0029",
             "name": "eval",
             "summary": "Evaluation\u0020du\u0020pr\u00E9dicat\u0020sur\u00201\u0020n\u002Duplet.",
-            "url": "classes/Algebra-PredicateConstantInv.html#method_eval"
+            "url": "classes/Algebra-PredicateLiteralInv.html#method_eval"
         },                {
             "fqsen": "\\Algebra\\PredicateField",
             "name": "PredicateField",
@@ -750,6 +780,11 @@ Search.appendIndex(
             "name": "id",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020pr\u00E9dicat\u0020peut\u0020\u00EAtre\u0020reconstruit.",
             "url": "classes/Algebra-PredicateField.html#method_id"
+        },                {
+            "fqsen": "\\Algebra\\PredicateField\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "Retourne\u0020une\u0020chaine\u0020conforme\u0020CQL\u0020v1.",
+            "url": "classes/Algebra-PredicateField.html#method_toCqlV1"
         },                {
             "fqsen": "\\Algebra\\PredicateField\u003A\u003Aeval\u0028\u0029",
             "name": "eval",
@@ -785,6 +820,11 @@ Search.appendIndex(
             "name": "id",
             "summary": "G\u00E9n\u00E8re\u0020le\u0020texte\u0020\u00E0\u0020partir\u0020duquel\u0020le\u0020pr\u00E9dicat\u0020peut\u0020\u00EAtre\u0020reconstruit.",
             "url": "classes/Algebra-PredicateJunction.html#method_id"
+        },                {
+            "fqsen": "\\Algebra\\PredicateJunction\u003A\u003AtoCqlV1\u0028\u0029",
+            "name": "toCqlV1",
+            "summary": "Retourne\u0020une\u0020chaine\u0020conforme\u0020CQL\u0020v1.",
+            "url": "classes/Algebra-PredicateJunction.html#method_toCqlV1"
         },                {
             "fqsen": "\\Algebra\\PredicateJunction\u003A\u003Aeval\u0028\u0029",
             "name": "eval",
@@ -826,10 +866,10 @@ Search.appendIndex(
             "summary": "Cherche\u0020\u00E0\u0020matcher\u0020un\u0020\u007Bpredicate\u007D,\u0020si\u0020succ\u00E8s\u0020alors\u0020retourne\u0020un\u0020objet\u0020Predicate\u0020et\u0020consomme\u0020le\u0020texte\u0020en\u0020entr\u00E9e.",
             "url": "classes/Algebra-PredicateParser.html#method_predicate"
         },                {
-            "fqsen": "\\Algebra\\PredicateParser\u003A\u003Aconstant\u0028\u0029",
-            "name": "constant",
+            "fqsen": "\\Algebra\\PredicateParser\u003A\u003Aliteral\u0028\u0029",
+            "name": "literal",
             "summary": "",
-            "url": "classes/Algebra-PredicateParser.html#method_constant"
+            "url": "classes/Algebra-PredicateParser.html#method_literal"
         },                {
             "fqsen": "\\Algebra\\PredicateParser\u003A\u003Acomparator\u0028\u0029",
             "name": "comparator",
@@ -1396,6 +1436,46 @@ Search.appendIndex(
             "summary": "Test",
             "url": "classes/Algebra-SkipBracket.html#method_test"
         },                {
+            "fqsen": "\\Cache",
+            "name": "Cache",
+            "summary": "G\u00E8re\u0020un\u0020cache\u0020des\u0020appels\u0020Http\u0020GET\u0020pour\u0020Wfs.",
+            "url": "classes/Cache.html"
+        },                {
+            "fqsen": "\\Cache\u003A\u003AhttpResponseCode\u0028\u0029",
+            "name": "httpResponseCode",
+            "summary": "Extrait\u0020du\u0020\u0024http_response_header\u0020le\u0020code\u0020de\u0020retout\u0020Http.",
+            "url": "classes/Cache.html#method_httpResponseCode"
+        },                {
+            "fqsen": "\\Cache\u003A\u003AdirPath\u0028\u0029",
+            "name": "dirPath",
+            "summary": "Retourne\u0020le\u0020chemin\u0020du\u0020r\u00E9pertoire\u0020contenant\u0020le\u0020fichier.",
+            "url": "classes/Cache.html#method_dirPath"
+        },                {
+            "fqsen": "\\Cache\u003A\u003AcreateDir\u0028\u0029",
+            "name": "createDir",
+            "summary": "Teste\u0020si\u0020le\u0020r\u00E9pertoire\u0020du\u0020filePath\u0020existe\u0020et\u0020si\u0020non\u0020le\u0020cr\u00E9e,\u0020de\u0020mani\u00E8re\u0020r\u00E9cursive.",
+            "url": "classes/Cache.html#method_createDir"
+        },                {
+            "fqsen": "\\Cache\u003A\u003Aget\u0028\u0029",
+            "name": "get",
+            "summary": "Lecture\u0020d\u0027un\u0020flux\u0020d\u00E9fini\u0020par\u0020\u0024url\u0020en\u0020utilisant\u0020le\u0020fichier\u0020de\u0020cache\u0020\u0024filePath\u0020s\u0027il\u0020n\u0027est\u0020pas\u0020null.",
+            "url": "classes/Cache.html#method_get"
+        },                {
+            "fqsen": "\\Cache\u003A\u003Adelete\u0028\u0029",
+            "name": "delete",
+            "summary": "Efface\u0020r\u00E9cursivement\u0020le\u0020contenu\u0020du\u0020r\u00E9pertoire\u0020dont\u0020le\u0020path\u0020est\u0020pass\u00E9\u0020en\u0020param\u00E8tre.",
+            "url": "classes/Cache.html#method_delete"
+        },                {
+            "fqsen": "\\Cache\u003A\u003ANOCACHE",
+            "name": "NOCACHE",
+            "summary": "Permet\u0020d\u0027actibver\u0020ou\u0020de\u0020suspendre\u0020facilement\u0020le\u0020cache,\u0020par\u0020exemple\u0020pour\u0020des\u0020tests.",
+            "url": "classes/Cache.html#constant_NOCACHE"
+        },                {
+            "fqsen": "\\Cache\u003A\u003APATH",
+            "name": "PATH",
+            "summary": "Chemin\u0020du\u0020stockage\u0020des\u0020fichiers\u0020du\u0020cache.",
+            "url": "classes/Cache.html#constant_PATH"
+        },                {
             "fqsen": "\\Dataset\\AeCogPe",
             "name": "AeCogPe",
             "summary": "JdD\u0020Admin\u0020Express\u0020COG\u0020Carto\u0020petite\u0020\u00E9chelle\u00202025\u0020de\u0020l\u0027IGN\u0020\u0028AeCogPe\u0029.",
@@ -1488,7 +1568,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AimplementedFilters\u0028\u0029",
             "name": "implementedFilters",
-            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getTuples\u0028\u0029.\u0020Peut\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020chaque\u0020Dataset.",
+            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getItems\u0028\u0029.\u0020Peut\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020chaque\u0020Dataset.",
             "url": "classes/Dataset-Dataset.html#method_implementedFilters"
         },                {
             "fqsen": "\\Dataset\\Dataset\u003A\u003AgetItems\u0028\u0029",
@@ -1768,7 +1848,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Dataset\\Extract\u003A\u003AimplementedFilters\u0028\u0029",
             "name": "implementedFilters",
-            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getTuples\u0028\u0029.\u0020Peut\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020chaque\u0020Dataset.",
+            "summary": "Retourne\u0020les\u0020filtres\u0020impl\u00E9ment\u00E9s\u0020par\u0020getItems\u0028\u0029.\u0020Peut\u0020\u00EAtre\u0020red\u00E9finie\u0020par\u0020chaque\u0020Dataset.",
             "url": "classes/Dataset-Extract.html#method_implementedFilters"
         },                {
             "fqsen": "\\Dataset\\Extract\u003A\u003AgetItems\u0028\u0029",
@@ -2201,6 +2281,11 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/dataset.html#constant_NOTE_SRS_WFS"
         },                {
+            "fqsen": "\\Dataset\\NOTE_QUERY_LANGUAGE_WFS",
+            "name": "NOTE_QUERY_LANGUAGE_WFS",
+            "summary": "",
+            "url": "namespaces/dataset.html#constant_NOTE_QUERY_LANGUAGE_WFS"
+        },                {
             "fqsen": "\\Dataset\\WfsCache",
             "name": "WfsCache",
             "summary": "G\u00E8re\u0020un\u0020cache\u0020des\u0020appels\u0020Http\u0020GET\u0020pour\u0020Wfs.",
@@ -2376,70 +2461,70 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Dataset-WfsProperties.html#property_namespace"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestLight",
-            "name": "WfsGetRequestLight",
-            "summary": "Un\u0020WfsGetRequesXXX\u0020ex\u00E9cute\u0020les\u0020requ\u00EAtes\u0020GET\u0020au\u0020serveur\u0020\u003B\u0020WfsGetRequestLight\u0020permet\u0020d\u0027ex\u00E9cuter\u0020uniquement\u0020la\u0020requ\u00EAte\u0020GetCapabilities.",
-            "url": "classes/Dataset-WfsGetRequestLight.html"
+            "fqsen": "\\Dataset\\WfsRequestLight",
+            "name": "WfsRequestLight",
+            "summary": "Un\u0020WfsRequesXXX\u0020ex\u00E9cute\u0020les\u0020requ\u00EAtes\u0020GET\u0020au\u0020serveur\u0020\u003B\u0020WfsRequestLight\u0020permet\u0020d\u0027ex\u00E9cuter\u0020uniquement\u0020la\u0020requ\u00EAte\u0020GetCapabilities.",
+            "url": "classes/Dataset-WfsRequestLight.html"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestLight\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestLight.html#method___construct"
+            "url": "classes/Dataset-WfsRequestLight.html#method___construct"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003AgetCapabilities\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestLight\u003A\u003AgetCapabilities\u0028\u0029",
             "name": "getCapabilities",
             "summary": "Retourne\u0020le\u0020WfsCap\u0020correspondant\u0020aux\u0020capacit\u00E9s\u0020du\u0020serveur.",
-            "url": "classes/Dataset-WfsGetRequestLight.html#method_getCapabilities"
+            "url": "classes/Dataset-WfsRequestLight.html#method_getCapabilities"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A\u0024name",
+            "fqsen": "\\Dataset\\WfsRequestLight\u003A\u003A\u0024name",
             "name": "name",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestLight.html#property_name"
+            "url": "classes/Dataset-WfsRequestLight.html#property_name"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestLight\u003A\u003A\u0024url",
+            "fqsen": "\\Dataset\\WfsRequestLight\u003A\u003A\u0024url",
             "name": "url",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestLight.html#property_url"
+            "url": "classes/Dataset-WfsRequestLight.html#property_url"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull",
-            "name": "WfsGetRequestFull",
-            "summary": "Un\u0020WfsGetRequestFull\u0020est\u0020compl\u00E9t\u00E9\u0020par\u0020des\u0020infos\u0020issues\u0020du\u0020GetCapbilities\u0020pour\u0020ex\u00E9cuter\u0020les\u0020autres\u0020requ\u00EAtes.",
-            "url": "classes/Dataset-WfsGetRequestFull.html"
+            "fqsen": "\\Dataset\\WfsRequestFull",
+            "name": "WfsRequestFull",
+            "summary": "Un\u0020WfsRequestFull\u0020est\u0020compl\u00E9t\u00E9\u0020par\u0020des\u0020infos\u0020issues\u0020du\u0020GetCapabilities\u0020pour\u0020ex\u00E9cuter\u0020les\u0020autres\u0020requ\u00EAtes.",
+            "url": "classes/Dataset-WfsRequestFull.html"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A__construct\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestFull.html#method___construct"
+            "url": "classes/Dataset-WfsRequestFull.html#method___construct"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AdescribeFeatureType\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003AdescribeFeatureType\u0028\u0029",
             "name": "describeFeatureType",
             "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020conerti\u0020en\u0020WfsProperties.",
-            "url": "classes/Dataset-WfsGetRequestFull.html#method_describeFeatureType"
+            "url": "classes/Dataset-WfsRequestFull.html#method_describeFeatureType"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetFeatures\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003AgetFeatures\u0028\u0029",
             "name": "getFeatures",
-            "summary": "Retourne\u0020la\u0020s\u00E9lection\u0020de\u0020Features\u0020de\u0020la\u0020collection\u0020sous\u0020la\u0020forme\u0020d\u0027une\u0020FeatureCollection\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
-            "url": "classes/Dataset-WfsGetRequestFull.html#method_getFeatures"
+            "summary": "Retourne\u0020la\u0020s\u00E9lection\u0020des\u0020Features\u0020de\u0020la\u0020collection\u0020sur\u0020bbox\u0020ou\u0020filter\u0020sous\u0020la\u0020forme\u0020d\u0027une\u0020FeatureCollection\u0020GeoJSON\u0020d\u00E9cod\u00E9e.",
+            "url": "classes/Dataset-WfsRequestFull.html#method_getFeatures"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetFeature\u0028\u0029",
-            "name": "getFeature",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003AgetFeatureOnId\u0028\u0029",
+            "name": "getFeatureOnId",
             "summary": "Retourne\u0020le\u0020Feature\u0020ayant\u0020cet\u0020id\u0020ou\u0020null\u0020si\u0020aucun\u0020ne\u0020l\u0027a.",
-            "url": "classes/Dataset-WfsGetRequestFull.html#method_getFeature"
+            "url": "classes/Dataset-WfsRequestFull.html#method_getFeatureOnId"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003AgetNbOfFeatures\u0028\u0029",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003AgetNbOfFeatures\u0028\u0029",
             "name": "getNbOfFeatures",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestFull.html#method_getNbOfFeatures"
+            "url": "classes/Dataset-WfsRequestFull.html#method_getNbOfFeatures"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A\u0024version",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003A\u0024version",
             "name": "version",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestFull.html#property_version"
+            "url": "classes/Dataset-WfsRequestFull.html#property_version"
         },                {
-            "fqsen": "\\Dataset\\WfsGetRequestFull\u003A\u003A\u0024outputFormat",
+            "fqsen": "\\Dataset\\WfsRequestFull\u003A\u003A\u0024outputFormat",
             "name": "outputFormat",
             "summary": "",
-            "url": "classes/Dataset-WfsGetRequestFull.html#property_outputFormat"
+            "url": "classes/Dataset-WfsRequestFull.html#property_outputFormat"
         },                {
             "fqsen": "\\Dataset\\Wfs",
             "name": "Wfs",
@@ -2476,15 +2561,20 @@ Search.appendIndex(
             "summary": "Retourne\u0020l\u0027item\u0020ayant\u0020l\u0027id\u0020fourni.",
             "url": "classes/Dataset-Wfs.html#method_getOneItemByKey"
         },                {
-            "fqsen": "\\Dataset\\Wfs\u003A\u003AdescribeFeatureTypes\u0028\u0029",
-            "name": "describeFeatureTypes",
-            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020converti\u0020en\u0020WfsProperties.",
-            "url": "classes/Dataset-Wfs.html#method_describeFeatureTypes"
+            "fqsen": "\\Dataset\\Wfs\u003A\u003AgetItemsOnValue\u0028\u0029",
+            "name": "getItemsOnValue",
+            "summary": "Retourne\u0020la\u0020liste\u0020des\u0020items\u0020avec\u0020leur\u0020cl\u00E9,\u0020ayant\u0020pour\u0020champ\u0020field\u0020la\u0020valeur\u0020fournie.",
+            "url": "classes/Dataset-Wfs.html#method_getItemsOnValue"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003AgetNbOfItems\u0028\u0029",
             "name": "getNbOfItems",
             "summary": "Retourne\u0020le\u0020nombre\u0020d\u0027items\u0020de\u0020la\u0020collection.",
             "url": "classes/Dataset-Wfs.html#method_getNbOfItems"
+        },                {
+            "fqsen": "\\Dataset\\Wfs\u003A\u003AdescribeFeatureTypes\u0028\u0029",
+            "name": "describeFeatureTypes",
+            "summary": "Retourne\u0020le\u0020DescribeFeatureType\u0020des\u0020FeatureTypes\u0020de\u0020l\u0027espace\u0020de\u0020noms\u0020converti\u0020en\u0020WfsProperties.",
+            "url": "classes/Dataset-Wfs.html#method_describeFeatureTypes"
         },                {
             "fqsen": "\\Dataset\\Wfs\u003A\u003ASIZE_OF_PAGE",
             "name": "SIZE_OF_PAGE",
@@ -2655,6 +2745,11 @@ Search.appendIndex(
             "name": "SHP_DIR",
             "summary": "Chemin\u0020du\u0020r\u00E9pertoire\u0020contenant\u0020les\u0020fichiers\u0020SHP",
             "url": "classes/Dataset-WorldEezBuild.html#constant_SHP_DIR"
+        },                {
+            "fqsen": "\\display\u0028\u0029",
+            "name": "display",
+            "summary": "",
+            "url": "namespaces/default.html#function_display"
         },                {
             "fqsen": "\\Drawing\\DumbDrawing",
             "name": "DumbDrawing",
@@ -3408,7 +3503,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003ADOC\u0028\u0029",
             "name": "DOC",
-            "summary": "Affiche\u0020la\u0020doc\u0020en\u0020mode\u0020web.",
+            "summary": "Retourne\u0020la\u0020doc\u0020pour\u0020le\u0020mode\u0020web.",
             "url": "classes/GeoJSON-Feed.html#method_DOC"
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Alog\u0028\u0029",
@@ -3443,7 +3538,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003Ausage\u0028\u0029",
             "name": "usage",
-            "summary": "Fournit\u0020la\u0020doc\u0020en\u0020mode\u0020CLI.",
+            "summary": "Affiche\u0020la\u0020doc\u0020en\u0020mode\u0020CLI.",
             "url": "classes/GeoJSON-Feed.html#method_usage"
         },                {
             "fqsen": "\\GeoJSON\\Feed\u003A\u003AcliCall\u0028\u0029",
@@ -4486,10 +4581,10 @@ Search.appendIndex(
             "summary": "R\u00E9solution\u0020std\u0020d\u0027un\u0020pixel\u0020d\u00E9fini\u0020dans\u0020le\u0020standard\u0020WMS,\u0020en\u0020m\u00E8tres.",
             "url": "classes/ZoomLevel-ZoomLevel.html#constant_STD_PIXEL_SIZE_IN_METERS"
         },                {
-            "fqsen": "\\Main\\A_FAIRE",
-            "name": "A_FAIRE",
+            "fqsen": "\\Main\\BACKLOG",
+            "name": "BACKLOG",
             "summary": "Actions\u0020\u00E0\u0020r\u00E9aliser.",
-            "url": "namespaces/main.html#constant_A_FAIRE"
+            "url": "namespaces/main.html#constant_BACKLOG"
         },                {
             "fqsen": "\\Main\\JOURNAL",
             "name": "JOURNAL",

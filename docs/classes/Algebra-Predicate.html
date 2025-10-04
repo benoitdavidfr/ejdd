@@ -118,15 +118,15 @@
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Application.html" class="">Application</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Dataset.html" class="">Dataset</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
     <a href="packages/Drawing.html" class="">Drawing</a>
-</h4>
-
-                                    <h4 class="phpdocumentor-sidebar__root-namespace">
-    <a href="packages/Application.html" class="">Application</a>
 </h4>
 
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -217,15 +217,15 @@
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">147</span>
+    <span class="phpdocumentor-element-found-in__line">173</span>
 
     </aside>
 
-            <p class="phpdocumentor-summary">Un Predicat est une expression logique évaluable sur 1 n-uplet.</p>
+            <p class="phpdocumentor-summary">Un Predicat est une expression logique évaluable sur 1 n-uplet, a peu près aligné sur CQL v1 [OGC 07-006r1].</p>
 
 
     <section class="phpdocumentor-description"><p>Différentes sous-classes de cette classe abstraite représentent les différents types de prédicats définis dans la BNF.
-L'expression est représentée une imbrication d'objets des différentes classes.
+L'expression est représentée un aobjet ou un abre d'objets des différentes classes.
 Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
 </section>
 
@@ -257,6 +257,12 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
 </h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Predicate.html#method___toString">__toString()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a class="" href="classes/Algebra-Predicate.html#method_eval">eval()</a>
     <span>
                                 &nbsp;: bool    </span>
@@ -284,6 +290,13 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
 </dt>
 <dd>Génère le texte à partir duquel le prédicat peut être reconstruit.</dd>
 
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Algebra-Predicate.html#method_toCqlV1">toCqlV1()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Retourne une chaine conforme CQL v1.</dd>
+
     </dl>
 
 
@@ -302,6 +315,44 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
         class="phpdocumentor-element
             -method
             -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___toString">
+        __toString()
+        <a href="classes/Algebra-Predicate.html#method___toString" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">209</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__toString</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
                         -abstract                                "
 >
     <h4 class="phpdocumentor-element__name" id="method_eval">
@@ -312,7 +363,7 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">186</span>
+    <span class="phpdocumentor-element-found-in__line">217</span>
 
     </aside>
 
@@ -361,7 +412,7 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">166</span>
+    <span class="phpdocumentor-element-found-in__line">192</span>
 
     </aside>
 
@@ -414,7 +465,7 @@ Chaque sous classe doit être capable de s'évaluer sur 1 n-uplet.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">152</span>
+    <span class="phpdocumentor-element-found-in__line">178</span>
 
     </aside>
 
@@ -466,7 +517,7 @@ En cas d'erreur de syntaxe génère une exception après avoir affiché la trace
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">181</span>
+    <span class="phpdocumentor-element-found-in__line">207</span>
 
     </aside>
 
@@ -475,6 +526,45 @@ En cas d'erreur de syntaxe génère une exception après avoir affiché la trace
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
     <span class="phpdocumentor-signature__abstract">abstract</span>                <span class="phpdocumentor-signature__name">id</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                        -abstract                                "
+>
+    <h4 class="phpdocumentor-element__name" id="method_toCqlV1">
+        toCqlV1()
+        <a href="classes/Algebra-Predicate.html#method_toCqlV1" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="algebra/predicate.inc.php"><a href="files/algebra-predicate-inc.html"><abbr title="algebra/predicate.inc.php">predicate.inc.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">212</span>
+
+    </aside>
+
+        <p class="phpdocumentor-summary">Retourne une chaine conforme CQL v1.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+    <span class="phpdocumentor-signature__abstract">abstract</span>                <span class="phpdocumentor-signature__name">toCqlV1</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
     <div class="phpdocumentor-label-line">
         </div>
@@ -606,10 +696,12 @@ En cas d'erreur de syntaxe génère une exception après avoir affiché la trace
                         <li class="phpdocumentor-on-this-page-section__title">Methods</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/Algebra-Predicate.html#method___toString">__toString()</a></li>
                                             <li class=""><a href="classes/Algebra-Predicate.html#method_eval">eval()</a></li>
                                             <li class=""><a href="classes/Algebra-Predicate.html#method_form">form()</a></li>
                                             <li class=""><a href="classes/Algebra-Predicate.html#method_fromText">fromText()</a></li>
                                             <li class=""><a href="classes/Algebra-Predicate.html#method_id">id()</a></li>
+                                            <li class=""><a href="classes/Algebra-Predicate.html#method_toCqlV1">toCqlV1()</a></li>
                                     </ul>
             </li>
                     </ul>
