@@ -192,118 +192,112 @@
     </ul>
 
     <article class="phpdocumentor-element -file">
-        <h2 class="phpdocumentor-content__title">explorer.php</h2>
+        <h2 class="phpdocumentor-content__title">displayreturn.php</h2>
 
-            <p class="phpdocumentor-summary">Explorateur pour interroger des JdD au moyen du langage de requêtes.</p>
+            <p class="phpdocumentor-summary">Voir les caractères return.</p>
 
         
-        
+            <section class="phpdocumentor-description"><p>Une saisie issue un formulaire génère pour les fins de ligne 0D 0A, cad \r\n
+Une chaine interne contient des 0A cad \n</p>
+<p>Wikipédia:
+0A -&gt; \n -&gt; LF = Line Feed
+0D -&gt; \r -&gt; CR = Carriage Return</p>
+</section>
+
         
 
 
         
 <h3 id="toc">
     Table of Contents
-    <a href="files/explorer.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/displayreturn.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
 
 
 
-    <h4 id="toc-classes">
-        Classes
-        <a href="files/explorer.html#toc-classes" class="headerlink"><i class="fas fa-link"></i></a>
-
-    </h4>
-    <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-ExplorerContext.html"><abbr title="\Main\ExplorerContext">ExplorerContext</abbr></a></dt><dd>Le contexte de l&#039;explorateur passé en cookie d&#039;un appel à l&#039;autre.</dd>            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Main-Explorer.html"><abbr title="\Main\Explorer">Explorer</abbr></a></dt><dd>Explorateur de JdD.</dd>    </dl>
 
 
 
-<h4 id="toc-constants">
-    Constants
-    <a href="files/explorer.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+
+
+
+<h4 id="toc-functions">
+    Functions
+    <a href="files/displayreturn.html#toc-functions" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h4>
 <dl class="phpdocumentor-table-of-contents">
-            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
-    <a class="" href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a>
+            <dt class="phpdocumentor-table-of-contents__entry -function -">
+    <a class="" href="namespaces/default.html#function_displayReturn">displayReturn()</a>
     <span>
-        &nbsp;= [&lt;&lt;&lt;&#039;EOT&#039;
-Actions à réaliser:
-- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
-  - c&#039;est notament le cas des FT des wfs
-    - ca vaudrait le coût de récupérer les propriétés des FT
-- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
-- améliorer l&#039;affichage des JdD, collections et champs
-- l&#039;affichage d&#039;un item ne fonctionne pas
-EOT]                            </span>
+                                &nbsp;: void    </span>
 </dt>
-<dd>Actions à réaliser.</dd>
+<dd>Affiche les caractères Hexa de la chaine.</dd>
 
     </dl>
 
 
-
-
-
-
         
-    <section class="phpdocumentor-constants">
-        <h3 class="phpdocumentor-elements__header" id="constants">
-            Constants
-            <a href="files/explorer.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+            <section class="phpdocumentor-functions">
+        <h3 class="phpdocumentor-elements__header" id="functions">
+            Functions
+            <a href="files/displayreturn.html#functions" class="headerlink"><i class="fas fa-link"></i></a>
 
         </h3>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_A_FAIRE_EXPLORER">
-        A_FAIRE_EXPLORER
-        <a href="namespaces/main.html#constant_A_FAIRE_EXPLORER" class="headerlink"><i class="fas fa-link"></i></a>
+                    <article class="phpdocumentor-element -function - ">
+    <h4 class="phpdocumentor-element__name" id="function_displayReturn">
+        displayReturn()
+        <a href="namespaces/default.html#function_displayReturn" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
-
     <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="explorer.php"><a href="files/explorer.html">explorer.php</a></abbr>
+    <abbr class="phpdocumentor-element-found-in__file" title="displayreturn.php"><a href="files/displayreturn.html">displayreturn.php</a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">10</span>
+    <span class="phpdocumentor-element-found-in__line">23</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Actions à réaliser.</p>
+        <p class="phpdocumentor-summary">Affiche les caractères Hexa de la chaine.</p>
 
     
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">A_FAIRE_EXPLORER</span>
-    = <span class="phpdocumentor-signature__default-value">[&lt;&lt;&lt;&#039;EOT&#039;
-Actions à réaliser:
-- les collections qui ne sont pas capables de fournir leurs properties ne peuvent être utilisées dans une requête
-  - c&#039;est notament le cas des FT des wfs
-    - ca vaudrait le coût de récupérer les propriétés des FT
-- des requêtes génèrent une erreur alors qu&#039;elles ne le devraient pas =&gt; bug dans query
-- améliorer l&#039;affichage des JdD, collections et champs
-- l&#039;affichage d&#039;un item ne fonctionne pas
-EOT]</span>
-</code>
-
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility"></span>
+                    <span class="phpdocumentor-signature__name">displayReturn</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$title</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$string</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
     
-    
-    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$title</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$string</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
 
     
 
+    
 </article>
             </section>
 
-        
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/explorer.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/displayreturn.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -404,18 +398,17 @@ EOT]</span>
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                        <li><a href="files/explorer.html#toc-classes">Classes</a></li>
-                                                                                                        <li><a href="files/explorer.html#toc-constants">Constants</a></li>
-                                                        </ul>
+                                                                                                                                                                                        <li><a href="files/displayreturn.html#toc-functions">Functions</a></li>
+                                    </ul>
             </li>
 
-                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Functions</li>
                 <li>
                     <ul class="phpdocumentor-list -clean">
-                                                    <li class=""><a href="namespaces/main.html#constant_A_FAIRE_EXPLORER">A_FAIRE_EXPLORER</a></li>
+                                                    <li class=""><a href="namespaces/default.html#function_displayReturn">displayReturn()</a></li>
                                             </ul>
                 </li>
-            
                     </ul>
     </section>
 
@@ -433,7 +426,7 @@ EOT]</span>
     </section>
 </section>
         </div>
-        <a href="files/explorer.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="files/displayreturn.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 

@@ -1438,7 +1438,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Cache",
             "name": "Cache",
-            "summary": "G\u00E8re\u0020un\u0020cache\u0020des\u0020appels\u0020Http\u0020GET\u0020pour\u0020Wfs.",
+            "summary": "Test\u0020https\u003A\/\/api.sandre.eaufrance.fr\/referentiels\/v1\/",
             "url": "classes/Cache.html"
         },                {
             "fqsen": "\\Cache\u003A\u003AhttpResponseCode\u0028\u0029",
@@ -2746,10 +2746,10 @@ Search.appendIndex(
             "summary": "Chemin\u0020du\u0020r\u00E9pertoire\u0020contenant\u0020les\u0020fichiers\u0020SHP",
             "url": "classes/Dataset-WorldEezBuild.html#constant_SHP_DIR"
         },                {
-            "fqsen": "\\display\u0028\u0029",
-            "name": "display",
-            "summary": "",
-            "url": "namespaces/default.html#function_display"
+            "fqsen": "\\displayReturn\u0028\u0029",
+            "name": "displayReturn",
+            "summary": "Affiche\u0020les\u0020caract\u00E8res\u0020Hexa\u0020de\u0020la\u0020chaine.",
+            "url": "namespaces/default.html#function_displayReturn"
         },                {
             "fqsen": "\\Drawing\\DumbDrawing",
             "name": "DumbDrawing",

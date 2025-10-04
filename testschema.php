@@ -1,4 +1,7 @@
 <?php
+/** Test d'un schema.
+ * @package Misc
+ */
 require_once 'vendor/autoload.php';
 
 use Symfony\Component\Yaml\Yaml;
