@@ -7,9 +7,12 @@
 namespace Main;
 
 /** Actions à réaliser. */
-const A_FAIRE = [
+const BACKLOG = [
 <<<'EOT'
 Actions à réaliser:
+- améliorer l'IHM de explorer
+  - l'idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+  - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
 - réfléchir à un opérateur de tri
 - il faudrait descendre prédicat et bbox au plus près de la lecture des données et utiliser des index
 - mettre en MD les description dans les schémas
@@ -44,8 +47,13 @@ const JOURNAL = [
 <<<'EOT'
 Journal des modifications récentes du code
 ------------------------------------------
+1/10/2025:
+  - réflexion pour améliorer l'IHM de explorer
+    - l'idée préconisée par ChatGPT est de la développer en Vue 3 + Vite + Leaflet
+    - cela implique de faire évoluer les fonctionnalités actuelles vers une API REST à la OGC API Features (OAF)
 30/9/2025:
   - mise en oeuvre de predicate dans Wfs, ce qui signifie que l'on peut utiliser un prédicat pour sélectionner des n-uplets dans un serveur Wfs
+  - correction du bug de caractères en fin de requête dans explorer, il faut supprimer les caractères "\r"
 29/9/2025:
   - implémentation de Wfs::getItemsOnValue() en utilisant OGC CQL v1, OGC Filter étant trop complexe
   - réflexion autour de CQLv1 et de la convergence avec Predicate

@@ -284,7 +284,7 @@ class Explorer {
       case 'display': { // soit display généré par askQuery(), soit retour d'un display avec des arguments particuliers 
         if (isset($_GET['collection'])) {
           self::getContext();
-          self::$context->setQuery($_GET['collection']);
+          self::$context->setQuery(str_replace("\r", '', $_GET['collection']));
           self::storeContext();
         }
         $answerOptions = array_merge(
@@ -297,14 +297,14 @@ class Explorer {
       }
       case 'draw': {// draw généré par askQuery(), 
         self::getContext();
-        self::$context->setQuery($_GET['collection']);
+        self::$context->setQuery(str_replace("\r", '', $_GET['collection']));
         self::storeContext();
         self::answer(['action'=>'draw']);
         die();
       }
       case 'show': {
         self::getContext();
-        self::$context->setQuery($_GET['collection']);
+        self::$context->setQuery(str_replace("\r", '', $_GET['collection']));
         self::storeContext();
         $answerOptions['action'] = 'show';
         break;

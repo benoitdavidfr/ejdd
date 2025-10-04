@@ -453,6 +453,7 @@ if (realpath($_SERVER['SCRIPT_FILENAME']) <> __FILE__) return; // Test
 class QueryTest {
   const EXAMPLES = [
     "display"=> "display(InseeCog.v_region_2025)",
+    "display+ret"=> "display(InseeCog.v_region_2025)\n\n",
     "xx -> erreur"=> "xx",
     "display(xx) -> erreur"=> "display(xx)",
     "display(Proj)"=> "display(Proj(InseeCog.v_region_2025, [REG>reg, LIBELLE>lib]))",
